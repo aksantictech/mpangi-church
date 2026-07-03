@@ -18,6 +18,11 @@ type TrainingDetailsPageProps = {
   }>;
 };
 
+function firstItem<T>(value: T | T[] | null | undefined): T | null {
+  if (!value) return null;
+  return Array.isArray(value) ? value[0] ?? null : value;
+}
+
 export default async function TrainingDetailsPage({
   params,
 }: TrainingDetailsPageProps) {
@@ -25,15 +30,29 @@ export default async function TrainingDetailsPage({
 
   const supabase = await createClient();
 
-  const { data: training } = await supabase
+  const { data: trainingRaw } = await supabase
     .from("training_programs")
-    .select("id, church_id, name, description, sort_order, status, created_at, churches(name)")
+    .select(
+      `
+      id,
+      church_id,
+      name,
+      description,
+      sort_order,
+      status,
+      created_at,
+      churches(name)
+    `
+    )
     .eq("id", id)
     .maybeSingle();
 
-  if (!training) {
+  if (!trainingRaw) {
     notFound();
   }
+
+  const training = trainingRaw as any;
+  const church = firstItem<any>(training.churches);
 
   const { count: membersCount } = await supabase
     .from("member_trainings")
@@ -64,11 +83,11 @@ export default async function TrainingDetailsPage({
                 </p>
 
                 <h1 className="mt-2 text-3xl font-extrabold">
-                  {training.name}
+                  {training.name || "Formation sans nom"}
                 </h1>
 
                 <p className="mt-2 text-sm text-blue-50">
-                  {training.churches?.name ?? "Église non renseignée"}
+                  {church?.name || "Église non renseignée"}
                 </p>
               </div>
             </div>
@@ -84,7 +103,7 @@ export default async function TrainingDetailsPage({
 
               <TrainingProgramStatusButton
                 trainingId={training.id}
-                currentStatus={training.status}
+                currentStatus={training.status || "active"}
               />
             </div>
           </div>
@@ -109,7 +128,7 @@ export default async function TrainingDetailsPage({
 
           <MetricCard
             title="Église"
-            value={training.churches?.name ?? "-"}
+            value={church?.name || "-"}
             description="Formation personnalisée"
             icon={Church}
             accent="green"
@@ -122,9 +141,12 @@ export default async function TrainingDetailsPage({
           </h2>
 
           <div className="mt-6 grid gap-4 md:grid-cols-2">
-            <Info label="Nom" value={training.name} />
-            <Info label="Statut" value={training.status} />
-            <Info label="Ordre d’affichage" value={String(training.sort_order ?? 0)} />
+            <Info label="Nom" value={training.name || "Formation sans nom"} />
+            <Info label="Statut" value={training.status || "active"} />
+            <Info
+              label="Ordre d’affichage"
+              value={String(training.sort_order ?? 0)}
+            />
             <Info
               label="Description"
               value={training.description || "Aucune description."}
@@ -142,6 +164,7 @@ function Info({ label, value }: { label: string; value: string }) {
       <p className="text-xs font-bold uppercase tracking-wide text-slate-400">
         {label}
       </p>
+
       <p className="mt-2 font-semibold text-slate-700">{value}</p>
     </div>
   );

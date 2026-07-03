@@ -34,7 +34,9 @@ export default async function JoinPage({ params }: JoinPageProps) {
       description="Laissez vos informations pour être accueilli, contacté et accompagné dans votre intégration."
       icon={<Users className="h-8 w-8" />}
     >
-      <JoinChurchForm churchId={church.id} />
-    </PublicFormLayout>
+<JoinChurchForm
+  churchId={church.id}
+  churchName={church.name || "Église"}
+/>    </PublicFormLayout>
   );
 }

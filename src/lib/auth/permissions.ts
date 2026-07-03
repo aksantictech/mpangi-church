@@ -8,19 +8,26 @@ export function isChurchAdmin(role?: UserRole | null) {
   return role === USER_ROLES.CHURCH_ADMIN;
 }
 
-export function canManageMembers(role?: UserRole | null) {
-  return [
+export function canManageChurch(role?: UserRole | null) {
+  if (!role) return false;
+
+  const allowedRoles: UserRole[] = [
     USER_ROLES.SUPER_ADMIN,
     USER_ROLES.CHURCH_ADMIN,
     USER_ROLES.PASTOR,
-  ].includes(role as UserRole);
+  ];
+
+  return allowedRoles.includes(role);
 }
 
 export function canManageAttendance(role?: UserRole | null) {
-  return [
+  if (!role) return false;
+
+  const allowedRoles: UserRole[] = [
+    USER_ROLES.SUPER_ADMIN,
     USER_ROLES.CHURCH_ADMIN,
     USER_ROLES.PASTOR,
-    USER_ROLES.DEPARTMENT_LEADER,
-    USER_ROLES.WORKER,
-  ].includes(role as UserRole);
+  ];
+
+  return allowedRoles.includes(role);
 }
