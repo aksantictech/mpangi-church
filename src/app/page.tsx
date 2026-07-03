@@ -6,6 +6,7 @@ import {
   CalendarCheck,
   Church,
   ClipboardList,
+  Download,
   Gift,
   HeartHandshake,
   LayoutDashboard,
@@ -13,12 +14,10 @@ import {
   MessageSquareHeart,
   Settings,
   ShieldCheck,
-  Download,
   Sparkles,
   Users,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
-import PwaInstallButton from "../components/pwa/PwaInstallButton";
 import { createClient } from "@/lib/supabase/server";
 
 type PublicChurch = {
@@ -133,8 +132,8 @@ export default async function HomePage() {
 
         <div className="relative mx-auto flex min-h-[760px] max-w-7xl flex-col px-4 py-8 md:px-8">
           <header className="flex items-center justify-between gap-4 rounded-[2rem] border border-white/70 bg-white/80 p-3 shadow-sm backdrop-blur">
-            <Link href="/" className="flex items-center gap-3">
-              <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-[#DCEAF5]">
+            <Link href="/" className="flex min-w-0 items-center gap-3">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-[#DCEAF5]">
                 <Image
                   src="/images/mpangi-logo.png"
                   alt="Mpangi-church"
@@ -144,17 +143,18 @@ export default async function HomePage() {
                 />
               </div>
 
-              <div>
-                <p className="text-xl font-extrabold text-[#03357A]">
+              <div className="min-w-0">
+                <p className="truncate text-lg font-extrabold text-[#03357A] md:text-xl">
                   Mpangi-church
                 </p>
-                <p className="text-xs font-semibold text-[#8B5CF6]">
+
+                <p className="hidden text-xs font-semibold text-[#8B5CF6] sm:block">
                   Gérer avec foi, servir avec amour
                 </p>
               </div>
             </Link>
 
-            <div className="flex items-center gap-2">
+            <div className="flex shrink-0 items-center gap-2">
               <Link
                 href={`/church/${firstChurchSlug}`}
                 className="hidden rounded-2xl border border-[#DCEAF5] bg-white px-5 py-3 text-sm font-bold text-[#03357A] hover:bg-[#EAF3FA] md:inline-flex"
@@ -162,18 +162,17 @@ export default async function HomePage() {
                 Page publique
               </Link>
 
-              <PwaInstallButton />
               <Link
-  href="/install"
-  className="inline-flex items-center justify-center gap-2 rounded-2xl border border-[#DCEAF5] bg-white px-6 py-4 text-sm font-extrabold text-[#03357A] hover:bg-[#EAF3FA]"
->
-  Installer l’application
-  <Download className="h-4 w-4" />
-</Link>
+                href="/install"
+                className="hidden items-center justify-center gap-2 rounded-2xl border border-[#DCEAF5] bg-white px-5 py-3 text-sm font-extrabold text-[#03357A] shadow-sm hover:bg-[#EAF3FA] sm:inline-flex"
+              >
+                Installer l’application
+                <Download className="h-4 w-4" />
+              </Link>
 
               <Link
                 href="/login"
-                className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#03357A] px-5 py-3 text-sm font-extrabold text-white shadow-lg shadow-blue-900/20 hover:bg-[#022B63]"
+                className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#03357A] px-4 py-3 text-sm font-extrabold text-white shadow-lg shadow-blue-900/20 hover:bg-[#022B63] md:px-5"
               >
                 Connexion
                 <LockKeyhole className="h-4 w-4" />
@@ -213,6 +212,14 @@ export default async function HomePage() {
                 >
                   Voir une page publique
                   <Church className="h-4 w-4" />
+                </Link>
+
+                <Link
+                  href="/install"
+                  className="inline-flex items-center justify-center gap-2 rounded-2xl border border-[#DCEAF5] bg-white px-6 py-4 text-sm font-extrabold text-[#03357A] hover:bg-[#EAF3FA] sm:hidden"
+                >
+                  Installer l’application
+                  <Download className="h-4 w-4" />
                 </Link>
               </div>
 
