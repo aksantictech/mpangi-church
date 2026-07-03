@@ -17,7 +17,7 @@ type PwaInstallButtonProps = {
 };
 
 export default function PwaInstallButton({
-  label = "Installer",
+  label = "Installer l’application",
   className,
 }: PwaInstallButtonProps) {
   const [installPrompt, setInstallPrompt] =
@@ -42,17 +42,29 @@ export default function PwaInstallButton({
       setInstallPrompt(event as BeforeInstallPromptEvent);
     }
 
+    function handleAppInstalled() {
+      setIsStandalone(true);
+      setInstallPrompt(null);
+    }
+
     window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+    window.addEventListener("appinstalled", handleAppInstalled);
 
     return () => {
       window.removeEventListener(
         "beforeinstallprompt",
         handleBeforeInstallPrompt
       );
+      window.removeEventListener("appinstalled", handleAppInstalled);
     };
   }, []);
 
   async function handleInstall() {
+    if (isStandalone) {
+      alert("L’application est déjà installée.");
+      return;
+    }
+
     if (installPrompt) {
       await installPrompt.prompt();
       await installPrompt.userChoice;
@@ -62,19 +74,17 @@ export default function PwaInstallButton({
 
     if (isIos) {
       alert(
-        "Sur iPhone : ouvrez Safari, appuyez sur Partager, puis choisissez “Sur l’écran d’accueil”."
+        "Sur iPhone : ouvrez le site avec Safari, appuyez sur Partager, puis choisissez “Sur l’écran d’accueil”."
       );
       return;
     }
 
     alert(
-      "Sur Android : utilisez Chrome sur l’adresse Vercel HTTPS, puis ouvrez le menu ⋮ et choisissez “Installer l’application” ou “Ajouter à l’écran d’accueil”."
+      "Sur Android : ouvrez le site avec Chrome, puis appuyez sur le menu ⋮ et choisissez “Installer l’application” ou “Ajouter à l’écran d’accueil”. Si l’option n’apparaît pas, vérifiez que vous êtes bien sur l’URL HTTPS de Vercel."
     );
   }
 
-  if (isStandalone) {
-    return null;
-  }
+  if (isStandalone) return null;
 
   return (
     <button
@@ -82,11 +92,11 @@ export default function PwaInstallButton({
       onClick={handleInstall}
       className={
         className ||
-        "inline-flex items-center justify-center gap-2 rounded-2xl border border-[#DCEAF5] bg-white px-4 py-3 text-sm font-extrabold text-[#03357A] shadow-sm hover:bg-[#EAF3FA]"
+        "inline-flex items-center justify-center gap-2 rounded-2xl border border-[#DCEAF5] bg-white px-5 py-3 text-sm font-extrabold text-[#03357A] shadow-sm hover:bg-[#EAF3FA]"
       }
     >
       <Download className="h-4 w-4" />
-      <span>{label}</span>
+      {label}
     </button>
   );
 }

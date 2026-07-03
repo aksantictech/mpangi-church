@@ -15,6 +15,7 @@ import {
   Sparkles,
   UserPlus,
 } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 
 type PublicChurchPageProps = {
@@ -23,10 +24,65 @@ type PublicChurchPageProps = {
   }>;
 };
 
+type PublicChurch = {
+  id: string;
+  name: string | null;
+  public_name: string | null;
+  slug: string | null;
+  status: string | null;
+  logo_url: string | null;
+  pastor_photo_url: string | null;
+  pastor_name: string | null;
+  pastor_title: string | null;
+  address: string | null;
+  city: string | null;
+  country: string | null;
+  phone: string | null;
+  whatsapp: string | null;
+  email: string | null;
+  public_hero_title: string | null;
+  public_message: string | null;
+  service_times: string | null;
+  public_enabled: boolean | null;
+  login_enabled: boolean | null;
+  youtube_channel_url: string | null;
+  latest_video_url: string | null;
+  news_title: string | null;
+  news_description: string | null;
+  donation_enabled: boolean | null;
+  donation_message: string | null;
+  donation_mobile_money: string | null;
+  donation_mobile_money_name: string | null;
+  donation_card_url: string | null;
+  donation_bank_name: string | null;
+  donation_bank_account_name: string | null;
+  donation_bank_account_number: string | null;
+  donation_bank_iban: string | null;
+  donation_bank_swift: string | null;
+  donation_bank_details: string | null;
+};
+
+function getPublicChurchName(church: PublicChurch) {
+  const publicName = church.public_name?.trim();
+
+  if (publicName) {
+    return publicName;
+  }
+
+  const name = church.name?.trim();
+
+  if (!name) {
+    return "Église";
+  }
+
+  return name.replace(/\s*[,|-]?\s*extension.*$/i, "").trim();
+}
+
 function formatPhoneForWhatsapp(phone: string | null) {
   if (!phone) return null;
 
   const cleaned = phone.replace(/[^\d]/g, "");
+
   if (!cleaned) return null;
 
   return `https://wa.me/${cleaned}`;
@@ -35,14 +91,18 @@ function formatPhoneForWhatsapp(phone: string | null) {
 function getYoutubeEmbedUrl(url: string | null) {
   if (!url) return null;
 
-  if (url.includes("youtube.com/embed/")) return url;
+  if (url.includes("youtube.com/embed/")) {
+    return url;
+  }
 
   const watchMatch = url.match(/[?&]v=([^&]+)/);
+
   if (watchMatch?.[1]) {
     return `https://www.youtube.com/embed/${watchMatch[1]}`;
   }
 
   const shortMatch = url.match(/youtu\.be\/([^?&]+)/);
+
   if (shortMatch?.[1]) {
     return `https://www.youtube.com/embed/${shortMatch[1]}`;
   }
@@ -57,12 +117,13 @@ export default async function PublicChurchPage({
 
   const supabase = await createClient();
 
-  const { data: church, error } = await supabase
+  const { data: churchRaw, error } = await supabase
     .from("churches")
     .select(
       `
       id,
       name,
+      public_name,
       slug,
       status,
       logo_url,
@@ -83,26 +144,34 @@ export default async function PublicChurchPage({
       youtube_channel_url,
       latest_video_url,
       news_title,
+      news_description,
       donation_enabled,
-donation_message,
-donation_mobile_money,
-donation_mobile_money_name,
-donation_card_url,
-donation_bank_name,
-donation_bank_account_name,
-donation_bank_account_number,
-donation_bank_iban,
-donation_bank_swift,
-donation_bank_details,
-      news_description
+      donation_message,
+      donation_mobile_money,
+      donation_mobile_money_name,
+      donation_card_url,
+      donation_bank_name,
+      donation_bank_account_name,
+      donation_bank_account_number,
+      donation_bank_iban,
+      donation_bank_swift,
+      donation_bank_details
     `
     )
     .eq("slug", slug)
     .maybeSingle();
 
-  if (error || !church || church.status !== "active" || !church.public_enabled) {
+  if (
+    error ||
+    !churchRaw ||
+    churchRaw.status !== "active" ||
+    !churchRaw.public_enabled
+  ) {
     notFound();
   }
+
+  const church = churchRaw as PublicChurch;
+  const churchPublicName = getPublicChurchName(church);
 
   const whatsappUrl = formatPhoneForWhatsapp(church.whatsapp || church.phone);
 
@@ -110,15 +179,20 @@ donation_bank_details,
     church.logo_url || "/images/churches/maison-misericorde-logo.png";
 
   const pastorPhotoSrc =
-    church.pastor_photo_url || "/images/churches/maison-misericorde-pasteur.png";
+    church.pastor_photo_url ||
+    "/images/churches/maison-misericorde-pasteur.png";
 
   const youtubeEmbedUrl = getYoutubeEmbedUrl(church.latest_video_url);
+
+  const welcomeTitle =
+    church.public_hero_title?.trim() || `Bienvenue à ${churchPublicName}`;
 
   return (
     <main className="min-h-screen bg-[#F5F9FC] text-[#0F172A]">
       <div className="mx-auto max-w-6xl px-4 pt-5">
-  <PublicHomeLink />
-</div>
+        <PublicHomeLink />
+      </div>
+
       <style>
         {`
           @keyframes mmFloat {
@@ -155,7 +229,7 @@ donation_bank_details,
               <div className="mm-float relative flex h-24 w-24 shrink-0 items-center justify-center rounded-[2rem] bg-white p-3 shadow-2xl">
                 <Image
                   src={logoSrc}
-                  alt={`Logo ${church.name}`}
+                  alt={`Logo ${churchPublicName}`}
                   width={96}
                   height={96}
                   className="h-full w-full object-contain"
@@ -169,7 +243,7 @@ donation_bank_details,
                 </p>
 
                 <h1 className="text-2xl font-extrabold leading-tight md:text-3xl">
-                  {church.name}, extension du Centre Missionnaire Philadelphie
+                  {churchPublicName}
                 </h1>
               </div>
             </div>
@@ -185,18 +259,19 @@ donation_bank_details,
             )}
           </header>
 
-          <div className="grid gap-5 pt-3 pb-5 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">
+          <div className="grid gap-5 pb-5 pt-3 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">
             <div>
               <p className="inline-flex rounded-full bg-white/15 px-4 py-2 text-sm font-bold ring-1 ring-white/20">
                 Bienvenue dans notre communauté
               </p>
 
               <h2 className="mt-3 max-w-3xl text-3xl font-black leading-tight md:text-4xl">
-                {church.public_hero_title || `Bienvenue à ${church.name}`}
+                {welcomeTitle}
               </h2>
 
               <p className="mt-4 max-w-3xl text-base leading-8 text-blue-50 md:text-lg">
-                {church.public_message}
+                {church.public_message ||
+                  "Bienvenue sur la page publique de notre église."}
               </p>
 
               <div className="mt-5 grid gap-3 sm:grid-cols-2">
@@ -214,12 +289,13 @@ donation_bank_details,
                   variant="glass"
                 />
 
-<a
-  href="#don"
-  className="inline-flex items-center justify-center rounded-2xl bg-[#03357A] px-5 py-3 text-sm font-extrabold text-white shadow-lg shadow-blue-900/20 hover:bg-[#022B63]"
->
-  Faire un don
-</a>
+                <a
+                  href="#don"
+                  className="inline-flex items-center justify-center rounded-2xl bg-[#03357A] px-5 py-4 text-sm font-extrabold text-white shadow-lg shadow-blue-900/20 hover:bg-[#022B63]"
+                >
+                  Faire un don
+                </a>
+
                 <HeroButton
                   href={`/church/${church.slug}/join`}
                   icon={UserPlus}
@@ -241,26 +317,9 @@ donation_bank_details,
                 </p>
 
                 <div className="mt-4 grid gap-3 md:grid-cols-3">
-                  <div className="rounded-2xl bg-white/10 p-4">
-                    <p className="text-2xl font-black">01</p>
-                    <p className="mt-1 text-sm font-bold">
-                      Votre demande est reçue
-                    </p>
-                  </div>
-
-                  <div className="rounded-2xl bg-white/10 p-4">
-                    <p className="text-2xl font-black">02</p>
-                    <p className="mt-1 text-sm font-bold">
-                      L’équipe pastorale vous contacte
-                    </p>
-                  </div>
-
-                  <div className="rounded-2xl bg-white/10 p-4">
-                    <p className="text-2xl font-black">03</p>
-                    <p className="mt-1 text-sm font-bold">
-                      Un suivi spirituel est organisé
-                    </p>
-                  </div>
+                  <StepBox number="01" label="Votre demande est reçue" />
+                  <StepBox number="02" label="L’équipe pastorale vous contacte" />
+                  <StepBox number="03" label="Un suivi spirituel est organisé" />
                 </div>
               </div>
             </div>
@@ -292,9 +351,11 @@ donation_bank_details,
                   <Info
                     icon={MapPin}
                     label="Adresse"
-                    value={[church.address, church.city, church.country]
-                      .filter(Boolean)
-                      .join(", ")}
+                    value={
+                      [church.address, church.city, church.country]
+                        .filter(Boolean)
+                        .join(", ") || "À compléter"
+                    }
                   />
 
                   <Info
@@ -327,9 +388,7 @@ donation_bank_details,
             </p>
 
             <div className="mt-6 rounded-3xl bg-[#EAF3FA] p-5">
-              <h4 className="font-extrabold text-[#03357A]">
-                Contact rapide
-              </h4>
+              <h4 className="font-extrabold text-[#03357A]">Contact rapide</h4>
 
               <div className="mt-4 flex flex-wrap gap-3">
                 {church.phone && (
@@ -412,13 +471,29 @@ donation_bank_details,
           </div>
         </div>
       </section>
-<PublicDonationSection church={church as any} />
+
+      <PublicDonationSection
+        church={{
+          ...church,
+          name: churchPublicName,
+        }}
+      />
+
       <footer className="border-t border-[#DCEAF5] bg-white px-6 py-6 text-center text-sm text-slate-500">
         Propulsé par{" "}
         <span className="font-bold text-[#03357A]">Mpangi-church</span> —
         AKSANTIC Technology
       </footer>
     </main>
+  );
+}
+
+function StepBox({ number, label }: { number: string; label: string }) {
+  return (
+    <div className="rounded-2xl bg-white/10 p-4">
+      <p className="text-2xl font-black">{number}</p>
+      <p className="mt-1 text-sm font-bold">{label}</p>
+    </div>
   );
 }
 
@@ -429,7 +504,7 @@ function HeroButton({
   variant,
 }: {
   href: string;
-  icon: any;
+  icon: LucideIcon;
   label: string;
   variant: "white" | "glass";
 }) {
@@ -454,7 +529,7 @@ function Info({
   label,
   value,
 }: {
-  icon: any;
+  icon: LucideIcon;
   label: string;
   value: string;
 }) {
@@ -468,6 +543,7 @@ function Info({
         <p className="text-xs font-bold uppercase tracking-wide text-slate-400">
           {label}
         </p>
+
         <p className="mt-1 font-semibold text-slate-700">{value || "-"}</p>
       </div>
     </div>

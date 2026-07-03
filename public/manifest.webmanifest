@@ -2,25 +2,33 @@
   "name": "Mpangi-church",
   "short_name": "Mpangi",
   "description": "Application de gestion des églises : membres, présences, départements, événements et suivi pastoral.",
+  "id": "/",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
   "orientation": "portrait-primary",
   "background_color": "#F5F9FC",
   "theme_color": "#03357A",
-  "categories": ["productivity", "business", "lifestyle"],
+  "categories": ["productivity", "business"],
   "icons": [
     {
       "src": "/images/mpangi-logo.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
       "src": "/images/mpangi-logo.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "/images/mpangi-logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }

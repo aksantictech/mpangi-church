@@ -1,4 +1,4 @@
-const CACHE_NAME = "mpangi-church-v1";
+const CACHE_NAME = "mpangi-church-v2";
 
 const STATIC_ASSETS = [
   "/",
@@ -42,9 +42,7 @@ self.addEventListener("fetch", (event) => {
   if (url.origin !== self.location.origin) return;
 
   if (request.mode === "navigate") {
-    event.respondWith(
-      fetch(request).catch(() => caches.match("/offline"))
-    );
+    event.respondWith(fetch(request).catch(() => caches.match("/offline")));
     return;
   }
 
@@ -54,6 +52,10 @@ self.addEventListener("fetch", (event) => {
 
       return fetch(request)
         .then((networkResponse) => {
+          if (!networkResponse || networkResponse.status !== 200) {
+            return networkResponse;
+          }
+
           const responseClone = networkResponse.clone();
 
           caches.open(CACHE_NAME).then((cache) => {

@@ -23,6 +23,7 @@ import { createClient } from "@/lib/supabase/server";
 type PublicChurch = {
   id: string;
   name: string | null;
+  public_name: string | null;
   slug: string | null;
   city: string | null;
   country: string | null;
@@ -87,6 +88,22 @@ const adminLinks: {
   },
 ];
 
+function getPublicChurchName(church: PublicChurch) {
+  const publicName = church.public_name?.trim();
+
+  if (publicName) {
+    return publicName;
+  }
+
+  const name = church.name?.trim();
+
+  if (!name) {
+    return "Église";
+  }
+
+  return name.replace(/\s*[,|-]?\s*extension.*$/i, "").trim();
+}
+
 export default async function HomePage() {
   const supabase = await createClient();
 
@@ -96,6 +113,7 @@ export default async function HomePage() {
       `
       id,
       name,
+      public_name,
       slug,
       city,
       country,
@@ -334,66 +352,71 @@ export default async function HomePage() {
           </div>
 
           <div className="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-            {publicChurches.map((church) => (
-              <article
-                key={church.id}
-                className="rounded-[2rem] border border-[#DCEAF5] bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-xl hover:shadow-blue-950/10"
-              >
-                <div className="flex items-start gap-4">
-                  <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-3xl bg-[#EAF3FA] text-[#03357A]">
-                    {church.logo_url ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={church.logo_url}
-                        alt={church.name || "Église"}
-                        className="h-full w-full object-cover"
-                      />
-                    ) : (
-                      <Church className="h-8 w-8" />
-                    )}
-                  </div>
+            {publicChurches.map((church) => {
+              const churchPublicName = getPublicChurchName(church);
 
-                  <div>
-                    <h3 className="text-lg font-extrabold text-[#03357A]">
-                      {church.name || "Église"}
-                    </h3>
+              return (
+                <article
+                  key={church.id}
+                  className="rounded-[2rem] border border-[#DCEAF5] bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-xl hover:shadow-blue-950/10"
+                >
+                  <div className="flex items-start gap-4">
+                    <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-3xl bg-[#EAF3FA] text-[#03357A]">
+                      {church.logo_url ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={church.logo_url}
+                          alt={churchPublicName}
+                          className="h-full w-full object-cover"
+                        />
+                      ) : (
+                        <Church className="h-8 w-8" />
+                      )}
+                    </div>
 
-                    <p className="mt-1 text-sm text-slate-500">
-                      {[church.city, church.country].filter(Boolean).join(", ") ||
-                        "Localisation non renseignée"}
-                    </p>
+                    <div>
+                      <h3 className="text-lg font-extrabold text-[#03357A]">
+                        {churchPublicName}
+                      </h3>
 
-                    {church.pastor_name && (
-                      <p className="mt-1 text-sm font-semibold text-slate-600">
-                        {church.pastor_name}
+                      <p className="mt-1 text-sm text-slate-500">
+                        {[church.city, church.country]
+                          .filter(Boolean)
+                          .join(", ") || "Localisation non renseignée"}
                       </p>
-                    )}
+
+                      {church.pastor_name && (
+                        <p className="mt-1 text-sm font-semibold text-slate-600">
+                          {church.pastor_name}
+                        </p>
+                      )}
+                    </div>
                   </div>
-                </div>
 
-                <p className="mt-5 line-clamp-3 text-sm leading-7 text-slate-500">
-                  {church.public_message ||
-                    "Découvrez la page publique de cette église."}
-                </p>
+                  <p className="mt-5 line-clamp-3 text-sm leading-7 text-slate-500">
+                    {church.public_message ||
+                      "Découvrez la page publique de cette église."}
+                  </p>
 
-                <div className="mt-5 flex flex-wrap gap-2">
-                  <Link
-                    href={`/church/${church.slug}`}
-                    className="inline-flex flex-1 items-center justify-center gap-2 rounded-2xl bg-[#03357A] px-4 py-3 text-sm font-extrabold text-white hover:bg-[#022B63]"
-                  >
-                    Ouvrir
-                    <ArrowRight className="h-4 w-4" />
-                  </Link>
+                  <div className="mt-5 flex flex-wrap gap-2">
+                    <Link
+                      href={`/church/${church.slug}`}
+                      className="inline-flex flex-1 items-center justify-center gap-2 rounded-2xl bg-[#03357A] px-4 py-3 text-sm font-extrabold text-white hover:bg-[#022B63]"
+                    >
+                      Ouvrir
+                      <ArrowRight className="h-4 w-4" />
+                    </Link>
 
-                  <Link
-                    href={`/church/${church.slug}#don`}
-                    className="inline-flex items-center justify-center rounded-2xl bg-[#EAF3FA] px-4 py-3 text-sm font-extrabold text-[#03357A] hover:bg-[#DCEAF5]"
-                  >
-                    Don
-                  </Link>
-                </div>
-              </article>
-            ))}
+                    <Link
+                      href={`/church/${church.slug}#don`}
+                      className="inline-flex items-center justify-center rounded-2xl bg-[#EAF3FA] px-4 py-3 text-sm font-extrabold text-[#03357A] hover:bg-[#DCEAF5]"
+                    >
+                      Don
+                    </Link>
+                  </div>
+                </article>
+              );
+            })}
           </div>
         </section>
       )}

@@ -6,11 +6,25 @@ export default function PwaRegister() {
   useEffect(() => {
     if (!("serviceWorker" in navigator)) return;
 
-    window.addEventListener("load", () => {
-      navigator.serviceWorker.register("/sw.js").catch(() => {
-        // L'installation PWA ne doit pas bloquer l'application.
-      });
-    });
+    async function registerServiceWorker() {
+      try {
+        await navigator.serviceWorker.register("/sw.js", {
+          scope: "/",
+        });
+      } catch {
+        // Ne bloque pas l'application si le SW échoue.
+      }
+    }
+
+    if (document.readyState === "complete") {
+      void registerServiceWorker();
+    } else {
+      window.addEventListener("load", registerServiceWorker);
+
+      return () => {
+        window.removeEventListener("load", registerServiceWorker);
+      };
+    }
   }, []);
 
   return null;
