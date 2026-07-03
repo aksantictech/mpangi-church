@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import Sidebar from "./Sidebar";
 import Topbar from "./Topbar";
+import MobileBottomNav from "./MobileBottomNav";
 
 type AppShellProps = {
   children: ReactNode;
@@ -14,10 +15,12 @@ export default function AppShell({ children }: AppShellProps) {
       <div className="min-h-screen lg:pl-72">
         <Topbar />
 
-        <main className="px-4 py-5 md:px-6 lg:px-8">
+        <main className="px-4 py-5 pb-28 md:px-6 md:pb-8 lg:px-8">
           {children}
         </main>
       </div>
+
+      <MobileBottomNav />
     </div>
   );
 }
