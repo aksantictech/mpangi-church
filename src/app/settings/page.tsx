@@ -2,13 +2,29 @@ import Link from "next/link";
 import {
   Building2,
   ChevronRight,
+  Globe,
   GraduationCap,
+  QrCode,
   Settings,
   Users,
 } from "lucide-react";
 import AppShell from "@/components/layout/AppShell";
 
 const settingsItems = [
+  {
+    title: "Page publique",
+    description:
+      "Modifier le nom public, le message d’accueil, les contacts, YouTube, les dons et les informations visibles par les visiteurs.",
+    href: "/settings/public-page",
+    icon: Globe,
+  },
+  {
+    title: "QR ajout membre",
+    description:
+      "Générer un lien et un QR Code public pour permettre aux membres et serviteurs de remplir leur fiche sans compte admin.",
+    href: "/settings/member-registration",
+    icon: QrCode,
+  },
   {
     title: "Formations",
     description:

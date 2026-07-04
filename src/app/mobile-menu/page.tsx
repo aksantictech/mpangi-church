@@ -8,6 +8,7 @@ import {
   Download,
   HeartHandshake,
   LayoutDashboard,
+  QrCode,
   MessageSquareHeart,
   Globe,
   Settings,
@@ -83,6 +84,12 @@ const menuItems = [
     href: "/settings",
     icon: Settings,
   },
+  {
+  title: "QR ajout membre",
+  description: "Lien public et QR Code d’ajout membre",
+  href: "/settings/member-registration",
+  icon: QrCode,
+},
 ];
 
 export default async function MobileMenuPage() {
