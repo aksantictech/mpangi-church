@@ -5,8 +5,8 @@ import {
   Globe,
   GraduationCap,
   QrCode,
-  Settings,
   Radio,
+  Settings,
   Users,
 } from "lucide-react";
 import AppShell from "@/components/layout/AppShell";
@@ -20,12 +20,12 @@ const settingsItems = [
     icon: Globe,
   },
   {
-  title: "Culte en direct",
-  description:
-    "Publier le lien du direct sur la page publique et envoyer une notification aux téléphones abonnés.",
-  href: "/settings/live-stream",
-  icon: Radio,
-},
+    title: "Culte en direct",
+    description:
+      "Publier un lien de culte en live sur la page publique et envoyer une notification aux téléphones abonnés.",
+    href: "/settings/live-stream",
+    icon: Radio,
+  },
   {
     title: "QR ajout membre",
     description:
