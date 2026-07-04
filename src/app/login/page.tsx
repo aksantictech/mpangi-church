@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Church, Eye, Lock, Mail } from "lucide-react";
+import { ArrowLeft, Church, Eye, EyeOff, Lock, Mail } from "lucide-react";
 import AppLogo from "@/components/brand/AppLogo";
 import { getDashboardPathByRole } from "@/lib/auth/redirect-by-role";
 import { createClient } from "@/lib/supabase/client";
@@ -50,6 +50,7 @@ export default function LoginPage() {
 
   const [churchSlug, setChurchSlug] = useState("");
   const [churchInfo, setChurchInfo] = useState<ChurchContext | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -325,35 +326,39 @@ export default function LoginPage() {
                     <Lock className="h-5 w-5 text-[#3F79B3]" />
                   </div>
 
-                  <input
-                    type="password"
-                    className="w-full bg-transparent px-3 py-4 text-[#0F172A] outline-none placeholder:text-slate-400"
-                    placeholder="Mot de passe"
-                    value={password}
-                    onChange={(event) => setPassword(event.target.value)}
-                    required
-                  />
+<input
+  type={showPassword ? "text" : "password"}
+  className="w-full bg-transparent px-3 py-4 text-[#0F172A] outline-none placeholder:text-slate-400"
+  placeholder="Mot de passe"
+  value={password}
+  onChange={(event) => setPassword(event.target.value)}
+  required
+/>
 
-                  <Eye className="h-5 w-5 text-slate-400" />
+<button
+  type="button"
+  onClick={() => setShowPassword((current) => !current)}
+  className="rounded-xl p-2 text-slate-400 transition hover:bg-[#EAF3FA] hover:text-[#03357A]"
+  aria-label={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+>
+  {showPassword ? (
+    <EyeOff className="h-5 w-5" />
+  ) : (
+    <Eye className="h-5 w-5" />
+  )}
+</button>
                 </div>
               </div>
 
-              <div className="flex items-center justify-between gap-3 text-sm">
-                <Link
-                  href="/forgot-password"
-                  className="font-medium text-[#8B5CF6]"
-                >
-                  Mot de passe oublié ?
-                </Link>
-
-                <label className="flex items-center gap-2 text-slate-500">
-                  <input
-                    type="checkbox"
-                    className="h-4 w-4 rounded border-slate-300"
-                  />
-                  Se souvenir de moi
-                </label>
-              </div>
+              <div className="flex items-center justify-end gap-3 text-sm">
+  <label className="flex items-center gap-2 text-slate-500">
+    <input
+      type="checkbox"
+      className="h-4 w-4 rounded border-slate-300"
+    />
+    Se souvenir de moi
+  </label>
+</div>
 
               <button
                 type="submit"
@@ -363,6 +368,18 @@ export default function LoginPage() {
                 <Lock className="h-5 w-5" />
                 {isLoading ? "Connexion..." : "Se connecter"}
               </button>
+              <div className="mt-5 rounded-2xl border border-[#DCEAF5] bg-[#F8FBFD] p-4 text-center">
+  <p className="text-sm text-slate-500">
+    Vous avez oublié votre mot de passe ?
+  </p>
+
+  <Link
+    href="/forgot-password"
+    className="mt-2 inline-flex items-center justify-center rounded-2xl bg-white px-5 py-3 text-sm font-extrabold text-[#8B5CF6] shadow-sm ring-1 ring-[#DCEAF5] hover:bg-[#F1E8FF]"
+  >
+    Réinitialiser mon mot de passe
+  </Link>
+</div>
             </form>
 
             <div className="mt-8 flex items-center justify-center gap-3 text-sm">
