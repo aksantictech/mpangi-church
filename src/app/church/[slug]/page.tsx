@@ -2,7 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import PublicDonationSection from "@/components/public/PublicDonationSection";
-import PublicHomeLink from "@/components/public/PublicHomeLink";
 import type { Metadata } from "next";
 import {
   CalendarDays,
@@ -225,9 +224,7 @@ export default async function PublicChurchPage({
 
   return (
     <main className="min-h-screen bg-[#F5F9FC] text-[#0F172A]">
-      <div className="mx-auto max-w-6xl px-4 pt-5">
-        <PublicHomeLink />
-      </div>
+      
 
       <style>
         {`
