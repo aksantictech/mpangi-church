@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import PublicDonationSection from "@/components/public/PublicDonationSection";
 import PublicHomeLink from "@/components/public/PublicHomeLink";
+import type { Metadata } from "next";
 import {
   CalendarDays,
   HeartHandshake,
@@ -108,6 +109,41 @@ function getYoutubeEmbedUrl(url: string | null) {
   }
 
   return null;
+}
+
+export async function generateMetadata({
+  params,
+}: PublicChurchPageProps): Promise<Metadata> {
+  const { slug } = await params;
+
+  const supabase = await createClient();
+
+  const { data: church } = await supabase
+    .from("churches")
+    .select("name, public_name, public_message, logo_url")
+    .eq("slug", slug)
+    .maybeSingle();
+
+  if (!church) {
+    return {
+      title: "Église | Mpangi-church",
+      manifest: `/church/${slug}/manifest.webmanifest`,
+    };
+  }
+
+  const churchPublicName = getPublicChurchName(church as any);
+
+  return {
+    title: `${churchPublicName} | Mpangi-church`,
+    description:
+      church.public_message ||
+      `Page officielle de ${churchPublicName} sur Mpangi-church.`,
+    manifest: `/church/${slug}/manifest.webmanifest`,
+    icons: {
+      icon: `/church/${slug}/icon.png`,
+      apple: `/church/${slug}/icon.png`,
+    },
+  };
 }
 
 export default async function PublicChurchPage({
@@ -309,6 +345,13 @@ export default async function PublicChurchPage({
                   label="Partager un témoignage"
                   variant="glass"
                 />
+
+                <HeroButton
+  href={`/church/${church.slug}/install`}
+  icon={Sparkles}
+  label="Installer l’application"
+  variant="glass"
+/>
               </div>
 
               <div className="mt-5 rounded-3xl bg-white/10 p-5 ring-1 ring-white/20">

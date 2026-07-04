@@ -9,6 +9,7 @@ import {
   HeartHandshake,
   LayoutDashboard,
   MessageSquareHeart,
+  Globe,
   Settings,
   Users,
 } from "lucide-react";
@@ -70,6 +71,12 @@ const menuItems = [
     href: "/install",
     icon: Download,
   },
+  {
+  title: "Page publique",
+  description: "Nom public, dons, contacts et YouTube",
+  href: "/settings/public-page",
+  icon: Globe,
+},
   {
     title: "Paramètres",
     description: "Compte, église et configuration",
