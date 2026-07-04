@@ -1,70 +1,60 @@
-const CACHE_NAME = "mpangi-church-v2";
-
-const STATIC_ASSETS = [
-  "/",
-  "/offline",
-  "/manifest.webmanifest",
-  "/images/mpangi-logo.png",
-  "/images/login-illustration.png"
-];
-
 self.addEventListener("install", (event) => {
   self.skipWaiting();
-
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(STATIC_ASSETS).catch(() => undefined);
-    })
-  );
 });
 
 self.addEventListener("activate", (event) => {
-  event.waitUntil(
-    caches.keys().then((keys) => {
-      return Promise.all(
-        keys
-          .filter((key) => key !== CACHE_NAME)
-          .map((key) => caches.delete(key))
-      );
-    })
-  );
-
-  self.clients.claim();
+  event.waitUntil(self.clients.claim());
 });
 
-self.addEventListener("fetch", (event) => {
-  const request = event.request;
+self.addEventListener("push", (event) => {
+  let data = {};
 
-  if (request.method !== "GET") return;
-
-  const url = new URL(request.url);
-
-  if (url.origin !== self.location.origin) return;
-
-  if (request.mode === "navigate") {
-    event.respondWith(fetch(request).catch(() => caches.match("/offline")));
-    return;
+  try {
+    data = event.data ? event.data.json() : {};
+  } catch {
+    data = {};
   }
 
-  event.respondWith(
-    caches.match(request).then((cachedResponse) => {
-      if (cachedResponse) return cachedResponse;
+  const title = data.title || "Mpangi-church";
+  const options = {
+    body: data.body || "Nouvelle notification de votre église.",
+    icon: data.icon || "/images/mpangi-logo.png",
+    badge: data.badge || "/images/mpangi-logo.png",
+    data: {
+      url: data.url || "/",
+    },
+    vibrate: [100, 50, 100],
+  };
 
-      return fetch(request)
-        .then((networkResponse) => {
-          if (!networkResponse || networkResponse.status !== 200) {
-            return networkResponse;
+  event.waitUntil(self.registration.showNotification(title, options));
+});
+
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+
+  const targetUrl = new URL(
+    event.notification.data?.url || "/",
+    self.location.origin
+  ).href;
+
+  event.waitUntil(
+    self.clients
+      .matchAll({
+        type: "window",
+        includeUncontrolled: true,
+      })
+      .then((clientList) => {
+        for (const client of clientList) {
+          if (client.url === targetUrl && "focus" in client) {
+            return client.focus();
           }
+        }
 
-          const responseClone = networkResponse.clone();
+        if (self.clients.openWindow) {
+          return self.clients.openWindow(targetUrl);
+        }
 
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(request, responseClone).catch(() => undefined);
-          });
-
-          return networkResponse;
-        })
-        .catch(() => caches.match("/offline"));
-    })
+        return null;
+      })
   );
 });

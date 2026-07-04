@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import PublicDonationSection from "@/components/public/PublicDonationSection";
 import type { Metadata } from "next";
+import PublicLiveStreamSection from "@/components/public/PublicLiveStreamSection";
 import PublicTestimoniesSection from "@/components/public/PublicTestimoniesSection";
 import {
   CalendarDays,
@@ -191,6 +192,13 @@ export default async function PublicChurchPage({
       donation_bank_account_number,
       donation_bank_iban,
       donation_bank_swift,
+      live_stream_enabled,
+live_stream_url,
+live_stream_title,
+live_stream_description,
+live_stream_platform,
+live_stream_started_at,
+live_stream_notified_at,
       donation_bank_details
     `
     )
@@ -512,7 +520,7 @@ export default async function PublicChurchPage({
           </div>
         </div>
       </section>
-
+<PublicLiveStreamSection church={church as any} />
       <PublicDonationSection
         church={{
           ...church,
