@@ -27,9 +27,8 @@ export default async function JoinPage({ params }: JoinPageProps) {
   }
 
   return (
-    <PublicFormLayout
-      churchName={church.name}
-      churchSlug={church.slug}
+ <PublicFormLayout
+  church={church as any}
       title="Rejoindre l’église"
       description="Laissez vos informations pour être accueilli, contacté et accompagné dans votre intégration."
       icon={<Users className="h-8 w-8" />}

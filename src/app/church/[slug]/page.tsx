@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import PublicDonationSection from "@/components/public/PublicDonationSection";
 import type { Metadata } from "next";
+import PublicTestimoniesSection from "@/components/public/PublicTestimoniesSection";
 import {
   CalendarDays,
   HeartHandshake,
@@ -518,6 +519,7 @@ export default async function PublicChurchPage({
           name: churchPublicName,
         }}
       />
+      <PublicTestimoniesSection churchId={church.id} />
 
       <footer className="border-t border-[#DCEAF5] bg-white px-6 py-6 text-center text-sm text-slate-500">
         Propulsé par{" "}

@@ -27,13 +27,12 @@ export default async function AppointmentPage({ params }: AppointmentPageProps) 
   }
 
   return (
-    <PublicFormLayout
-      churchName={church.name}
-      churchSlug={church.slug}
-      title="Prendre rendez-vous"
-      description="Envoyez une demande de rendez-vous avec un pasteur ou un responsable de l’église."
-      icon={<CalendarDays className="h-8 w-8" />}
-    >
+  <PublicFormLayout
+  church={church as any}
+  title="Demander un rendez-vous"
+  description="Envoyez votre demande de rendez-vous à l’équipe de l’église."
+  icon={<CalendarDays className="h-8 w-8" />}
+>
       <AppointmentForm churchId={church.id} />
     </PublicFormLayout>
   );

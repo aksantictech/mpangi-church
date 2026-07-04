@@ -27,9 +27,8 @@ export default async function TestimonyPage({ params }: TestimonyPageProps) {
   }
 
   return (
-    <PublicFormLayout
-      churchName={church.name}
-      churchSlug={church.slug}
+  <PublicFormLayout
+  church={church as any}
       title="Envoyer un témoignage"
       description="Partagez ce que Dieu a fait dans votre vie. Votre témoignage sera reçu par l’équipe de l’église."
       icon={<Quote className="h-8 w-8" />}

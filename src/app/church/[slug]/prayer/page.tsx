@@ -27,9 +27,8 @@ export default async function PrayerPage({ params }: PrayerPageProps) {
   }
 
   return (
-    <PublicFormLayout
-      churchName={church.name}
-      churchSlug={church.slug}
+<PublicFormLayout
+  church={church as any}
       title="Demander une prière"
       description="Partagez votre sujet de prière avec l’équipe pastorale. Votre demande sera reçue avec respect et confidentialité."
       icon={<HeartHandshake className="h-8 w-8" />}
