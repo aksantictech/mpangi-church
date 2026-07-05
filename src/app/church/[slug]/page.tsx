@@ -1,10 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import PublicDonationSection from "@/components/public/PublicDonationSection";
+import PublicTeachingsSection from "@/components/public/PublicTeachingsSection";
 import type { Metadata } from "next";
-import PublicLiveStreamSection from "@/components/public/PublicLiveStreamSection";
-import PublicTestimoniesSection from "@/components/public/PublicTestimoniesSection";
 import {
   CalendarDays,
   HeartHandshake,
@@ -18,6 +16,11 @@ import {
   UserPlus,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+
+import PublicDonationSection from "@/components/public/PublicDonationSection";
+import PublicLiveStreamSection from "@/components/public/PublicLiveStreamSection";
+import PublicMobileActionBar from "@/components/public/PublicMobileActionBar";
+import PublicTestimoniesSection from "@/components/public/PublicTestimoniesSection";
 import { createClient } from "@/lib/supabase/server";
 
 type PublicChurchPageProps = {
@@ -26,31 +29,41 @@ type PublicChurchPageProps = {
   }>;
 };
 
+type PublicChurchNameInput = {
+  name?: string | null;
+  public_name?: string | null;
+};
+
 type PublicChurch = {
   id: string;
   name: string | null;
   public_name: string | null;
   slug: string | null;
   status: string | null;
+
   logo_url: string | null;
   pastor_photo_url: string | null;
   pastor_name: string | null;
   pastor_title: string | null;
+
   address: string | null;
   city: string | null;
   country: string | null;
   phone: string | null;
   whatsapp: string | null;
   email: string | null;
+
   public_hero_title: string | null;
   public_message: string | null;
   service_times: string | null;
   public_enabled: boolean | null;
   login_enabled: boolean | null;
+
   youtube_channel_url: string | null;
   latest_video_url: string | null;
   news_title: string | null;
   news_description: string | null;
+
   donation_enabled: boolean | null;
   donation_message: string | null;
   donation_mobile_money: string | null;
@@ -62,9 +75,17 @@ type PublicChurch = {
   donation_bank_iban: string | null;
   donation_bank_swift: string | null;
   donation_bank_details: string | null;
+
+  live_stream_enabled: boolean | null;
+  live_stream_url: string | null;
+  live_stream_title: string | null;
+  live_stream_description: string | null;
+  live_stream_platform: string | null;
+  live_stream_started_at: string | null;
+  live_stream_notified_at: string | null;
 };
 
-function getPublicChurchName(church: PublicChurch) {
+function getPublicChurchName(church: PublicChurchNameInput) {
   const publicName = church.public_name?.trim();
 
   if (publicName) {
@@ -132,7 +153,7 @@ export async function generateMetadata({
     };
   }
 
-  const churchPublicName = getPublicChurchName(church as any);
+  const churchPublicName = getPublicChurchName(church);
 
   return {
     title: `${churchPublicName} | Mpangi-church`,
@@ -192,14 +213,14 @@ export default async function PublicChurchPage({
       donation_bank_account_number,
       donation_bank_iban,
       donation_bank_swift,
+      donation_bank_details,
       live_stream_enabled,
-live_stream_url,
-live_stream_title,
-live_stream_description,
-live_stream_platform,
-live_stream_started_at,
-live_stream_notified_at,
-      donation_bank_details
+      live_stream_url,
+      live_stream_title,
+      live_stream_description,
+      live_stream_platform,
+      live_stream_started_at,
+      live_stream_notified_at
     `
     )
     .eq("slug", slug)
@@ -215,6 +236,7 @@ live_stream_notified_at,
   }
 
   const church = churchRaw as PublicChurch;
+  const churchSlug = church.slug || slug;
   const churchPublicName = getPublicChurchName(church);
 
   const whatsappUrl = formatPhoneForWhatsapp(church.whatsapp || church.phone);
@@ -232,9 +254,7 @@ live_stream_notified_at,
     church.public_hero_title?.trim() || `Bienvenue à ${churchPublicName}`;
 
   return (
-    <main className="min-h-screen bg-[#F5F9FC] text-[#0F172A]">
-      
-
+    <main className="min-h-screen bg-[#F5F9FC] pb-28 text-[#0F172A] lg:pb-0">
       <style>
         {`
           @keyframes mmFloat {
@@ -261,14 +281,14 @@ live_stream_notified_at,
         `}
       </style>
 
-      <section className="relative overflow-hidden bg-gradient-to-br from-[#03357A] via-[#2563EB] to-[#8B5CF6] px-6 py-4 text-white">
+      <section className="relative overflow-hidden bg-gradient-to-br from-[#03357A] via-[#2563EB] to-[#8B5CF6] px-4 py-5 text-white md:px-6">
         <div className="absolute -right-24 -top-24 h-80 w-80 rounded-full bg-white/10 blur-3xl" />
         <div className="absolute -bottom-32 -left-24 h-96 w-96 rounded-full bg-white/10 blur-3xl" />
 
         <div className="relative mx-auto max-w-6xl">
           <header className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
             <div className="flex items-center gap-4">
-              <div className="mm-float relative flex h-24 w-24 shrink-0 items-center justify-center rounded-[2rem] bg-white p-3 shadow-2xl">
+              <div className="mm-float relative flex h-20 w-20 shrink-0 items-center justify-center rounded-[1.6rem] bg-white p-3 shadow-2xl md:h-24 md:w-24 md:rounded-[2rem]">
                 <Image
                   src={logoSrc}
                   alt={`Logo ${churchPublicName}`}
@@ -280,11 +300,11 @@ live_stream_notified_at,
               </div>
 
               <div>
-                <p className="text-sm font-semibold uppercase tracking-[0.25em] text-blue-100">
+                <p className="text-xs font-semibold uppercase tracking-[0.25em] text-blue-100 md:text-sm">
                   Page publique
                 </p>
 
-                <h1 className="text-2xl font-extrabold leading-tight md:text-3xl">
+                <h1 className="text-xl font-extrabold leading-tight md:text-3xl">
                   {churchPublicName}
                 </h1>
               </div>
@@ -292,7 +312,7 @@ live_stream_notified_at,
 
             {church.login_enabled && (
               <Link
-                href={`/login?church=${church.slug}`}
+                href={`/login?church=${churchSlug}`}
                 className="inline-flex w-fit shrink-0 items-center gap-2 rounded-2xl bg-white/15 px-5 py-3 text-sm font-bold ring-1 ring-white/20 hover:bg-white/20"
               >
                 <LockKeyhole className="h-4 w-4" />
@@ -301,13 +321,13 @@ live_stream_notified_at,
             )}
           </header>
 
-          <div className="grid gap-5 pb-5 pt-3 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">
+          <div className="grid gap-5 pb-5 pt-5 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">
             <div>
               <p className="inline-flex rounded-full bg-white/15 px-4 py-2 text-sm font-bold ring-1 ring-white/20">
                 Bienvenue dans notre communauté
               </p>
 
-              <h2 className="mt-3 max-w-3xl text-3xl font-black leading-tight md:text-4xl">
+              <h2 className="mt-3 max-w-3xl text-3xl font-black leading-tight md:text-5xl">
                 {welcomeTitle}
               </h2>
 
@@ -318,14 +338,14 @@ live_stream_notified_at,
 
               <div className="mt-5 grid gap-3 sm:grid-cols-2">
                 <HeroButton
-                  href={`/church/${church.slug}/prayer`}
+                  href={`/church/${churchSlug}/prayer`}
                   icon={HeartHandshake}
                   label="Demander une prière"
                   variant="white"
                 />
 
                 <HeroButton
-                  href={`/church/${church.slug}/appointment`}
+                  href={`/church/${churchSlug}/appointment`}
                   icon={CalendarDays}
                   label="Demander un rendez-vous"
                   variant="glass"
@@ -339,25 +359,25 @@ live_stream_notified_at,
                 </a>
 
                 <HeroButton
-                  href={`/church/${church.slug}/join`}
+                  href={`/church/${churchSlug}/join`}
                   icon={UserPlus}
                   label="Rejoindre l’église"
                   variant="glass"
                 />
 
                 <HeroButton
-                  href={`/church/${church.slug}/testimony`}
+                  href={`/church/${churchSlug}/testimony`}
                   icon={Sparkles}
                   label="Partager un témoignage"
                   variant="glass"
                 />
 
                 <HeroButton
-  href={`/church/${church.slug}/install`}
-  icon={Sparkles}
-  label="Installer l’application"
-  variant="glass"
-/>
+                  href={`/church/${churchSlug}/install`}
+                  icon={Sparkles}
+                  label="Installer l’application"
+                  variant="glass"
+                />
               </div>
 
               <div className="mt-5 rounded-3xl bg-white/10 p-5 ring-1 ring-white/20">
@@ -367,8 +387,14 @@ live_stream_notified_at,
 
                 <div className="mt-4 grid gap-3 md:grid-cols-3">
                   <StepBox number="01" label="Votre demande est reçue" />
-                  <StepBox number="02" label="L’équipe pastorale vous contacte" />
-                  <StepBox number="03" label="Un suivi spirituel est organisé" />
+                  <StepBox
+                    number="02"
+                    label="L’équipe pastorale vous contacte"
+                  />
+                  <StepBox
+                    number="03"
+                    label="Un suivi spirituel est organisé"
+                  />
                 </div>
               </div>
             </div>
@@ -425,7 +451,10 @@ live_stream_notified_at,
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-6 py-8">
+      <PublicLiveStreamSection church={church as any} />
+      <PublicTeachingsSection churchId={church.id} />
+
+      <section className="mx-auto max-w-6xl px-4 py-8 md:px-6">
         <div className="grid gap-6 lg:grid-cols-[0.85fr_1.15fr]">
           <div className="rounded-3xl border border-[#DCEAF5] bg-white p-6 shadow-sm">
             <h3 className="text-xl font-extrabold text-[#03357A]">
@@ -437,7 +466,9 @@ live_stream_notified_at,
             </p>
 
             <div className="mt-6 rounded-3xl bg-[#EAF3FA] p-5">
-              <h4 className="font-extrabold text-[#03357A]">Contact rapide</h4>
+              <h4 className="font-extrabold text-[#03357A]">
+                Contact rapide
+              </h4>
 
               <div className="mt-4 flex flex-wrap gap-3">
                 {church.phone && (
@@ -520,14 +551,19 @@ live_stream_notified_at,
           </div>
         </div>
       </section>
-<PublicLiveStreamSection church={church as any} />
-      <PublicDonationSection
-        church={{
-          ...church,
-          name: churchPublicName,
-        }}
-      />
+
+      <div id="don">
+        <PublicDonationSection
+          church={{
+            ...church,
+            name: churchPublicName,
+          }}
+        />
+      </div>
+
       <PublicTestimoniesSection churchId={church.id} />
+
+      <PublicMobileActionBar churchId={church.id} slug={churchSlug} />
 
       <footer className="border-t border-[#DCEAF5] bg-white px-6 py-6 text-center text-sm text-slate-500">
         Propulsé par{" "}

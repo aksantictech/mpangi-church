@@ -4,7 +4,15 @@ import Image from "next/image";
 import Link from "next/link";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Church, Eye, EyeOff, Lock, Mail } from "lucide-react";
+import {
+  ArrowLeft,
+  Church,
+  Eye,
+  EyeOff,
+  Home,
+  Lock,
+  Mail,
+} from "lucide-react";
 import AppLogo from "@/components/brand/AppLogo";
 import { getDashboardPathByRole } from "@/lib/auth/redirect-by-role";
 import { createClient } from "@/lib/supabase/client";
@@ -25,21 +33,15 @@ function getPublicChurchName(church: {
 }) {
   const pwaName = church.pwa_name?.trim();
 
-  if (pwaName) {
-    return pwaName;
-  }
+  if (pwaName) return pwaName;
 
   const publicName = church.public_name?.trim();
 
-  if (publicName) {
-    return publicName;
-  }
+  if (publicName) return publicName;
 
   const name = church.name?.trim();
 
-  if (!name) {
-    return "Église";
-  }
+  if (!name) return "Église";
 
   return name.replace(/\s*[,|-]?\s*extension.*$/i, "").trim();
 }
@@ -50,6 +52,7 @@ export default function LoginPage() {
 
   const [churchSlug, setChurchSlug] = useState("");
   const [churchInfo, setChurchInfo] = useState<ChurchContext | null>(null);
+
   const [showPassword, setShowPassword] = useState(false);
 
   const [email, setEmail] = useState("");
@@ -63,6 +66,10 @@ export default function LoginPage() {
   const loginTitle = churchPublicName
     ? `Connexion à votre espace admin ${churchPublicName.toUpperCase()}`
     : "Connexion à votre espace admin";
+
+  const forgotPasswordHref = churchInfo?.slug
+    ? `/forgot-password?church=${churchInfo.slug}`
+    : "/forgot-password";
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -120,12 +127,16 @@ export default function LoginPage() {
       .maybeSingle();
 
     if (profileError || !profile) {
+      await supabase.auth.signOut();
+
       setErrorMessage("Profil utilisateur introuvable.");
       setIsLoading(false);
       return;
     }
 
     if (profile.status && profile.status !== "active") {
+      await supabase.auth.signOut();
+
       setErrorMessage("Ce compte est désactivé. Contactez l’administrateur.");
       setIsLoading(false);
       return;
@@ -151,6 +162,27 @@ export default function LoginPage() {
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-[#F5F9FC]">
+      <div className="fixed left-4 top-4 z-30 flex flex-wrap gap-2">
+        {churchInfo?.slug ? (
+          <Link
+            href={`/church/${churchInfo.slug}`}
+            className="inline-flex items-center gap-2 rounded-2xl border border-[#DCEAF5] bg-white/90 px-4 py-3 text-sm font-extrabold text-[#03357A] shadow-sm backdrop-blur hover:bg-[#EAF3FA]"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            <Church className="h-4 w-4" />
+            Page publique de l’église
+          </Link>
+        ) : (
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 rounded-2xl border border-[#DCEAF5] bg-white/90 px-4 py-3 text-sm font-extrabold text-[#03357A] shadow-sm backdrop-blur hover:bg-[#EAF3FA]"
+          >
+            <Home className="h-4 w-4" />
+            Accueil global
+          </Link>
+        )}
+      </div>
+
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(109,159,199,0.18),_transparent_26%),radial-gradient(circle_at_bottom_right,_rgba(139,92,246,0.12),_transparent_28%)]" />
 
       <div className="pointer-events-none absolute left-0 top-0 opacity-15">
@@ -180,29 +212,6 @@ export default function LoginPage() {
 
             <div className="absolute -left-10 top-10 h-64 w-64 rounded-full bg-[#6D9FC7]/15 blur-3xl" />
             <div className="absolute bottom-0 right-0 h-72 w-72 rounded-full bg-[#8B5CF6]/10 blur-3xl" />
-
-            <div className="pointer-events-none absolute left-6 top-6 opacity-20">
-              <div className="grid grid-cols-4 gap-3">
-                {Array.from({ length: 8 }).map((_, index) => (
-                  <div
-                    key={index}
-                    className="h-10 w-10 rotate-45 rounded-md bg-[#9DBBE0]"
-                    style={{ opacity: Math.max(0.35, 1 - index * 0.08) }}
-                  />
-                ))}
-              </div>
-            </div>
-
-            <div className="pointer-events-none absolute left-44 top-10 opacity-20">
-              <div className="grid grid-cols-4 gap-3">
-                {Array.from({ length: 12 }).map((_, index) => (
-                  <div
-                    key={index}
-                    className="h-2 w-2 rounded-full bg-[#B7CDE8]"
-                  />
-                ))}
-              </div>
-            </div>
 
             <div className="absolute left-8 right-8 top-8 z-20">
               <div className="max-w-md rounded-3xl bg-white/85 p-6 shadow-lg backdrop-blur-md">
@@ -238,19 +247,8 @@ export default function LoginPage() {
           </div>
         </section>
 
-        <section className="flex items-center justify-center p-4 md:p-8">
+        <section className="flex items-center justify-center p-4 pt-24 md:p-8">
           <div className="w-full max-w-2xl rounded-[2.2rem] border border-[#DCEAF5] bg-white/95 p-6 shadow-2xl shadow-blue-950/10 backdrop-blur md:p-10">
-            {churchInfo?.slug && (
-              <Link
-                href={`/church/${churchInfo.slug}`}
-                className="mb-6 inline-flex items-center gap-2 rounded-2xl border border-[#DCEAF5] bg-white px-4 py-3 text-sm font-extrabold text-[#03357A] shadow-sm hover:bg-[#EAF3FA]"
-              >
-                <ArrowLeft className="h-4 w-4" />
-                <Church className="h-4 w-4" />
-                Retour à la page de l’église
-              </Link>
-            )}
-
             <div className="mb-8 flex justify-center">
               {churchInfo?.logo_url ? (
                 <div className="flex h-28 w-28 items-center justify-center overflow-hidden rounded-3xl bg-white p-3 shadow-sm ring-1 ring-[#DCEAF5]">
@@ -270,7 +268,7 @@ export default function LoginPage() {
               <div className="mx-auto mb-4 h-1 w-16 rounded-full bg-[#8B5CF6]" />
 
               <h2 className="text-3xl font-extrabold text-[#03357A] md:text-5xl">
-                {loginTitle.includes("admin") && churchPublicName ? (
+                {churchPublicName ? (
                   <>
                     Connexion à votre espace admin{" "}
                     <span className="text-[#8B5CF6]">
@@ -326,39 +324,43 @@ export default function LoginPage() {
                     <Lock className="h-5 w-5 text-[#3F79B3]" />
                   </div>
 
-<input
-  type={showPassword ? "text" : "password"}
-  className="w-full bg-transparent px-3 py-4 text-[#0F172A] outline-none placeholder:text-slate-400"
-  placeholder="Mot de passe"
-  value={password}
-  onChange={(event) => setPassword(event.target.value)}
-  required
-/>
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    className="w-full bg-transparent px-3 py-4 text-[#0F172A] outline-none placeholder:text-slate-400"
+                    placeholder="Mot de passe"
+                    value={password}
+                    onChange={(event) => setPassword(event.target.value)}
+                    required
+                  />
 
-<button
-  type="button"
-  onClick={() => setShowPassword((current) => !current)}
-  className="rounded-xl p-2 text-slate-400 transition hover:bg-[#EAF3FA] hover:text-[#03357A]"
-  aria-label={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
->
-  {showPassword ? (
-    <EyeOff className="h-5 w-5" />
-  ) : (
-    <Eye className="h-5 w-5" />
-  )}
-</button>
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((current) => !current)}
+                    className="rounded-xl p-2 text-slate-400 transition hover:bg-[#EAF3FA] hover:text-[#03357A]"
+                    aria-label={
+                      showPassword
+                        ? "Masquer le mot de passe"
+                        : "Afficher le mot de passe"
+                    }
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-5 w-5" />
+                    ) : (
+                      <Eye className="h-5 w-5" />
+                    )}
+                  </button>
                 </div>
               </div>
 
               <div className="flex items-center justify-end gap-3 text-sm">
-  <label className="flex items-center gap-2 text-slate-500">
-    <input
-      type="checkbox"
-      className="h-4 w-4 rounded border-slate-300"
-    />
-    Se souvenir de moi
-  </label>
-</div>
+                <label className="flex items-center gap-2 text-slate-500">
+                  <input
+                    type="checkbox"
+                    className="h-4 w-4 rounded border-slate-300"
+                  />
+                  Se souvenir de moi
+                </label>
+              </div>
 
               <button
                 type="submit"
@@ -368,18 +370,19 @@ export default function LoginPage() {
                 <Lock className="h-5 w-5" />
                 {isLoading ? "Connexion..." : "Se connecter"}
               </button>
-              <div className="mt-5 rounded-2xl border border-[#DCEAF5] bg-[#F8FBFD] p-4 text-center">
-  <p className="text-sm text-slate-500">
-    Vous avez oublié votre mot de passe ?
-  </p>
 
-  <Link
-    href="/forgot-password"
-    className="mt-2 inline-flex items-center justify-center rounded-2xl bg-white px-5 py-3 text-sm font-extrabold text-[#8B5CF6] shadow-sm ring-1 ring-[#DCEAF5] hover:bg-[#F1E8FF]"
-  >
-    Réinitialiser mon mot de passe
-  </Link>
-</div>
+              <div className="mt-5 rounded-2xl border border-[#DCEAF5] bg-[#F8FBFD] p-4 text-center">
+                <p className="text-sm text-slate-500">
+                  Vous avez oublié votre mot de passe ?
+                </p>
+
+                <Link
+                  href={forgotPasswordHref}
+                  className="mt-2 inline-flex items-center justify-center rounded-2xl bg-white px-5 py-3 text-sm font-extrabold text-[#8B5CF6] shadow-sm ring-1 ring-[#DCEAF5] hover:bg-[#F1E8FF]"
+                >
+                  Réinitialiser mon mot de passe
+                </Link>
+              </div>
             </form>
 
             <div className="mt-8 flex items-center justify-center gap-3 text-sm">

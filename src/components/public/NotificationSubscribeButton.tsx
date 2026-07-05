@@ -31,7 +31,8 @@ export default function NotificationSubscribeButton({
   className,
 }: NotificationSubscribeButtonProps) {
   const [isSupported, setIsSupported] = useState(false);
-  const [permission, setPermission] = useState<NotificationPermission>("default");
+  const [permission, setPermission] =
+    useState<NotificationPermission>("default");
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState("");
 
@@ -53,30 +54,32 @@ export default function NotificationSubscribeButton({
     setMessage("");
 
     if (!isSupported) {
-      setMessage("Notifications non supportées sur ce navigateur.");
+      setMessage("Ce navigateur ne supporte pas les notifications push.");
       return;
     }
 
     const publicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
 
     if (!publicKey) {
-      setMessage("Notifications non configurées.");
+      setMessage("Clé publique VAPID manquante.");
       return;
     }
 
     setIsLoading(true);
 
     try {
-      const registration = await navigator.serviceWorker.register("/sw.js", {
-        scope: "/",
-      });
+      const registration =
+        (await navigator.serviceWorker.getRegistration("/")) ||
+        (await navigator.serviceWorker.register("/sw.js", { scope: "/" }));
+
+      await navigator.serviceWorker.ready;
 
       const nextPermission = await Notification.requestPermission();
       setPermission(nextPermission);
 
       if (nextPermission !== "granted") {
-        setMessage("Autorisation refusée.");
         setIsLoading(false);
+        setMessage("Autorisation refusée.");
         return;
       }
 
@@ -96,7 +99,7 @@ export default function NotificationSubscribeButton({
         },
         body: JSON.stringify({
           churchId,
-          subscription,
+          subscription: subscription.toJSON(),
         }),
       });
 
@@ -110,9 +113,14 @@ export default function NotificationSubscribeButton({
       }
 
       setMessage("Notifications activées.");
-    } catch {
+    } catch (error) {
       setIsLoading(false);
-      setMessage("Impossible d’activer les notifications.");
+
+      setMessage(
+        error instanceof Error
+          ? error.message
+          : "Impossible d’activer les notifications."
+      );
     }
   }
 
@@ -124,7 +132,7 @@ export default function NotificationSubscribeButton({
         disabled={isLoading || permission === "granted"}
         className={
           className ||
-          "inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-5 py-3 text-sm font-extrabold text-[#03357A] shadow-sm hover:bg-[#EAF3FA] disabled:opacity-70"
+          "inline-flex items-center justify-center gap-2 rounded-2xl bg-[#03357A] px-5 py-3 text-sm font-extrabold text-white shadow-sm hover:bg-[#022B63] disabled:opacity-70"
         }
       >
         {isLoading ? (
@@ -139,7 +147,7 @@ export default function NotificationSubscribeButton({
       </button>
 
       {message && (
-        <p className="mt-2 text-xs font-semibold text-white/80 md:text-slate-500">
+        <p className="mt-2 max-w-md text-xs font-semibold text-slate-500">
           {message}
         </p>
       )}

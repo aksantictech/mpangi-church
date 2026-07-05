@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     template: "%s | Mpangi-church",
   },
   description:
-    "Application de gestion des églises : membres, présences, départements, événements et suivi pastoral.",
+    "Application de gestion des églises : membres, présences, départements, événements, suivi pastoral et communication.",
   manifest: "/manifest.webmanifest",
   icons: {
     icon: "/images/mpangi-logo.png",
@@ -46,7 +46,7 @@ export default function RootLayout({
       lang="fr"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col">
+      <body className="min-h-full">
         <PwaRegister />
         {children}
       </body>

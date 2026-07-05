@@ -16,6 +16,7 @@ self.addEventListener("push", (event) => {
   }
 
   const title = data.title || "Mpangi-church";
+
   const options = {
     body: data.body || "Nouvelle notification de votre église.",
     icon: data.icon || "/images/mpangi-logo.png",
@@ -45,8 +46,9 @@ self.addEventListener("notificationclick", (event) => {
       })
       .then((clientList) => {
         for (const client of clientList) {
-          if (client.url === targetUrl && "focus" in client) {
-            return client.focus();
+          if ("focus" in client) {
+            client.focus();
+            return client.navigate(targetUrl);
           }
         }
 

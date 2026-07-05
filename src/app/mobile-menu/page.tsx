@@ -8,6 +8,7 @@ import {
   Download,
   HeartHandshake,
   LayoutDashboard,
+  BookOpenText,
   QrCode,
   MessageSquareHeart,
   Globe,
@@ -48,6 +49,12 @@ const menuItems = [
     href: "/events",
     icon: CalendarDays,
   },
+  {
+  title: "Publications",
+  description: "Enseignements, vidéos, messages et annonces",
+  href: "/publications",
+  icon: BookOpenText,
+},
   {
     title: "Suivi des âmes",
     description: "Accompagnement pastoral",
