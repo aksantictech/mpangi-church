@@ -4,6 +4,7 @@ import {
   ChevronRight,
   Globe,
   GraduationCap,
+  ClipboardCheck,
   QrCode,
   Radio,
   Settings,
@@ -19,6 +20,13 @@ const settingsItems = [
     href: "/settings/public-page",
     icon: Globe,
   },
+  {
+  title: "Vérification système",
+  description:
+    "Contrôler rapidement la configuration de la page publique, sous-domaine, QR membres, notifications, PWA et publications.",
+  href: "/settings/system-check",
+  icon: ClipboardCheck,
+},
   {
     title: "Culte en direct",
     description:
