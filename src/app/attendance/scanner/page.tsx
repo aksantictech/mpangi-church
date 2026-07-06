@@ -1,43 +1,43 @@
 import Link from "next/link";
-import { notFound, redirect } from "next/navigation";
-import { ArrowLeft, CalendarDays, Eye, QrCode, Users } from "lucide-react";
+import { redirect } from "next/navigation";
+import {
+  CalendarCheck,
+  ChevronRight,
+  QrCode,
+  ScanLine,
+} from "lucide-react";
 import AppShell from "@/components/layout/AppShell";
-import MetricCard from "@/components/dashboard/MetricCard";
-import AttendanceQrScanner from "@/components/attendance/AttendanceQrScanner";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
-type AttendanceScannerPageProps = {
-  searchParams?: Promise<{
-    event?: string | string[];
-  }>;
-};
-
-function formatDate(value?: string | null) {
-  if (!value) return "-";
-
-  return new Intl.DateTimeFormat("fr-FR", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-  }).format(new Date(value));
+function getEventTitle(event: any) {
+  return event.title || event.name || event.event_name || "Événement";
 }
 
-function formatTime(value?: string | null) {
-  if (!value) return "-";
-  return value.slice(0, 5);
-}
+function getEventDate(event: any) {
+  const value =
+    event.start_at ||
+    event.starts_at ||
+    event.start_date ||
+    event.event_date ||
+    event.created_at;
 
-export default async function AttendanceScannerPage({
-  searchParams,
-}: AttendanceScannerPageProps) {
-  const resolvedSearchParams = searchParams ? await searchParams : {};
-  const rawEventId = resolvedSearchParams.event;
-  const eventId = Array.isArray(rawEventId) ? rawEventId[0] : rawEventId;
+  if (!value) return "Date non renseignée";
 
-  if (!eventId) {
-    redirect("/attendance");
+  try {
+    return new Intl.DateTimeFormat("fr-FR", {
+      day: "2-digit",
+      month: "long",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    }).format(new Date(value));
+  } catch {
+    return String(value);
   }
+}
 
+export default async function AttendanceScannerEventsPage() {
   const supabase = await createClient();
 
   const {
@@ -54,7 +54,7 @@ export default async function AttendanceScannerPage({
     .eq("user_id", user.id)
     .maybeSingle();
 
-  if (!profile) {
+  if (!profile || !profile.church_id) {
     redirect("/login");
   }
 
@@ -62,129 +62,95 @@ export default async function AttendanceScannerPage({
     redirect("/login");
   }
 
-  if (profile.role === "super_admin") {
-    redirect("/super-admin/dashboard");
-  }
+  const admin = createAdminClient();
 
-  if (!profile.church_id) {
-    redirect("/login");
-  }
-
-  const churchId = profile.church_id;
-
-  const { data: eventRaw } = await supabase
+  const { data: events } = await admin
     .from("events")
-    .select("id, church_id, title, event_date, start_time, location, status")
-    .eq("id", eventId)
-    .maybeSingle();
-
-  if (!eventRaw) {
-    notFound();
-  }
-
-  const event = eventRaw as any;
-
-  if (event.church_id !== churchId) {
-    notFound();
-  }
-
-  const attendanceDate =
-    event.event_date || new Date().toISOString().slice(0, 10);
-
-  const [{ count: membersCount }, { count: presentCount }] = await Promise.all([
-    supabase
-      .from("members")
-      .select("*", { count: "exact", head: true })
-      .eq("church_id", churchId)
-      .eq("status", "actif"),
-
-    supabase
-      .from("attendances")
-      .select("*", { count: "exact", head: true })
-      .eq("church_id", churchId)
-      .eq("event_id", event.id),
-  ]);
+    .select("*")
+    .eq("church_id", profile.church_id)
+    .order("created_at", { ascending: false })
+    .limit(20);
 
   return (
     <AppShell>
       <div className="space-y-6">
-        <Link
-          href={`/attendance?event=${event.id}`}
-          className="inline-flex items-center gap-2 text-sm font-bold text-[#2563EB]"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Retour au pointage manuel
-        </Link>
-
         <section className="rounded-3xl bg-gradient-to-br from-[#03357A] via-[#2563EB] to-[#8B5CF6] p-6 text-white shadow-lg shadow-blue-900/20">
-          <div className="flex flex-col justify-between gap-5 md:flex-row md:items-center">
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.25em] text-blue-100">
-                Scanner des présences
-              </p>
-
-              <h1 className="mt-3 text-3xl font-extrabold">
-                {event.title || "Événement"}
-              </h1>
-
-              <p className="mt-2 max-w-2xl text-sm leading-7 text-blue-50">
-                Scannez les QR Codes des membres pour enregistrer les présences
-                du {formatDate(event.event_date)} à{" "}
-                {formatTime(event.start_time)}.
-              </p>
+          <div className="flex items-center gap-4">
+            <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-white/15">
+              <ScanLine className="h-8 w-8" />
             </div>
 
-            <div className="flex flex-wrap gap-2">
-              <Link
-                href={`/events/${event.id}`}
-                className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-5 py-3 text-sm font-bold text-[#03357A] shadow-sm hover:bg-[#EAF3FA]"
-              >
-                <Eye className="h-4 w-4" />
-                Voir événement
-              </Link>
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.25em] text-blue-100">
+                Présences QR
+              </p>
 
-              <Link
-                href={`/attendance?event=${event.id}`}
-                className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white/15 px-5 py-3 text-sm font-bold text-white ring-1 ring-white/25 hover:bg-white/20"
-              >
-                Pointage manuel
-              </Link>
+              <h1 className="mt-2 text-3xl font-extrabold">
+                Choisir un événement à pointer
+              </h1>
+
+              <p className="mt-2 text-sm leading-7 text-blue-50">
+                Sélectionnez le culte, la formation ou l’événement pour ouvrir
+                le scanner de présence.
+              </p>
             </div>
           </div>
         </section>
 
-        <section className="grid gap-4 md:grid-cols-3">
-          <MetricCard
-            title="Membres actifs"
-            value={membersCount ?? 0}
-            description="Éligibles au pointage"
-            icon={Users}
-            accent="blue"
-          />
+        <section className="rounded-3xl border border-[#DCEAF5] bg-white p-5 shadow-sm">
+          <h2 className="text-xl font-extrabold text-[#03357A]">
+            Événements disponibles
+          </h2>
 
-          <MetricCard
-            title="Présents"
-            value={presentCount ?? 0}
-            description="Déjà pointés"
-            icon={QrCode}
-            accent="green"
-          />
+          <div className="mt-5 space-y-3">
+            {(events ?? []).length === 0 ? (
+              <div className="rounded-3xl bg-[#F8FBFD] p-8 text-center">
+                <CalendarCheck className="mx-auto h-12 w-12 text-[#3F79B3]" />
 
-          <MetricCard
-            title="Date"
-            value={formatDate(attendanceDate)}
-            description="Date de l’événement"
-            icon={CalendarDays}
-            accent="purple"
-          />
+                <p className="mt-4 font-extrabold text-[#03357A]">
+                  Aucun événement disponible.
+                </p>
+
+                <p className="mt-2 text-sm text-slate-500">
+                  Créez d’abord un événement avant d’ouvrir le scanner.
+                </p>
+
+                <Link
+                  href="/events"
+                  className="mt-5 inline-flex rounded-2xl bg-[#03357A] px-5 py-3 text-sm font-extrabold text-white"
+                >
+                  Aller aux événements
+                </Link>
+              </div>
+            ) : (
+              (events ?? []).map((event: any) => (
+                <Link
+                  key={event.id}
+                  href={`/attendance/scanner/${event.id}`}
+                  className="flex items-center justify-between gap-4 rounded-3xl border border-[#DCEAF5] bg-[#F8FBFD] p-5 transition hover:bg-[#EAF3FA]"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-[#03357A]">
+                      <QrCode className="h-6 w-6" />
+                    </div>
+
+                    <div>
+                      <h3 className="font-extrabold text-[#03357A]">
+                        {getEventTitle(event)}
+                      </h3>
+
+                      <p className="mt-1 text-sm text-slate-500">
+                        {getEventDate(event)}
+                      </p>
+                    </div>
+                  </div>
+
+                  <ChevronRight className="h-5 w-5 text-slate-400" />
+                </Link>
+              ))
+            )}
+          </div>
         </section>
-
-        <AttendanceQrScanner
-          churchId={churchId}
-          eventId={event.id}
-          profileId={profile.id}
-          attendanceDate={attendanceDate}
-        />
       </div>
     </AppShell>
   );
