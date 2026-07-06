@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import MemberRowActions from "@/components/members/MemberRowActions";
 import {
   CalendarDays,
   Eye,
@@ -114,6 +115,7 @@ export default async function MembersPage() {
       `
       )
       .eq("church_id", churchId)
+        .is("archived_at", null)
       .order("created_at", { ascending: false }),
   ]);
 
@@ -294,13 +296,12 @@ export default async function MembersPage() {
                       </td>
 
                       <td className="px-4 py-4">
-                        <Link
-                          href={`/members/${member.id}`}
-                          className="inline-flex items-center gap-2 rounded-2xl bg-[#EAF3FA] px-4 py-2 text-sm font-bold text-[#03357A] hover:bg-[#DCEAF5]"
-                        >
-                          <Eye className="h-4 w-4" />
-                          Voir
-                        </Link>
+                        <MemberRowActions
+  memberId={member.id}
+  memberName={[member.first_name, member.last_name].filter(Boolean).join(" ")}
+  status={member.status}
+  archivedAt={member.archived_at}
+/>
                       </td>
                     </tr>
                   );
