@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Download, Home, Printer, QrCode } from "lucide-react";
-import { QRCodeSVG } from "qrcode.react";
+import { QRCodeCanvas } from "qrcode.react";
 
 type PublicMemberQrSuccessProps = {
   churchSlug: string;
@@ -10,6 +10,15 @@ type PublicMemberQrSuccessProps = {
   memberName: string;
   qrValue: string;
 };
+
+function getSafeFileName(value: string) {
+  return value
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+}
 
 export default function PublicMemberQrSuccess({
   churchSlug,
@@ -21,31 +30,37 @@ export default function PublicMemberQrSuccess({
     window.print();
   }
 
-  function handleDownloadSvg() {
-    const svg = document.getElementById("member-personal-qr-code");
+  function downloadQr(format: "png" | "jpg") {
+    const canvas = document.getElementById(
+      "member-personal-qr-code"
+    ) as HTMLCanvasElement | null;
 
-    if (!svg) return;
+    if (!canvas) return;
 
-    const serializer = new XMLSerializer();
-    const source = serializer.serializeToString(svg);
+    const exportCanvas = document.createElement("canvas");
+    exportCanvas.width = canvas.width;
+    exportCanvas.height = canvas.height;
 
-    const blob = new Blob([source], {
-      type: "image/svg+xml;charset=utf-8",
-    });
+    const context = exportCanvas.getContext("2d");
 
-    const url = URL.createObjectURL(blob);
+    if (!context) return;
+
+    context.fillStyle = "#FFFFFF";
+    context.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
+    context.drawImage(canvas, 0, 0);
+
+    const mimeType = format === "png" ? "image/png" : "image/jpeg";
+    const fileExtension = format === "png" ? "png" : "jpg";
+
+    const imageUrl = exportCanvas.toDataURL(mimeType, 1);
 
     const link = document.createElement("a");
-    link.href = url;
-    link.download = `qr-code-${memberName
-      .toLowerCase()
-      .replace(/\s+/g, "-")}.svg`;
+    link.href = imageUrl;
+    link.download = `qr-code-${getSafeFileName(memberName)}.${fileExtension}`;
 
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-
-    URL.revokeObjectURL(url);
   }
 
   return (
@@ -74,12 +89,15 @@ export default function PublicMemberQrSuccess({
         </h2>
 
         <div className="mx-auto mt-5 flex w-fit rounded-3xl bg-white p-5 shadow-sm ring-1 ring-[#DCEAF5]">
-          <QRCodeSVG
+          <QRCodeCanvas
             id="member-personal-qr-code"
             value={qrValue}
-            size={240}
+            size={900}
             level="H"
             includeMargin
+            bgColor="#FFFFFF"
+            fgColor="#03357A"
+            className="h-[260px] w-[260px]"
           />
         </div>
 
@@ -91,11 +109,20 @@ export default function PublicMemberQrSuccess({
       <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:justify-center">
         <button
           type="button"
-          onClick={handleDownloadSvg}
+          onClick={() => downloadQr("png")}
           className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#03357A] px-5 py-3 text-sm font-extrabold text-white shadow-lg shadow-blue-900/20 hover:bg-[#022B63]"
         >
           <Download className="h-4 w-4" />
-          Télécharger mon QR Code
+          Télécharger en PNG
+        </button>
+
+        <button
+          type="button"
+          onClick={() => downloadQr("jpg")}
+          className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-5 py-3 text-sm font-extrabold text-[#03357A] shadow-sm ring-1 ring-[#DCEAF5] hover:bg-[#F8FBFD]"
+        >
+          <Download className="h-4 w-4" />
+          Télécharger en JPG
         </button>
 
         <button
