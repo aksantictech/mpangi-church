@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useMemo, useState } from "react";
+import PublicMemberQrSuccess from "@/components/public/PublicMemberQrSuccess";
 import {
   Camera,
   CheckCircle2,
@@ -23,13 +24,19 @@ type TrainingProgramOption = {
 
 type PublicMemberRegistrationFormProps = {
   churchSlug: string;
+  churchName?: string;
   token: string;
   departments: DepartmentOption[];
   trainingPrograms: TrainingProgramOption[];
 };
 
+type RegistrationSuccess = {
+  memberName: string;
+  qrValue: string;
+};
+
 const inputClass =
-  "h-13 w-full rounded-2xl border border-[#DCEAF5] bg-white px-4 py-4 text-[#0F172A] outline-none transition placeholder:text-slate-400 focus:border-[#03357A] focus:ring-4 focus:ring-[#03357A]/10";
+  "min-h-12 w-full rounded-2xl border border-[#DCEAF5] bg-white px-4 py-4 text-[#0F172A] outline-none transition placeholder:text-slate-400 focus:border-[#03357A] focus:ring-4 focus:ring-[#03357A]/10";
 
 const textareaClass =
   "min-h-32 w-full rounded-2xl border border-[#DCEAF5] bg-white p-4 text-[#0F172A] outline-none transition placeholder:text-slate-400 focus:border-[#03357A] focus:ring-4 focus:ring-[#03357A]/10";
@@ -52,6 +59,7 @@ function fileToBase64(file: File) {
 
 export default function PublicMemberRegistrationForm({
   churchSlug,
+  churchName = "Église",
   token,
   departments,
   trainingPrograms,
@@ -59,6 +67,9 @@ export default function PublicMemberRegistrationForm({
   const [isLoading, setIsLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+
+  const [registrationSuccess, setRegistrationSuccess] =
+    useState<RegistrationSuccess | null>(null);
 
   const [photoPreview, setPhotoPreview] = useState("");
   const [photoFile, setPhotoFile] = useState<File | null>(null);
@@ -96,88 +107,124 @@ export default function PublicMemberRegistrationForm({
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-  event.preventDefault();
+    event.preventDefault();
 
-  const formElement = event.currentTarget;
-  const form = new FormData(formElement);
+    const formElement = event.currentTarget;
+    const form = new FormData(formElement);
 
-  setIsLoading(true);
-  setSuccessMessage("");
-  setErrorMessage("");
+    setIsLoading(true);
+    setSuccessMessage("");
+    setErrorMessage("");
 
-  const departmentIds = form.getAll("departmentIds").map(String);
-  const trainingProgramIds = form.getAll("trainingProgramIds").map(String);
+    const departmentIds = form.getAll("departmentIds").map(String);
+    const trainingProgramIds = form.getAll("trainingProgramIds").map(String);
 
-  let photoBase64 = "";
-  let photoName = "";
-  let photoType = "";
+    let photoBase64 = "";
+    let photoName = "";
+    let photoType = "";
 
-  try {
-    if (photoFile) {
-      photoBase64 = await fileToBase64(photoFile);
-      photoName = photoFile.name;
-      photoType = photoFile.type;
+    try {
+      if (photoFile) {
+        photoBase64 = await fileToBase64(photoFile);
+        photoName = photoFile.name;
+        photoType = photoFile.type;
+      }
+
+      const response = await fetch("/api/public/member-registration", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          churchSlug,
+          token,
+
+          firstName: form.get("firstName"),
+          middleName: form.get("middleName"),
+          lastName: form.get("lastName"),
+          gender: form.get("gender"),
+          birthDate: form.get("birthDate"),
+          maritalStatus: form.get("maritalStatus"),
+
+          phone: form.get("phone"),
+          email: form.get("email"),
+          address: form.get("address"),
+
+          integrationYear: form.get("integrationYear"),
+          baptismDate: form.get("baptismDate"),
+          occupation: form.get("occupation"),
+          emergencyContact: form.get("emergencyContact"),
+
+          departmentIds,
+          trainingProgramIds,
+
+          notes: form.get("notes"),
+
+          photoBase64,
+          photoName,
+          photoType,
+        }),
+      });
+
+      const payload = await response.json();
+
+      setIsLoading(false);
+
+      if (!response.ok) {
+        setErrorMessage(payload.error || "Erreur pendant l’envoi.");
+        return;
+      }
+
+      const memberFirstName = payload.member?.firstName || "";
+      const memberLastName = payload.member?.lastName || "";
+
+      const memberName =
+        [memberFirstName, memberLastName].filter(Boolean).join(" ") ||
+        "Membre inscrit";
+
+      const qrValue =
+        payload.member?.qrValue ||
+        (payload.member?.qrToken
+          ? `${window.location.origin}/church/${churchSlug}/member-card/${payload.member.qrToken}`
+          : "");
+
+      if (!qrValue) {
+        setSuccessMessage("Votre fiche membre a été envoyée avec succès.");
+        setErrorMessage(
+          "Le QR Code n’a pas été généré dans la réponse. Contactez l’administration."
+        );
+        return;
+      }
+
+      setRegistrationSuccess({
+        memberName,
+        qrValue,
+      });
+
+      formElement.reset();
+      setPhotoFile(null);
+      setPhotoPreview("");
+    } catch (error) {
+      setIsLoading(false);
+
+      setErrorMessage(
+        error instanceof Error
+          ? error.message
+          : "Erreur inattendue pendant l’envoi."
+      );
     }
+  }
 
-    const response = await fetch("/api/public/member-registration", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        churchSlug,
-        token,
-
-        firstName: form.get("firstName"),
-        middleName: form.get("middleName"),
-        lastName: form.get("lastName"),
-        gender: form.get("gender"),
-        birthDate: form.get("birthDate"),
-        maritalStatus: form.get("maritalStatus"),
-
-        phone: form.get("phone"),
-        email: form.get("email"),
-        address: form.get("address"),
-
-        integrationYear: form.get("integrationYear"),
-        baptismDate: form.get("baptismDate"),
-        occupation: form.get("occupation"),
-        emergencyContact: form.get("emergencyContact"),
-
-        departmentIds,
-        trainingProgramIds,
-
-        notes: form.get("notes"),
-
-        photoBase64,
-        photoName,
-        photoType,
-      }),
-    });
-
-    const payload = await response.json();
-
-    setIsLoading(false);
-
-    if (!response.ok) {
-      setErrorMessage(payload.error || "Erreur pendant l’envoi.");
-      return;
-    }
-
-    formElement.reset();
-    setPhotoFile(null);
-    setPhotoPreview("");
-    setSuccessMessage("Votre fiche membre a été envoyée avec succès.");
-  } catch (error) {
-    setIsLoading(false);
-
-    setErrorMessage(
-      error instanceof Error
-        ? error.message
-        : "Erreur inattendue pendant l’envoi."
+  if (registrationSuccess) {
+    return (
+      <PublicMemberQrSuccess
+        churchSlug={churchSlug}
+        churchName={churchName}
+        memberName={registrationSuccess.memberName}
+        qrValue={registrationSuccess.qrValue}
+      />
     );
   }
-}
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
@@ -194,7 +241,10 @@ export default function PublicMemberRegistrationForm({
         </div>
       )}
 
-      <Section title="Identité du membre" icon={<UserCircle className="h-6 w-6" />}>
+      <Section
+        title="Identité du membre"
+        icon={<UserCircle className="h-6 w-6" />}
+      >
         <div className="grid gap-4 md:grid-cols-3">
           <Field label="Prénom *">
             <input name="firstName" required className={inputClass} />
@@ -293,10 +343,7 @@ export default function PublicMemberRegistrationForm({
         </div>
       </Section>
 
-      <Section
-        title="Vie dans l’église"
-        icon={<Users className="h-6 w-6" />}
-      >
+      <Section title="Vie dans l’église" icon={<Users className="h-6 w-6" />}>
         <div className="grid gap-4 md:grid-cols-2">
           <Field label="Année d’intégration">
             <input
@@ -372,7 +419,10 @@ export default function PublicMemberRegistrationForm({
         )}
       </Section>
 
-      <Section title="Informations complémentaires" icon={<Users className="h-6 w-6" />}>
+      <Section
+        title="Informations complémentaires"
+        icon={<Users className="h-6 w-6" />}
+      >
         <Field label="Notes / remarques">
           <textarea
             name="notes"

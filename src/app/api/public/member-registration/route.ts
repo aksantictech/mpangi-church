@@ -1,3 +1,4 @@
+import { randomUUID } from "crypto";
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 
@@ -138,77 +139,76 @@ export async function POST(request: Request) {
       );
     }
 
+    if (firstName && lastName && birthDate) {
+      const { data: existingByIdentity } = await admin
+        .from("members")
+        .select("id, first_name, last_name, phone, email, birth_date")
+        .eq("church_id", church.id)
+        .ilike("first_name", firstName)
+        .ilike("last_name", lastName)
+        .eq("birth_date", birthDate)
+        .maybeSingle();
+
+      if (existingByIdentity) {
+        return NextResponse.json(
+          {
+            error:
+              "Un membre avec le même prénom, nom et date de naissance existe déjà dans cette église.",
+          },
+          { status: 409 }
+        );
+      }
+    }
+
     const duplicateChecks: string[] = [];
 
-if (phone) {
-  duplicateChecks.push(`phone.eq.${phone}`);
-}
-
-if (email) {
-  duplicateChecks.push(`email.eq.${email}`);
-}
-
-if (firstName && lastName && birthDate) {
-  const { data: existingByIdentity } = await admin
-    .from("members")
-    .select("id, first_name, last_name, phone, email, birth_date")
-    .eq("church_id", church.id)
-    .ilike("first_name", firstName)
-    .ilike("last_name", lastName)
-    .eq("birth_date", birthDate)
-    .maybeSingle();
-
-  if (existingByIdentity) {
-    return NextResponse.json(
-      {
-        error:
-          "Un membre avec le même prénom, nom et date de naissance existe déjà dans cette église.",
-      },
-      { status: 409 }
-    );
-  }
-}
-
-if (duplicateChecks.length > 0) {
-  const { data: existingMembers } = await admin
-    .from("members")
-    .select("id, first_name, last_name, phone, email")
-    .eq("church_id", church.id)
-    .or(duplicateChecks.join(","))
-    .limit(1);
-
-  const existingMember = existingMembers?.[0];
-
-  if (existingMember) {
-    if (phone && existingMember.phone === phone) {
-      return NextResponse.json(
-        {
-          error:
-            "Un membre avec ce numéro de téléphone existe déjà dans cette église.",
-        },
-        { status: 409 }
-      );
+    if (phone) {
+      duplicateChecks.push(`phone.eq.${phone}`);
     }
 
-    if (email && existingMember.email === email) {
-      return NextResponse.json(
-        {
-          error:
-            "Un membre avec cette adresse email existe déjà dans cette église.",
-        },
-        { status: 409 }
-      );
+    if (email) {
+      duplicateChecks.push(`email.eq.${email}`);
     }
 
-    return NextResponse.json(
-      {
-        error:
-          "Ce membre semble déjà exister dans cette église.",
-      },
-      { status: 409 }
-    );
-  }
-}
+    if (duplicateChecks.length > 0) {
+      const { data: existingMembers } = await admin
+        .from("members")
+        .select("id, first_name, last_name, phone, email")
+        .eq("church_id", church.id)
+        .or(duplicateChecks.join(","))
+        .limit(1);
+
+      const existingMember = existingMembers?.[0];
+
+      if (existingMember) {
+        if (phone && existingMember.phone === phone) {
+          return NextResponse.json(
+            {
+              error:
+                "Un membre avec ce numéro de téléphone existe déjà dans cette église.",
+            },
+            { status: 409 }
+          );
+        }
+
+        if (email && existingMember.email === email) {
+          return NextResponse.json(
+            {
+              error:
+                "Un membre avec cette adresse email existe déjà dans cette église.",
+            },
+            { status: 409 }
+          );
+        }
+
+        return NextResponse.json(
+          {
+            error: "Ce membre semble déjà exister dans cette église.",
+          },
+          { status: 409 }
+        );
+      }
+    }
 
     let photoUrl: string | null = null;
 
@@ -217,7 +217,7 @@ if (duplicateChecks.length > 0) {
 
       if (payload) {
         const extension = getSafeFileExtension(photoType, photoName);
-        const filePath = `${church.id}/public-${Date.now()}-${crypto.randomUUID()}.${extension}`;
+        const filePath = `${church.id}/public-${Date.now()}-${randomUUID()}.${extension}`;
         const fileBuffer = Buffer.from(payload.base64, "base64");
 
         const { error: uploadError } = await admin.storage
@@ -248,6 +248,9 @@ if (duplicateChecks.length > 0) {
       .filter(Boolean)
       .join("\n");
 
+    const now = new Date().toISOString();
+    const qrToken = randomUUID();
+
     const { data: member, error: memberError } = await admin
       .from("members")
       .insert({
@@ -264,8 +267,11 @@ if (duplicateChecks.length > 0) {
         photo_url: photoUrl,
         status: "actif",
         notes: finalNotes,
+        qr_token: qrToken,
+        qr_enabled: true,
+        qr_generated_at: now,
       })
-      .select("id")
+      .select("id, first_name, last_name, qr_token")
       .single();
 
     if (memberError || !member) {
@@ -319,10 +325,18 @@ if (duplicateChecks.length > 0) {
       }
     }
 
+    const origin = new URL(request.url).origin;
+
     return NextResponse.json({
       success: true,
-      memberId: member.id,
-      message: "Votre fiche membre a été envoyée avec succès.",
+      message: "Formulaire envoyé avec succès.",
+      member: {
+        id: member.id,
+        firstName: member.first_name,
+        lastName: member.last_name,
+        qrToken: member.qr_token,
+        qrValue: `${origin}/church/${church.slug}/member-card/${member.qr_token}`,
+      },
     });
   } catch {
     return NextResponse.json(
