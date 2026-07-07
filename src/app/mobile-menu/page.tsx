@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import {
+  Bell,
   Building2,
   CalendarCheck,
   CalendarDays,
@@ -33,9 +34,21 @@ const menuItems = [
   },
   {
     title: "Présences",
-    description: "Pointage manuel et scanner QR",
+    description: "Pointage manuel, rapports et scanner QR",
     href: "/attendance",
     icon: CalendarCheck,
+  },
+  {
+    title: "Scanner QR",
+    description: "Scanner rapidement les présences par QR Code",
+    href: "/attendance/scanner",
+    icon: QrCode,
+  },
+  {
+    title: "Notifications",
+    description: "Envoyer des annonces push aux fidèles abonnés",
+    href: "/notifications",
+    icon: Bell,
   },
   {
     title: "Départements",
@@ -50,11 +63,11 @@ const menuItems = [
     icon: CalendarDays,
   },
   {
-  title: "Publications",
-  description: "Enseignements, vidéos, messages et annonces",
-  href: "/publications",
-  icon: BookOpenText,
-},
+    title: "Publications",
+    description: "Enseignements, vidéos, messages et annonces",
+    href: "/publications",
+    icon: BookOpenText,
+  },
   {
     title: "Suivi des âmes",
     description: "Accompagnement pastoral",
@@ -80,23 +93,23 @@ const menuItems = [
     icon: Download,
   },
   {
-  title: "Page publique",
-  description: "Nom public, dons, contacts et YouTube",
-  href: "/settings/public-page",
-  icon: Globe,
-},
+    title: "Page publique",
+    description: "Nom public, dons, contacts et YouTube",
+    href: "/settings/public-page",
+    icon: Globe,
+  },
+  {
+    title: "QR ajout membre",
+    description: "Lien public et QR Code d’ajout membre",
+    href: "/settings/member-registration",
+    icon: QrCode,
+  },
   {
     title: "Paramètres",
     description: "Compte, église et configuration",
     href: "/settings",
     icon: Settings,
   },
-  {
-  title: "QR ajout membre",
-  description: "Lien public et QR Code d’ajout membre",
-  href: "/settings/member-registration",
-  icon: QrCode,
-},
 ];
 
 export default async function MobileMenuPage() {

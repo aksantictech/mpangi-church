@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
+  Bell,
   CalendarCheck,
   CalendarDays,
   Church,
@@ -32,6 +33,12 @@ const menuItems = [
     href: "/attendance/scanner",
     icon: ScanLine,
     activePaths: ["/attendance/scanner"],
+  },
+  {
+    label: "Notifications",
+    href: "/notifications",
+    icon: Bell,
+    activePaths: ["/notifications"],
   },
   { label: "Suivi des âmes", href: "/souls", icon: HeartHandshake },
   { label: "Départements", href: "/departments", icon: Building2 },
@@ -71,7 +78,7 @@ export default function Sidebar() {
           <AppLogo imageSize={48} />
         </div>
 
-        <nav className="flex-1 space-y-1 px-4 py-5">
+        <nav className="flex-1 space-y-1 overflow-y-auto px-4 py-5">
           {menuItems.map((item) => {
             const Icon = item.icon;
             const isActive = isActivePath(pathname, item);
