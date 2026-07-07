@@ -10,6 +10,7 @@ import {
   BookOpenText,
   Home,
   MessageSquareText,
+  ScanLine,
   Settings,
   TestTube2,
   Users,
@@ -20,20 +21,45 @@ import AppLogo from "@/components/brand/AppLogo";
 const menuItems = [
   { label: "Dashboard", href: "/dashboard", icon: Home },
   { label: "Membres", href: "/members", icon: Users },
-  { label: "Présences", href: "/attendance", icon: CalendarCheck },
+  {
+    label: "Présences",
+    href: "/attendance",
+    icon: CalendarCheck,
+    activePaths: ["/attendance", "/attendance/reports"],
+  },
+  {
+    label: "Scanner QR",
+    href: "/attendance/scanner",
+    icon: ScanLine,
+    activePaths: ["/attendance/scanner"],
+  },
   { label: "Suivi des âmes", href: "/souls", icon: HeartHandshake },
   { label: "Départements", href: "/departments", icon: Building2 },
   { label: "Événements", href: "/events", icon: CalendarDays },
   {
-  label: "Publications",
-  href: "/publications",
-  icon: BookOpenText,
-},
-  { label: "Demandes publiques", href: "/public-requests", icon: MessageSquareText },
+    label: "Publications",
+    href: "/publications",
+    icon: BookOpenText,
+  },
+  {
+    label: "Demandes publiques",
+    href: "/public-requests",
+    icon: MessageSquareText,
+  },
   { label: "Rendez-vous", href: "/appointments", icon: Church },
   { label: "Témoignages", href: "/testimonies", icon: TestTube2 },
   { label: "Paramètres", href: "/settings", icon: Settings },
 ];
+
+function isActivePath(pathname: string, item: (typeof menuItems)[number]) {
+  if ("activePaths" in item && item.activePaths) {
+    return item.activePaths.some(
+      (path) => pathname === path || pathname.startsWith(`${path}/`)
+    );
+  }
+
+  return pathname === item.href || pathname.startsWith(`${item.href}/`);
+}
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -48,8 +74,7 @@ export default function Sidebar() {
         <nav className="flex-1 space-y-1 px-4 py-5">
           {menuItems.map((item) => {
             const Icon = item.icon;
-            const isActive =
-              pathname === item.href || pathname.startsWith(`${item.href}/`);
+            const isActive = isActivePath(pathname, item);
 
             return (
               <Link

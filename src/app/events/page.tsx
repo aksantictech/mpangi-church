@@ -1,11 +1,13 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import {
+  BarChart3,
   CalendarCheck,
   CalendarDays,
   Eye,
   MapPin,
   Plus,
+  QrCode,
   Search,
   Users,
 } from "lucide-react";
@@ -134,13 +136,23 @@ export default async function EventsPage() {
               </p>
             </div>
 
-            <Link
-              href="/events/new"
-              className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-5 py-3 text-sm font-bold text-[#03357A] shadow-sm hover:bg-[#EAF3FA]"
-            >
-              <Plus className="h-5 w-5" />
-              Nouvel événement
-            </Link>
+            <div className="flex flex-wrap gap-2">
+              <Link
+                href="/attendance/scanner"
+                className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white/15 px-5 py-3 text-sm font-bold text-white ring-1 ring-white/25 hover:bg-white/20"
+              >
+                <QrCode className="h-5 w-5" />
+                Scanner QR
+              </Link>
+
+              <Link
+                href="/events/new"
+                className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-5 py-3 text-sm font-bold text-[#03357A] shadow-sm hover:bg-[#EAF3FA]"
+              >
+                <Plus className="h-5 w-5" />
+                Nouvel événement
+              </Link>
+            </div>
           </div>
         </section>
 
@@ -194,7 +206,7 @@ export default async function EventsPage() {
           </div>
 
           <div className="mt-6 overflow-x-auto rounded-2xl border border-[#DCEAF5]">
-            <table className="w-full min-w-[950px] text-left text-sm">
+            <table className="w-full min-w-[1120px] text-left text-sm">
               <thead className="bg-[#EAF3FA] text-[#03357A]">
                 <tr>
                   <th className="px-4 py-3">Événement</th>
@@ -202,7 +214,7 @@ export default async function EventsPage() {
                   <th className="px-4 py-3">Heure</th>
                   <th className="px-4 py-3">Lieu</th>
                   <th className="px-4 py-3">Statut</th>
-                  <th className="px-4 py-3">Action</th>
+                  <th className="px-4 py-3">Actions</th>
                 </tr>
               </thead>
 
@@ -269,13 +281,31 @@ export default async function EventsPage() {
                       </td>
 
                       <td className="px-4 py-4">
-                        <Link
-                          href={`/events/${event.id}`}
-                          className="inline-flex items-center gap-2 rounded-2xl bg-[#EAF3FA] px-4 py-2 text-sm font-bold text-[#03357A] hover:bg-[#DCEAF5]"
-                        >
-                          <Eye className="h-4 w-4" />
-                          Voir
-                        </Link>
+                        <div className="flex flex-wrap gap-2">
+                          <Link
+                            href={`/events/${event.id}`}
+                            className="inline-flex items-center gap-2 rounded-2xl bg-[#EAF3FA] px-4 py-2 text-sm font-bold text-[#03357A] hover:bg-[#DCEAF5]"
+                          >
+                            <Eye className="h-4 w-4" />
+                            Voir
+                          </Link>
+
+                          <Link
+                            href={`/attendance/scanner/${event.id}`}
+                            className="inline-flex items-center gap-2 rounded-2xl bg-[#03357A] px-4 py-2 text-sm font-bold text-white hover:bg-[#022B63]"
+                          >
+                            <QrCode className="h-4 w-4" />
+                            Scanner
+                          </Link>
+
+                          <Link
+                            href={`/attendance/reports/${event.id}`}
+                            className="inline-flex items-center gap-2 rounded-2xl bg-green-50 px-4 py-2 text-sm font-bold text-green-700 hover:bg-green-100"
+                          >
+                            <BarChart3 className="h-4 w-4" />
+                            Rapport
+                          </Link>
+                        </div>
                       </td>
                     </tr>
                   );

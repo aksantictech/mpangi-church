@@ -3,10 +3,10 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  CalendarCheck,
   Home,
   Menu,
   MessageSquareHeart,
+  QrCode,
   Users,
 } from "lucide-react";
 
@@ -22,9 +22,9 @@ const navItems = [
     icon: Users,
   },
   {
-    label: "Présences",
-    href: "/attendance",
-    icon: CalendarCheck,
+    label: "Scanner",
+    href: "/attendance/scanner",
+    icon: QrCode,
   },
   {
     label: "Demandes",

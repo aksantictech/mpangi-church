@@ -1,10 +1,12 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import {
+  BarChart3,
   CalendarCheck,
   CalendarDays,
   Eye,
   QrCode,
+  ScanLine,
   Users,
 } from "lucide-react";
 import AppShell from "@/components/layout/AppShell";
@@ -106,7 +108,8 @@ export default async function AttendancePage({
 
   const [
     { count: membersCount },
-    { count: presentCount },
+    { count: manualPresentCount },
+    { count: qrPresentCount },
     { data: members },
     { data: attendanceRecords },
   ] = await Promise.all([
@@ -127,6 +130,14 @@ export default async function AttendancePage({
           .select("*", { count: "exact", head: true })
           .eq("church_id", churchId)
           .eq("attendance_date", attendanceDate),
+
+    selectedEvent
+      ? supabase
+          .from("event_attendances")
+          .select("*", { count: "exact", head: true })
+          .eq("church_id", churchId)
+          .eq("event_id", selectedEvent.id)
+      : Promise.resolve({ count: null } as any),
 
     supabase
       .from("members")
@@ -160,6 +171,10 @@ export default async function AttendancePage({
           .order("created_at", { ascending: false }),
   ]);
 
+  const displayedPresentCount = selectedEvent
+    ? qrPresentCount ?? manualPresentCount ?? 0
+    : manualPresentCount ?? 0;
+
   return (
     <AppShell>
       <div className="space-y-6">
@@ -181,29 +196,47 @@ export default async function AttendancePage({
                   ? `Pointage du ${formatDate(selectedEvent.event_date)} à ${formatTime(
                       selectedEvent.start_time
                     )}.`
-                  : "Sélectionnez un événement pour commencer le pointage des présences."}
+                  : "Sélectionnez un événement pour commencer le pointage manuel, ouvrir le scanner QR ou consulter un rapport."}
               </p>
             </div>
 
-            {selectedEvent && (
-              <div className="flex flex-wrap gap-2">
-                <Link
-                  href={`/events/${selectedEvent.id}`}
-                  className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-5 py-3 text-sm font-bold text-[#03357A] shadow-sm hover:bg-[#EAF3FA]"
-                >
-                  <Eye className="h-4 w-4" />
-                  Voir événement
-                </Link>
+            <div className="flex flex-wrap gap-2">
+              <Link
+                href="/attendance/scanner"
+                className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-5 py-3 text-sm font-bold text-[#03357A] shadow-sm hover:bg-[#EAF3FA]"
+              >
+                <ScanLine className="h-4 w-4" />
+                Scanner QR
+              </Link>
 
-                <Link
-                  href={`/attendance/scanner?event=${selectedEvent.id}`}
-                  className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white/15 px-5 py-3 text-sm font-bold text-white ring-1 ring-white/25 hover:bg-white/20"
-                >
-                  <QrCode className="h-4 w-4" />
-                  Scanner QR
-                </Link>
-              </div>
-            )}
+              {selectedEvent && (
+                <>
+                  <Link
+                    href={`/events/${selectedEvent.id}`}
+                    className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white/15 px-5 py-3 text-sm font-bold text-white ring-1 ring-white/25 hover:bg-white/20"
+                  >
+                    <Eye className="h-4 w-4" />
+                    Voir événement
+                  </Link>
+
+                  <Link
+                    href={`/attendance/scanner/${selectedEvent.id}`}
+                    className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white/15 px-5 py-3 text-sm font-bold text-white ring-1 ring-white/25 hover:bg-white/20"
+                  >
+                    <QrCode className="h-4 w-4" />
+                    Scanner cet événement
+                  </Link>
+
+                  <Link
+                    href={`/attendance/reports/${selectedEvent.id}`}
+                    className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white/15 px-5 py-3 text-sm font-bold text-white ring-1 ring-white/25 hover:bg-white/20"
+                  >
+                    <BarChart3 className="h-4 w-4" />
+                    Rapport
+                  </Link>
+                </>
+              )}
+            </div>
           </div>
         </section>
 
@@ -218,8 +251,8 @@ export default async function AttendancePage({
 
           <MetricCard
             title="Présents"
-            value={presentCount ?? 0}
-            description="Pointés pour cet événement"
+            value={displayedPresentCount}
+            description={selectedEvent ? "Pointés par QR pour cet événement" : "Pointés à cette date"}
             icon={CalendarCheck}
             accent="green"
           />
@@ -235,14 +268,26 @@ export default async function AttendancePage({
 
         {!selectedEvent && (
           <section className="rounded-3xl border border-[#DCEAF5] bg-white p-5 shadow-sm">
-            <h2 className="text-xl font-extrabold text-[#03357A]">
-              Sélectionner un événement
-            </h2>
+            <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
+              <div>
+                <h2 className="text-xl font-extrabold text-[#03357A]">
+                  Sélectionner un événement
+                </h2>
 
-            <p className="mt-1 text-sm text-slate-500">
-              Choisissez l’événement pour lequel vous voulez enregistrer les
-              présences.
-            </p>
+                <p className="mt-1 text-sm text-slate-500">
+                  Choisissez l’événement pour lequel vous voulez enregistrer les
+                  présences.
+                </p>
+              </div>
+
+              <Link
+                href="/attendance/scanner"
+                className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#03357A] px-5 py-3 text-sm font-extrabold text-white"
+              >
+                <ScanLine className="h-4 w-4" />
+                Ouvrir le scanner QR
+              </Link>
+            </div>
 
             <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
               {events?.length === 0 && (
@@ -256,9 +301,8 @@ export default async function AttendancePage({
               )}
 
               {events?.map((event: any) => (
-                <Link
+                <div
                   key={event.id}
-                  href={`/attendance?event=${event.id}`}
                   className="rounded-3xl border border-[#DCEAF5] bg-[#F8FBFD] p-5 transition hover:-translate-y-0.5 hover:bg-white hover:shadow-md"
                 >
                   <h3 className="font-extrabold text-[#03357A]">
@@ -273,7 +317,32 @@ export default async function AttendancePage({
                   <p className="mt-1 text-sm text-slate-500">
                     {event.location || "Lieu non renseigné"}
                   </p>
-                </Link>
+
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    <Link
+                      href={`/attendance?event=${event.id}`}
+                      className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-4 py-2 text-xs font-extrabold text-[#03357A] ring-1 ring-[#DCEAF5] hover:bg-[#EAF3FA]"
+                    >
+                      Manuel
+                    </Link>
+
+                    <Link
+                      href={`/attendance/scanner/${event.id}`}
+                      className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#03357A] px-4 py-2 text-xs font-extrabold text-white"
+                    >
+                      <QrCode className="h-3.5 w-3.5" />
+                      Scanner
+                    </Link>
+
+                    <Link
+                      href={`/attendance/reports/${event.id}`}
+                      className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#EAF3FA] px-4 py-2 text-xs font-extrabold text-[#03357A] hover:bg-[#DCEAF5]"
+                    >
+                      <BarChart3 className="h-3.5 w-3.5" />
+                      Rapport
+                    </Link>
+                  </div>
+                </div>
               ))}
             </div>
           </section>
