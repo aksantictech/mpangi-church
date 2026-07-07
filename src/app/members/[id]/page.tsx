@@ -6,6 +6,7 @@ import {
   CalendarDays,
   Church,
   Edit,
+  IdCard,
   Mail,
   MapPin,
   Phone,
@@ -209,6 +210,14 @@ export default async function MemberDetailsPage({
                 >
                   <QrCode className="h-4 w-4" />
                   QR Code
+                </Link>
+
+                <Link
+                  href={`/members/${member.id}/card`}
+                  className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-5 py-3 text-sm font-bold text-[#03357A] shadow-sm hover:bg-[#EAF3FA]"
+                >
+                  <IdCard className="h-4 w-4" />
+                  Carte membre
                 </Link>
               </div>
             </div>
