@@ -4,6 +4,7 @@ import {
   ArrowLeft,
   CalendarCheck,
   Download,
+  Filter,
   QrCode,
   Search,
   UserCheck,
@@ -11,6 +12,7 @@ import {
   Users,
 } from "lucide-react";
 import AppShell from "@/components/layout/AppShell";
+import AttendancePresenceToggleButton from "@/components/attendance/AttendancePresenceToggleButton";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
@@ -21,6 +23,7 @@ type AttendanceReportPageProps = {
   searchParams?: Promise<{
     q?: string;
     view?: string;
+    departmentId?: string;
   }>;
 };
 
@@ -73,6 +76,57 @@ function normalizeText(value: string) {
     .replace(/\p{Diacritic}/gu, "");
 }
 
+function getMethodLabel(method?: string | null) {
+  if (method === "qr") return "QR Code";
+  if (method === "manual") return "Manuel";
+  return method || "-";
+}
+
+function buildHref({
+  eventId,
+  view,
+  q,
+  departmentId,
+}: {
+  eventId: string;
+  view?: string;
+  q?: string;
+  departmentId?: string;
+}) {
+  const params = new URLSearchParams();
+
+  if (view && view !== "all") params.set("view", view);
+  if (q) params.set("q", q);
+  if (departmentId) params.set("departmentId", departmentId);
+
+  const queryString = params.toString();
+
+  return queryString
+    ? `/attendance/reports/${eventId}?${queryString}`
+    : `/attendance/reports/${eventId}`;
+}
+
+function buildExportHref({
+  eventId,
+  view,
+  q,
+  departmentId,
+}: {
+  eventId: string;
+  view?: string;
+  q?: string;
+  departmentId?: string;
+}) {
+  const params = new URLSearchParams();
+
+  params.set("eventId", eventId);
+  if (view && view !== "all") params.set("view", view);
+  if (q) params.set("q", q);
+  if (departmentId) params.set("departmentId", departmentId);
+
+  return `/api/attendance/export?${params.toString()}`;
+}
+
 export default async function AttendanceReportPage({
   params,
   searchParams,
@@ -81,6 +135,7 @@ export default async function AttendanceReportPage({
   const resolvedSearchParams = searchParams ? await searchParams : {};
   const query = (resolvedSearchParams.q || "").trim();
   const view = resolvedSearchParams.view || "all";
+  const selectedDepartmentId = resolvedSearchParams.departmentId || "";
 
   const supabase = await createClient();
 
@@ -177,6 +232,7 @@ export default async function AttendanceReportPage({
           .select("id, name")
           .eq("church_id", profile.church_id)
           .in("id", departmentIds)
+          .order("name", { ascending: true })
       : { data: [] as any[] };
 
   const departmentsById = new Map(
@@ -184,22 +240,27 @@ export default async function AttendanceReportPage({
   );
 
   const departmentsByMemberId = new Map<string, string[]>();
+  const departmentIdsByMemberId = new Map<string, string[]>();
 
   for (const row of memberDepartments ?? []) {
     const departmentName = departmentsById.get(row.department_id);
 
     if (!departmentName) continue;
 
-    const existing = departmentsByMemberId.get(row.member_id) ?? [];
-    existing.push(departmentName);
-    departmentsByMemberId.set(row.member_id, existing);
+    const existingNames = departmentsByMemberId.get(row.member_id) ?? [];
+    existingNames.push(departmentName);
+    departmentsByMemberId.set(row.member_id, existingNames);
+
+    const existingIds = departmentIdsByMemberId.get(row.member_id) ?? [];
+    existingIds.push(row.department_id);
+    departmentIdsByMemberId.set(row.member_id, existingIds);
   }
 
   const attendanceByMemberId = new Map(
     attendanceRows.map((attendance: any) => [attendance.member_id, attendance])
   );
 
-  let reportRows = allMembers.map((member: any) => {
+  const allReportRows = allMembers.map((member: any) => {
     const attendance = attendanceByMemberId.get(member.id) as any | undefined;
     const fullName = getMemberName(member) || "Nom non renseigné";
 
@@ -207,12 +268,21 @@ export default async function AttendanceReportPage({
       member,
       fullName,
       memberCode: getMemberCode(member),
+      departmentIds: departmentIdsByMemberId.get(member.id) ?? [],
       departments:
         departmentsByMemberId.get(member.id)?.join(", ") || "Non renseigné",
       attendance,
       isPresent: Boolean(attendance),
     };
   });
+
+  let reportRows = allReportRows;
+
+  if (selectedDepartmentId) {
+    reportRows = reportRows.filter((row) =>
+      row.departmentIds.includes(selectedDepartmentId)
+    );
+  }
 
   if (view === "present") {
     reportRows = reportRows.filter((row) => row.isPresent);
@@ -240,10 +310,20 @@ export default async function AttendanceReportPage({
     });
   }
 
-  const presentCount = presentMemberIds.size;
-  const activeCount = allMembers.length;
+  const scopedRows = selectedDepartmentId
+    ? allReportRows.filter((row) =>
+        row.departmentIds.includes(selectedDepartmentId)
+      )
+    : allReportRows;
+
+  const presentCount = scopedRows.filter((row) => row.isPresent).length;
+  const activeCount = scopedRows.length;
   const absentCount = Math.max(activeCount - presentCount, 0);
   const eventDate = formatDate(getEventDateValue(event));
+  const selectedDepartmentName =
+    selectedDepartmentId && departmentsById.get(selectedDepartmentId)
+      ? departmentsById.get(selectedDepartmentId)
+      : "";
 
   return (
     <AppShell>
@@ -268,8 +348,15 @@ export default async function AttendanceReportPage({
               </h1>
 
               <p className="mt-2 text-sm leading-7 text-blue-50">
-                {eventDate} · Liste des présents, absents et export CSV.
+                {eventDate} · Présents, absents, département, pointage manuel et
+                export CSV.
               </p>
+
+              {selectedDepartmentName && (
+                <p className="mt-3 inline-flex rounded-full bg-white/15 px-3 py-1 text-xs font-extrabold text-white ring-1 ring-white/20">
+                  Département : {selectedDepartmentName}
+                </p>
+              )}
             </div>
 
             <div className="flex flex-wrap gap-3">
@@ -282,7 +369,12 @@ export default async function AttendanceReportPage({
               </Link>
 
               <Link
-                href={`/api/attendance/export?eventId=${eventId}`}
+                href={buildExportHref({
+                  eventId,
+                  view,
+                  q: query,
+                  departmentId: selectedDepartmentId,
+                })}
                 className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-5 py-3 text-sm font-extrabold text-[#03357A] shadow-sm hover:bg-[#EAF3FA]"
               >
                 <Download className="h-4 w-4" />
@@ -297,30 +389,48 @@ export default async function AttendanceReportPage({
             label="Membres actifs"
             value={activeCount}
             icon={Users}
-            href={`/attendance/reports/${eventId}`}
+            href={buildHref({
+              eventId,
+              view: "all",
+              q: query,
+              departmentId: selectedDepartmentId,
+            })}
             active={view === "all"}
           />
           <StatCard
             label="Présents"
             value={presentCount}
             icon={UserCheck}
-            href={`/attendance/reports/${eventId}?view=present`}
+            href={buildHref({
+              eventId,
+              view: "present",
+              q: query,
+              departmentId: selectedDepartmentId,
+            })}
             active={view === "present"}
           />
           <StatCard
             label="Absents"
             value={absentCount}
             icon={UserX}
-            href={`/attendance/reports/${eventId}?view=absent`}
+            href={buildHref({
+              eventId,
+              view: "absent",
+              q: query,
+              departmentId: selectedDepartmentId,
+            })}
             active={view === "absent"}
           />
         </section>
 
         <section className="rounded-3xl border border-[#DCEAF5] bg-white p-5 shadow-sm">
-          <form className="flex flex-col gap-3 md:flex-row" action={`/attendance/reports/${eventId}`}>
+          <form
+            className="grid gap-3 lg:grid-cols-[1fr_280px_auto_auto]"
+            action={`/attendance/reports/${eventId}`}
+          >
             <input type="hidden" name="view" value={view} />
 
-            <div className="relative flex-1">
+            <div className="relative">
               <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
               <input
                 name="q"
@@ -330,12 +440,35 @@ export default async function AttendanceReportPage({
               />
             </div>
 
+            <div className="relative">
+              <Filter className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+              <select
+                name="departmentId"
+                defaultValue={selectedDepartmentId}
+                className="min-h-12 w-full rounded-2xl border border-[#DCEAF5] bg-white pl-11 pr-4 text-sm font-semibold text-slate-700 outline-none focus:border-[#03357A] focus:ring-4 focus:ring-[#03357A]/10"
+              >
+                <option value="">Tous les départements</option>
+                {(departments ?? []).map((department: any) => (
+                  <option key={department.id} value={department.id}>
+                    {department.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
             <button
               type="submit"
               className="rounded-2xl bg-[#03357A] px-5 py-3 text-sm font-extrabold text-white"
             >
-              Rechercher
+              Appliquer
             </button>
+
+            <Link
+              href={`/attendance/reports/${eventId}`}
+              className="inline-flex items-center justify-center rounded-2xl bg-[#EAF3FA] px-5 py-3 text-sm font-extrabold text-[#03357A] hover:bg-[#DCEAF5]"
+            >
+              Réinitialiser
+            </Link>
           </form>
         </section>
 
@@ -345,7 +478,8 @@ export default async function AttendanceReportPage({
               Liste de présence
             </h2>
             <p className="mt-1 text-sm text-slate-500">
-              {reportRows.length} résultat(s) affiché(s).
+              {reportRows.length} résultat(s) affiché(s). Vous pouvez pointer
+              manuellement un absent ou retirer une présence incorrecte.
             </p>
           </div>
 
@@ -361,7 +495,7 @@ export default async function AttendanceReportPage({
               {reportRows.map((row) => (
                 <div
                   key={row.member.id}
-                  className="grid gap-4 p-5 lg:grid-cols-[1.3fr_1fr_0.9fr_0.8fr]"
+                  className="grid gap-4 p-5 xl:grid-cols-[1.2fr_0.9fr_0.8fr_0.75fr_0.7fr]"
                 >
                   <div className="flex items-center gap-3">
                     <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-full bg-[#EAF3FA] text-sm font-extrabold text-[#03357A]">
@@ -405,14 +539,17 @@ export default async function AttendanceReportPage({
                     </p>
                   </div>
 
-                  <div className="flex items-center justify-start lg:justify-end">
+                  <div>
                     {row.isPresent ? (
-                      <div className="text-left lg:text-right">
+                      <div>
                         <span className="inline-flex rounded-full bg-green-50 px-3 py-1 text-xs font-extrabold text-green-700">
                           Présent
                         </span>
                         <p className="mt-2 text-xs font-semibold text-slate-500">
                           {formatDate(row.attendance?.check_in_at)}
+                        </p>
+                        <p className="mt-1 text-xs font-bold text-slate-400">
+                          {getMethodLabel(row.attendance?.check_in_method)}
                         </p>
                       </div>
                     ) : (
@@ -421,6 +558,12 @@ export default async function AttendanceReportPage({
                       </span>
                     )}
                   </div>
+
+                  <AttendancePresenceToggleButton
+                    eventId={eventId}
+                    memberId={row.member.id}
+                    isPresent={row.isPresent}
+                  />
                 </div>
               ))}
             </div>

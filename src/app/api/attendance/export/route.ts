@@ -53,10 +53,26 @@ function slugifyFileName(value: string) {
     .slice(0, 80);
 }
 
+function normalizeText(value: string) {
+  return value
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/\p{Diacritic}/gu, "");
+}
+
+function getMethodLabel(method?: string | null) {
+  if (method === "qr") return "QR Code";
+  if (method === "manual") return "Manuel";
+  return method || "";
+}
+
 export async function GET(request: Request) {
   try {
     const url = new URL(request.url);
     const eventId = getString(url.searchParams.get("eventId"));
+    const view = getString(url.searchParams.get("view")) || "all";
+    const query = getString(url.searchParams.get("q"));
+    const selectedDepartmentId = getString(url.searchParams.get("departmentId"));
 
     if (!eventId) {
       return NextResponse.json(
@@ -176,15 +192,20 @@ export async function GET(request: Request) {
     );
 
     const departmentsByMemberId = new Map<string, string[]>();
+    const departmentIdsByMemberId = new Map<string, string[]>();
 
     for (const row of memberDepartments ?? []) {
       const departmentName = departmentsById.get(row.department_id);
 
       if (!departmentName) continue;
 
-      const existing = departmentsByMemberId.get(row.member_id) ?? [];
-      existing.push(departmentName);
-      departmentsByMemberId.set(row.member_id, existing);
+      const existingNames = departmentsByMemberId.get(row.member_id) ?? [];
+      existingNames.push(departmentName);
+      departmentsByMemberId.set(row.member_id, existingNames);
+
+      const existingIds = departmentIdsByMemberId.get(row.member_id) ?? [];
+      existingIds.push(row.department_id);
+      departmentIdsByMemberId.set(row.member_id, existingIds);
     }
 
     const attendanceByMemberId = new Map(
@@ -193,6 +214,55 @@ export async function GET(request: Request) {
         attendance,
       ])
     );
+
+    let reportRows = allMembers.map((member: any) => {
+      const attendance = attendanceByMemberId.get(member.id) as any | undefined;
+      const departments =
+        departmentsByMemberId.get(member.id)?.join(", ") || "Non renseigné";
+      const memberDepartmentIds = departmentIdsByMemberId.get(member.id) ?? [];
+      const fullName = getMemberName(member);
+
+      return {
+        member,
+        fullName,
+        departments,
+        memberDepartmentIds,
+        attendance,
+        isPresent: Boolean(attendance),
+      };
+    });
+
+    if (selectedDepartmentId) {
+      reportRows = reportRows.filter((row) =>
+        row.memberDepartmentIds.includes(selectedDepartmentId)
+      );
+    }
+
+    if (view === "present") {
+      reportRows = reportRows.filter((row) => row.isPresent);
+    }
+
+    if (view === "absent") {
+      reportRows = reportRows.filter((row) => !row.isPresent);
+    }
+
+    if (query) {
+      const normalizedQuery = normalizeText(query);
+
+      reportRows = reportRows.filter((row) => {
+        const searchable = normalizeText(
+          [
+            row.fullName,
+            getMemberCode(row.member),
+            row.member.phone || "",
+            row.member.email || "",
+            row.departments,
+          ].join(" ")
+        );
+
+        return searchable.includes(normalizedQuery);
+      });
+    }
 
     const header = [
       "Evenement",
@@ -208,21 +278,17 @@ export async function GET(request: Request) {
 
     const lines = [
       header.map(formatCsvValue).join(";"),
-      ...allMembers.map((member: any) => {
-        const attendance = attendanceByMemberId.get(member.id) as any | undefined;
-        const departments =
-          departmentsByMemberId.get(member.id)?.join(", ") || "Non renseigné";
-
+      ...reportRows.map((row) => {
         return [
           getEventTitle(event),
-          getMemberCode(member),
-          getMemberName(member),
-          member.phone || "",
-          member.email || "",
-          departments,
-          attendance ? "Présent" : "Absent",
-          attendance ? formatDate(attendance.check_in_at) : "",
-          attendance?.check_in_method || "",
+          getMemberCode(row.member),
+          row.fullName,
+          row.member.phone || "",
+          row.member.email || "",
+          row.departments,
+          row.attendance ? "Présent" : "Absent",
+          row.attendance ? formatDate(row.attendance.check_in_at) : "",
+          getMethodLabel(row.attendance?.check_in_method),
         ]
           .map(formatCsvValue)
           .join(";");
