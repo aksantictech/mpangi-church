@@ -1,50 +1,70 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 
-type RouteContext = {
+export const dynamic = "force-dynamic";
+
+type IconRouteParams = {
   params: Promise<{
     slug: string;
   }>;
 };
 
-export async function GET(request: Request, context: RouteContext) {
-  const { slug } = await context.params;
+async function fetchArrayBuffer(url: string) {
+  const response = await fetch(url, {
+    cache: "no-store",
+  });
 
-  const supabase = await createClient();
+  if (!response.ok) return null;
 
-  const { data: church } = await supabase
+  const contentType = response.headers.get("content-type") || "image/png";
+  const buffer = await response.arrayBuffer();
+
+  return {
+    buffer,
+    contentType,
+  };
+}
+
+export async function GET(_request: Request, { params }: IconRouteParams) {
+  const { slug } = await params;
+  const admin = createAdminClient();
+
+  const { data: church } = await admin
     .from("churches")
     .select("logo_url")
     .eq("slug", slug)
     .maybeSingle();
 
-  const fallbackUrl = new URL("/images/mpangi-logo.png", request.url);
+  const logoUrl = church?.logo_url || "";
 
-  if (!church?.logo_url) {
-    return NextResponse.redirect(fallbackUrl);
+  if (logoUrl) {
+    const result = await fetchArrayBuffer(logoUrl);
+
+    if (result) {
+      return new NextResponse(result.buffer, {
+        headers: {
+          "Content-Type": result.contentType,
+          "Cache-Control": "public, max-age=300, must-revalidate",
+        },
+      });
+    }
   }
 
-  try {
-    const imageResponse = await fetch(church.logo_url, {
-      cache: "no-store",
-    });
+  const fallback = await fetchArrayBuffer(
+    new URL("/icons/icon-512x512.png", _request.url).toString()
+  );
 
-    if (!imageResponse.ok) {
-      return NextResponse.redirect(fallbackUrl);
-    }
-
-    const contentType =
-      imageResponse.headers.get("content-type") || "image/png";
-
-    const imageBuffer = await imageResponse.arrayBuffer();
-
-    return new NextResponse(imageBuffer, {
+  if (fallback) {
+    return new NextResponse(fallback.buffer, {
       headers: {
-        "Content-Type": contentType,
-        "Cache-Control": "public, max-age=3600",
+        "Content-Type": fallback.contentType,
+        "Cache-Control": "public, max-age=300, must-revalidate",
       },
     });
-  } catch {
-    return NextResponse.redirect(fallbackUrl);
   }
+
+  return NextResponse.json(
+    { error: "Icône introuvable." },
+    { status: 404 }
+  );
 }

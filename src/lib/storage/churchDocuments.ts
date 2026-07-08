@@ -1,25 +1,57 @@
-import { randomUUID } from "crypto";
-
 export const CHURCH_DOCUMENTS_BUCKET = "church-documents";
 
-type UploadChurchDocumentParams = {
-  admin: any;
-  churchId: string;
-  module: string;
-  file: FormDataEntryValue | null;
+export type UploadedChurchDocument = {
+  path: string;
+  url: string;
+  publicUrl: string;
+  document_path: string;
+  document_url: string;
+  filename: string;
+  name: string;
+  size: number;
+  mime_type: string;
+  mimeType: string;
+  bucket: string;
 };
 
-function isUploadableFile(value: FormDataEntryValue | null): value is File {
-  return value instanceof File && value.size > 0;
+type UploadChurchDocumentInput = {
+  admin: any;
+  churchId: string | null | undefined;
+  module: string;
+  file: FormDataEntryValue | null;
+  bucket?: string;
+};
+
+type DownloadHrefInput =
+  | string
+  | {
+      path?: string | null;
+      documentPath?: string | null;
+      document_path?: string | null;
+      filename?: string | null;
+      name?: string | null;
+    }
+  | null
+  | undefined;
+
+function isFile(value: FormDataEntryValue | null): value is File {
+  return typeof File !== "undefined" && value instanceof File;
 }
 
-function sanitizeFileName(fileName: string) {
-  return (fileName || "document")
+function cleanSegment(value: string) {
+  return value
     .normalize("NFD")
-    .replace(/\p{Diacritic}/gu, "")
+    .replace(/[\u0300-\u036f]/g, "")
     .replace(/[^a-zA-Z0-9._-]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-    .slice(0, 120) || "document";
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "")
+    .toLowerCase();
+}
+
+function getSafeFilename(filename: string) {
+  const clean = cleanSegment(filename || "document");
+
+  return clean || "document";
 }
 
 export async function uploadChurchDocument({
@@ -27,38 +59,87 @@ export async function uploadChurchDocument({
   churchId,
   module,
   file,
-}: UploadChurchDocumentParams) {
-  if (!isUploadableFile(file)) return null;
+  bucket = CHURCH_DOCUMENTS_BUCKET,
+}: UploadChurchDocumentInput): Promise<UploadedChurchDocument | null> {
+  if (!isFile(file) || file.size === 0) {
+    return null;
+  }
 
-  const today = new Date().toISOString().slice(0, 10);
-  const path = `${churchId}/${module}/${today}/${randomUUID()}-${sanitizeFileName(file.name)}`;
+  if (!churchId) {
+    throw new Error("churchId est obligatoire pour téléverser un document.");
+  }
 
-  const { data, error } = await admin.storage
-    .from(CHURCH_DOCUMENTS_BUCKET)
-    .upload(path, file, {
-      contentType: file.type || "application/octet-stream",
-      upsert: false,
-    });
+  const safeModule = cleanSegment(module || "general");
+  const safeFilename = getSafeFilename(file.name);
+  const unique = `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+  const path = `${churchId}/${safeModule}/${unique}-${safeFilename}`;
+  const mimeType = file.type || "application/octet-stream";
 
-  if (error) throw new Error(error.message);
+  const { error } = await admin.storage.from(bucket).upload(path, file, {
+    cacheControl: "3600",
+    upsert: false,
+    contentType: mimeType,
+  });
+
+  if (error) {
+    throw new Error(error.message || "Téléversement du document impossible.");
+  }
+
+  const { data } = admin.storage.from(bucket).getPublicUrl(path);
+  const publicUrl = data?.publicUrl || "";
 
   return {
-    path: data.path,
+    path,
+    url: publicUrl,
+    publicUrl,
+    document_path: path,
+    document_url: publicUrl,
+
+    // Compatibilité avec les anciens modules
+    filename: file.name,
     name: file.name,
-    mimeType: file.type || null,
     size: file.size,
+    mime_type: mimeType,
+    mimeType,
+
+    bucket,
   };
 }
 
-export function getDocumentDownloadHref({
+export function getDocumentDownloadHref(input: DownloadHrefInput) {
+  const path =
+    typeof input === "string"
+      ? input
+      : input?.path || input?.documentPath || input?.document_path || "";
+
+  const filename =
+    typeof input === "string" ? "" : input?.filename || input?.name || "";
+
+  if (!path) return "#";
+
+  const query = new URLSearchParams({
+    path,
+  });
+
+  if (filename) {
+    query.set("filename", filename);
+  }
+
+  return `/api/documents/download?${query.toString()}`;
+}
+
+export function getChurchDocumentPublicUrl({
+  admin,
   path,
-  filename,
+  bucket = CHURCH_DOCUMENTS_BUCKET,
 }: {
-  path: string;
-  filename?: string | null;
+  admin: any;
+  path?: string | null;
+  bucket?: string;
 }) {
-  const params = new URLSearchParams();
-  params.set("path", path);
-  if (filename) params.set("filename", filename);
-  return `/api/documents/download?${params.toString()}`;
+  if (!path) return "";
+
+  const { data } = admin.storage.from(bucket).getPublicUrl(path);
+
+  return data?.publicUrl || "";
 }

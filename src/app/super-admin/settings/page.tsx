@@ -1,13 +1,14 @@
 import Link from "next/link";
 import {
   Building2,
+  Boxes,
   Settings,
   ShieldCheck,
   UserPlus,
   UsersRound,
-  Boxes,
 } from "lucide-react";
 import SuperAdminShell from "@/components/layout/SuperAdminShell";
+import { requireSuperAdmin } from "@/lib/security/access";
 
 const cards = [
   {
@@ -36,7 +37,9 @@ const cards = [
   },
 ];
 
-export default function SuperAdminSettingsPage() {
+export default async function SuperAdminSettingsPage() {
+  await requireSuperAdmin();
+
   return (
     <SuperAdminShell>
       <div className="space-y-6">
@@ -54,7 +57,7 @@ export default function SuperAdminSettingsPage() {
                 Paramètres plateforme
               </h1>
               <p className="mt-2 max-w-3xl text-sm leading-7 text-blue-50">
-                Les utilisateurs sont regroupés ici pour garder le menu principal plus simple.
+                Les utilisateurs restent ici pour garder le menu principal plus simple.
               </p>
             </div>
           </div>
@@ -94,10 +97,11 @@ export default function SuperAdminSettingsPage() {
 
             <div>
               <h2 className="text-lg font-black text-[#03357A]">
-                Menu simplifié
+                Sécurité
               </h2>
               <p className="mt-2 text-sm leading-7 text-slate-600">
-                Les actions de gestion des utilisateurs restent accessibles depuis cette page, sans apparaître comme un menu principal séparé.
+                Les pages super admin sont protégées par le rôle super_admin.
+                Les utilisateurs restent accessibles depuis Paramètres.
               </p>
             </div>
           </div>

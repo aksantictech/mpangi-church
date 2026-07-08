@@ -31,7 +31,7 @@ async function insertTaskUpdate({
   profileId,
 }: {
   admin: any;
-  churchId: string;
+  churchId: string | null | undefined;
   taskId: string;
   status: string;
   note: string;
@@ -88,7 +88,7 @@ export async function createAdministrativeTaskAction(formData: FormData) {
   try {
     uploadedDocument = await uploadChurchDocument({
       admin,
-      churchId: profile.church_id,
+      churchId: profile.church_id ?? null,
       module: "tasks",
       file: formData.get("document_file"),
     });
@@ -115,7 +115,7 @@ export async function createAdministrativeTaskAction(formData: FormData) {
 
   await insertTaskUpdate({
     admin,
-    churchId: profile.church_id,
+    churchId: profile.church_id ?? null,
     taskId: data.id,
     status: payload.status,
     note: "Tâche créée.",
@@ -138,7 +138,7 @@ export async function updateAdministrativeTaskAction(formData: FormData) {
   try {
     uploadedDocument = await uploadChurchDocument({
       admin,
-      churchId: profile.church_id,
+      churchId: profile.church_id ?? null,
       module: "tasks",
       file: formData.get("document_file"),
     });
@@ -169,7 +169,7 @@ export async function updateAdministrativeTaskAction(formData: FormData) {
 
   await insertTaskUpdate({
     admin,
-    churchId: profile.church_id,
+    churchId: profile.church_id ?? null,
     taskId: id,
     status: payload.status,
     note: "Tâche modifiée.",
@@ -206,7 +206,7 @@ export async function updateAdministrativeTaskStatusAction(formData: FormData) {
 
   await insertTaskUpdate({
     admin,
-    churchId: profile.church_id,
+    churchId: profile.church_id ?? null,
     taskId: id,
     status,
     note,
@@ -236,7 +236,7 @@ export async function archiveAdministrativeTaskAction(formData: FormData) {
 
   await insertTaskUpdate({
     admin,
-    churchId: profile.church_id,
+    churchId: profile.church_id ?? null,
     taskId: id,
     status: "archived",
     note: "Tâche archivée.",

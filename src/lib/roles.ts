@@ -61,14 +61,6 @@ export const SUPER_ADMIN_ROLE_OPTIONS: ChurchRoleOption[] = [
   ...CHURCH_ROLE_OPTIONS,
 ];
 
-export const CHURCH_ROLE_VALUES = new Set(
-  CHURCH_ROLE_OPTIONS.map((role) => role.value)
-);
-
-export const SUPER_ADMIN_ROLE_VALUES = new Set(
-  SUPER_ADMIN_ROLE_OPTIONS.map((role) => role.value)
-);
-
 export const CHURCH_ADMIN_ROLES = new Set([
   "admin",
   "administrator",
@@ -83,8 +75,33 @@ export const PASTOR_ROLES = new Set([
   "pastor_assistant",
 ]);
 
+export const AFP_ROLES = new Set([
+  "afp_manager",
+  "finance_manager",
+  "administration_manager",
+  "patrimony_manager",
+]);
+
+export const SECRETARY_ROLES = new Set(["secretary", "secretaire"]);
+export const LOGISTIC_ROLES = new Set(["logistician", "logisticien"]);
+export const DEPARTMENT_ROLES = new Set(["department_manager", "responsable_d"]);
+export const WORKER_ROLES = new Set(["worker", "ouvrier", "member_manager"]);
+export const VIEWER_ROLES = new Set(["viewer"]);
+
+export const CHURCH_ROLE_VALUES = new Set(
+  CHURCH_ROLE_OPTIONS.map((role) => role.value)
+);
+
+export const SUPER_ADMIN_ROLE_VALUES = new Set(
+  SUPER_ADMIN_ROLE_OPTIONS.map((role) => role.value)
+);
+
+export function normalizeRole(role?: string | null) {
+  return String(role || "").trim().toLowerCase();
+}
+
 export function normalizeChurchRole(value: FormDataEntryValue | string | null) {
-  const role = String(value || "").trim();
+  const role = normalizeRole(String(value || ""));
 
   if (CHURCH_ROLE_VALUES.has(role)) return role;
 
@@ -94,7 +111,7 @@ export function normalizeChurchRole(value: FormDataEntryValue | string | null) {
 export function normalizeSuperAdminAssignableRole(
   value: FormDataEntryValue | string | null
 ) {
-  const role = String(value || "").trim();
+  const role = normalizeRole(String(value || ""));
 
   if (SUPER_ADMIN_ROLE_VALUES.has(role)) return role;
 
@@ -102,7 +119,7 @@ export function normalizeSuperAdminAssignableRole(
 }
 
 export function getRoleLabel(role?: string | null) {
-  const value = String(role || "").trim();
+  const value = normalizeRole(role);
 
   return (
     SUPER_ADMIN_ROLE_OPTIONS.find((option) => option.value === value)?.label ||

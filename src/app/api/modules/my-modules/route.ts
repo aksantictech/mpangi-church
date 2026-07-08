@@ -1,44 +1,25 @@
 import { NextResponse } from "next/server";
-import { createAdminClient } from "@/lib/supabase/admin";
-import { createClient } from "@/lib/supabase/server";
-
-const FULL_ACCESS_ROLES = new Set([
-  "admin",
-  "administrator",
-  "church_admin",
-  "owner",
-]);
-
-const PASTOR_ROLES = new Set([
-  "pasteur",
-  "pastor",
-  "pastor_titulaire",
-  "pastor_assistant",
-]);
-
-const AFP_ROLES = new Set([
-  "afp_manager",
-  "finance_manager",
-  "administration_manager",
-  "patrimony_manager",
-]);
-
-const SECRETARY_ROLES = new Set(["secretary", "secretaire"]);
-const LOGISTIC_ROLES = new Set(["logistician", "logisticien"]);
-const DEPARTMENT_ROLES = new Set(["department_manager", "responsable_d"]);
-const WORKER_ROLES = new Set(["worker", "ouvrier", "viewer", "member_manager"]);
-
-function normalizeRole(role?: string | null) {
-  return String(role || "").trim().toLowerCase();
-}
+import { getSecurityContext } from "@/lib/security/access";
+import {
+  AFP_ROLES,
+  CHURCH_ADMIN_ROLES,
+  DEPARTMENT_ROLES,
+  LOGISTIC_ROLES,
+  PASTOR_ROLES,
+  SECRETARY_ROLES,
+  VIEWER_ROLES,
+  WORKER_ROLES,
+} from "@/lib/roles";
 
 function fallbackCanView(role: string, moduleCode: string) {
-  if (FULL_ACCESS_ROLES.has(role)) return true;
+  if (CHURCH_ADMIN_ROLES.has(role)) return true;
+
+  if (["dashboard", "settings", "notifications", "pwa_install"].includes(moduleCode)) {
+    return true;
+  }
 
   if (PASTOR_ROLES.has(role)) {
     return [
-      "dashboard",
-      "notifications",
       "members",
       "attendance",
       "souls",
@@ -46,16 +27,14 @@ function fallbackCanView(role: string, moduleCode: string) {
       "events",
       "publications",
       "teachings",
-      "public_requests",
       "appointments",
       "testimonies",
+      "public_requests",
     ].includes(moduleCode);
   }
 
   if (AFP_ROLES.has(role)) {
     return [
-      "dashboard",
-      "notifications",
       "correspondence",
       "document_transmissions",
       "administrative_tasks",
@@ -75,8 +54,6 @@ function fallbackCanView(role: string, moduleCode: string) {
 
   if (SECRETARY_ROLES.has(role)) {
     return [
-      "dashboard",
-      "notifications",
       "correspondence",
       "document_transmissions",
       "administrative_tasks",
@@ -87,8 +64,6 @@ function fallbackCanView(role: string, moduleCode: string) {
 
   if (LOGISTIC_ROLES.has(role)) {
     return [
-      "dashboard",
-      "notifications",
       "patrimony_dashboard",
       "assets",
       "asset_maintenance",
@@ -99,8 +74,6 @@ function fallbackCanView(role: string, moduleCode: string) {
 
   if (DEPARTMENT_ROLES.has(role)) {
     return [
-      "dashboard",
-      "notifications",
       "members",
       "attendance",
       "souls",
@@ -111,49 +84,32 @@ function fallbackCanView(role: string, moduleCode: string) {
   }
 
   if (WORKER_ROLES.has(role)) {
-    return [
-      "dashboard",
-      "notifications",
-      "members",
-      "attendance",
-      "souls",
-      "events",
-    ].includes(moduleCode);
+    return ["members", "attendance", "souls", "events"].includes(moduleCode);
   }
 
-  return ["dashboard"].includes(moduleCode);
+  if (VIEWER_ROLES.has(role)) {
+    return ["members", "attendance", "souls", "events"].includes(moduleCode);
+  }
+
+  return false;
 }
 
 export async function GET() {
   try {
-    const supabase = await createClient();
+    const context = await getSecurityContext();
 
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    if (!user) {
+    if (!context) {
       return NextResponse.json(
         { error: "Utilisateur non connecté." },
         { status: 401 }
       );
     }
 
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("id, role, church_id, status")
-      .eq("user_id", user.id)
-      .maybeSingle();
-
-    if (!profile) {
-      return NextResponse.json({ error: "Profil introuvable." }, { status: 403 });
-    }
+    const { admin, profile, role, churchId } = context;
 
     if (profile.status && profile.status !== "active") {
       return NextResponse.json({ error: "Compte désactivé." }, { status: 403 });
     }
-
-    const role = normalizeRole(profile.role);
 
     if (role === "super_admin") {
       return NextResponse.json({
@@ -163,7 +119,7 @@ export async function GET() {
       });
     }
 
-    if (!profile.church_id) {
+    if (!churchId) {
       return NextResponse.json({
         role,
         churchId: null,
@@ -171,25 +127,23 @@ export async function GET() {
       });
     }
 
-    const admin = createAdminClient();
-
     const { data: enabledRows } = await admin
       .from("church_modules")
       .select("module_code, enabled")
-      .eq("church_id", profile.church_id)
+      .eq("church_id", churchId)
       .eq("enabled", true);
 
-    const enabledCodes = new Set((enabledRows ?? []).map((row: any) => row.module_code));
+    const enabledCodes = new Set(
+      (enabledRows ?? []).map((row: any) => row.module_code)
+    );
 
     const { data: explicitPermissions } = await admin
       .from("profile_module_permissions")
       .select("module_code, can_view")
-      .eq("church_id", profile.church_id)
+      .eq("church_id", churchId)
       .eq("profile_id", profile.id);
 
-    const hasExplicitPermissions = (explicitPermissions ?? []).length > 0;
-
-    if (hasExplicitPermissions) {
+    if ((explicitPermissions ?? []).length > 0) {
       const moduleCodes = (explicitPermissions ?? [])
         .filter((permission: any) => permission.can_view)
         .map((permission: any) => permission.module_code)
@@ -197,8 +151,10 @@ export async function GET() {
 
       return NextResponse.json({
         role,
-        churchId: profile.church_id,
-        moduleCodes: Array.from(new Set(["dashboard", ...moduleCodes])),
+        churchId,
+        moduleCodes: Array.from(
+          new Set(["dashboard", "settings", "notifications", ...moduleCodes])
+        ),
         source: "profile",
       });
     }
@@ -206,12 +162,10 @@ export async function GET() {
     const { data: rolePermissions } = await admin
       .from("church_role_module_permissions")
       .select("module_code, can_view")
-      .eq("church_id", profile.church_id)
+      .eq("church_id", churchId)
       .eq("role", role);
 
-    const hasRolePermissions = (rolePermissions ?? []).length > 0;
-
-    if (hasRolePermissions) {
+    if ((rolePermissions ?? []).length > 0) {
       const moduleCodes = (rolePermissions ?? [])
         .filter((permission: any) => permission.can_view)
         .map((permission: any) => permission.module_code)
@@ -219,8 +173,10 @@ export async function GET() {
 
       return NextResponse.json({
         role,
-        churchId: profile.church_id,
-        moduleCodes: Array.from(new Set(["dashboard", ...moduleCodes])),
+        churchId,
+        moduleCodes: Array.from(
+          new Set(["dashboard", "settings", "notifications", ...moduleCodes])
+        ),
         source: "role",
       });
     }
@@ -231,8 +187,10 @@ export async function GET() {
 
     return NextResponse.json({
       role,
-      churchId: profile.church_id,
-      moduleCodes: Array.from(new Set(["dashboard", ...fallbackCodes])),
+      churchId,
+      moduleCodes: Array.from(
+        new Set(["dashboard", "settings", "notifications", ...fallbackCodes])
+      ),
       source: "fallback",
     });
   } catch (error) {
