@@ -4,12 +4,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronDown } from "lucide-react";
 import { useState } from "react";
-import type { ModuleMenuGroup } from "@/lib/modules/moduleRegistry";
-
-function isActive(pathname: string, href: string) {
-  if (href === "/dashboard") return pathname === href;
-  return pathname === href || pathname.startsWith(`${href}/`);
-}
+import {
+  isActiveMenuItem,
+  type ModuleMenuGroup,
+} from "@/lib/modules/moduleRegistry";
 
 export default function MobileModuleAccordion({
   groups,
@@ -17,41 +15,37 @@ export default function MobileModuleAccordion({
   groups: ModuleMenuGroup[];
 }) {
   const pathname = usePathname();
-  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>(() => {
-    const initial: Record<string, boolean> = {};
+  const [openKey, setOpenKey] = useState<string>(() => {
+    const activeGroup = groups.find((group) =>
+      group.items.some((item) => isActiveMenuItem(pathname, item.href))
+    );
 
-    for (const group of groups) {
-      initial[group.key] =
-        group.key === "system" ||
-        group.items.some((item) => isActive(pathname, item.href));
-    }
-
-    return initial;
+    return activeGroup?.key || "system";
   });
 
   return (
-    <div className="space-y-4 pb-24">
+    <div className="space-y-3 pb-24">
       {groups.map((group) => {
         const Icon = group.icon;
-        const isOpen = openGroups[group.key] ?? false;
+        const isOpen = openKey === group.key;
+        const hasActiveItem = group.items.some((item) =>
+          isActiveMenuItem(pathname, item.href)
+        );
 
         return (
           <section
             key={group.key}
-            className="overflow-hidden rounded-[1.6rem] border border-[#DCEAF5] bg-white shadow-sm"
+            className="overflow-hidden rounded-[1.5rem] border border-[#DCEAF5] bg-white shadow-sm"
           >
             <button
               type="button"
-              onClick={() =>
-                setOpenGroups((previous) => ({
-                  ...previous,
-                  [group.key]: !isOpen,
-                }))
-              }
-              className="flex w-full items-center justify-between gap-3 px-4 py-4 text-left"
+              onClick={() => setOpenKey(isOpen ? "" : group.key)}
+              className={`flex w-full items-center justify-between gap-3 px-4 py-4 text-left ${
+                hasActiveItem || isOpen ? "bg-[#EAF3FA]" : "bg-white"
+              }`}
             >
               <span className="flex min-w-0 items-center gap-3">
-                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#EAF3FA] text-[#03357A]">
+                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white text-[#03357A] shadow-sm">
                   <Icon className="h-5 w-5" />
                 </span>
 
@@ -76,7 +70,7 @@ export default function MobileModuleAccordion({
               <div className="grid gap-2 border-t border-[#DCEAF5] bg-[#F8FBFD] p-3">
                 {group.items.map((item) => {
                   const ItemIcon = item.icon;
-                  const active = isActive(pathname, item.href);
+                  const active = isActiveMenuItem(pathname, item.href);
 
                   return (
                     <Link

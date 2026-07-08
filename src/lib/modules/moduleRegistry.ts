@@ -1,4 +1,5 @@
 import {
+  ArrowLeftRight,
   Bell,
   CalendarDays,
   ClipboardList,
@@ -20,7 +21,6 @@ import {
   Wallet,
   Warehouse,
   Wrench,
-  ArrowLeftRight,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -43,6 +43,7 @@ export type ModuleMenuItem = {
 export type ModuleMenuGroup = {
   key: ModuleCategory;
   title: string;
+  shortTitle: string;
   description: string;
   icon: LucideIcon;
   items: ModuleMenuItem[];
@@ -50,30 +51,35 @@ export type ModuleMenuGroup = {
 
 export const MODULE_CATEGORY_META: Record<
   ModuleCategory,
-  { title: string; description: string; icon: LucideIcon }
+  { title: string; shortTitle: string; description: string; icon: LucideIcon }
 > = {
   system: {
     title: "Général",
-    description: "Accueil, paramètres et accès rapides",
+    shortTitle: "Général",
+    description: "Accueil et paramètres",
     icon: Settings,
   },
   spiritual: {
     title: "Volet spirituel",
-    description: "Membres, présences, âmes et vie spirituelle",
+    shortTitle: "Spirituel",
+    description: "Membres, présences et suivi pastoral",
     icon: HeartHandshake,
   },
   administration: {
     title: "Volet administratif",
+    shortTitle: "Admin",
     description: "Courriers, transmissions, tâches et PV",
     icon: Inbox,
   },
   finance: {
     title: "Volet finances",
+    shortTitle: "Finances",
     description: "Entrées, dépenses, budgets et rapports",
     icon: Wallet,
   },
   patrimony: {
     title: "Volet patrimoine",
+    shortTitle: "Patrimoine",
     description: "Inventaire, maintenance et mouvements",
     icon: Warehouse,
   },
@@ -102,20 +108,6 @@ export const MODULE_MENU_ITEMS: ModuleMenuItem[] = [
     icon: Smartphone,
     category: "system",
     alwaysVisible: true,
-  },
-  {
-    code: "public_page",
-    label: "Page publique",
-    href: "/public-preview",
-    icon: Megaphone,
-    category: "system",
-  },
-  {
-    code: "member_qr",
-    label: "QR ajout membre",
-    href: "/members/qr",
-    icon: QrCode,
-    category: "system",
   },
   {
     code: "settings",
@@ -182,12 +174,26 @@ export const MODULE_MENU_ITEMS: ModuleMenuItem[] = [
     icon: HeartHandshake,
     category: "spiritual",
   },
+  {
+    code: "public_requests",
+    label: "Demandes publiques",
+    href: "/public-requests",
+    icon: Inbox,
+    category: "spiritual",
+  },
 
   {
     code: "correspondence",
     label: "Courriers",
     href: "/administration/correspondence",
     icon: FileText,
+    category: "administration",
+  },
+  {
+    code: "document_transmissions",
+    label: "Boîte de réception",
+    href: "/administration/inbox",
+    icon: Inbox,
     category: "administration",
   },
   {
@@ -278,7 +284,7 @@ export const MODULE_MENU_ITEMS: ModuleMenuItem[] = [
   },
 ];
 
-const CATEGORY_ORDER: ModuleCategory[] = [
+export const CATEGORY_ORDER: ModuleCategory[] = [
   "system",
   "spiritual",
   "administration",
@@ -296,8 +302,33 @@ export function getGroupedVisibleMenuItems(moduleCodes: string[]) {
   return CATEGORY_ORDER.map((category) => ({
     key: category,
     title: MODULE_CATEGORY_META[category].title,
+    shortTitle: MODULE_CATEGORY_META[category].shortTitle,
     description: MODULE_CATEGORY_META[category].description,
     icon: MODULE_CATEGORY_META[category].icon,
     items: visibleItems.filter((item) => item.category === category),
   })).filter((group) => group.items.length > 0);
+}
+
+export function findActiveMenuGroup(
+  groups: ModuleMenuGroup[],
+  pathname: string
+): ModuleMenuGroup | null {
+  const sortedGroups = groups.map((group) => ({
+    ...group,
+    items: [...group.items].sort((a, b) => b.href.length - a.href.length),
+  }));
+
+  return (
+    sortedGroups.find((group) =>
+      group.items.some((item) => {
+        if (item.href === "/dashboard") return pathname === item.href;
+        return pathname === item.href || pathname.startsWith(`${item.href}/`);
+      })
+    ) ?? null
+  );
+}
+
+export function isActiveMenuItem(pathname: string, href: string) {
+  if (href === "/dashboard") return pathname === href;
+  return pathname === href || pathname.startsWith(`${href}/`);
 }
