@@ -1,4 +1,5 @@
 import Link from "next/link";
+// import { UserPlus } from "lucide-react";
 import {
   Building2,
   CheckCircle2,
@@ -10,6 +11,7 @@ import {
   Pencil,
   Plus,
   Search,
+  UserPlus,
 } from "lucide-react";
 import SuperAdminShell from "@/components/layout/SuperAdminShell";
 import MetricCard from "@/components/dashboard/MetricCard";
@@ -69,7 +71,13 @@ export default async function SuperAdminChurchesPage() {
             >
               <Plus className="h-5 w-5" />
               Ajouter une église
-            </Link>
+            </Link><Link
+href="/super-admin/users/new"
+className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#03357A] px-5 py-3 text-sm font-extrabold text-white"
+>
+ <UserPlus className="h-4 w-4" />
+ Créer un utilisateur
+</Link>
           </div>
         </section>
 

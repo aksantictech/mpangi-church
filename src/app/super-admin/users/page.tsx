@@ -1,5 +1,12 @@
 import Link from "next/link";
-import { Church, Mail, ShieldCheck, UserCircle, Users } from "lucide-react";
+import {
+  Church,
+  Mail,
+  ShieldCheck,
+  UserCircle,
+  UserPlus,
+  Users,
+} from "lucide-react";
 import SuperAdminShell from "@/components/layout/SuperAdminShell";
 import MetricCard from "@/components/dashboard/MetricCard";
 import SuperAdminUserActions from "@/components/super-admin/SuperAdminUserActions";
@@ -42,18 +49,30 @@ export default async function SuperAdminUsersPage() {
     <SuperAdminShell>
       <div className="space-y-6">
         <section className="rounded-3xl bg-gradient-to-br from-[#03357A] via-[#2563EB] to-[#8B5CF6] p-6 text-white shadow-lg shadow-blue-900/20">
-          <p className="text-sm font-semibold uppercase tracking-[0.25em] text-blue-100">
-            Super Admin
-          </p>
+          <div className="flex flex-col justify-between gap-5 lg:flex-row lg:items-center">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.25em] text-blue-100">
+                Super Admin
+              </p>
 
-          <h1 className="mt-3 text-3xl font-extrabold">
-            Utilisateurs de la plateforme
-          </h1>
+              <h1 className="mt-3 text-3xl font-extrabold">
+                Utilisateurs de la plateforme
+              </h1>
 
-          <p className="mt-2 max-w-2xl text-sm leading-7 text-blue-50">
-            Consultez les comptes créés pour les églises, modifiez leurs rôles,
-            réinitialisez les mots de passe et gérez les accès.
-          </p>
+              <p className="mt-2 max-w-2xl text-sm leading-7 text-blue-50">
+                Consultez les comptes créés pour les églises, modifiez leurs
+                rôles, réinitialisez les mots de passe et gérez les accès.
+              </p>
+            </div>
+
+            <Link
+              href="/super-admin/users/new"
+              className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-5 py-3 text-sm font-extrabold text-[#03357A] shadow-sm transition hover:bg-[#EAF3FA]"
+            >
+              <UserPlus className="h-4 w-4" />
+              Créer un utilisateur
+            </Link>
+          </div>
         </section>
 
         <section className="grid gap-4 md:grid-cols-3">
@@ -83,13 +102,26 @@ export default async function SuperAdminUsersPage() {
         </section>
 
         <section className="rounded-3xl border border-[#DCEAF5] bg-white p-5 shadow-sm">
-          <h2 className="text-xl font-extrabold text-[#03357A]">
-            Liste des utilisateurs
-          </h2>
+          <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
+            <div>
+              <h2 className="text-xl font-extrabold text-[#03357A]">
+                Liste des utilisateurs
+              </h2>
 
-          <p className="mt-1 text-sm text-slate-500">
-            Gérez tous les utilisateurs de la plateforme depuis une seule vue.
-          </p>
+              <p className="mt-1 text-sm text-slate-500">
+                Gérez tous les utilisateurs de la plateforme depuis une seule
+                vue.
+              </p>
+            </div>
+
+            <Link
+              href="/super-admin/users/new"
+              className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#03357A] px-5 py-3 text-sm font-extrabold text-white shadow-sm transition hover:bg-[#022B63]"
+            >
+              <UserPlus className="h-4 w-4" />
+              Créer un utilisateur
+            </Link>
+          </div>
 
           <div className="mt-6 overflow-x-auto rounded-2xl border border-[#DCEAF5]">
             <table className="w-full min-w-[1050px] text-left text-sm">
@@ -172,7 +204,7 @@ export default async function SuperAdminUsersPage() {
 
                       <td className="px-4 py-4">
                         <span className="rounded-full bg-[#EAF3FA] px-3 py-1 text-xs font-bold text-[#03357A]">
-                          {profile.role}
+                          {profile.role || "-"}
                         </span>
                       </td>
 
@@ -192,7 +224,8 @@ export default async function SuperAdminUsersPage() {
                       <td className="px-4 py-4">
                         <span
                           className={`rounded-full px-3 py-1 text-xs font-bold ${
-                            profile.status === "inactive"
+                            profile.status === "inactive" ||
+                            profile.status === "disabled"
                               ? "bg-red-50 text-red-700"
                               : "bg-green-50 text-green-700"
                           }`}
