@@ -105,8 +105,8 @@ export default async function ChurchDetailsPage({
 
   return (
     <SuperAdminShell>
-      <div className="space-y-6 pb-24 md:pb-0">
-        <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+      <div className="space-y-6">
+        <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
           <div>
             <Link
               href="/super-admin/churches"
@@ -116,7 +116,7 @@ export default async function ChurchDetailsPage({
               Retour aux églises
             </Link>
 
-            <h1 className="mt-3 text-2xl sm:text-3xl font-extrabold text-[#03357A]">
+            <h1 className="mt-3 text-3xl font-extrabold text-[#03357A]">
               {church.name}
             </h1>
 
@@ -128,7 +128,7 @@ export default async function ChurchDetailsPage({
           <div className="flex flex-wrap gap-2">
             <Link
               href={`/super-admin/churches/${church.id}/edit`}
-              className="inline-flex items-center justify-center gap-2 rounded-2xl border border-[#DCEAF5] bg-white px-4 py-3 sm:px-5 text-sm font-bold text-[#03357A] hover:bg-[#EAF3FA]"
+              className="inline-flex items-center justify-center gap-2 rounded-2xl border border-[#DCEAF5] bg-white px-5 py-3 text-sm font-bold text-[#03357A] hover:bg-[#EAF3FA]"
             >
               <Pencil className="h-4 w-4" />
               Modifier
@@ -136,7 +136,7 @@ export default async function ChurchDetailsPage({
 
             <Link
               href={`/super-admin/churches/${church.id}/users/new`}
-              className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-4 py-3 sm:px-5 text-sm font-bold text-[#03357A] shadow-sm hover:bg-[#EAF3FA]"
+              className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-5 py-3 text-sm font-bold text-[#03357A] shadow-sm hover:bg-[#EAF3FA]"
             >
               <UserPlus className="h-4 w-4" />
               Créer un compte
@@ -145,7 +145,7 @@ export default async function ChurchDetailsPage({
             <Link
               href={`/church/${church.slug}`}
               target="_blank"
-              className="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#03357A] to-[#2563EB] px-4 py-3 sm:px-5 text-sm font-bold text-white shadow-lg shadow-blue-900/20"
+              className="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#03357A] to-[#2563EB] px-5 py-3 text-sm font-bold text-white shadow-lg shadow-blue-900/20"
             >
               Page publique
               <ExternalLink className="h-4 w-4" />
@@ -173,7 +173,7 @@ export default async function ChurchDetailsPage({
                 </div>
 
                 <div>
-                  <h2 className="text-2xl sm:text-3xl font-extrabold text-white">
+                  <h2 className="text-3xl font-extrabold text-white">
                     {church.name}
                   </h2>
 
@@ -193,7 +193,7 @@ export default async function ChurchDetailsPage({
             </div>
           </div>
 
-          <div className="grid gap-4 p-5 sm:p-6 md:grid-cols-2 xl:grid-cols-4">
+          <div className="grid gap-4 p-6 md:grid-cols-2 xl:grid-cols-4">
             <div className="rounded-2xl bg-[#F8FBFD] p-4">
               <MapPin className="h-5 w-5 text-[#3F79B3]" />
 
@@ -256,7 +256,7 @@ export default async function ChurchDetailsPage({
           </div>
         </section>
 
-        <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           <MetricCard
             title="Membres"
             value={membersCount ?? 0}
@@ -290,8 +290,8 @@ export default async function ChurchDetailsPage({
           />
         </section>
 
-        <section className="rounded-3xl border border-[#DCEAF5] bg-white p-5 sm:p-6 shadow-sm">
-          <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+        <section className="rounded-3xl border border-[#DCEAF5] bg-white p-6 shadow-sm">
+          <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
             <div>
               <h2 className="text-xl font-extrabold text-[#03357A]">
                 Utilisateurs de cette église
@@ -305,7 +305,7 @@ export default async function ChurchDetailsPage({
 
             <Link
               href={`/super-admin/churches/${church.id}/users/new`}
-              className="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#03357A] to-[#2563EB] px-4 py-3 sm:px-5 text-sm font-bold text-white shadow-lg shadow-blue-900/20"
+              className="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#03357A] to-[#2563EB] px-5 py-3 text-sm font-bold text-white shadow-lg shadow-blue-900/20"
             >
               <UserPlus className="h-4 w-4" />
               Créer un compte
@@ -396,8 +396,8 @@ export default async function ChurchDetailsPage({
           </div>
         </section>
 
-        <section className="rounded-3xl border border-[#DCEAF5] bg-white p-5 sm:p-6 shadow-sm">
-          <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+        <section className="rounded-3xl border border-[#DCEAF5] bg-white p-6 shadow-sm">
+          <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
             <div>
               <h2 className="text-xl font-extrabold text-[#03357A]">
                 Prochaines actions
@@ -410,14 +410,14 @@ export default async function ChurchDetailsPage({
 
             <Link
               href={`/super-admin/churches/${church.id}/users/new`}
-              className="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#03357A] to-[#2563EB] px-4 py-3 sm:px-5 text-sm font-bold text-white shadow-lg shadow-blue-900/20"
+              className="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#03357A] to-[#2563EB] px-5 py-3 text-sm font-bold text-white shadow-lg shadow-blue-900/20"
             >
               <UserPlus className="h-4 w-4" />
               Créer l’admin principal
             </Link>
           </div>
 
-          <div className="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          <div className="mt-5 grid gap-4 md:grid-cols-3">
             <ActionBox
               title="Créer l’admin principal"
               description="Associer un utilisateur à cette église avec le rôle administrateur."

@@ -43,13 +43,13 @@ export default async function NewMeetingPage({
 
   return (
     <AppShell>
-      <div className="space-y-6">
+      <div className="space-y-6 pb-24 md:pb-0">
         <Link href="/administration/minutes" className="inline-flex items-center gap-2 text-sm font-bold text-[#2563EB]">
           <ArrowLeft className="h-4 w-4" />
           Retour aux PV et réunions
         </Link>
 
-        <section className="rounded-3xl bg-gradient-to-br from-[#03357A] via-[#2563EB] to-[#8B5CF6] p-6 text-white shadow-lg shadow-blue-900/20">
+        <section className="rounded-3xl bg-gradient-to-br from-[#03357A] via-[#2563EB] to-[#8B5CF6] p-5 sm:p-6 text-white shadow-lg shadow-blue-900/20">
           <div className="flex items-start gap-4">
             <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white/15">
               <CalendarDays className="h-7 w-7" />
@@ -58,7 +58,7 @@ export default async function NewMeetingPage({
               <p className="text-sm font-semibold uppercase tracking-[0.25em] text-blue-100">
                 Nouvelle réunion
               </p>
-              <h1 className="mt-3 text-3xl font-extrabold">Créer un PV / une réunion</h1>
+              <h1 className="mt-3 text-2xl sm:text-3xl font-extrabold">Créer un PV / une réunion</h1>
               <p className="mt-2 max-w-3xl text-sm leading-7 text-blue-50">
                 Enregistrez l’ordre du jour, les participants, le procès-verbal, les décisions et le document lié.
               </p>
@@ -76,7 +76,7 @@ export default async function NewMeetingPage({
           <section className="rounded-3xl border border-[#DCEAF5] bg-white p-5 shadow-sm">
             <h2 className="text-lg font-extrabold text-[#03357A]">Informations de réunion</h2>
 
-            <div className="mt-5 grid gap-5 md:grid-cols-2">
+            <div className="mt-5 grid gap-4 sm:grid-cols-2">
               <Field label="Titre de la réunion" className="md:col-span-2">
                 <input name="title" required placeholder="Ex : Réunion administrative mensuelle..." className={inputClass} />
               </Field>
@@ -107,7 +107,7 @@ export default async function NewMeetingPage({
                 <input type="date" name="meeting_date" defaultValue={new Date().toISOString().slice(0, 10)} className={inputClass} />
               </Field>
 
-              <div className="grid gap-5 md:grid-cols-2">
+              <div className="grid gap-4 sm:grid-cols-2">
                 <Field label="Heure début">
                   <input type="time" name="start_time" className={inputClass} />
                 </Field>
@@ -207,10 +207,10 @@ export default async function NewMeetingPage({
           </section>
 
           <div className="sticky bottom-4 z-10 flex flex-col gap-3 rounded-3xl border border-[#DCEAF5] bg-white/95 p-4 shadow-lg backdrop-blur md:flex-row md:justify-end">
-            <Link href="/administration/minutes" className="inline-flex items-center justify-center rounded-2xl bg-[#EAF3FA] px-5 py-3 text-sm font-extrabold text-[#03357A]">
+            <Link href="/administration/minutes" className="inline-flex items-center justify-center rounded-2xl bg-[#EAF3FA] px-4 py-3 sm:px-5 text-sm font-extrabold text-[#03357A]">
               Annuler
             </Link>
-            <button type="submit" className="inline-flex items-center justify-center rounded-2xl bg-[#03357A] px-5 py-3 text-sm font-extrabold text-white shadow-lg shadow-blue-900/20">
+            <button type="submit" className="inline-flex items-center justify-center rounded-2xl bg-[#03357A] px-4 py-3 sm:px-5 text-sm font-extrabold text-white shadow-lg shadow-blue-900/20">
               Enregistrer la réunion
             </button>
           </div>

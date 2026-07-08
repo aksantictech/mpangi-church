@@ -26,17 +26,17 @@ export default async function NewCorrespondencePage({ searchParams }: NewCorresp
 
   return (
     <AppShell>
-      <div className="space-y-6 pb-24 md:pb-0">
+      <div className="space-y-6">
         <Link href="/administration/correspondence" className="inline-flex items-center gap-2 text-sm font-bold text-[#2563EB]">
           <ArrowLeft className="h-4 w-4" /> Retour aux courriers
         </Link>
 
-        <section className="rounded-3xl bg-gradient-to-br from-[#03357A] via-[#2563EB] to-[#8B5CF6] p-5 sm:p-6 text-white shadow-lg shadow-blue-900/20">
+        <section className="rounded-3xl bg-gradient-to-br from-[#03357A] via-[#2563EB] to-[#8B5CF6] p-6 text-white shadow-lg shadow-blue-900/20">
           <div className="flex items-start gap-4">
             <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white/15"><MailPlus className="h-7 w-7" /></div>
             <div>
               <p className="text-sm font-semibold uppercase tracking-[0.25em] text-blue-100">Nouveau courrier</p>
-              <h1 className="mt-3 text-2xl sm:text-3xl font-extrabold">Enregistrer un courrier</h1>
+              <h1 className="mt-3 text-3xl font-extrabold">Enregistrer un courrier</h1>
               <p className="mt-2 max-w-3xl text-sm leading-7 text-blue-50">Ajoutez un courrier entrant, sortant ou interne avec document joint, suivi administratif et responsable assigné.</p>
             </div>
           </div>
@@ -50,7 +50,7 @@ export default async function NewCorrespondencePage({ searchParams }: NewCorresp
               <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#EAF3FA] text-[#03357A]"><CalendarDays className="h-5 w-5" /></div>
               <div><h2 className="text-lg font-extrabold text-[#03357A]">Informations principales</h2><p className="text-sm text-slate-500">Type, date, objet, statut et priorité du courrier.</p></div>
             </div>
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="grid gap-5 md:grid-cols-2">
               <Field label="Type de courrier"><select name="type" defaultValue="incoming" required className={inputClass}><option value="incoming">Courrier entrant</option><option value="outgoing">Courrier sortant</option><option value="internal">Courrier interne</option></select></Field>
               <Field label="Date du courrier"><input type="date" name="correspondence_date" defaultValue={new Date().toISOString().slice(0, 10)} required className={inputClass} /></Field>
               <Field label="Objet du courrier" className="md:col-span-2"><input name="subject" required placeholder="Ex : Invitation officielle, demande administrative..." className={inputClass} /></Field>
@@ -62,7 +62,7 @@ export default async function NewCorrespondencePage({ searchParams }: NewCorresp
           <section className="rounded-3xl border border-[#DCEAF5] bg-white p-5 shadow-sm">
             <h2 className="text-lg font-extrabold text-[#03357A]">Expéditeur et destinataire</h2>
             <p className="mt-1 text-sm text-slate-500">Renseignez les personnes ou structures concernées.</p>
-            <div className="mt-5 grid gap-4 sm:grid-cols-2">
+            <div className="mt-5 grid gap-5 md:grid-cols-2">
               <Field label="Expéditeur"><input name="sender_name" placeholder="Nom de l’expéditeur" className={inputClass} /></Field>
               <Field label="Contact expéditeur"><input name="sender_contact" placeholder="Téléphone, email ou adresse" className={inputClass} /></Field>
               <Field label="Destinataire"><input name="recipient_name" placeholder="Nom du destinataire" className={inputClass} /></Field>
@@ -77,7 +77,7 @@ export default async function NewCorrespondencePage({ searchParams }: NewCorresp
               <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#EAF3FA] text-[#03357A]"><Paperclip className="h-5 w-5" /></div>
               <div><h2 className="text-lg font-extrabold text-[#03357A]">Document et suivi</h2><p className="text-sm text-slate-500">Joignez un fichier ou indiquez un lien externe.</p></div>
             </div>
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="grid gap-5 md:grid-cols-2">
               <Field label="Date limite"><input type="date" name="due_date" className={inputClass} /></Field>
               <Field label="Lien document externe"><input name="document_url" placeholder="Lien Drive, OneDrive, site web..." className={inputClass} /></Field>
               <div className="md:col-span-2">
@@ -94,8 +94,8 @@ export default async function NewCorrespondencePage({ searchParams }: NewCorresp
           </section>
 
           <div className="sticky bottom-4 z-10 flex flex-col gap-3 rounded-3xl border border-[#DCEAF5] bg-white/95 p-4 shadow-lg backdrop-blur md:flex-row md:justify-end">
-            <Link href="/administration/correspondence" className="inline-flex items-center justify-center rounded-2xl bg-[#EAF3FA] px-4 py-3 sm:px-5 text-sm font-extrabold text-[#03357A]">Annuler</Link>
-            <button type="submit" className="inline-flex items-center justify-center rounded-2xl bg-[#03357A] px-4 py-3 sm:px-5 text-sm font-extrabold text-white shadow-lg shadow-blue-900/20">Enregistrer le courrier</button>
+            <Link href="/administration/correspondence" className="inline-flex items-center justify-center rounded-2xl bg-[#EAF3FA] px-5 py-3 text-sm font-extrabold text-[#03357A]">Annuler</Link>
+            <button type="submit" className="inline-flex items-center justify-center rounded-2xl bg-[#03357A] px-5 py-3 text-sm font-extrabold text-white shadow-lg shadow-blue-900/20">Enregistrer le courrier</button>
           </div>
         </form>
       </div>

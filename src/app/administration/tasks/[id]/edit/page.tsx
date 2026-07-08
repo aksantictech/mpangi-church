@@ -51,13 +51,13 @@ export default async function EditAdministrativeTaskPage({
 
   return (
     <AppShell>
-      <div className="space-y-6">
+      <div className="space-y-6 pb-24 md:pb-0">
         <Link href={`/administration/tasks/${task.id}`} className="inline-flex items-center gap-2 text-sm font-bold text-[#2563EB]">
           <ArrowLeft className="h-4 w-4" />
           Retour à la fiche
         </Link>
 
-        <section className="rounded-3xl bg-gradient-to-br from-[#03357A] via-[#2563EB] to-[#8B5CF6] p-6 text-white shadow-lg shadow-blue-900/20">
+        <section className="rounded-3xl bg-gradient-to-br from-[#03357A] via-[#2563EB] to-[#8B5CF6] p-5 sm:p-6 text-white shadow-lg shadow-blue-900/20">
           <div className="flex items-start gap-4">
             <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white/15">
               <ListChecks className="h-7 w-7" />
@@ -66,7 +66,7 @@ export default async function EditAdministrativeTaskPage({
               <p className="text-sm font-semibold uppercase tracking-[0.25em] text-blue-100">
                 Modifier tâche
               </p>
-              <h1 className="mt-3 text-3xl font-extrabold">
+              <h1 className="mt-3 text-2xl sm:text-3xl font-extrabold">
                 {task.title}
               </h1>
               <p className="mt-2 max-w-3xl text-sm leading-7 text-blue-50">
@@ -90,7 +90,7 @@ export default async function EditAdministrativeTaskPage({
               Informations principales
             </h2>
 
-            <div className="mt-5 grid gap-5 md:grid-cols-2">
+            <div className="mt-5 grid gap-4 sm:grid-cols-2">
               <Field label="Titre de la tâche" className="md:col-span-2">
                 <input name="title" required defaultValue={task.title || ""} className={inputClass} />
               </Field>
@@ -167,7 +167,7 @@ export default async function EditAdministrativeTaskPage({
               Liaisons administratives
             </h2>
 
-            <div className="mt-5 grid gap-5 md:grid-cols-2">
+            <div className="mt-5 grid gap-4 sm:grid-cols-2">
               <Field label="Courrier lié">
                 <select name="related_correspondence_id" defaultValue={task.related_correspondence_id || ""} className={inputClass}>
                   <option value="">Aucun courrier</option>
@@ -236,10 +236,10 @@ export default async function EditAdministrativeTaskPage({
           </section>
 
           <div className="sticky bottom-4 z-10 flex flex-col gap-3 rounded-3xl border border-[#DCEAF5] bg-white/95 p-4 shadow-lg backdrop-blur md:flex-row md:justify-end">
-            <Link href={`/administration/tasks/${task.id}`} className="inline-flex items-center justify-center rounded-2xl bg-[#EAF3FA] px-5 py-3 text-sm font-extrabold text-[#03357A]">
+            <Link href={`/administration/tasks/${task.id}`} className="inline-flex items-center justify-center rounded-2xl bg-[#EAF3FA] px-4 py-3 sm:px-5 text-sm font-extrabold text-[#03357A]">
               Annuler
             </Link>
-            <button type="submit" className="inline-flex items-center justify-center rounded-2xl bg-[#03357A] px-5 py-3 text-sm font-extrabold text-white shadow-lg shadow-blue-900/20">
+            <button type="submit" className="inline-flex items-center justify-center rounded-2xl bg-[#03357A] px-4 py-3 sm:px-5 text-sm font-extrabold text-white shadow-lg shadow-blue-900/20">
               Enregistrer les modifications
             </button>
           </div>
