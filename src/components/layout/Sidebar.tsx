@@ -6,7 +6,6 @@ import {
   ChevronDown,
   ChevronsLeft,
   ChevronsRight,
-  LogOut,
   Search,
   Shield,
 } from "lucide-react";
@@ -276,22 +275,7 @@ export default function Sidebar() {
             })}
           </div>
         </nav>
-
-        {!collapsed && (
-          <div className="mt-3 rounded-2xl border border-[#DCEAF5] bg-[#F8FBFD] p-3">
-            <p className="text-xs font-black uppercase tracking-wide text-slate-400">
-              Session
-            </p>
-            <Link
-              href="/logout"
-              className="mt-2 flex items-center gap-2 text-sm font-extrabold text-slate-600 hover:text-red-600"
-            >
-              <LogOut className="h-4 w-4" />
-              Déconnexion
-            </Link>
-          </div>
-        )}
-      </div>
+</div>
     </aside>
   );
 }
