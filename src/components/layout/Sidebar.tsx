@@ -21,6 +21,7 @@ import {
   Home,
   Inbox,
   LayoutGrid,
+  MailCheck,
   MessageSquareText,
   PackageCheck,
   PieChart,
@@ -64,6 +65,7 @@ const ICONS: Record<string, LucideIcon> = {
   Home,
   Inbox,
   LayoutGrid,
+  MailCheck,
   MessageSquareText,
   PackageCheck,
   PieChart,
@@ -166,23 +168,6 @@ function SuperAdminSidebarContent({ pathname }: { pathname: string }) {
           );
         })}
       </nav>
-
-      <div className="p-4">
-        <div className="rounded-3xl border border-[#DCEAF5] bg-gradient-to-br from-white to-[#F5F9FC] p-5 shadow-sm">
-          <div className="flex items-center gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#EAF3FA] text-[#03357A]">
-              <LayoutGrid className="h-6 w-6" />
-            </div>
-
-            <div>
-              <p className="font-extrabold text-[#03357A]">AKSANTIC</p>
-              <p className="text-xs font-semibold text-slate-500">
-                Technology Platform
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
     </>
   );
 }

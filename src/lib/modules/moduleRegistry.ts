@@ -147,6 +147,15 @@ export const MODULE_MENU_ITEMS: ModuleMenuItem[] = [
   },
   {
     code: "document_transmissions",
+    title: "Boîte administrative",
+    description: "Documents reçus, envoyés, urgents et en retard",
+    href: "/administration/inbox",
+    category: "administration",
+    iconKey: "MailCheck",
+    sortOrder: 205,
+  },
+  {
+    code: "document_transmissions",
     title: "Transmission documents",
     description: "Transmission interne, suivi et accusés de réception",
     href: "/administration/transmissions",
@@ -352,7 +361,8 @@ const GROUP_META: Record<
 };
 
 export function getVisibleMenuItems(moduleCodes: string[]) {
-  const enabledCodes = moduleCodes.length > 0 ? new Set(moduleCodes) : FALLBACK_CODES;
+  const enabledCodes =
+    moduleCodes.length > 0 ? new Set(moduleCodes) : FALLBACK_CODES;
 
   return MODULE_MENU_ITEMS.filter((item) => {
     if (ALWAYS_VISIBLE_CODES.has(item.code)) return true;
