@@ -3,23 +3,23 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  Home,
+  Bell,
+  LayoutDashboard,
   Menu,
-  MessageSquareHeart,
   QrCode,
-  Users,
+  Settings,
 } from "lucide-react";
 
-const navItems = [
+const NAV_ITEMS = [
   {
     label: "Accueil",
     href: "/dashboard",
-    icon: Home,
+    icon: LayoutDashboard,
   },
   {
-    label: "Membres",
-    href: "/members",
-    icon: Users,
+    label: "Menu",
+    href: "/mobile-menu",
+    icon: Menu,
   },
   {
     label: "Scanner",
@@ -27,40 +27,44 @@ const navItems = [
     icon: QrCode,
   },
   {
-    label: "Demandes",
-    href: "/public-requests",
-    icon: MessageSquareHeart,
+    label: "Alertes",
+    href: "/notifications",
+    icon: Bell,
   },
   {
-    label: "Menu",
-    href: "/mobile-menu",
-    icon: Menu,
+    label: "Réglages",
+    href: "/settings",
+    icon: Settings,
   },
 ];
+
+function isActive(pathname: string, href: string) {
+  if (href === "/dashboard") return pathname === href;
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
 
 export default function MobileBottomNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-50 border-t border-[#DCEAF5] bg-white/95 px-2 pb-3 pt-2 shadow-[0_-10px_30px_rgba(15,23,42,0.08)] backdrop-blur lg:hidden">
-      <div className="mx-auto grid max-w-md grid-cols-5 gap-1">
-        {navItems.map((item) => {
+    <nav className="fixed bottom-3 left-3 right-3 z-50 lg:hidden">
+      <div className="grid grid-cols-5 gap-1 rounded-[1.7rem] border border-[#DCEAF5] bg-white/95 p-2 shadow-2xl shadow-slate-900/15 backdrop-blur">
+        {NAV_ITEMS.map((item) => {
           const Icon = item.icon;
-          const active =
-            pathname === item.href || pathname.startsWith(`${item.href}/`);
+          const active = isActive(pathname, item.href);
 
           return (
             <Link
               key={item.href}
               href={item.href}
-              className={`flex flex-col items-center justify-center rounded-2xl px-2 py-2 text-[11px] font-extrabold transition ${
+              className={`flex min-h-[58px] flex-col items-center justify-center rounded-2xl px-1 text-[11px] font-extrabold transition ${
                 active
-                  ? "bg-[#03357A] text-white shadow-lg shadow-blue-900/20"
+                  ? "bg-[#03357A] text-white"
                   : "text-slate-500 hover:bg-[#EAF3FA] hover:text-[#03357A]"
               }`}
             >
               <Icon className="mb-1 h-5 w-5" />
-              {item.label}
+              <span className="max-w-full truncate">{item.label}</span>
             </Link>
           );
         })}
