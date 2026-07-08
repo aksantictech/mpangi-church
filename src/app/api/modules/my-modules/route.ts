@@ -2,11 +2,6 @@ import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
-type AppModuleRow = {
-  code: string;
-  category: string;
-};
-
 const FULL_ACCESS_ROLES = new Set([
   "admin",
   "administrator",
@@ -40,36 +35,61 @@ const PATRIMONY_ROLES = new Set([
   "patrimoine_manager",
 ]);
 
+const WORKER_ROLES = new Set(["worker", "ouvrier", "viewer", "member_manager"]);
+
 function normalizeRole(role?: string | null) {
   return String(role || "").trim().toLowerCase();
 }
 
-function getFallbackAllowedCodes(role: string, enabledModules: AppModuleRow[]) {
-  if (FULL_ACCESS_ROLES.has(role)) {
-    return enabledModules.map((module) => module.code);
+function fallbackCanView(role: string, moduleCode: string) {
+  if (FULL_ACCESS_ROLES.has(role)) return true;
+
+  if (ADMINISTRATION_ROLES.has(role)) {
+    return [
+      "dashboard",
+      "notifications",
+      "correspondence",
+      "document_transmissions",
+      "administrative_tasks",
+      "meetings_minutes",
+    ].includes(moduleCode);
   }
 
-  return enabledModules
-    .filter((module) => {
-      if (module.category === "system" || module.category === "spiritual") {
-        return true;
-      }
+  if (FINANCE_ROLES.has(role)) {
+    return [
+      "dashboard",
+      "notifications",
+      "finance_dashboard",
+      "offerings",
+      "expenses",
+      "budgets",
+      "financial_reports",
+    ].includes(moduleCode);
+  }
 
-      if (module.category === "administration") {
-        return ADMINISTRATION_ROLES.has(role);
-      }
+  if (PATRIMONY_ROLES.has(role)) {
+    return [
+      "dashboard",
+      "notifications",
+      "patrimony_dashboard",
+      "assets",
+      "asset_maintenance",
+      "asset_movements",
+    ].includes(moduleCode);
+  }
 
-      if (module.category === "finance") {
-        return FINANCE_ROLES.has(role);
-      }
+  if (WORKER_ROLES.has(role)) {
+    return [
+      "dashboard",
+      "members",
+      "attendance",
+      "souls",
+      "departments",
+      "events",
+    ].includes(moduleCode);
+  }
 
-      if (module.category === "patrimony") {
-        return PATRIMONY_ROLES.has(role);
-      }
-
-      return false;
-    })
-    .map((module) => module.code);
+  return ["dashboard"].includes(moduleCode);
 }
 
 export async function GET() {
@@ -94,79 +114,98 @@ export async function GET() {
       .maybeSingle();
 
     if (!profile) {
-      return NextResponse.json(
-        { error: "Profil utilisateur introuvable." },
-        { status: 403 }
-      );
+      return NextResponse.json({ error: "Profil introuvable." }, { status: 403 });
     }
 
     if (profile.status && profile.status !== "active") {
-      return NextResponse.json(
-        { error: "Compte désactivé." },
-        { status: 403 }
-      );
+      return NextResponse.json({ error: "Compte désactivé." }, { status: 403 });
     }
 
-    if (profile.role === "super_admin") {
+    const role = normalizeRole(profile.role);
+
+    if (role === "super_admin") {
       return NextResponse.json({
-        role: profile.role,
+        role,
         churchId: null,
         moduleCodes: [],
       });
     }
 
     if (!profile.church_id) {
-      return NextResponse.json(
-        { error: "Aucune église rattachée à ce compte." },
-        { status: 403 }
-      );
+      return NextResponse.json({
+        role,
+        churchId: null,
+        moduleCodes: ["dashboard"],
+      });
     }
 
     const admin = createAdminClient();
-    const role = normalizeRole(profile.role);
 
-    const [{ data: enabledModules }, { data: permissions }] = await Promise.all([
-      admin
-        .from("church_modules")
-        .select("module_code, app_modules!inner(code, category)")
-        .eq("church_id", profile.church_id)
-        .eq("enabled", true),
+    const { data: enabledRows } = await admin
+      .from("church_modules")
+      .select("module_code, enabled")
+      .eq("church_id", profile.church_id)
+      .eq("enabled", true);
 
-      admin
-        .from("church_role_module_permissions")
-        .select("module_code, can_view")
-        .eq("church_id", profile.church_id)
-        .eq("role", profile.role)
-        .eq("can_view", true),
-    ]);
+    const enabledCodes = new Set((enabledRows ?? []).map((row: any) => row.module_code));
 
-    const activeModules: AppModuleRow[] = (enabledModules ?? []).map(
-      (row: any) => ({
-        code: row.module_code,
-        category: row.app_modules?.category || "system",
-      })
-    );
+    const { data: explicitPermissions } = await admin
+      .from("profile_module_permissions")
+      .select("module_code, can_view")
+      .eq("church_id", profile.church_id)
+      .eq("profile_id", profile.id);
 
-    const permissionCodes = new Set(
-      (permissions ?? []).map((permission: any) => permission.module_code)
-    );
+    const hasExplicitPermissions = (explicitPermissions ?? []).length > 0;
 
-    let moduleCodes = activeModules
-      .map((module) => module.code)
-      .filter((code) => permissionCodes.has(code));
+    if (hasExplicitPermissions) {
+      const moduleCodes = (explicitPermissions ?? [])
+        .filter((permission: any) => permission.can_view)
+        .map((permission: any) => permission.module_code)
+        .filter((code: string) => enabledCodes.has(code));
 
-    if (moduleCodes.length === 0) {
-      moduleCodes = getFallbackAllowedCodes(role, activeModules);
+      return NextResponse.json({
+        role,
+        churchId: profile.church_id,
+        moduleCodes: Array.from(new Set(["dashboard", ...moduleCodes])),
+        source: "profile",
+      });
     }
 
+    const { data: rolePermissions } = await admin
+      .from("church_role_module_permissions")
+      .select("module_code, can_view")
+      .eq("church_id", profile.church_id)
+      .eq("role", role);
+
+    const hasRolePermissions = (rolePermissions ?? []).length > 0;
+
+    if (hasRolePermissions) {
+      const moduleCodes = (rolePermissions ?? [])
+        .filter((permission: any) => permission.can_view)
+        .map((permission: any) => permission.module_code)
+        .filter((code: string) => enabledCodes.has(code));
+
+      return NextResponse.json({
+        role,
+        churchId: profile.church_id,
+        moduleCodes: Array.from(new Set(["dashboard", ...moduleCodes])),
+        source: "role",
+      });
+    }
+
+    const fallbackCodes = Array.from(enabledCodes).filter((code) =>
+      fallbackCanView(role, code)
+    );
+
     return NextResponse.json({
-      role: profile.role,
+      role,
       churchId: profile.church_id,
-      moduleCodes,
+      moduleCodes: Array.from(new Set(["dashboard", ...fallbackCodes])),
+      source: "fallback",
     });
-  } catch {
+  } catch (error) {
     return NextResponse.json(
-      { error: "Erreur pendant le chargement des modules." },
+      { error: "Impossible de charger les modules." },
       { status: 500 }
     );
   }

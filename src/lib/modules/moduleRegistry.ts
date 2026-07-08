@@ -1,3 +1,29 @@
+import {
+  Bell,
+  CalendarDays,
+  ClipboardList,
+  FileText,
+  HeartHandshake,
+  Home,
+  Inbox,
+  Landmark,
+  LayoutDashboard,
+  ListChecks,
+  Megaphone,
+  PackageCheck,
+  PieChart,
+  QrCode,
+  ReceiptText,
+  Settings,
+  Smartphone,
+  UsersRound,
+  Wallet,
+  Warehouse,
+  Wrench,
+  ArrowLeftRight,
+} from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+
 export type ModuleCategory =
   | "system"
   | "spiritual"
@@ -7,386 +33,271 @@ export type ModuleCategory =
 
 export type ModuleMenuItem = {
   code: string;
-  title: string;
-  description: string;
+  label: string;
   href: string;
+  icon: LucideIcon;
   category: ModuleCategory;
-  iconKey: string;
-  sortOrder: number;
-  activePaths?: string[];
+  alwaysVisible?: boolean;
 };
 
 export type ModuleMenuGroup = {
-  category: ModuleCategory;
+  key: ModuleCategory;
   title: string;
   description: string;
-  sortOrder: number;
+  icon: LucideIcon;
   items: ModuleMenuItem[];
+};
+
+export const MODULE_CATEGORY_META: Record<
+  ModuleCategory,
+  { title: string; description: string; icon: LucideIcon }
+> = {
+  system: {
+    title: "Général",
+    description: "Accueil, paramètres et accès rapides",
+    icon: Settings,
+  },
+  spiritual: {
+    title: "Volet spirituel",
+    description: "Membres, présences, âmes et vie spirituelle",
+    icon: HeartHandshake,
+  },
+  administration: {
+    title: "Volet administratif",
+    description: "Courriers, transmissions, tâches et PV",
+    icon: Inbox,
+  },
+  finance: {
+    title: "Volet finances",
+    description: "Entrées, dépenses, budgets et rapports",
+    icon: Wallet,
+  },
+  patrimony: {
+    title: "Volet patrimoine",
+    description: "Inventaire, maintenance et mouvements",
+    icon: Warehouse,
+  },
 };
 
 export const MODULE_MENU_ITEMS: ModuleMenuItem[] = [
   {
     code: "dashboard",
-    title: "Dashboard",
-    description: "Vue générale de l’église",
+    label: "Dashboard",
     href: "/dashboard",
+    icon: LayoutDashboard,
     category: "system",
-    iconKey: "Home",
-    sortOrder: 1,
-  },
-  {
-    code: "members",
-    title: "Membres",
-    description: "Liste, fiches, QR Codes, cartes et import Excel",
-    href: "/members",
-    category: "spiritual",
-    iconKey: "Users",
-    sortOrder: 10,
-  },
-  {
-    code: "attendance",
-    title: "Présences",
-    description: "Pointage manuel, rapports et scanner QR",
-    href: "/attendance",
-    category: "spiritual",
-    iconKey: "CalendarCheck",
-    sortOrder: 20,
-    activePaths: ["/attendance", "/attendance/reports"],
-  },
-  {
-    code: "attendance",
-    title: "Scanner QR",
-    description: "Scanner rapidement les présences par QR Code",
-    href: "/attendance/scanner",
-    category: "spiritual",
-    iconKey: "ScanLine",
-    sortOrder: 21,
-    activePaths: ["/attendance/scanner"],
-  },
-  {
-    code: "souls",
-    title: "Suivi des âmes",
-    description: "Accompagnement pastoral",
-    href: "/souls",
-    category: "spiritual",
-    iconKey: "HeartHandshake",
-    sortOrder: 30,
-  },
-  {
-    code: "departments",
-    title: "Départements",
-    description: "Services, ministères et affectations",
-    href: "/departments",
-    category: "spiritual",
-    iconKey: "Building2",
-    sortOrder: 40,
-  },
-  {
-    code: "events",
-    title: "Événements",
-    description: "Cultes, programmes et activités",
-    href: "/events",
-    category: "spiritual",
-    iconKey: "CalendarDays",
-    sortOrder: 50,
-  },
-  {
-    code: "publications",
-    title: "Publications",
-    description: "Enseignements, vidéos, messages et annonces",
-    href: "/publications",
-    category: "spiritual",
-    iconKey: "BookOpenText",
-    sortOrder: 60,
-  },
-  {
-    code: "public_requests",
-    title: "Demandes publiques",
-    description: "Prières, rendez-vous, intégrations",
-    href: "/public-requests",
-    category: "spiritual",
-    iconKey: "MessageSquareText",
-    sortOrder: 70,
-  },
-  {
-    code: "appointments",
-    title: "Rendez-vous",
-    description: "Gestion des rendez-vous pastoraux",
-    href: "/appointments",
-    category: "spiritual",
-    iconKey: "Church",
-    sortOrder: 80,
-  },
-  {
-    code: "testimonies",
-    title: "Témoignages",
-    description: "Gestion des témoignages reçus",
-    href: "/testimonies",
-    category: "spiritual",
-    iconKey: "TestTube2",
-    sortOrder: 90,
+    alwaysVisible: true,
   },
   {
     code: "notifications",
-    title: "Notifications",
-    description: "Annonces push et historique d’envoi",
+    label: "Notifications",
     href: "/notifications",
+    icon: Bell,
     category: "system",
-    iconKey: "Bell",
-    sortOrder: 100,
+  },
+  {
+    code: "pwa_install",
+    label: "Installer l’application",
+    href: "/install",
+    icon: Smartphone,
+    category: "system",
+    alwaysVisible: true,
+  },
+  {
+    code: "public_page",
+    label: "Page publique",
+    href: "/public-preview",
+    icon: Megaphone,
+    category: "system",
+  },
+  {
+    code: "member_qr",
+    label: "QR ajout membre",
+    href: "/members/qr",
+    icon: QrCode,
+    category: "system",
+  },
+  {
+    code: "settings",
+    label: "Paramètres",
+    href: "/settings",
+    icon: Settings,
+    category: "system",
+    alwaysVisible: true,
+  },
+
+  {
+    code: "members",
+    label: "Membres",
+    href: "/members",
+    icon: UsersRound,
+    category: "spiritual",
+  },
+  {
+    code: "attendance",
+    label: "Présences",
+    href: "/attendance",
+    icon: QrCode,
+    category: "spiritual",
+  },
+  {
+    code: "souls",
+    label: "Suivi des âmes",
+    href: "/souls",
+    icon: HeartHandshake,
+    category: "spiritual",
+  },
+  {
+    code: "departments",
+    label: "Départements",
+    href: "/departments",
+    icon: Home,
+    category: "spiritual",
+  },
+  {
+    code: "events",
+    label: "Événements",
+    href: "/events",
+    icon: CalendarDays,
+    category: "spiritual",
+  },
+  {
+    code: "publications",
+    label: "Publications",
+    href: "/publications",
+    icon: Megaphone,
+    category: "spiritual",
+  },
+  {
+    code: "appointments",
+    label: "Rendez-vous",
+    href: "/appointments",
+    icon: CalendarDays,
+    category: "spiritual",
+  },
+  {
+    code: "testimonies",
+    label: "Témoignages",
+    href: "/testimonies",
+    icon: HeartHandshake,
+    category: "spiritual",
   },
 
   {
     code: "correspondence",
-    title: "Courriers",
-    description: "Courriers entrants, sortants et internes",
+    label: "Courriers",
     href: "/administration/correspondence",
+    icon: FileText,
     category: "administration",
-    iconKey: "Inbox",
-    sortOrder: 200,
   },
   {
     code: "document_transmissions",
-    title: "Boîte administrative",
-    description: "Documents reçus, envoyés, urgents et en retard",
-    href: "/administration/inbox",
-    category: "administration",
-    iconKey: "MailCheck",
-    sortOrder: 205,
-  },
-  {
-    code: "document_transmissions",
-    title: "Transmission documents",
-    description: "Transmission interne, suivi et accusés de réception",
+    label: "Transmissions",
     href: "/administration/transmissions",
+    icon: Inbox,
     category: "administration",
-    iconKey: "FileText",
-    sortOrder: 210,
   },
   {
     code: "administrative_tasks",
-    title: "Tâches administratives",
-    description: "Tâches, délais et responsabilités internes",
+    label: "Tâches administratives",
     href: "/administration/tasks",
+    icon: ListChecks,
     category: "administration",
-    iconKey: "ClipboardCheck",
-    sortOrder: 220,
   },
   {
     code: "meetings_minutes",
-    title: "PV et réunions",
-    description: "Procès-verbaux, réunions et décisions",
+    label: "PV et réunions",
     href: "/administration/minutes",
+    icon: ClipboardList,
     category: "administration",
-    iconKey: "ScrollText",
-    sortOrder: 230,
   },
 
   {
     code: "finance_dashboard",
-    title: "Dashboard finances",
-    description: "Vue financière globale",
+    label: "Dashboard finances",
     href: "/finance",
+    icon: Wallet,
     category: "finance",
-    iconKey: "Wallet",
-    sortOrder: 300,
   },
   {
     code: "offerings",
-    title: "Offrandes et dîmes",
-    description: "Entrées : offrandes, dîmes, dons et cotisations",
+    label: "Entrées / offrandes",
     href: "/finance/offerings",
+    icon: ReceiptText,
     category: "finance",
-    iconKey: "HandCoins",
-    sortOrder: 310,
   },
   {
     code: "expenses",
-    title: "Dépenses",
-    description: "Dépenses, justificatifs et validations",
+    label: "Dépenses",
     href: "/finance/expenses",
+    icon: Landmark,
     category: "finance",
-    iconKey: "ReceiptText",
-    sortOrder: 320,
   },
   {
     code: "budgets",
-    title: "Budgets",
-    description: "Budgets par période, activité ou département",
+    label: "Budgets",
     href: "/finance/budgets",
+    icon: PieChart,
     category: "finance",
-    iconKey: "PieChart",
-    sortOrder: 330,
   },
   {
     code: "financial_reports",
-    title: "Rapports financiers",
-    description: "Exports et synthèses financières",
+    label: "Rapports financiers",
     href: "/finance/reports",
+    icon: FileText,
     category: "finance",
-    iconKey: "BarChart3",
-    sortOrder: 340,
   },
 
   {
     code: "patrimony_dashboard",
-    title: "Dashboard patrimoine",
-    description: "Vue globale du patrimoine",
+    label: "Dashboard patrimoine",
     href: "/patrimony",
+    icon: Warehouse,
     category: "patrimony",
-    iconKey: "Warehouse",
-    sortOrder: 400,
   },
   {
     code: "assets",
-    title: "Biens et patrimoine",
-    description: "Inventaire des biens, matériels, véhicules et bâtiments",
+    label: "Biens / inventaire",
     href: "/patrimony/assets",
+    icon: PackageCheck,
     category: "patrimony",
-    iconKey: "PackageCheck",
-    sortOrder: 410,
   },
   {
     code: "asset_maintenance",
-    title: "Maintenance patrimoine",
-    description: "Réparations, maintenance et suivi des biens",
+    label: "Maintenance",
     href: "/patrimony/maintenance",
+    icon: Wrench,
     category: "patrimony",
-    iconKey: "Wrench",
-    sortOrder: 420,
   },
   {
     code: "asset_movements",
-    title: "Mouvements patrimoine",
-    description: "Affectations, sorties, retours et pertes",
+    label: "Mouvements",
     href: "/patrimony/movements",
+    icon: ArrowLeftRight,
     category: "patrimony",
-    iconKey: "ArrowLeftRight",
-    sortOrder: 430,
-  },
-
-  {
-    code: "install",
-    title: "Installer l’application",
-    description: "Ajouter Mpangi-church sur le téléphone",
-    href: "/install",
-    category: "system",
-    iconKey: "Download",
-    sortOrder: 900,
-  },
-  {
-    code: "public_page_settings",
-    title: "Page publique",
-    description: "Nom public, dons, contacts et YouTube",
-    href: "/settings/public-page",
-    category: "system",
-    iconKey: "Globe",
-    sortOrder: 910,
-  },
-  {
-    code: "member_registration_settings",
-    title: "QR ajout membre",
-    description: "Lien public et QR Code d’ajout membre",
-    href: "/settings/member-registration",
-    category: "system",
-    iconKey: "QrCode",
-    sortOrder: 920,
-  },
-  {
-    code: "settings",
-    title: "Paramètres",
-    description: "Compte, église et configuration",
-    href: "/settings",
-    category: "system",
-    iconKey: "Settings",
-    sortOrder: 930,
   },
 ];
 
-const FALLBACK_CODES = new Set([
-  "dashboard",
-  "members",
-  "attendance",
-  "souls",
-  "departments",
-  "events",
-  "publications",
-  "public_requests",
-  "appointments",
-  "testimonies",
-  "notifications",
-  "install",
-  "public_page_settings",
-  "member_registration_settings",
-  "settings",
-]);
-
-const ALWAYS_VISIBLE_CODES = new Set([
-  "dashboard",
-  "install",
-  "public_page_settings",
-  "member_registration_settings",
-  "settings",
-]);
-
-const GROUP_META: Record<
-  ModuleCategory,
-  { title: string; description: string; sortOrder: number }
-> = {
-  system: {
-    title: "Général",
-    description: "Accès global, installation, notifications et paramètres",
-    sortOrder: 1,
-  },
-  spiritual: {
-    title: "Volet spirituel",
-    description: "Vie pastorale, membres, présences et activités spirituelles",
-    sortOrder: 10,
-  },
-  administration: {
-    title: "Volet administratif",
-    description: "Courriers, documents, transmissions internes et tâches",
-    sortOrder: 20,
-  },
-  finance: {
-    title: "Volet finances",
-    description: "Entrées, dépenses, budgets et rapports financiers",
-    sortOrder: 30,
-  },
-  patrimony: {
-    title: "Volet patrimoine",
-    description: "Biens, inventaire, maintenance et affectations",
-    sortOrder: 40,
-  },
-};
-
-export function getVisibleMenuItems(moduleCodes: string[]) {
-  const enabledCodes =
-    moduleCodes.length > 0 ? new Set(moduleCodes) : FALLBACK_CODES;
-
-  return MODULE_MENU_ITEMS.filter((item) => {
-    if (ALWAYS_VISIBLE_CODES.has(item.code)) return true;
-    return enabledCodes.has(item.code);
-  }).sort((a, b) => a.sortOrder - b.sortOrder);
-}
+const CATEGORY_ORDER: ModuleCategory[] = [
+  "system",
+  "spiritual",
+  "administration",
+  "finance",
+  "patrimony",
+];
 
 export function getGroupedVisibleMenuItems(moduleCodes: string[]) {
-  const visibleItems = getVisibleMenuItems(moduleCodes);
-  const groupsMap = new Map<ModuleCategory, ModuleMenuItem[]>();
+  const visibleCodes = new Set(moduleCodes);
 
-  for (const item of visibleItems) {
-    const existing = groupsMap.get(item.category) ?? [];
-    existing.push(item);
-    groupsMap.set(item.category, existing);
-  }
+  const visibleItems = MODULE_MENU_ITEMS.filter(
+    (item) => item.alwaysVisible || visibleCodes.has(item.code)
+  );
 
-  return Array.from(groupsMap.entries())
-    .map(([category, items]) => ({
-      category,
-      title: GROUP_META[category].title,
-      description: GROUP_META[category].description,
-      sortOrder: GROUP_META[category].sortOrder,
-      items: items.sort((a, b) => a.sortOrder - b.sortOrder),
-    }))
-    .sort((a, b) => a.sortOrder - b.sortOrder);
+  return CATEGORY_ORDER.map((category) => ({
+    key: category,
+    title: MODULE_CATEGORY_META[category].title,
+    description: MODULE_CATEGORY_META[category].description,
+    icon: MODULE_CATEGORY_META[category].icon,
+    items: visibleItems.filter((item) => item.category === category),
+  })).filter((group) => group.items.length > 0);
 }
