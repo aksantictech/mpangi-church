@@ -1,0 +1,2757 @@
+[
+  {
+    "file": "src/app/account/profile/page.tsx",
+    "route": "/account/profile",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "unknown",
+    "expectedHelper": null,
+    "expectedModule": null,
+    "protected": false,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/account/security/page.tsx",
+    "route": "/account/security",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "unknown",
+    "expectedHelper": null,
+    "expectedModule": null,
+    "protected": false,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/administration/correspondence/actions.ts",
+    "route": "/administration/correspondence",
+    "fileType": "actions.ts",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "correspondence",
+    "protected": true,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/administration/correspondence/new/page.tsx",
+    "route": "/administration/correspondence/new",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "correspondence",
+    "protected": true,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/administration/correspondence/page.tsx",
+    "route": "/administration/correspondence",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "correspondence",
+    "protected": true,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/administration/correspondence/[id]/page.tsx",
+    "route": "/administration/correspondence/[id]",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "correspondence",
+    "protected": true,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/administration/inbox/page.tsx",
+    "route": "/administration/inbox",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "document_transmissions",
+    "protected": false,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/administration/minutes/actions.ts",
+    "route": "/administration/minutes",
+    "fileType": "actions.ts",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "meetings_minutes",
+    "protected": true,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/administration/minutes/new/page.tsx",
+    "route": "/administration/minutes/new",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "meetings_minutes",
+    "protected": true,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/administration/minutes/page.tsx",
+    "route": "/administration/minutes",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "meetings_minutes",
+    "protected": true,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/administration/minutes/[id]/edit/page.tsx",
+    "route": "/administration/minutes/[id]/edit",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "meetings_minutes",
+    "protected": true,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/administration/minutes/[id]/page.tsx",
+    "route": "/administration/minutes/[id]",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "meetings_minutes",
+    "protected": true,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/administration/tasks/actions.ts",
+    "route": "/administration/tasks",
+    "fileType": "actions.ts",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "administrative_tasks",
+    "protected": true,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/administration/tasks/new/page.tsx",
+    "route": "/administration/tasks/new",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "administrative_tasks",
+    "protected": true,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/administration/tasks/page.tsx",
+    "route": "/administration/tasks",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "administrative_tasks",
+    "protected": true,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/administration/tasks/[id]/edit/page.tsx",
+    "route": "/administration/tasks/[id]/edit",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "administrative_tasks",
+    "protected": true,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/administration/tasks/[id]/page.tsx",
+    "route": "/administration/tasks/[id]",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "administrative_tasks",
+    "protected": true,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/administration/transmissions/actions.ts",
+    "route": "/administration/transmissions",
+    "fileType": "actions.ts",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "document_transmissions",
+    "protected": true,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/administration/transmissions/new/page.tsx",
+    "route": "/administration/transmissions/new",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "document_transmissions",
+    "protected": true,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/administration/transmissions/page.tsx",
+    "route": "/administration/transmissions",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "document_transmissions",
+    "protected": true,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/administration/transmissions/[id]/edit/page.tsx",
+    "route": "/administration/transmissions/[id]/edit",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "document_transmissions",
+    "protected": true,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/administration/transmissions/[id]/page.tsx",
+    "route": "/administration/transmissions/[id]",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "document_transmissions",
+    "protected": true,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/api/attendance/event-presence/route.ts",
+    "route": "/api/attendance/event-presence",
+    "fileType": "route.ts",
+    "publicRoute": true,
+    "expectedType": "public",
+    "expectedHelper": null,
+    "expectedModule": null,
+    "protected": true,
+    "importedAdminClient": true,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/api/attendance/export/route.ts",
+    "route": "/api/attendance/export",
+    "fileType": "route.ts",
+    "publicRoute": true,
+    "expectedType": "public",
+    "expectedHelper": null,
+    "expectedModule": null,
+    "protected": true,
+    "importedAdminClient": true,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/api/attendance/scan/route.ts",
+    "route": "/api/attendance/scan",
+    "fileType": "route.ts",
+    "publicRoute": true,
+    "expectedType": "public",
+    "expectedHelper": null,
+    "expectedModule": null,
+    "protected": true,
+    "importedAdminClient": true,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/api/documents/download/route.ts",
+    "route": "/api/documents/download",
+    "fileType": "route.ts",
+    "publicRoute": true,
+    "expectedType": "public",
+    "expectedHelper": null,
+    "expectedModule": null,
+    "protected": true,
+    "importedAdminClient": true,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/api/finance/reports/export/route.ts",
+    "route": "/api/finance/reports/export",
+    "fileType": "route.ts",
+    "publicRoute": true,
+    "expectedType": "public",
+    "expectedHelper": null,
+    "expectedModule": null,
+    "protected": true,
+    "importedAdminClient": true,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/api/members/actions/route.ts",
+    "route": "/api/members/actions",
+    "fileType": "route.ts",
+    "publicRoute": true,
+    "expectedType": "public",
+    "expectedHelper": null,
+    "expectedModule": null,
+    "protected": true,
+    "importedAdminClient": true,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/api/modules/my-modules/route.ts",
+    "route": "/api/modules/my-modules",
+    "fileType": "route.ts",
+    "publicRoute": true,
+    "expectedType": "public",
+    "expectedHelper": null,
+    "expectedModule": null,
+    "protected": true,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/api/notifications/broadcast/route.ts",
+    "route": "/api/notifications/broadcast",
+    "fileType": "route.ts",
+    "publicRoute": true,
+    "expectedType": "public",
+    "expectedHelper": null,
+    "expectedModule": null,
+    "protected": true,
+    "importedAdminClient": true,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/api/notifications/subscribe/route.ts",
+    "route": "/api/notifications/subscribe",
+    "fileType": "route.ts",
+    "publicRoute": true,
+    "expectedType": "public",
+    "expectedHelper": null,
+    "expectedModule": null,
+    "protected": true,
+    "importedAdminClient": true,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/api/public/member-registration/route.ts",
+    "route": "/api/public/member-registration",
+    "fileType": "route.ts",
+    "publicRoute": true,
+    "expectedType": "public",
+    "expectedHelper": null,
+    "expectedModule": null,
+    "protected": true,
+    "importedAdminClient": true,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/api/publications/route.ts",
+    "route": "/api/publications",
+    "fileType": "route.ts",
+    "publicRoute": true,
+    "expectedType": "public",
+    "expectedHelper": null,
+    "expectedModule": null,
+    "protected": true,
+    "importedAdminClient": true,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/api/push/subscribe/route.ts",
+    "route": "/api/push/subscribe",
+    "fileType": "route.ts",
+    "publicRoute": true,
+    "expectedType": "public",
+    "expectedHelper": null,
+    "expectedModule": null,
+    "protected": true,
+    "importedAdminClient": true,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/api/security/my-access/route.ts",
+    "route": "/api/security/my-access",
+    "fileType": "route.ts",
+    "publicRoute": true,
+    "expectedType": "public",
+    "expectedHelper": null,
+    "expectedModule": null,
+    "protected": true,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/api/settings/live-stream/route.ts",
+    "route": "/api/settings/live-stream",
+    "fileType": "route.ts",
+    "publicRoute": true,
+    "expectedType": "public",
+    "expectedHelper": null,
+    "expectedModule": null,
+    "protected": true,
+    "importedAdminClient": true,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/api/settings/member-registration/route.ts",
+    "route": "/api/settings/member-registration",
+    "fileType": "route.ts",
+    "publicRoute": true,
+    "expectedType": "public",
+    "expectedHelper": null,
+    "expectedModule": null,
+    "protected": true,
+    "importedAdminClient": true,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/api/souls/[id]/convert-to-member/route.ts",
+    "route": "/api/souls/[id]/convert-to-member",
+    "fileType": "route.ts",
+    "publicRoute": true,
+    "expectedType": "public",
+    "expectedHelper": null,
+    "expectedModule": null,
+    "protected": true,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/api/super-admin/church-users/route.ts",
+    "route": "/api/super-admin/church-users",
+    "fileType": "route.ts",
+    "publicRoute": true,
+    "expectedType": "public",
+    "expectedHelper": null,
+    "expectedModule": null,
+    "protected": true,
+    "importedAdminClient": true,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/api/super-admin/church-users/[profileId]/route.ts",
+    "route": "/api/super-admin/church-users/[profileId]",
+    "fileType": "route.ts",
+    "publicRoute": true,
+    "expectedType": "public",
+    "expectedHelper": null,
+    "expectedModule": null,
+    "protected": true,
+    "importedAdminClient": true,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/api/super-admin/modules/toggle/route.ts",
+    "route": "/api/super-admin/modules/toggle",
+    "fileType": "route.ts",
+    "publicRoute": true,
+    "expectedType": "public",
+    "expectedHelper": null,
+    "expectedModule": null,
+    "protected": true,
+    "importedAdminClient": true,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/api/super-admin/route.ts",
+    "route": "/api/super-admin",
+    "fileType": "route.ts",
+    "publicRoute": true,
+    "expectedType": "public",
+    "expectedHelper": null,
+    "expectedModule": null,
+    "protected": true,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/appointments/page.tsx",
+    "route": "/appointments",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "appointments",
+    "protected": false,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/attendance/page.tsx",
+    "route": "/attendance",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "attendance",
+    "protected": false,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/attendance/reports/[eventId]/page.tsx",
+    "route": "/attendance/reports/[eventId]",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "attendance",
+    "protected": false,
+    "importedAdminClient": true,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/attendance/scanner/page.tsx",
+    "route": "/attendance/scanner",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "attendance",
+    "protected": false,
+    "importedAdminClient": true,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/attendance/scanner/[eventId]/page.tsx",
+    "route": "/attendance/scanner/[eventId]",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "attendance",
+    "protected": false,
+    "importedAdminClient": true,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/church/[slug]/appointment/page.tsx",
+    "route": "/church/[slug]/appointment",
+    "fileType": "page.tsx",
+    "publicRoute": true,
+    "expectedType": "public",
+    "expectedHelper": null,
+    "expectedModule": null,
+    "protected": true,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/church/[slug]/icon.png/route.ts",
+    "route": "/church/[slug]/icon.png",
+    "fileType": "route.ts",
+    "publicRoute": true,
+    "expectedType": "public",
+    "expectedHelper": null,
+    "expectedModule": null,
+    "protected": true,
+    "importedAdminClient": true,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/church/[slug]/install/page.tsx",
+    "route": "/church/[slug]/install",
+    "fileType": "page.tsx",
+    "publicRoute": true,
+    "expectedType": "public",
+    "expectedHelper": null,
+    "expectedModule": null,
+    "protected": true,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/church/[slug]/join/page.tsx",
+    "route": "/church/[slug]/join",
+    "fileType": "page.tsx",
+    "publicRoute": true,
+    "expectedType": "public",
+    "expectedHelper": null,
+    "expectedModule": null,
+    "protected": true,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/church/[slug]/manifest.webmanifest/route.ts",
+    "route": "/church/[slug]/manifest.webmanifest",
+    "fileType": "route.ts",
+    "publicRoute": true,
+    "expectedType": "public",
+    "expectedHelper": null,
+    "expectedModule": null,
+    "protected": true,
+    "importedAdminClient": true,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/church/[slug]/member-registration/page.tsx",
+    "route": "/church/[slug]/member-registration",
+    "fileType": "page.tsx",
+    "publicRoute": true,
+    "expectedType": "public",
+    "expectedHelper": null,
+    "expectedModule": null,
+    "protected": true,
+    "importedAdminClient": true,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/church/[slug]/page.tsx",
+    "route": "/church/[slug]",
+    "fileType": "page.tsx",
+    "publicRoute": true,
+    "expectedType": "public",
+    "expectedHelper": null,
+    "expectedModule": null,
+    "protected": true,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/church/[slug]/prayer/page.tsx",
+    "route": "/church/[slug]/prayer",
+    "fileType": "page.tsx",
+    "publicRoute": true,
+    "expectedType": "public",
+    "expectedHelper": null,
+    "expectedModule": null,
+    "protected": true,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/church/[slug]/teachings/page.tsx",
+    "route": "/church/[slug]/teachings",
+    "fileType": "page.tsx",
+    "publicRoute": true,
+    "expectedType": "public",
+    "expectedHelper": null,
+    "expectedModule": null,
+    "protected": true,
+    "importedAdminClient": true,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/church/[slug]/teachings/[id]/page.tsx",
+    "route": "/church/[slug]/teachings/[id]",
+    "fileType": "page.tsx",
+    "publicRoute": true,
+    "expectedType": "public",
+    "expectedHelper": null,
+    "expectedModule": null,
+    "protected": true,
+    "importedAdminClient": true,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/church/[slug]/testimony/page.tsx",
+    "route": "/church/[slug]/testimony",
+    "fileType": "page.tsx",
+    "publicRoute": true,
+    "expectedType": "public",
+    "expectedHelper": null,
+    "expectedModule": null,
+    "protected": true,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/dashboard/page.tsx",
+    "route": "/dashboard",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "dashboard",
+    "protected": false,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/departments/new/page.tsx",
+    "route": "/departments/new",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "departments",
+    "protected": false,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/departments/page.tsx",
+    "route": "/departments",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "departments",
+    "protected": false,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/departments/[id]/edit/page.tsx",
+    "route": "/departments/[id]/edit",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "departments",
+    "protected": false,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/departments/[id]/page.tsx",
+    "route": "/departments/[id]",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "departments",
+    "protected": false,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/events/new/page.tsx",
+    "route": "/events/new",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "events",
+    "protected": false,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/events/page.tsx",
+    "route": "/events",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "events",
+    "protected": false,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/events/[id]/edit/page.tsx",
+    "route": "/events/[id]/edit",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "events",
+    "protected": false,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/events/[id]/page.tsx",
+    "route": "/events/[id]",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "events",
+    "protected": false,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/finance/actions.ts",
+    "route": "/finance",
+    "fileType": "actions.ts",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "finance_dashboard",
+    "protected": false,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/finance/budgets/actions.ts",
+    "route": "/finance/budgets",
+    "fileType": "actions.ts",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "budgets",
+    "protected": true,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/finance/budgets/new/page.tsx",
+    "route": "/finance/budgets/new",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "budgets",
+    "protected": true,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/finance/budgets/page.tsx",
+    "route": "/finance/budgets",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "budgets",
+    "protected": true,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/finance/budgets/[id]/edit/page.tsx",
+    "route": "/finance/budgets/[id]/edit",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "budgets",
+    "protected": true,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/finance/budgets/[id]/page.tsx",
+    "route": "/finance/budgets/[id]",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "budgets",
+    "protected": true,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/finance/expenses/new/page.tsx",
+    "route": "/finance/expenses/new",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "expenses",
+    "protected": false,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/finance/expenses/page.tsx",
+    "route": "/finance/expenses",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "expenses",
+    "protected": false,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/finance/expenses/[id]/page.tsx",
+    "route": "/finance/expenses/[id]",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "expenses",
+    "protected": false,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/finance/offerings/new/page.tsx",
+    "route": "/finance/offerings/new",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "offerings",
+    "protected": false,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/finance/offerings/page.tsx",
+    "route": "/finance/offerings",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "offerings",
+    "protected": false,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/finance/offerings/[id]/page.tsx",
+    "route": "/finance/offerings/[id]",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "offerings",
+    "protected": false,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/finance/page.tsx",
+    "route": "/finance",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "finance_dashboard",
+    "protected": true,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/finance/reports/page.tsx",
+    "route": "/finance/reports",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "financial_reports",
+    "protected": true,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/inbox/page.tsx",
+    "route": "/inbox",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "unknown",
+    "expectedHelper": null,
+    "expectedModule": null,
+    "protected": false,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/install/page.tsx",
+    "route": "/install",
+    "fileType": "page.tsx",
+    "publicRoute": true,
+    "expectedType": "public",
+    "expectedHelper": null,
+    "expectedModule": null,
+    "protected": true,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/login/page.tsx",
+    "route": "/login",
+    "fileType": "page.tsx",
+    "publicRoute": true,
+    "expectedType": "public",
+    "expectedHelper": null,
+    "expectedModule": null,
+    "protected": true,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/members/new/page.tsx",
+    "route": "/members/new",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "members",
+    "protected": false,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/members/page.tsx",
+    "route": "/members",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "members",
+    "protected": false,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/members/[id]/card/page.tsx",
+    "route": "/members/[id]/card",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "members",
+    "protected": false,
+    "importedAdminClient": true,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/members/[id]/departments/page.tsx",
+    "route": "/members/[id]/departments",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "members",
+    "protected": false,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/members/[id]/edit/page.tsx",
+    "route": "/members/[id]/edit",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "members",
+    "protected": false,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/members/[id]/page.tsx",
+    "route": "/members/[id]",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "members",
+    "protected": false,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/members/[id]/photo/page.tsx",
+    "route": "/members/[id]/photo",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "members",
+    "protected": false,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/members/[id]/qr/page.tsx",
+    "route": "/members/[id]/qr",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "members",
+    "protected": false,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/members/[id]/trainings/page.tsx",
+    "route": "/members/[id]/trainings",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "members",
+    "protected": false,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/mobile-menu/page.tsx",
+    "route": "/mobile-menu",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "unknown",
+    "expectedHelper": null,
+    "expectedModule": null,
+    "protected": false,
+    "importedAdminClient": true,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/notifications/page.tsx",
+    "route": "/notifications",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "notifications",
+    "protected": false,
+    "importedAdminClient": true,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/offline/page.tsx",
+    "route": "/offline",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "unknown",
+    "expectedHelper": null,
+    "expectedModule": null,
+    "protected": false,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/page.tsx",
+    "route": "/page.tsx",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "unknown",
+    "expectedHelper": null,
+    "expectedModule": null,
+    "protected": false,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/patrimony/actions.ts",
+    "route": "/patrimony",
+    "fileType": "actions.ts",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "patrimony_dashboard",
+    "protected": false,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/patrimony/assets/new/page.tsx",
+    "route": "/patrimony/assets/new",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "assets",
+    "protected": true,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/patrimony/assets/page.tsx",
+    "route": "/patrimony/assets",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "assets",
+    "protected": true,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/patrimony/assets/[id]/edit/page.tsx",
+    "route": "/patrimony/assets/[id]/edit",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "assets",
+    "protected": true,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/patrimony/assets/[id]/page.tsx",
+    "route": "/patrimony/assets/[id]",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "assets",
+    "protected": true,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/patrimony/maintenance/new/page.tsx",
+    "route": "/patrimony/maintenance/new",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "asset_maintenance",
+    "protected": true,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/patrimony/maintenance/page.tsx",
+    "route": "/patrimony/maintenance",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "asset_maintenance",
+    "protected": true,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/patrimony/movements/new/page.tsx",
+    "route": "/patrimony/movements/new",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "asset_movements",
+    "protected": true,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/patrimony/movements/page.tsx",
+    "route": "/patrimony/movements",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "asset_movements",
+    "protected": true,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/patrimony/page.tsx",
+    "route": "/patrimony",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "patrimony_dashboard",
+    "protected": true,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/public-requests/page.tsx",
+    "route": "/public-requests",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "public_requests",
+    "protected": false,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/publications/page.tsx",
+    "route": "/publications",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "publications",
+    "protected": false,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/settings/live-stream/page.tsx",
+    "route": "/settings/live-stream",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "settings",
+    "protected": false,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/settings/member-registration/page.tsx",
+    "route": "/settings/member-registration",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "settings",
+    "protected": false,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/settings/page.tsx",
+    "route": "/settings",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "settings",
+    "protected": false,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/settings/public-page/page.tsx",
+    "route": "/settings/public-page",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "settings",
+    "protected": false,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/settings/system-check/page.tsx",
+    "route": "/settings/system-check",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "settings",
+    "protected": false,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/settings/trainings/page.tsx",
+    "route": "/settings/trainings",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "settings",
+    "protected": false,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/settings/trainings/[id]/edit/page.tsx",
+    "route": "/settings/trainings/[id]/edit",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "settings",
+    "protected": false,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/settings/trainings/[id]/page.tsx",
+    "route": "/settings/trainings/[id]",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "settings",
+    "protected": false,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/settings/users/new/actions.ts",
+    "route": "/settings/users/new",
+    "fileType": "actions.ts",
+    "publicRoute": false,
+    "expectedType": "church_admin",
+    "expectedHelper": "requireChurchAdmin",
+    "expectedModule": null,
+    "protected": false,
+    "importedAdminClient": true,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/settings/users/new/page.tsx",
+    "route": "/settings/users/new",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_admin",
+    "expectedHelper": "requireChurchAdmin",
+    "expectedModule": null,
+    "protected": false,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/settings/users/page.tsx",
+    "route": "/settings/users",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_admin",
+    "expectedHelper": "requireChurchAdmin",
+    "expectedModule": null,
+    "protected": false,
+    "importedAdminClient": true,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": true,
+      "canUpdate": true,
+      "canDelete": true,
+      "canExport": true,
+      "canApprove": true
+    }
+  },
+  {
+    "file": "src/app/souls/new/page.tsx",
+    "route": "/souls/new",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "souls",
+    "protected": false,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/souls/page.tsx",
+    "route": "/souls",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "souls",
+    "protected": false,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/souls/[id]/edit/page.tsx",
+    "route": "/souls/[id]/edit",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "souls",
+    "protected": false,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/souls/[id]/page.tsx",
+    "route": "/souls/[id]",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "souls",
+    "protected": false,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/super-admin/churches/new/page.tsx",
+    "route": "/super-admin/churches/new",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "super_admin",
+    "expectedHelper": "requireSuperAdmin",
+    "expectedModule": null,
+    "protected": false,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/super-admin/churches/page.tsx",
+    "route": "/super-admin/churches",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "super_admin",
+    "expectedHelper": "requireSuperAdmin",
+    "expectedModule": null,
+    "protected": false,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/super-admin/churches/[id]/edit/page.tsx",
+    "route": "/super-admin/churches/[id]/edit",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "super_admin",
+    "expectedHelper": "requireSuperAdmin",
+    "expectedModule": null,
+    "protected": false,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/super-admin/churches/[id]/page.tsx",
+    "route": "/super-admin/churches/[id]",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "super_admin",
+    "expectedHelper": "requireSuperAdmin",
+    "expectedModule": null,
+    "protected": false,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/super-admin/churches/[id]/users/new/page.tsx",
+    "route": "/super-admin/churches/[id]/users/new",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "super_admin",
+    "expectedHelper": "requireSuperAdmin",
+    "expectedModule": null,
+    "protected": false,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/super-admin/dashboard/page.tsx",
+    "route": "/super-admin/dashboard",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "super_admin",
+    "expectedHelper": "requireSuperAdmin",
+    "expectedModule": null,
+    "protected": false,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/super-admin/modules/page.tsx",
+    "route": "/super-admin/modules",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "super_admin",
+    "expectedHelper": "requireSuperAdmin",
+    "expectedModule": null,
+    "protected": false,
+    "importedAdminClient": true,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/super-admin/page.tsx",
+    "route": "/super-admin",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "super_admin",
+    "expectedHelper": "requireSuperAdmin",
+    "expectedModule": null,
+    "protected": false,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/super-admin/security/page.tsx",
+    "route": "/super-admin/security",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "super_admin",
+    "expectedHelper": "requireSuperAdmin",
+    "expectedModule": null,
+    "protected": true,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/super-admin/settings/page.tsx",
+    "route": "/super-admin/settings",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "super_admin",
+    "expectedHelper": "requireSuperAdmin",
+    "expectedModule": null,
+    "protected": true,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/super-admin/users/new/actions.ts",
+    "route": "/super-admin/users/new",
+    "fileType": "actions.ts",
+    "publicRoute": false,
+    "expectedType": "super_admin",
+    "expectedHelper": "requireSuperAdmin",
+    "expectedModule": null,
+    "protected": false,
+    "importedAdminClient": true,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/super-admin/users/new/page.tsx",
+    "route": "/super-admin/users/new",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "super_admin",
+    "expectedHelper": "requireSuperAdmin",
+    "expectedModule": null,
+    "protected": false,
+    "importedAdminClient": true,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/super-admin/users/page.tsx",
+    "route": "/super-admin/users",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "super_admin",
+    "expectedHelper": "requireSuperAdmin",
+    "expectedModule": null,
+    "protected": false,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/teachings/actions.ts",
+    "route": "/teachings",
+    "fileType": "actions.ts",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "teachings",
+    "protected": true,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/teachings/new/page.tsx",
+    "route": "/teachings/new",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "teachings",
+    "protected": false,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/teachings/page.tsx",
+    "route": "/teachings",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "teachings",
+    "protected": true,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/teachings/[id]/edit/page.tsx",
+    "route": "/teachings/[id]/edit",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "teachings",
+    "protected": true,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/teachings/[id]/page.tsx",
+    "route": "/teachings/[id]",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "teachings",
+    "protected": true,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/testimonies/page.tsx",
+    "route": "/testimonies",
+    "fileType": "page.tsx",
+    "publicRoute": false,
+    "expectedType": "church_module",
+    "expectedHelper": "requireChurchModuleAccess",
+    "expectedModule": "testimonies",
+    "protected": false,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/transmissions/actions.ts",
+    "route": "/transmissions",
+    "fileType": "actions.ts",
+    "publicRoute": false,
+    "expectedType": "unknown",
+    "expectedHelper": null,
+    "expectedModule": null,
+    "protected": false,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  },
+  {
+    "file": "src/app/unauthorized/page.tsx",
+    "route": "/unauthorized",
+    "fileType": "page.tsx",
+    "publicRoute": true,
+    "expectedType": "public",
+    "expectedHelper": null,
+    "expectedModule": null,
+    "protected": true,
+    "importedAdminClient": false,
+    "importedServiceHelperInClient": false,
+    "actionLevel": {
+      "canCreate": false,
+      "canUpdate": false,
+      "canDelete": false,
+      "canExport": false,
+      "canApprove": false
+    }
+  }
+]

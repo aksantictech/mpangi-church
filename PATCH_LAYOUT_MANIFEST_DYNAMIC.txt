@@ -1,0 +1,34 @@
+PATCH IMPORTANT SI LE LOGO NE CHANGE PAS
+
+Cherche dans ton projet :
+
+manifest.json
+manifest:
+rel="manifest"
+
+Si dans src/app/layout.tsx tu as :
+
+metadata = {
+  manifest: "/manifest.json"
+}
+
+remplace par :
+
+metadata = {
+  manifest: "/manifest.webmanifest"
+}
+
+Si tu as un lien manuel :
+
+<link rel="manifest" href="/manifest.json" />
+
+remplace par :
+
+<link rel="manifest" href="/manifest.webmanifest" />
+
+Pourquoi ?
+La PWA installée depuis mdm.mpangi-church.app doit utiliser le manifest dynamique racine :
+/manifest.webmanifest
+
+et non le vieux fichier statique :
+/manifest.json

@@ -1,0 +1,13 @@
+PATCH MANUEL OPTIONNEL
+Fichier : src/app/super-admin/settings/page.tsx
+
+Ajoute cette carte dans le tableau cards si elle n'existe pas :
+
+{
+  title: "Audit sécurité",
+  description: "Contrôler les accès, modules et permissions par église.",
+  href: "/super-admin/security",
+  icon: ShieldCheck,
+},
+
+Et vérifie que ShieldCheck est importé depuis lucide-react.
