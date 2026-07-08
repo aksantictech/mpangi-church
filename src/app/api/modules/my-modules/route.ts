@@ -23,21 +23,9 @@ const AFP_ROLES = new Set([
   "patrimony_manager",
 ]);
 
-const SECRETARY_ROLES = new Set([
-  "secretary",
-  "secretaire",
-]);
-
-const LOGISTIC_ROLES = new Set([
-  "logistician",
-  "logisticien",
-]);
-
-const DEPARTMENT_ROLES = new Set([
-  "department_manager",
-  "responsable_d",
-]);
-
+const SECRETARY_ROLES = new Set(["secretary", "secretaire"]);
+const LOGISTIC_ROLES = new Set(["logistician", "logisticien"]);
+const DEPARTMENT_ROLES = new Set(["department_manager", "responsable_d"]);
 const WORKER_ROLES = new Set(["worker", "ouvrier", "viewer", "member_manager"]);
 
 function normalizeRole(role?: string | null) {
@@ -57,6 +45,7 @@ function fallbackCanView(role: string, moduleCode: string) {
       "departments",
       "events",
       "publications",
+      "teachings",
       "public_requests",
       "appointments",
       "testimonies",
@@ -80,6 +69,7 @@ function fallbackCanView(role: string, moduleCode: string) {
       "assets",
       "asset_maintenance",
       "asset_movements",
+      "teachings",
     ].includes(moduleCode);
   }
 
@@ -91,6 +81,7 @@ function fallbackCanView(role: string, moduleCode: string) {
       "document_transmissions",
       "administrative_tasks",
       "meetings_minutes",
+      "teachings",
     ].includes(moduleCode);
   }
 

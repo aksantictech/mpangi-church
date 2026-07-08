@@ -13,6 +13,7 @@ import {
   Megaphone,
   PackageCheck,
   PieChart,
+  PlayCircle,
   QrCode,
   ReceiptText,
   Settings,
@@ -158,6 +159,13 @@ export const MODULE_MENU_ITEMS: ModuleMenuItem[] = [
     label: "Publications",
     href: "/publications",
     icon: Megaphone,
+    category: "spiritual",
+  },
+  {
+    code: "teachings",
+    label: "Enseignements",
+    href: "/teachings",
+    icon: PlayCircle,
     category: "spiritual",
   },
   {

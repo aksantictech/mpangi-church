@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import PublicTeachingsSection from "@/components/public/PublicTeachingsSection";
+import ChurchTeachingsBlock from "@/components/public/ChurchTeachingsBlock";
 import type { Metadata } from "next";
 import {
   CalendarDays,
@@ -452,7 +452,10 @@ export default async function PublicChurchPage({
       </section>
 
       <PublicLiveStreamSection church={church as any} />
-      <PublicTeachingsSection churchId={church.id} />
+
+      <section className="mx-auto max-w-6xl px-4 pt-8 md:px-6">
+        <ChurchTeachingsBlock churchId={church.id} slug={churchSlug} />
+      </section>
 
       <section className="mx-auto max-w-6xl px-4 py-8 md:px-6">
         <div className="grid gap-6 lg:grid-cols-[0.85fr_1.15fr]">
