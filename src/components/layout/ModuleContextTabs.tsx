@@ -2,54 +2,17 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { UsersRound } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import {
   findActiveMenuGroup,
   getGroupedVisibleMenuItems,
   isActiveMenuItem,
-  type ModuleMenuGroup,
 } from "@/lib/modules/moduleRegistry";
 
 type MyModulesResponse = {
   role?: string;
   moduleCodes?: string[];
 };
-
-const ADMIN_ROLES = new Set([
-  "admin",
-  "administrator",
-  "church_admin",
-  "owner",
-  "pasteur",
-  "pastor",
-]);
-
-function addAdminUserPermissionItem(groups: ModuleMenuGroup[], role: string) {
-  if (!ADMIN_ROLES.has(role)) return groups;
-
-  return groups.map((group) => {
-    if (group.key !== "system") return group;
-
-    const alreadyExists = group.items.some((item) => item.href === "/settings/users");
-
-    if (alreadyExists) return group;
-
-    return {
-      ...group,
-      items: [
-        ...group.items,
-        {
-          code: "user_permissions",
-          label: "Utilisateurs & rôles",
-          href: "/settings/users",
-          icon: UsersRound,
-          category: "system" as const,
-        },
-      ],
-    };
-  });
-}
 
 export default function ModuleContextTabs() {
   const pathname = usePathname();
@@ -80,10 +43,8 @@ export default function ModuleContextTabs() {
   }, []);
 
   const groups = useMemo(() => {
-    const role = String(myModules.role || "").toLowerCase();
-    const baseGroups = getGroupedVisibleMenuItems(myModules.moduleCodes || ["dashboard"]);
-    return addAdminUserPermissionItem(baseGroups, role);
-  }, [myModules.moduleCodes, myModules.role]);
+    return getGroupedVisibleMenuItems(myModules.moduleCodes || ["dashboard"]);
+  }, [myModules.moduleCodes]);
 
   const activeGroup = findActiveMenuGroup(groups, pathname);
 
@@ -91,11 +52,13 @@ export default function ModuleContextTabs() {
     return null;
   }
 
+  const ActiveGroupIcon = activeGroup.icon;
+
   return (
     <div className="sticky top-0 z-30 -mx-3 mb-5 border-b border-[#DCEAF5] bg-[#F5F9FC]/95 px-3 py-3 backdrop-blur sm:-mx-5 sm:px-5 lg:top-0 lg:-mx-6 lg:px-6 xl:-mx-8 xl:px-8">
       <div className="mx-auto flex w-full max-w-7xl items-center gap-3 overflow-x-auto">
         <div className="hidden shrink-0 items-center gap-2 rounded-2xl bg-white px-3 py-2 text-sm font-black text-[#03357A] shadow-sm md:flex">
-          <activeGroup.icon className="h-4 w-4" />
+          <ActiveGroupIcon className="h-4 w-4" />
           {activeGroup.shortTitle}
         </div>
 

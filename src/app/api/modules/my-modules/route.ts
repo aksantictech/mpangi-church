@@ -7,32 +7,35 @@ const FULL_ACCESS_ROLES = new Set([
   "administrator",
   "church_admin",
   "owner",
+]);
+
+const PASTOR_ROLES = new Set([
   "pasteur",
   "pastor",
+  "pastor_titulaire",
+  "pastor_assistant",
 ]);
 
-const ADMINISTRATION_ROLES = new Set([
-  "administration_manager",
-  "admin_manager",
-  "charged_administration",
-  "charge_administration",
-  "secretaire",
-  "secretary",
-]);
-
-const FINANCE_ROLES = new Set([
+const AFP_ROLES = new Set([
+  "afp_manager",
   "finance_manager",
-  "charged_finance",
-  "charge_finance",
-  "tresorier",
-  "treasurer",
+  "administration_manager",
+  "patrimony_manager",
 ]);
 
-const PATRIMONY_ROLES = new Set([
-  "patrimony_manager",
-  "charged_patrimony",
-  "charge_patrimoine",
-  "patrimoine_manager",
+const SECRETARY_ROLES = new Set([
+  "secretary",
+  "secretaire",
+]);
+
+const LOGISTIC_ROLES = new Set([
+  "logistician",
+  "logisticien",
+]);
+
+const DEPARTMENT_ROLES = new Set([
+  "department_manager",
+  "responsable_d",
 ]);
 
 const WORKER_ROLES = new Set(["worker", "ouvrier", "viewer", "member_manager"]);
@@ -44,7 +47,43 @@ function normalizeRole(role?: string | null) {
 function fallbackCanView(role: string, moduleCode: string) {
   if (FULL_ACCESS_ROLES.has(role)) return true;
 
-  if (ADMINISTRATION_ROLES.has(role)) {
+  if (PASTOR_ROLES.has(role)) {
+    return [
+      "dashboard",
+      "notifications",
+      "members",
+      "attendance",
+      "souls",
+      "departments",
+      "events",
+      "publications",
+      "public_requests",
+      "appointments",
+      "testimonies",
+    ].includes(moduleCode);
+  }
+
+  if (AFP_ROLES.has(role)) {
+    return [
+      "dashboard",
+      "notifications",
+      "correspondence",
+      "document_transmissions",
+      "administrative_tasks",
+      "meetings_minutes",
+      "finance_dashboard",
+      "offerings",
+      "expenses",
+      "budgets",
+      "financial_reports",
+      "patrimony_dashboard",
+      "assets",
+      "asset_maintenance",
+      "asset_movements",
+    ].includes(moduleCode);
+  }
+
+  if (SECRETARY_ROLES.has(role)) {
     return [
       "dashboard",
       "notifications",
@@ -55,19 +94,7 @@ function fallbackCanView(role: string, moduleCode: string) {
     ].includes(moduleCode);
   }
 
-  if (FINANCE_ROLES.has(role)) {
-    return [
-      "dashboard",
-      "notifications",
-      "finance_dashboard",
-      "offerings",
-      "expenses",
-      "budgets",
-      "financial_reports",
-    ].includes(moduleCode);
-  }
-
-  if (PATRIMONY_ROLES.has(role)) {
+  if (LOGISTIC_ROLES.has(role)) {
     return [
       "dashboard",
       "notifications",
@@ -75,16 +102,30 @@ function fallbackCanView(role: string, moduleCode: string) {
       "assets",
       "asset_maintenance",
       "asset_movements",
+      "administrative_tasks",
+    ].includes(moduleCode);
+  }
+
+  if (DEPARTMENT_ROLES.has(role)) {
+    return [
+      "dashboard",
+      "notifications",
+      "members",
+      "attendance",
+      "souls",
+      "departments",
+      "events",
+      "administrative_tasks",
     ].includes(moduleCode);
   }
 
   if (WORKER_ROLES.has(role)) {
     return [
       "dashboard",
+      "notifications",
       "members",
       "attendance",
       "souls",
-      "departments",
       "events",
     ].includes(moduleCode);
   }

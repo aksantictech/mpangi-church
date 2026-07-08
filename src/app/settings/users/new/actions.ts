@@ -4,38 +4,14 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
-
-const ADMIN_ROLES = new Set([
-  "admin",
-  "administrator",
-  "church_admin",
-  "owner",
-  "pasteur",
-  "pastor",
-]);
+import {
+  CHURCH_ADMIN_ROLES,
+  PASTOR_ROLES,
+  normalizeChurchRole,
+} from "@/lib/roles";
 
 function text(value: FormDataEntryValue | null) {
   return value === null || value === undefined ? "" : String(value).trim();
-}
-
-function normalizeRole(value: string) {
-  const role = value.trim();
-
-  if (
-    [
-      "church_admin",
-      "pastor",
-      "administration_manager",
-      "finance_manager",
-      "patrimony_manager",
-      "worker",
-      "viewer",
-    ].includes(role)
-  ) {
-    return role;
-  }
-
-  return "viewer";
 }
 
 async function requireChurchAdminProfile() {
@@ -59,7 +35,7 @@ async function requireChurchAdminProfile() {
 
   const role = String(profile.role || "").toLowerCase();
 
-  if (!profile.church_id || !ADMIN_ROLES.has(role)) {
+  if (!profile.church_id || (!CHURCH_ADMIN_ROLES.has(role) && !PASTOR_ROLES.has(role))) {
     redirect("/dashboard");
   }
 
@@ -73,7 +49,7 @@ export async function createChurchUserAction(formData: FormData) {
   const fullName = text(formData.get("full_name"));
   const email = text(formData.get("email")).toLowerCase();
   const password = text(formData.get("password"));
-  const role = normalizeRole(text(formData.get("role")));
+  const role = normalizeChurchRole(formData.get("role"));
   const status = text(formData.get("status")) || "active";
 
   if (!fullName || !email || !password || password.length < 6) {

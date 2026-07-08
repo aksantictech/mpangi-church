@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowLeft, UserPlus } from "lucide-react";
 import AppShell from "@/components/layout/AppShell";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { SUPER_ADMIN_ROLE_OPTIONS } from "@/lib/roles";
 import { createSuperAdminUserAction } from "./actions";
 
 type NewSuperAdminUserPageProps = {
@@ -12,17 +13,6 @@ type NewSuperAdminUserPageProps = {
 
 const inputClass =
   "min-h-12 w-full rounded-2xl border border-[#DCEAF5] bg-white px-4 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-[#03357A] focus:ring-4 focus:ring-[#03357A]/10";
-
-const roles = [
-  { value: "church_admin", label: "Admin église" },
-  { value: "pastor", label: "Pasteur" },
-  { value: "administration_manager", label: "Chargé administration" },
-  { value: "finance_manager", label: "Chargé finances" },
-  { value: "patrimony_manager", label: "Chargé patrimoine" },
-  { value: "worker", label: "Ouvrier / utilisateur" },
-  { value: "viewer", label: "Lecture seule" },
-  { value: "super_admin", label: "Super admin plateforme" },
-];
 
 export default async function NewSuperAdminUserPage({
   searchParams,
@@ -103,7 +93,7 @@ export default async function NewSuperAdminUserPage({
 
             <Field label="Rôle">
               <select name="role" defaultValue="church_admin" className={inputClass}>
-                {roles.map((role) => (
+                {SUPER_ADMIN_ROLE_OPTIONS.map((role) => (
                   <option key={role.value} value={role.value}>
                     {role.label}
                   </option>

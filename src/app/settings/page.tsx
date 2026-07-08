@@ -1,66 +1,31 @@
 import Link from "next/link";
 import {
-  Building2,
-  ChevronRight,
-  Globe,
-  GraduationCap,
-  ClipboardCheck,
-  QrCode,
-  Radio,
+  Bell,
   Settings,
-  Users,
+  ShieldCheck,
+  UserPlus,
+  UsersRound,
 } from "lucide-react";
 import AppShell from "@/components/layout/AppShell";
 
-const settingsItems = [
+const cards = [
   {
-    title: "Page publique",
-    description:
-      "Modifier le nom public, le message d’accueil, les contacts, YouTube, les dons et les informations visibles par les visiteurs.",
-    href: "/settings/public-page",
-    icon: Globe,
-  },
-  {
-  title: "Vérification système",
-  description:
-    "Contrôler rapidement la configuration de la page publique, sous-domaine, QR membres, notifications, PWA et publications.",
-  href: "/settings/system-check",
-  icon: ClipboardCheck,
-},
-  {
-    title: "Culte en direct",
-    description:
-      "Publier un lien de culte en live sur la page publique et envoyer une notification aux téléphones abonnés.",
-    href: "/settings/live-stream",
-    icon: Radio,
-  },
-  {
-    title: "QR ajout membre",
-    description:
-      "Générer un lien et un QR Code public pour permettre aux membres et serviteurs de remplir leur fiche sans compte admin.",
-    href: "/settings/member-registration",
-    icon: QrCode,
-  },
-  {
-    title: "Formations",
-    description:
-      "Créer les formations personnalisées de chaque église : PCNC, fondements, baptême, leadership...",
-    href: "/settings/trainings",
-    icon: GraduationCap,
-  },
-  {
-    title: "Départements",
-    description:
-      "Configurer les départements de service : louange, accueil, jeunesse, intercession...",
-    href: "/departments",
-    icon: Building2,
-  },
-  {
-    title: "Utilisateurs",
-    description:
-      "Gérer les responsables, ouvriers et accès à l’espace d’administration.",
+    title: "Utilisateurs & rôles",
+    description: "Créer les comptes, attribuer les modules et limiter les accès.",
     href: "/settings/users",
-    icon: Users,
+    icon: UsersRound,
+  },
+  {
+    title: "Créer un utilisateur",
+    description: "Ajouter rapidement un nouveau compte dans cette église.",
+    href: "/settings/users/new",
+    icon: UserPlus,
+  },
+  {
+    title: "Notifications",
+    description: "Envoyer et gérer les notifications de l’église.",
+    href: "/notifications",
+    icon: Bell,
   },
 ];
 
@@ -69,55 +34,67 @@ export default function SettingsPage() {
     <AppShell>
       <div className="space-y-6">
         <section className="rounded-3xl bg-gradient-to-br from-[#03357A] via-[#2563EB] to-[#8B5CF6] p-6 text-white shadow-lg shadow-blue-900/20">
-          <div className="flex items-center gap-4">
-            <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-white/15">
-              <Settings className="h-8 w-8" />
+          <div className="flex items-start gap-4">
+            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white/15">
+              <Settings className="h-7 w-7" />
             </div>
 
             <div>
               <p className="text-sm font-semibold uppercase tracking-[0.25em] text-blue-100">
                 Paramètres
               </p>
-
-              <h1 className="mt-2 text-3xl font-extrabold">
+              <h1 className="mt-3 text-3xl font-extrabold">
                 Configuration de l’église
               </h1>
-
-              <p className="mt-2 text-sm leading-7 text-blue-50">
-                Configurez les éléments propres à chaque église.
+              <p className="mt-2 max-w-3xl text-sm leading-7 text-blue-50">
+                Les utilisateurs et rôles restent ici pour éviter d’alourdir le menu principal.
               </p>
             </div>
           </div>
         </section>
 
-        <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {settingsItems.map((item) => {
-            const Icon = item.icon;
+        <section className="grid gap-4 md:grid-cols-3">
+          {cards.map((card) => {
+            const Icon = card.icon;
 
             return (
               <Link
-                key={item.href}
-                href={item.href}
-                className="group rounded-3xl border border-[#DCEAF5] bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+                key={card.href}
+                href={card.href}
+                className="group rounded-3xl border border-[#DCEAF5] bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-[#03357A]/30 hover:shadow-md"
               >
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#EAF3FA] text-[#03357A]">
-                    <Icon className="h-7 w-7" />
-                  </div>
-
-                  <ChevronRight className="h-5 w-5 text-slate-300 transition group-hover:translate-x-1 group-hover:text-[#03357A]" />
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#EAF3FA] text-[#03357A] transition group-hover:bg-[#03357A] group-hover:text-white">
+                  <Icon className="h-6 w-6" />
                 </div>
 
-                <h2 className="mt-5 text-xl font-extrabold text-[#03357A]">
-                  {item.title}
+                <h2 className="mt-5 text-lg font-black text-[#03357A]">
+                  {card.title}
                 </h2>
 
-                <p className="mt-2 text-sm leading-7 text-slate-500">
-                  {item.description}
+                <p className="mt-2 text-sm leading-6 text-slate-500">
+                  {card.description}
                 </p>
               </Link>
             );
           })}
+        </section>
+
+        <section className="rounded-3xl border border-[#DCEAF5] bg-white p-5 shadow-sm">
+          <div className="flex items-start gap-4">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-green-50 text-green-700">
+              <ShieldCheck className="h-6 w-6" />
+            </div>
+
+            <div>
+              <h2 className="text-lg font-black text-[#03357A]">
+                Principe d’accès
+              </h2>
+              <p className="mt-2 text-sm leading-7 text-slate-600">
+                Chaque utilisateur voit uniquement les modules autorisés selon son rôle ou ses permissions personnalisées. 
+                Pour une expérience simple, les accès utilisateurs sont donc regroupés dans Paramètres.
+              </p>
+            </div>
+          </div>
         </section>
       </div>
     </AppShell>

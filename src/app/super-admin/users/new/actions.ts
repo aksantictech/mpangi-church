@@ -4,30 +4,10 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
+import { normalizeSuperAdminAssignableRole } from "@/lib/roles";
 
 function text(value: FormDataEntryValue | null) {
   return value === null || value === undefined ? "" : String(value).trim();
-}
-
-function normalizeRole(value: string) {
-  const role = value.trim();
-
-  if (
-    [
-      "super_admin",
-      "church_admin",
-      "pastor",
-      "administration_manager",
-      "finance_manager",
-      "patrimony_manager",
-      "worker",
-      "viewer",
-    ].includes(role)
-  ) {
-    return role;
-  }
-
-  return "viewer";
 }
 
 async function requireSuperAdminProfile() {
@@ -55,13 +35,13 @@ async function requireSuperAdminProfile() {
 }
 
 export async function createSuperAdminUserAction(formData: FormData) {
-  const currentProfile = await requireSuperAdminProfile();
+  await requireSuperAdminProfile();
   const admin = createAdminClient();
 
   const fullName = text(formData.get("full_name"));
   const email = text(formData.get("email")).toLowerCase();
   const password = text(formData.get("password"));
-  const role = normalizeRole(text(formData.get("role")));
+  const role = normalizeSuperAdminAssignableRole(formData.get("role"));
   const status = text(formData.get("status")) || "active";
   const churchId = role === "super_admin" ? null : text(formData.get("church_id")) || null;
 

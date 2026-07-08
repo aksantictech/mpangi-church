@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowLeft, UserPlus } from "lucide-react";
 import AppShell from "@/components/layout/AppShell";
+import { CHURCH_ROLE_OPTIONS } from "@/lib/roles";
 import { createChurchUserAction } from "./actions";
 
 type NewChurchUserPageProps = {
@@ -11,16 +12,6 @@ type NewChurchUserPageProps = {
 
 const inputClass =
   "min-h-12 w-full rounded-2xl border border-[#DCEAF5] bg-white px-4 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-[#03357A] focus:ring-4 focus:ring-[#03357A]/10";
-
-const roles = [
-  { value: "church_admin", label: "Admin église" },
-  { value: "pastor", label: "Pasteur" },
-  { value: "administration_manager", label: "Chargé administration" },
-  { value: "finance_manager", label: "Chargé finances" },
-  { value: "patrimony_manager", label: "Chargé patrimoine" },
-  { value: "worker", label: "Ouvrier / utilisateur" },
-  { value: "viewer", label: "Lecture seule" },
-];
 
 export default async function NewChurchUserPage({
   searchParams,
@@ -57,7 +48,7 @@ export default async function NewChurchUserPage({
                 Créer un utilisateur
               </h1>
               <p className="mt-2 max-w-3xl text-sm leading-7 text-blue-50">
-                Créez un compte rattaché à votre église. Les permissions peuvent ensuite être réglées dans Utilisateurs & rôles.
+                Créez un compte rattaché à votre église. Les modules sont ensuite réglés dans Utilisateurs & rôles.
               </p>
             </div>
           </div>
@@ -93,7 +84,7 @@ export default async function NewChurchUserPage({
 
             <Field label="Rôle">
               <select name="role" defaultValue="worker" className={inputClass}>
-                {roles.map((role) => (
+                {CHURCH_ROLE_OPTIONS.map((role) => (
                   <option key={role.value} value={role.value}>
                     {role.label}
                   </option>

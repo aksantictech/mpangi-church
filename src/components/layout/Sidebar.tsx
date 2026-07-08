@@ -9,14 +9,12 @@ import {
   LogOut,
   Search,
   Shield,
-  UsersRound,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import {
   findActiveMenuGroup,
   getGroupedVisibleMenuItems,
   isActiveMenuItem,
-  type ModuleMenuGroup,
 } from "@/lib/modules/moduleRegistry";
 
 type MyModulesResponse = {
@@ -28,45 +26,9 @@ type MyModulesResponse = {
 const SUPER_ADMIN_ITEMS = [
   { label: "Dashboard", href: "/super-admin/dashboard", icon: Shield },
   { label: "Églises", href: "/super-admin/churches", icon: Shield },
-  { label: "Utilisateurs", href: "/super-admin/users", icon: UsersRound },
   { label: "Modules", href: "/super-admin/modules", icon: Shield },
   { label: "Paramètres", href: "/super-admin/settings", icon: Shield },
 ];
-
-const ADMIN_ROLES = new Set([
-  "admin",
-  "administrator",
-  "church_admin",
-  "owner",
-  "pasteur",
-  "pastor",
-]);
-
-function addAdminUserPermissionItem(groups: ModuleMenuGroup[], role: string) {
-  if (!ADMIN_ROLES.has(role)) return groups;
-
-  return groups.map((group) => {
-    if (group.key !== "system") return group;
-
-    const alreadyExists = group.items.some((item) => item.href === "/settings/users");
-
-    if (alreadyExists) return group;
-
-    return {
-      ...group,
-      items: [
-        ...group.items,
-        {
-          code: "user_permissions",
-          label: "Utilisateurs & rôles",
-          href: "/settings/users",
-          icon: UsersRound,
-          category: "system" as const,
-        },
-      ],
-    };
-  });
-}
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -108,13 +70,11 @@ export default function Sidebar() {
     };
   }, []);
 
-  const role = String(myModules.role || "").toLowerCase();
   const isSuperAdmin = pathname.startsWith("/super-admin");
 
   const groups = useMemo(() => {
-    const baseGroups = getGroupedVisibleMenuItems(myModules.moduleCodes || ["dashboard"]);
-    return addAdminUserPermissionItem(baseGroups, role);
-  }, [myModules.moduleCodes, role]);
+    return getGroupedVisibleMenuItems(myModules.moduleCodes || ["dashboard"]);
+  }, [myModules.moduleCodes]);
 
   useEffect(() => {
     const activeGroup = findActiveMenuGroup(groups, pathname);
@@ -129,6 +89,9 @@ export default function Sidebar() {
             Mpangi-church
           </p>
           <h2 className="mt-2 text-xl font-black">Super admin</h2>
+          <p className="mt-1 text-xs font-semibold text-blue-100">
+            Administration globale
+          </p>
         </div>
 
         <nav className="mt-4 space-y-1.5">
@@ -220,7 +183,7 @@ export default function Sidebar() {
           </Link>
         )}
 
-        <nav className="mt-3 min-h-0 flex-1 overflow-y-auto pr-1 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-[#DCEAF5]">
+        <nav className="mt-3 min-h-0 flex-1 overflow-y-auto pr-1">
           <div className="space-y-1.5">
             {groups.map((group) => {
               const GroupIcon = group.icon;
