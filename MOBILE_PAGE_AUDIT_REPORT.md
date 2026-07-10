@@ -1,6 +1,6 @@
 # Mpangi-church — Audit mobile page par page
 
-Date: 2026-07-08T19:54:57.587Z
+Date: 2026-07-08T21:03:13.711Z
 
 ## Résumé
 
@@ -19,9 +19,9 @@ Date: 2026-07-08T19:54:57.587Z
 | `/administration/minutes/[id]/edit` | `src/app/administration/minutes/[id]/edit/page.tsx` | 12 | long_form_mobile |
 | `/administration/correspondence/new` | `src/app/administration/correspondence/new/page.tsx` | 11 | complex_grid, long_form_mobile |
 | `/administration/minutes/new` | `src/app/administration/minutes/new/page.tsx` | 11 | long_form_mobile |
+| `/super-admin/churches/[id]` | `src/app/super-admin/churches/[id]/page.tsx` | 11 | table_desktop, min_width_desktop, horizontal_scroll, complex_grid, fixed_width |
 | `/finance/expenses/new` | `src/app/finance/expenses/new/page.tsx` | 10 | long_form_mobile |
 | `/finance/offerings/new` | `src/app/finance/offerings/new/page.tsx` | 10 | long_form_mobile |
-| `/super-admin/churches/[id]` | `src/app/super-admin/churches/[id]/page.tsx` | 10 | table_desktop, min_width_desktop, horizontal_scroll, complex_grid, fixed_width |
 | `/administration/tasks/[id]/edit` | `src/app/administration/tasks/[id]/edit/page.tsx` | 8 | long_form_mobile |
 | `/finance/reports` | `src/app/finance/reports/page.tsx` | 8 | table_desktop, min_width_desktop, horizontal_scroll, complex_grid, fixed_width |
 | `/administration/tasks/new` | `src/app/administration/tasks/new/page.tsx` | 7 | long_form_mobile |
@@ -86,15 +86,15 @@ Date: 2026-07-08T19:54:57.587Z
 | P1 | `/administration/minutes/[id]/edit` | `src/app/administration/minutes/[id]/edit/page.tsx` | 12 | 0 | 18 | 2 | 0 | long_form_mobile |
 | P1 | `/administration/correspondence/new` | `src/app/administration/correspondence/new/page.tsx` | 11 | 0 | 16 | 3 | 0 | complex_grid, long_form_mobile |
 | P1 | `/administration/minutes/new` | `src/app/administration/minutes/new/page.tsx` | 11 | 0 | 17 | 2 | 0 | long_form_mobile |
+| P1 | `/super-admin/churches/[id]` | `src/app/super-admin/churches/[id]/page.tsx` | 11 | 1 | 0 | 6 | 1 | table_desktop, min_width_desktop, horizontal_scroll, complex_grid, fixed_width |
 | P1 | `/finance/expenses/new` | `src/app/finance/expenses/new/page.tsx` | 10 | 0 | 16 | 2 | 0 | long_form_mobile |
 | P1 | `/finance/offerings/new` | `src/app/finance/offerings/new/page.tsx` | 10 | 0 | 16 | 2 | 0 | long_form_mobile |
-| P1 | `/super-admin/churches/[id]` | `src/app/super-admin/churches/[id]/page.tsx` | 10 | 1 | 0 | 5 | 1 | table_desktop, min_width_desktop, horizontal_scroll, complex_grid, fixed_width |
 | P1 | `/administration/tasks/[id]/edit` | `src/app/administration/tasks/[id]/edit/page.tsx` | 8 | 0 | 14 | 2 | 0 | long_form_mobile |
 | P1 | `/finance/reports` | `src/app/finance/reports/page.tsx` | 8 | 1 | 4 | 3 | 1 | table_desktop, min_width_desktop, horizontal_scroll, complex_grid, fixed_width |
 | P1 | `/administration/tasks/new` | `src/app/administration/tasks/new/page.tsx` | 7 | 0 | 13 | 2 | 0 | long_form_mobile |
-| P1 | `/departments` | `src/app/departments/page.tsx` | 7 | 1 | 1 | 1 | 1 | table_desktop, min_width_desktop, horizontal_scroll, fixed_width |
-| P1 | `/events` | `src/app/events/page.tsx` | 7 | 1 | 1 | 1 | 1 | table_desktop, min_width_desktop, horizontal_scroll, fixed_width |
-| P1 | `/members` | `src/app/members/page.tsx` | 7 | 1 | 1 | 1 | 1 | table_desktop, min_width_desktop, horizontal_scroll, fixed_width |
+| P1 | `/departments` | `src/app/departments/page.tsx` | 7 | 1 | 1 | 2 | 1 | table_desktop, min_width_desktop, horizontal_scroll, fixed_width |
+| P1 | `/events` | `src/app/events/page.tsx` | 7 | 1 | 1 | 2 | 1 | table_desktop, min_width_desktop, horizontal_scroll, fixed_width |
+| P1 | `/members` | `src/app/members/page.tsx` | 7 | 1 | 1 | 2 | 1 | table_desktop, min_width_desktop, horizontal_scroll, fixed_width |
 | P1 | `/patrimony/maintenance/new` | `src/app/patrimony/maintenance/new/page.tsx` | 7 | 0 | 13 | 1 | 0 | long_form_mobile |
 | P1 | `/souls` | `src/app/souls/page.tsx` | 7 | 1 | 1 | 2 | 1 | table_desktop, min_width_desktop, horizontal_scroll, fixed_width |
 | P1 | `/super-admin/security` | `src/app/super-admin/security/page.tsx` | 7 | 1 | 0 | 1 | 1 | table_desktop, min_width_desktop, horizontal_scroll, fixed_width |

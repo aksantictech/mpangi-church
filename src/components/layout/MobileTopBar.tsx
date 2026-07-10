@@ -1,65 +1,152 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { Bell, Menu, ShieldCheck } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { Bell, ChevronDown, Home, LogOut, Menu, Search, Settings, X } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { findActiveMenuGroup, getGroupedVisibleMenuItems, isActiveMenuItem } from "@/lib/modules/moduleRegistry";
 
-function titleFromPath(pathname: string) {
-  if (pathname.startsWith("/super-admin")) return "Super admin";
-  if (pathname.startsWith("/administration")) return "Administration";
-  if (pathname.startsWith("/finance")) return "Finances";
-  if (pathname.startsWith("/patrimony")) return "Patrimoine";
-  if (pathname.startsWith("/members")) return "Membres";
-  if (pathname.startsWith("/attendance")) return "Présences";
-  if (pathname.startsWith("/settings")) return "Paramètres";
-  return "Mpangi-church";
-}
+type MyModulesResponse = { role?: string; churchId?: string | null; moduleCodes?: string[] };
 
 export default function MobileTopBar() {
   const pathname = usePathname();
-  const title = titleFromPath(pathname);
+  const router = useRouter();
+  const [open, setOpen] = useState(false);
+  const [openGroup, setOpenGroup] = useState<string>("system");
+  const [logoutLoading, setLogoutLoading] = useState(false);
+  const [myModules, setMyModules] = useState<MyModulesResponse>({ moduleCodes: ["dashboard", "settings", "notifications"] });
+
+  useEffect(() => {
+    let mounted = true;
+    fetch("/api/modules/my-modules", { cache: "no-store" })
+      .then((response) => response.json())
+      .then((payload) => {
+        if (!mounted) return;
+        setMyModules({ role: payload.role, churchId: payload.churchId, moduleCodes: payload.moduleCodes || ["dashboard", "settings", "notifications"] });
+      })
+      .catch(() => {
+        if (!mounted) return;
+        setMyModules({ moduleCodes: ["dashboard", "settings", "notifications"] });
+      });
+    return () => { mounted = false; };
+  }, []);
+
+  const groups = useMemo(() => getGroupedVisibleMenuItems(myModules.moduleCodes || ["dashboard"]), [myModules.moduleCodes]);
+
+  useEffect(() => {
+    const activeGroup = findActiveMenuGroup(groups, pathname);
+    if (activeGroup) setOpenGroup(activeGroup.key);
+  }, [groups, pathname]);
+
+  useEffect(() => { setOpen(false); }, [pathname]);
+
+  useEffect(() => {
+    if (!open) return;
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => { document.body.style.overflow = originalOverflow; };
+  }, [open]);
+
+  async function handleLogout() {
+    try {
+      setLogoutLoading(true);
+      await fetch("/logout", { method: "POST", cache: "no-store" });
+      router.replace("/login?logout=1");
+      router.refresh();
+    } finally {
+      setLogoutLoading(false);
+    }
+  }
 
   return (
-    <header className="sticky top-0 z-40 border-b border-[#DCEAF5] bg-white/95 px-3 py-3 shadow-sm backdrop-blur lg:hidden">
-      <div className="flex items-center justify-between gap-3">
-        <Link href="/dashboard" className="flex min-w-0 items-center gap-3">
-          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#03357A] text-sm font-black text-white shadow-sm">
-            MC
-          </span>
-
-          <span className="min-w-0">
-            <span className="block truncate text-sm font-black text-[#03357A]">
-              {title}
-            </span>
-            <span className="block truncate text-xs font-semibold text-slate-500">
-              Gestion par volets
-            </span>
-          </span>
-        </Link>
-
-        <div className="flex items-center gap-2">
-          <Link
-            href="/notifications"
-            className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#EAF3FA] text-[#03357A]"
-            aria-label="Notifications"
-          >
+    <>
+      <header className="sticky top-0 z-50 border-b border-[#DCEAF5] bg-white/95 px-3 py-3 shadow-sm backdrop-blur lg:hidden">
+        <div className="flex items-center justify-between gap-3">
+          <button type="button" onClick={() => setOpen(true)} className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#03357A] text-white shadow-sm" aria-label="Ouvrir le menu">
+            <Menu className="h-5 w-5" />
+          </button>
+          <Link href="/dashboard" className="min-w-0 flex-1">
+            <p className="truncate text-xs font-black uppercase tracking-[0.18em] text-slate-400">Mpangi-church</p>
+            <p className="truncate text-base font-black text-[#03357A]">Espace église</p>
+          </Link>
+          <Link href="/notifications" className="relative flex h-11 w-11 items-center justify-center rounded-2xl border border-[#DCEAF5] bg-white text-[#03357A]" aria-label="Notifications">
             <Bell className="h-5 w-5" />
           </Link>
-
-          <Link
-            href="/mobile-menu"
-            className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#03357A] text-white"
-            aria-label="Menu"
-          >
-            <Menu className="h-5 w-5" />
-          </Link>
         </div>
-      </div>
+      </header>
 
-      <div className="mt-3 flex items-center gap-2 rounded-2xl bg-[#F8FBFD] px-3 py-2 text-xs font-bold text-slate-600">
-        <ShieldCheck className="h-4 w-4 text-[#03357A]" />
-        Accès sécurisé selon vos permissions.
-      </div>
-    </header>
+      {open && (
+        <div className="fixed inset-0 z-[90] lg:hidden">
+          <button type="button" aria-label="Fermer le menu" onClick={() => setOpen(false)} className="absolute inset-0 bg-slate-950/50" />
+          <aside className="absolute inset-y-0 left-0 flex w-[88vw] max-w-[360px] flex-col bg-white shadow-2xl">
+            <div className="border-b border-[#DCEAF5] p-4">
+              <div className="flex items-center justify-between gap-3">
+                <Link href="/dashboard" className="flex min-w-0 items-center gap-3">
+                  <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#03357A] text-sm font-black text-white">MC</span>
+                  <span className="min-w-0">
+                    <span className="block truncate text-xs font-black uppercase tracking-[0.18em] text-slate-400">Mpangi-church</span>
+                    <span className="block truncate text-lg font-black text-[#03357A]">Menu mobile</span>
+                  </span>
+                </Link>
+                <button type="button" onClick={() => setOpen(false)} className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-[#EAF3FA] text-[#03357A]" aria-label="Fermer">
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+              <Link href="/mobile-menu" className="mt-4 flex items-center gap-3 rounded-2xl border border-[#DCEAF5] bg-[#F8FBFD] px-4 py-3 text-sm font-bold text-slate-600">
+                <Search className="h-4 w-4" /> Rechercher un module
+              </Link>
+            </div>
+
+            <nav className="min-h-0 flex-1 overflow-y-auto p-3">
+              <div className="space-y-2">
+                {groups.map((group) => {
+                  const GroupIcon = group.icon;
+                  const isOpen = openGroup === group.key;
+                  const hasActiveItem = group.items.some((item) => isActiveMenuItem(pathname, item.href));
+                  return (
+                    <section key={group.key} className="rounded-3xl border border-[#DCEAF5] bg-white">
+                      <button type="button" onClick={() => setOpenGroup(isOpen ? "" : group.key)} className={`flex w-full items-center justify-between gap-3 rounded-3xl px-4 py-3 text-left ${hasActiveItem || isOpen ? "bg-[#EAF3FA] text-[#03357A]" : "text-slate-600"}`}>
+                        <span className="flex min-w-0 items-center gap-3">
+                          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-white text-[#03357A]"><GroupIcon className="h-5 w-5" /></span>
+                          <span className="min-w-0">
+                            <span className="block truncate text-sm font-black">{group.title}</span>
+                            <span className="block truncate text-xs font-semibold text-slate-500">{group.description}</span>
+                          </span>
+                        </span>
+                        <ChevronDown className={`h-4 w-4 shrink-0 transition ${isOpen ? "rotate-180" : ""}`} />
+                      </button>
+                      {isOpen && (
+                        <div className="space-y-1 px-3 pb-3">
+                          {group.items.map((item) => {
+                            const ItemIcon = item.icon;
+                            const active = isActiveMenuItem(pathname, item.href);
+                            return (
+                              <Link key={`${group.key}-${item.href}`} href={item.href} className={`flex items-center gap-3 rounded-2xl px-3 py-3 text-sm font-extrabold ${active ? "bg-[#03357A] text-white" : "text-slate-600 hover:bg-[#F8FBFD] hover:text-[#03357A]"}`}>
+                                <ItemIcon className="h-4 w-4 shrink-0" />
+                                <span className="truncate">{item.label}</span>
+                              </Link>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </section>
+                  );
+                })}
+              </div>
+            </nav>
+
+            <div className="border-t border-[#DCEAF5] p-3">
+              <div className="grid grid-cols-2 gap-2">
+                <Link href="/dashboard" className="flex items-center justify-center gap-2 rounded-2xl bg-[#EAF3FA] px-4 py-3 text-sm font-extrabold text-[#03357A]"><Home className="h-4 w-4" />Accueil</Link>
+                <Link href="/settings" className="flex items-center justify-center gap-2 rounded-2xl bg-[#EAF3FA] px-4 py-3 text-sm font-extrabold text-[#03357A]"><Settings className="h-4 w-4" />Réglages</Link>
+              </div>
+              <button type="button" onClick={handleLogout} disabled={logoutLoading} className="mt-2 flex w-full items-center justify-center gap-2 rounded-2xl bg-red-50 px-4 py-3 text-sm font-extrabold text-red-700 disabled:opacity-60">
+                <LogOut className="h-4 w-4" />{logoutLoading ? "Déconnexion..." : "Déconnexion"}
+              </button>
+            </div>
+          </aside>
+        </div>
+      )}
+    </>
   );
 }

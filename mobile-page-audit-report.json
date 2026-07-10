@@ -93,6 +93,28 @@
     "score": 11
   },
   {
+    "file": "src/app/super-admin/churches/[id]/page.tsx",
+    "route": "/super-admin/churches/[id]",
+    "priority": "P1",
+    "tables": 1,
+    "minW": 1,
+    "overflowX": 1,
+    "fixedGrid": 6,
+    "fixedWidths": 1,
+    "largeText": 0,
+    "longForms": 0,
+    "buttons": 6,
+    "sticky": 0,
+    "issues": [
+      "table_desktop",
+      "min_width_desktop",
+      "horizontal_scroll",
+      "complex_grid",
+      "fixed_width"
+    ],
+    "score": 11
+  },
+  {
     "file": "src/app/finance/expenses/new/page.tsx",
     "route": "/finance/expenses/new",
     "priority": "P1",
@@ -125,28 +147,6 @@
     "sticky": 1,
     "issues": [
       "long_form_mobile"
-    ],
-    "score": 10
-  },
-  {
-    "file": "src/app/super-admin/churches/[id]/page.tsx",
-    "route": "/super-admin/churches/[id]",
-    "priority": "P1",
-    "tables": 1,
-    "minW": 1,
-    "overflowX": 1,
-    "fixedGrid": 5,
-    "fixedWidths": 1,
-    "largeText": 0,
-    "longForms": 0,
-    "buttons": 6,
-    "sticky": 0,
-    "issues": [
-      "table_desktop",
-      "min_width_desktop",
-      "horizontal_scroll",
-      "complex_grid",
-      "fixed_width"
     ],
     "score": 10
   },
@@ -215,7 +215,7 @@
     "tables": 1,
     "minW": 1,
     "overflowX": 1,
-    "fixedGrid": 1,
+    "fixedGrid": 2,
     "fixedWidths": 1,
     "largeText": 0,
     "longForms": 1,
@@ -236,7 +236,7 @@
     "tables": 1,
     "minW": 1,
     "overflowX": 1,
-    "fixedGrid": 1,
+    "fixedGrid": 2,
     "fixedWidths": 1,
     "largeText": 0,
     "longForms": 1,
@@ -257,7 +257,7 @@
     "tables": 1,
     "minW": 1,
     "overflowX": 1,
-    "fixedGrid": 1,
+    "fixedGrid": 2,
     "fixedWidths": 1,
     "largeText": 0,
     "longForms": 1,

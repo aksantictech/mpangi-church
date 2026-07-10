@@ -1,5 +1,4 @@
 import Image from "next/image";
-import PublicBibleBlock from "@/components/public/bible/PublicBibleBlock";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import ChurchTeachingsBlock from "@/components/public/ChurchTeachingsBlock";
@@ -456,10 +455,6 @@ export default async function PublicChurchPage({
 
       <section className="mx-auto max-w-6xl px-4 pt-8 md:px-6">
         <ChurchTeachingsBlock churchId={church.id} slug={churchSlug} />
-      </section>
-
-      <section className="mx-auto max-w-6xl px-4 pt-8 md:px-6">
-        <PublicBibleBlock slug={churchSlug} />
       </section>
 
       <section className="mx-auto max-w-6xl px-4 py-8 md:px-6">
