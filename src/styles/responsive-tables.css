@@ -1,0 +1,102 @@
+/*
+  Mpangi-church — responsive table cards
+  Converts normal desktop tables into mobile cards without changing page logic.
+*/
+
+@media (max-width: 767px) {
+  table.mpangi-responsive-table {
+    width: 100% !important;
+    min-width: 0 !important;
+    border-collapse: separate !important;
+    border-spacing: 0 0.85rem !important;
+    background: transparent !important;
+  }
+
+  table.mpangi-responsive-table thead {
+    display: none !important;
+  }
+
+  table.mpangi-responsive-table tbody {
+    display: block !important;
+    width: 100% !important;
+  }
+
+  table.mpangi-responsive-table tr {
+    display: block !important;
+    width: 100% !important;
+    overflow: hidden !important;
+    border: 1px solid #DCEAF5 !important;
+    border-radius: 1.5rem !important;
+    background: #FFFFFF !important;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06) !important;
+  }
+
+  table.mpangi-responsive-table td {
+    display: flex !important;
+    width: 100% !important;
+    align-items: flex-start !important;
+    justify-content: space-between !important;
+    gap: 1rem !important;
+    border: 0 !important;
+    border-bottom: 1px solid #DCEAF5 !important;
+    padding: 0.85rem 1rem !important;
+    text-align: right !important;
+    white-space: normal !important;
+    color: #0F172A !important;
+  }
+
+  table.mpangi-responsive-table td:last-child {
+    border-bottom: 0 !important;
+  }
+
+  table.mpangi-responsive-table td::before {
+    content: attr(data-label);
+    min-width: 42%;
+    flex: 0 0 42%;
+    text-align: left;
+    font-size: 0.72rem;
+    font-weight: 900;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #03357A;
+  }
+
+  table.mpangi-responsive-table td[data-label="Action"],
+  table.mpangi-responsive-table td[data-label="Actions"],
+  table.mpangi-responsive-table td[data-label="Lien"],
+  table.mpangi-responsive-table td[data-label="Liens"] {
+    display: block !important;
+    text-align: left !important;
+  }
+
+  table.mpangi-responsive-table td[data-label="Action"]::before,
+  table.mpangi-responsive-table td[data-label="Actions"]::before,
+  table.mpangi-responsive-table td[data-label="Lien"]::before,
+  table.mpangi-responsive-table td[data-label="Liens"]::before {
+    display: block;
+    width: 100%;
+    margin-bottom: 0.65rem;
+  }
+
+  table.mpangi-responsive-table td a,
+  table.mpangi-responsive-table td button {
+    margin-top: 0.25rem;
+  }
+
+  table.mpangi-responsive-table .truncate,
+  table.mpangi-responsive-table [class*="truncate"] {
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+  }
+
+  table.mpangi-responsive-table + table.mpangi-responsive-table {
+    margin-top: 1rem;
+  }
+}
+
+@media (min-width: 768px) {
+  table.mpangi-responsive-table td::before {
+    content: none !important;
+  }
+}

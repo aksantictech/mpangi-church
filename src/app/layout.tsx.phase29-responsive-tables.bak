@@ -1,5 +1,3 @@
-import ResponsiveTablesEnhancer from "@/components/mobile/ResponsiveTablesEnhancer";
-import "@/styles/responsive-tables.css";
 import { PwaInstallProvider } from "@/components/pwa/PwaInstallProvider";
 import ServiceWorkerRegister from "@/components/pwa/ServiceWorkerRegister";
 import type { Metadata, Viewport } from "next";
@@ -51,7 +49,6 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full">
-        <ResponsiveTablesEnhancer />
         <ServiceWorkerRegister />
         <PwaRegister />
         <PwaInstallProvider>{children}</PwaInstallProvider>
