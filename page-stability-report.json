@@ -1,0 +1,1645 @@
+[
+  {
+    "route": "/church/[slug]/teachings/[id]",
+    "file": "src/app/church/[slug]/teachings/[id]/page.tsx",
+    "type": "public",
+    "redirectOnly": false,
+    "pageHasShell": false,
+    "layoutHasShell": false,
+    "hasShell": false,
+    "issues": [],
+    "warnings": [
+      "no_visible_empty_state",
+      "no_error_state_hint"
+    ],
+    "score": 2
+  },
+  {
+    "route": "/extensions/activities/new",
+    "file": "src/app/extensions/activities/new/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": false,
+    "layoutHasShell": true,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [
+      "no_visible_empty_state",
+      "no_error_state_hint"
+    ],
+    "score": 2
+  },
+  {
+    "route": "/members/[id]/card",
+    "file": "src/app/members/[id]/card/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [
+      "no_visible_empty_state",
+      "no_error_state_hint"
+    ],
+    "score": 2
+  },
+  {
+    "route": "/attendance",
+    "file": "src/app/attendance/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [
+      "no_error_state_hint"
+    ],
+    "score": 1
+  },
+  {
+    "route": "/church/[slug]/appointment",
+    "file": "src/app/church/[slug]/appointment/page.tsx",
+    "type": "public",
+    "redirectOnly": false,
+    "pageHasShell": false,
+    "layoutHasShell": false,
+    "hasShell": false,
+    "issues": [],
+    "warnings": [
+      "no_error_state_hint"
+    ],
+    "score": 1
+  },
+  {
+    "route": "/church/[slug]/bible",
+    "file": "src/app/church/[slug]/bible/page.tsx",
+    "type": "public",
+    "redirectOnly": false,
+    "pageHasShell": false,
+    "layoutHasShell": false,
+    "hasShell": false,
+    "issues": [],
+    "warnings": [
+      "no_error_state_hint"
+    ],
+    "score": 1
+  },
+  {
+    "route": "/church/[slug]/install",
+    "file": "src/app/church/[slug]/install/page.tsx",
+    "type": "public",
+    "redirectOnly": false,
+    "pageHasShell": false,
+    "layoutHasShell": false,
+    "hasShell": false,
+    "issues": [],
+    "warnings": [
+      "no_error_state_hint"
+    ],
+    "score": 1
+  },
+  {
+    "route": "/church/[slug]/join",
+    "file": "src/app/church/[slug]/join/page.tsx",
+    "type": "public",
+    "redirectOnly": false,
+    "pageHasShell": false,
+    "layoutHasShell": false,
+    "hasShell": false,
+    "issues": [],
+    "warnings": [
+      "no_error_state_hint"
+    ],
+    "score": 1
+  },
+  {
+    "route": "/church/[slug]/member-registration",
+    "file": "src/app/church/[slug]/member-registration/page.tsx",
+    "type": "public",
+    "redirectOnly": false,
+    "pageHasShell": false,
+    "layoutHasShell": false,
+    "hasShell": false,
+    "issues": [],
+    "warnings": [
+      "no_error_state_hint"
+    ],
+    "score": 1
+  },
+  {
+    "route": "/church/[slug]/prayer",
+    "file": "src/app/church/[slug]/prayer/page.tsx",
+    "type": "public",
+    "redirectOnly": false,
+    "pageHasShell": false,
+    "layoutHasShell": false,
+    "hasShell": false,
+    "issues": [],
+    "warnings": [
+      "no_error_state_hint"
+    ],
+    "score": 1
+  },
+  {
+    "route": "/church/[slug]/teachings",
+    "file": "src/app/church/[slug]/teachings/page.tsx",
+    "type": "public",
+    "redirectOnly": false,
+    "pageHasShell": false,
+    "layoutHasShell": false,
+    "hasShell": false,
+    "issues": [],
+    "warnings": [
+      "no_error_state_hint"
+    ],
+    "score": 1
+  },
+  {
+    "route": "/church/[slug]/testimony",
+    "file": "src/app/church/[slug]/testimony/page.tsx",
+    "type": "public",
+    "redirectOnly": false,
+    "pageHasShell": false,
+    "layoutHasShell": false,
+    "hasShell": false,
+    "issues": [],
+    "warnings": [
+      "no_error_state_hint"
+    ],
+    "score": 1
+  },
+  {
+    "route": "/dashboard",
+    "file": "src/app/dashboard/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [
+      "no_error_state_hint"
+    ],
+    "score": 1
+  },
+  {
+    "route": "/departments",
+    "file": "src/app/departments/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [
+      "desktop_table_without_mobile_cards"
+    ],
+    "score": 1
+  },
+  {
+    "route": "/departments/[id]",
+    "file": "src/app/departments/[id]/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [
+      "no_error_state_hint"
+    ],
+    "score": 1
+  },
+  {
+    "route": "/departments/[id]/edit",
+    "file": "src/app/departments/[id]/edit/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [
+      "no_error_state_hint"
+    ],
+    "score": 1
+  },
+  {
+    "route": "/departments/new",
+    "file": "src/app/departments/new/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [
+      "no_error_state_hint"
+    ],
+    "score": 1
+  },
+  {
+    "route": "/events",
+    "file": "src/app/events/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [
+      "desktop_table_without_mobile_cards"
+    ],
+    "score": 1
+  },
+  {
+    "route": "/events/[id]",
+    "file": "src/app/events/[id]/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [
+      "no_error_state_hint"
+    ],
+    "score": 1
+  },
+  {
+    "route": "/events/[id]/edit",
+    "file": "src/app/events/[id]/edit/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [
+      "no_error_state_hint"
+    ],
+    "score": 1
+  },
+  {
+    "route": "/events/new",
+    "file": "src/app/events/new/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [
+      "no_error_state_hint"
+    ],
+    "score": 1
+  },
+  {
+    "route": "/extensions",
+    "file": "src/app/extensions/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": false,
+    "layoutHasShell": true,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [
+      "no_error_state_hint"
+    ],
+    "score": 1
+  },
+  {
+    "route": "/extensions/[id]/edit",
+    "file": "src/app/extensions/[id]/edit/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": false,
+    "layoutHasShell": true,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [
+      "no_error_state_hint"
+    ],
+    "score": 1
+  },
+  {
+    "route": "/extensions/activities",
+    "file": "src/app/extensions/activities/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": false,
+    "layoutHasShell": true,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [
+      "no_error_state_hint"
+    ],
+    "score": 1
+  },
+  {
+    "route": "/extensions/reports",
+    "file": "src/app/extensions/reports/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": false,
+    "layoutHasShell": true,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [
+      "no_error_state_hint"
+    ],
+    "score": 1
+  },
+  {
+    "route": "/finance/reports",
+    "file": "src/app/finance/reports/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [
+      "desktop_table_without_mobile_cards"
+    ],
+    "score": 1
+  },
+  {
+    "route": "/login",
+    "file": "src/app/login/page.tsx",
+    "type": "public",
+    "redirectOnly": false,
+    "pageHasShell": false,
+    "layoutHasShell": false,
+    "hasShell": false,
+    "issues": [],
+    "warnings": [
+      "no_visible_empty_state"
+    ],
+    "score": 1
+  },
+  {
+    "route": "/members",
+    "file": "src/app/members/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [
+      "desktop_table_without_mobile_cards"
+    ],
+    "score": 1
+  },
+  {
+    "route": "/members/[id]",
+    "file": "src/app/members/[id]/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [
+      "no_error_state_hint"
+    ],
+    "score": 1
+  },
+  {
+    "route": "/members/[id]/departments",
+    "file": "src/app/members/[id]/departments/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [
+      "no_error_state_hint"
+    ],
+    "score": 1
+  },
+  {
+    "route": "/members/[id]/edit",
+    "file": "src/app/members/[id]/edit/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [
+      "no_error_state_hint"
+    ],
+    "score": 1
+  },
+  {
+    "route": "/members/[id]/photo",
+    "file": "src/app/members/[id]/photo/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [
+      "no_error_state_hint"
+    ],
+    "score": 1
+  },
+  {
+    "route": "/members/[id]/qr",
+    "file": "src/app/members/[id]/qr/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [
+      "no_error_state_hint"
+    ],
+    "score": 1
+  },
+  {
+    "route": "/members/[id]/trainings",
+    "file": "src/app/members/[id]/trainings/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [
+      "no_error_state_hint"
+    ],
+    "score": 1
+  },
+  {
+    "route": "/members/new",
+    "file": "src/app/members/new/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [
+      "no_error_state_hint"
+    ],
+    "score": 1
+  },
+  {
+    "route": "/mobile-menu",
+    "file": "src/app/mobile-menu/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [
+      "no_visible_empty_state"
+    ],
+    "score": 1
+  },
+  {
+    "route": "/patrimony",
+    "file": "src/app/patrimony/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [
+      "no_error_state_hint"
+    ],
+    "score": 1
+  },
+  {
+    "route": "/patrimony/assets",
+    "file": "src/app/patrimony/assets/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [
+      "no_error_state_hint"
+    ],
+    "score": 1
+  },
+  {
+    "route": "/patrimony/maintenance/new",
+    "file": "src/app/patrimony/maintenance/new/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [
+      "no_visible_empty_state"
+    ],
+    "score": 1
+  },
+  {
+    "route": "/profile",
+    "file": "src/app/profile/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [
+      "no_error_state_hint"
+    ],
+    "score": 1
+  },
+  {
+    "route": "/public-requests",
+    "file": "src/app/public-requests/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [
+      "no_error_state_hint"
+    ],
+    "score": 1
+  },
+  {
+    "route": "/settings",
+    "file": "src/app/settings/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [
+      "no_visible_empty_state"
+    ],
+    "score": 1
+  },
+  {
+    "route": "/settings/live-stream",
+    "file": "src/app/settings/live-stream/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [
+      "no_error_state_hint"
+    ],
+    "score": 1
+  },
+  {
+    "route": "/settings/member-registration",
+    "file": "src/app/settings/member-registration/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [
+      "no_error_state_hint"
+    ],
+    "score": 1
+  },
+  {
+    "route": "/settings/trainings",
+    "file": "src/app/settings/trainings/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [
+      "desktop_table_without_mobile_cards"
+    ],
+    "score": 1
+  },
+  {
+    "route": "/settings/trainings/[id]",
+    "file": "src/app/settings/trainings/[id]/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [
+      "no_error_state_hint"
+    ],
+    "score": 1
+  },
+  {
+    "route": "/settings/trainings/[id]/edit",
+    "file": "src/app/settings/trainings/[id]/edit/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [
+      "no_error_state_hint"
+    ],
+    "score": 1
+  },
+  {
+    "route": "/settings/users/new",
+    "file": "src/app/settings/users/new/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [
+      "no_visible_empty_state"
+    ],
+    "score": 1
+  },
+  {
+    "route": "/souls",
+    "file": "src/app/souls/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [
+      "desktop_table_without_mobile_cards"
+    ],
+    "score": 1
+  },
+  {
+    "route": "/souls/[id]",
+    "file": "src/app/souls/[id]/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [
+      "no_error_state_hint"
+    ],
+    "score": 1
+  },
+  {
+    "route": "/souls/[id]/edit",
+    "file": "src/app/souls/[id]/edit/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [
+      "no_error_state_hint"
+    ],
+    "score": 1
+  },
+  {
+    "route": "/souls/new",
+    "file": "src/app/souls/new/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [
+      "no_error_state_hint"
+    ],
+    "score": 1
+  },
+  {
+    "route": "/super-admin/churches/[id]",
+    "file": "src/app/super-admin/churches/[id]/page.tsx",
+    "type": "super-admin",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [
+      "desktop_table_without_mobile_cards"
+    ],
+    "score": 1
+  },
+  {
+    "route": "/super-admin/churches/[id]/modules",
+    "file": "src/app/super-admin/churches/[id]/modules/page.tsx",
+    "type": "super-admin",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [
+      "no_error_state_hint"
+    ],
+    "score": 1
+  },
+  {
+    "route": "/super-admin/churches/[id]/users/new",
+    "file": "src/app/super-admin/churches/[id]/users/new/page.tsx",
+    "type": "super-admin",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [
+      "no_error_state_hint"
+    ],
+    "score": 1
+  },
+  {
+    "route": "/super-admin/dashboard",
+    "file": "src/app/super-admin/dashboard/page.tsx",
+    "type": "super-admin",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [
+      "desktop_table_without_mobile_cards"
+    ],
+    "score": 1
+  },
+  {
+    "route": "/super-admin/mobile-checklist",
+    "file": "src/app/super-admin/mobile-checklist/page.tsx",
+    "type": "super-admin",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [
+      "no_visible_empty_state"
+    ],
+    "score": 1
+  },
+  {
+    "route": "/super-admin/modules",
+    "file": "src/app/super-admin/modules/page.tsx",
+    "type": "super-admin",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [
+      "no_visible_empty_state"
+    ],
+    "score": 1
+  },
+  {
+    "route": "/super-admin/profile",
+    "file": "src/app/super-admin/profile/page.tsx",
+    "type": "super-admin",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [
+      "no_error_state_hint"
+    ],
+    "score": 1
+  },
+  {
+    "route": "/super-admin/security",
+    "file": "src/app/super-admin/security/page.tsx",
+    "type": "super-admin",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [
+      "desktop_table_without_mobile_cards"
+    ],
+    "score": 1
+  },
+  {
+    "route": "/super-admin/settings",
+    "file": "src/app/super-admin/settings/page.tsx",
+    "type": "super-admin",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [
+      "no_visible_empty_state"
+    ],
+    "score": 1
+  },
+  {
+    "route": "/super-admin/users",
+    "file": "src/app/super-admin/users/page.tsx",
+    "type": "super-admin",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [
+      "desktop_table_without_mobile_cards"
+    ],
+    "score": 1
+  },
+  {
+    "route": "/teachings",
+    "file": "src/app/teachings/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [
+      "no_error_state_hint"
+    ],
+    "score": 1
+  },
+  {
+    "route": "/teachings/[id]",
+    "file": "src/app/teachings/[id]/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [
+      "no_error_state_hint"
+    ],
+    "score": 1
+  },
+  {
+    "route": "/",
+    "file": "src/app/page.tsx",
+    "type": "redirect",
+    "redirectOnly": true,
+    "pageHasShell": false,
+    "layoutHasShell": false,
+    "hasShell": false,
+    "issues": [],
+    "warnings": [],
+    "score": 0
+  },
+  {
+    "route": "/account/profile",
+    "file": "src/app/account/profile/page.tsx",
+    "type": "redirect",
+    "redirectOnly": true,
+    "pageHasShell": false,
+    "layoutHasShell": false,
+    "hasShell": false,
+    "issues": [],
+    "warnings": [],
+    "score": 0
+  },
+  {
+    "route": "/account/security",
+    "file": "src/app/account/security/page.tsx",
+    "type": "redirect",
+    "redirectOnly": true,
+    "pageHasShell": false,
+    "layoutHasShell": false,
+    "hasShell": false,
+    "issues": [],
+    "warnings": [],
+    "score": 0
+  },
+  {
+    "route": "/administration/correspondence",
+    "file": "src/app/administration/correspondence/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [],
+    "score": 0
+  },
+  {
+    "route": "/administration/correspondence/[id]",
+    "file": "src/app/administration/correspondence/[id]/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [],
+    "score": 0
+  },
+  {
+    "route": "/administration/correspondence/new",
+    "file": "src/app/administration/correspondence/new/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [],
+    "score": 0
+  },
+  {
+    "route": "/administration/inbox",
+    "file": "src/app/administration/inbox/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [],
+    "score": 0
+  },
+  {
+    "route": "/administration/minutes",
+    "file": "src/app/administration/minutes/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [],
+    "score": 0
+  },
+  {
+    "route": "/administration/minutes/[id]",
+    "file": "src/app/administration/minutes/[id]/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [],
+    "score": 0
+  },
+  {
+    "route": "/administration/minutes/[id]/edit",
+    "file": "src/app/administration/minutes/[id]/edit/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [],
+    "score": 0
+  },
+  {
+    "route": "/administration/minutes/new",
+    "file": "src/app/administration/minutes/new/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [],
+    "score": 0
+  },
+  {
+    "route": "/administration/tasks",
+    "file": "src/app/administration/tasks/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [],
+    "score": 0
+  },
+  {
+    "route": "/administration/tasks/[id]",
+    "file": "src/app/administration/tasks/[id]/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [],
+    "score": 0
+  },
+  {
+    "route": "/administration/tasks/[id]/edit",
+    "file": "src/app/administration/tasks/[id]/edit/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [],
+    "score": 0
+  },
+  {
+    "route": "/administration/tasks/new",
+    "file": "src/app/administration/tasks/new/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [],
+    "score": 0
+  },
+  {
+    "route": "/administration/transmissions",
+    "file": "src/app/administration/transmissions/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [],
+    "score": 0
+  },
+  {
+    "route": "/administration/transmissions/[id]",
+    "file": "src/app/administration/transmissions/[id]/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [],
+    "score": 0
+  },
+  {
+    "route": "/administration/transmissions/[id]/edit",
+    "file": "src/app/administration/transmissions/[id]/edit/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [],
+    "score": 0
+  },
+  {
+    "route": "/administration/transmissions/new",
+    "file": "src/app/administration/transmissions/new/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [],
+    "score": 0
+  },
+  {
+    "route": "/appointments",
+    "file": "src/app/appointments/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [],
+    "score": 0
+  },
+  {
+    "route": "/attendance/reports/[eventId]",
+    "file": "src/app/attendance/reports/[eventId]/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [],
+    "score": 0
+  },
+  {
+    "route": "/attendance/scanner",
+    "file": "src/app/attendance/scanner/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [],
+    "score": 0
+  },
+  {
+    "route": "/attendance/scanner/[eventId]",
+    "file": "src/app/attendance/scanner/[eventId]/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [],
+    "score": 0
+  },
+  {
+    "route": "/church/[slug]",
+    "file": "src/app/church/[slug]/page.tsx",
+    "type": "public",
+    "redirectOnly": false,
+    "pageHasShell": false,
+    "layoutHasShell": false,
+    "hasShell": false,
+    "issues": [],
+    "warnings": [],
+    "score": 0
+  },
+  {
+    "route": "/extensions/new",
+    "file": "src/app/extensions/new/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": false,
+    "layoutHasShell": true,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [],
+    "score": 0
+  },
+  {
+    "route": "/finance",
+    "file": "src/app/finance/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [],
+    "score": 0
+  },
+  {
+    "route": "/finance/budgets",
+    "file": "src/app/finance/budgets/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [],
+    "score": 0
+  },
+  {
+    "route": "/finance/budgets/[id]",
+    "file": "src/app/finance/budgets/[id]/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [],
+    "score": 0
+  },
+  {
+    "route": "/finance/budgets/[id]/edit",
+    "file": "src/app/finance/budgets/[id]/edit/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [],
+    "score": 0
+  },
+  {
+    "route": "/finance/budgets/new",
+    "file": "src/app/finance/budgets/new/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [],
+    "score": 0
+  },
+  {
+    "route": "/finance/expenses",
+    "file": "src/app/finance/expenses/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [],
+    "score": 0
+  },
+  {
+    "route": "/finance/expenses/[id]",
+    "file": "src/app/finance/expenses/[id]/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [],
+    "score": 0
+  },
+  {
+    "route": "/finance/expenses/new",
+    "file": "src/app/finance/expenses/new/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [],
+    "score": 0
+  },
+  {
+    "route": "/finance/offerings",
+    "file": "src/app/finance/offerings/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [],
+    "score": 0
+  },
+  {
+    "route": "/finance/offerings/[id]",
+    "file": "src/app/finance/offerings/[id]/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [],
+    "score": 0
+  },
+  {
+    "route": "/finance/offerings/new",
+    "file": "src/app/finance/offerings/new/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [],
+    "score": 0
+  },
+  {
+    "route": "/inbox",
+    "file": "src/app/inbox/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [],
+    "score": 0
+  },
+  {
+    "route": "/install",
+    "file": "src/app/install/page.tsx",
+    "type": "public",
+    "redirectOnly": false,
+    "pageHasShell": false,
+    "layoutHasShell": false,
+    "hasShell": false,
+    "issues": [],
+    "warnings": [],
+    "score": 0
+  },
+  {
+    "route": "/notifications",
+    "file": "src/app/notifications/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [],
+    "score": 0
+  },
+  {
+    "route": "/offline",
+    "file": "src/app/offline/page.tsx",
+    "type": "public",
+    "redirectOnly": false,
+    "pageHasShell": false,
+    "layoutHasShell": false,
+    "hasShell": false,
+    "issues": [],
+    "warnings": [],
+    "score": 0
+  },
+  {
+    "route": "/patrimony/assets/[id]",
+    "file": "src/app/patrimony/assets/[id]/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [],
+    "score": 0
+  },
+  {
+    "route": "/patrimony/assets/[id]/edit",
+    "file": "src/app/patrimony/assets/[id]/edit/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [],
+    "score": 0
+  },
+  {
+    "route": "/patrimony/assets/new",
+    "file": "src/app/patrimony/assets/new/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [],
+    "score": 0
+  },
+  {
+    "route": "/patrimony/maintenance",
+    "file": "src/app/patrimony/maintenance/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [],
+    "score": 0
+  },
+  {
+    "route": "/patrimony/movements",
+    "file": "src/app/patrimony/movements/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [],
+    "score": 0
+  },
+  {
+    "route": "/patrimony/movements/new",
+    "file": "src/app/patrimony/movements/new/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [],
+    "score": 0
+  },
+  {
+    "route": "/profile/password",
+    "file": "src/app/profile/password/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [],
+    "score": 0
+  },
+  {
+    "route": "/publications",
+    "file": "src/app/publications/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [],
+    "score": 0
+  },
+  {
+    "route": "/settings/public-page",
+    "file": "src/app/settings/public-page/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [],
+    "score": 0
+  },
+  {
+    "route": "/settings/system-check",
+    "file": "src/app/settings/system-check/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [],
+    "score": 0
+  },
+  {
+    "route": "/settings/users",
+    "file": "src/app/settings/users/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [],
+    "score": 0
+  },
+  {
+    "route": "/super-admin",
+    "file": "src/app/super-admin/page.tsx",
+    "type": "redirect",
+    "redirectOnly": true,
+    "pageHasShell": false,
+    "layoutHasShell": false,
+    "hasShell": false,
+    "issues": [],
+    "warnings": [],
+    "score": 0
+  },
+  {
+    "route": "/super-admin/churches",
+    "file": "src/app/super-admin/churches/page.tsx",
+    "type": "super-admin",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [],
+    "score": 0
+  },
+  {
+    "route": "/super-admin/churches/[id]/edit",
+    "file": "src/app/super-admin/churches/[id]/edit/page.tsx",
+    "type": "super-admin",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [],
+    "score": 0
+  },
+  {
+    "route": "/super-admin/churches/new",
+    "file": "src/app/super-admin/churches/new/page.tsx",
+    "type": "super-admin",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [],
+    "score": 0
+  },
+  {
+    "route": "/super-admin/maintenance",
+    "file": "src/app/super-admin/maintenance/page.tsx",
+    "type": "super-admin",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [],
+    "score": 0
+  },
+  {
+    "route": "/super-admin/profile/password",
+    "file": "src/app/super-admin/profile/password/page.tsx",
+    "type": "super-admin",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [],
+    "score": 0
+  },
+  {
+    "route": "/super-admin/users/new",
+    "file": "src/app/super-admin/users/new/page.tsx",
+    "type": "redirect",
+    "redirectOnly": true,
+    "pageHasShell": false,
+    "layoutHasShell": false,
+    "hasShell": false,
+    "issues": [],
+    "warnings": [],
+    "score": 0
+  },
+  {
+    "route": "/teachings/[id]/edit",
+    "file": "src/app/teachings/[id]/edit/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [],
+    "score": 0
+  },
+  {
+    "route": "/teachings/new",
+    "file": "src/app/teachings/new/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [],
+    "score": 0
+  },
+  {
+    "route": "/testimonies",
+    "file": "src/app/testimonies/page.tsx",
+    "type": "church-app",
+    "redirectOnly": false,
+    "pageHasShell": true,
+    "layoutHasShell": false,
+    "hasShell": true,
+    "issues": [],
+    "warnings": [],
+    "score": 0
+  },
+  {
+    "route": "/unauthorized",
+    "file": "src/app/unauthorized/page.tsx",
+    "type": "public",
+    "redirectOnly": false,
+    "pageHasShell": false,
+    "layoutHasShell": false,
+    "hasShell": false,
+    "issues": [],
+    "warnings": [],
+    "score": 0
+  }
+]

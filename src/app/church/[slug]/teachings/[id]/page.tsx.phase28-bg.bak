@@ -72,7 +72,7 @@ export default async function PublicTeachingDetailPage({
         </Link>
 
         <section className="overflow-hidden rounded-[2rem] border border-[#DCEAF5] bg-white shadow-sm">
-          <div className="aspect-video bg-[#F5F9FC]">
+          <div className="aspect-video bg-black">
             <iframe
               src={getYouTubeEmbedUrl(teaching.youtube_video_id)}
               title={teaching.title}

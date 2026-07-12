@@ -42,7 +42,7 @@ export default async function PublicTeachingsPage({
   return (
     <main className="min-h-screen bg-[#F5F9FC] px-4 py-6">
       <div className="mx-auto max-w-6xl space-y-6">
-        <section className="rounded-[2rem] bg-gradient-to-br from-[#03357A] via-[#2563EB] to-[#8B5CF6] p-6 text-[#0F172A] shadow-lg shadow-blue-900/20">
+        <section className="rounded-[2rem] bg-gradient-to-br from-[#03357A] via-[#2563EB] to-[#8B5CF6] p-6 text-white shadow-lg shadow-blue-900/20">
           <p className="text-sm font-semibold uppercase tracking-[0.25em] text-blue-100">
             {church.name}
           </p>
@@ -76,7 +76,7 @@ export default async function PublicTeachingsPage({
                     />
                   ) : null}
 
-                  <div className="absolute inset-0 flex items-center justify-center bg-[#F5F9FC]/20">
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/20">
                     <span className="flex h-14 w-14 items-center justify-center rounded-full bg-white/90 text-[#03357A] transition group-hover:scale-110">
                       <PlayCircle className="h-7 w-7" />
                     </span>

@@ -45,7 +45,7 @@ export default async function TeachingsPage({
   return (
     <AppShell>
       <div className="space-y-6">
-        <section className="rounded-3xl bg-gradient-to-br from-[#03357A] via-[#2563EB] to-[#8B5CF6] p-6 text-[#0F172A] shadow-lg shadow-blue-900/20">
+        <section className="rounded-3xl bg-gradient-to-br from-[#03357A] via-[#2563EB] to-[#8B5CF6] p-6 text-white shadow-lg shadow-blue-900/20">
           <div className="flex flex-col justify-between gap-5 md:flex-row md:items-center">
             <div>
               <p className="text-sm font-semibold uppercase tracking-[0.25em] text-blue-100">
@@ -87,7 +87,7 @@ export default async function TeachingsPage({
               <option value="archived">Archivés</option>
             </select>
 
-            <button className="rounded-2xl bg-[#03357A] px-4 py-3 text-sm font-extrabold text-[#0F172A]">
+            <button className="rounded-2xl bg-[#03357A] px-4 py-3 text-sm font-extrabold text-white">
               Filtrer
             </button>
           </form>
@@ -114,7 +114,7 @@ export default async function TeachingsPage({
                         />
                       ) : null}
 
-                      <div className="absolute inset-0 flex items-center justify-center bg-[#F5F9FC]/20">
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/20">
                         <span className="flex h-14 w-14 items-center justify-center rounded-full bg-white/90 text-[#03357A]">
                           <PlayCircle className="h-7 w-7" />
                         </span>
