@@ -4,10 +4,10 @@ import Link from "next/link";
 import { useState } from "react";
 import { ArrowLeft, KeyRound, Save } from "lucide-react";
 import SuperAdminShell from "@/components/layout/SuperAdminShell";
-import { createSupabaseClient } from "@/lib/supabase/client";
+import { createClient } from "@/lib/supabase/client";
 
 export default function SuperAdminPasswordPage() {
-  const supabase = createSupabaseClient();
+  const supabase = createClient();
 
   const [password, setPassword] = useState("");
   const [confirmation, setConfirmation] = useState("");
