@@ -1,0 +1,59 @@
+const fs = require("fs");
+const path = require("path");
+
+const ROOT = process.cwd();
+const stylesDir = path.join(ROOT, "src", "styles");
+const target = path.join(stylesDir, "empty-tables.css");
+
+fs.mkdirSync(stylesDir, { recursive: true });
+
+const css = `.mpangi-auto-empty-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.85rem;
+  margin-top: 1rem;
+  border: 1px dashed #dceaf5;
+  border-radius: 1.5rem;
+  background: #f8fbfd;
+  padding: 1.25rem;
+  text-align: left;
+}
+
+.mpangi-auto-empty-icon {
+  display: flex;
+  width: 2.75rem;
+  height: 2.75rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1rem;
+  background: #eaf3fa;
+  color: #03357a;
+  font-weight: 900;
+}
+
+.mpangi-auto-empty-title {
+  font-size: 0.95rem;
+  font-weight: 900;
+  color: #03357a;
+}
+
+.mpangi-auto-empty-description {
+  margin-top: 0.2rem;
+  font-size: 0.84rem;
+  line-height: 1.55;
+  color: #64748b;
+}
+
+@media (max-width: 767px) {
+  .mpangi-auto-empty-state {
+    margin-top: 0.85rem;
+    align-items: flex-start;
+    justify-content: flex-start;
+  }
+}
+`;
+
+fs.writeFileSync(target, css, "utf8");
+console.log("Fichier créé :", path.relative(ROOT, target));

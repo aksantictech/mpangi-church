@@ -58,20 +58,20 @@ function sourceUsesShell(source) {
   );
 }
 
-function nearestLayouts(filePath) {
-  const layouts = [];
+function nearestFiles(filePath, fileName) {
+  const files = [];
   let current = path.dirname(filePath);
 
   while (current.startsWith(APP_DIR)) {
-    const layout = path.join(current, "layout.tsx");
+    const candidate = path.join(current, fileName);
 
-    if (exists(layout)) layouts.push(layout);
+    if (exists(candidate)) files.push(candidate);
 
     if (current === APP_DIR) break;
     current = path.dirname(current);
   }
 
-  return layouts;
+  return files;
 }
 
 function isRedirectOnly(source) {
@@ -98,17 +98,34 @@ function routeType(route, source) {
   return "church-app";
 }
 
+function rootLayoutSource() {
+  return read(path.join(APP_DIR, "layout.tsx"));
+}
+
+const rootLayout = rootLayoutSource();
+const hasGlobalEmptyTablesEnhancer = rootLayout.includes("EmptyTablesEnhancer");
+
 function detectIssues(filePath) {
   const route = routeForFile(filePath);
   const source = read(filePath);
-  const layouts = nearestLayouts(filePath);
+  const layouts = nearestFiles(filePath, "layout.tsx");
+  const errors = nearestFiles(filePath, "error.tsx");
+  const loadings = nearestFiles(filePath, "loading.tsx");
+  const notFounds = nearestFiles(filePath, "not-found.tsx");
+
   const layoutSources = layouts.map(read).join("\n");
+  const errorSources = errors.map(read).join("\n");
+  const loadingSources = loadings.map(read).join("\n");
 
   const type = routeType(route, source);
   const redirectOnly = type === "redirect";
   const pageHasShell = sourceUsesShell(source);
   const layoutHasShell = sourceUsesShell(layoutSources);
   const hasShell = pageHasShell || layoutHasShell;
+  const hasRouteError = errors.length > 0 || source.includes("ErrorState") || errorSources.includes("RouteErrorView");
+  const hasRouteLoading = loadings.length > 0 || loadingSources.includes("RouteLoadingView");
+  const hasNotFound = notFounds.length > 0;
+  const hasTable = /<table\b/.test(source);
 
   const issues = [];
   const warnings = [];
@@ -141,26 +158,30 @@ function detectIssues(filePath) {
 
   if (
     !redirectOnly &&
-    /<table\b/.test(source) &&
-    !/md:hidden|MobileRecordCard|ResponsiveDataSection|MobileListShell/.test(source)
+    hasTable &&
+    !/md:hidden|MobileRecordCard|ResponsiveDataSection|MobileListShell/.test(source) &&
+    !rootLayout.includes("ResponsiveTablesEnhancer")
   ) {
     warnings.push("desktop_table_without_mobile_cards");
   }
 
-  if (
-    !redirectOnly &&
-    !/Aucun|aucune|EmptyState|empty/i.test(source) &&
-    (/<table\b|\.map\(/.test(source))
-  ) {
+  const hasVisibleEmptyState =
+    /Aucun|aucune|EmptyState|empty|Aucune donnée/i.test(source) ||
+    (hasTable && hasGlobalEmptyTablesEnhancer);
+
+  if (!redirectOnly && !hasVisibleEmptyState && (hasTable || /\.map\(/.test(source))) {
     warnings.push("no_visible_empty_state");
   }
 
-  if (
-    !redirectOnly &&
-    !/try|catch|ErrorState|error/i.test(source) &&
-    /from\(|select\(|insert\(|update\(|delete\(/.test(source)
-  ) {
+  const hasDataCalls = /from\(|select\(|insert\(|update\(|delete\(/.test(source);
+  const hasLocalErrorHandling = /try|catch|ErrorState|error/i.test(source);
+
+  if (!redirectOnly && hasDataCalls && !hasLocalErrorHandling && !hasRouteError) {
     warnings.push("no_error_state_hint");
+  }
+
+  if (!redirectOnly && !hasRouteLoading && hasDataCalls) {
+    warnings.push("no_loading_state_hint");
   }
 
   return {
@@ -171,6 +192,9 @@ function detectIssues(filePath) {
     pageHasShell,
     layoutHasShell,
     hasShell,
+    hasRouteError,
+    hasRouteLoading,
+    hasNotFound,
     issues,
     warnings,
     score: issues.length * 5 + warnings.length,
@@ -221,6 +245,11 @@ const md = [
   `- Pages critiques : ${critical.length}`,
   `- Pages avec avertissements : ${warnings.length}`,
   "",
+  "## Couverture globale",
+  "",
+  `- EmptyTablesEnhancer actif : ${hasGlobalEmptyTablesEnhancer ? "oui" : "non"}`,
+  `- ResponsiveTablesEnhancer actif : ${rootLayout.includes("ResponsiveTablesEnhancer") ? "oui" : "non"}`,
+  "",
   "## Pages critiques",
   "",
   criticalTable,
@@ -231,11 +260,11 @@ const md = [
   "",
   "## Détail complet",
   "",
-  "| Route | Type | Shell page | Shell layout | Score | Issues | Warnings |",
-  "|---|---|---:|---:|---:|---|---|",
+  "| Route | Type | Shell | Error | Loading | NotFound | Score | Issues | Warnings |",
+  "|---|---|---:|---:|---:|---:|---:|---|---|",
   ...rows.map(
     (row) =>
-      `| \`${row.route}\` | ${row.type} | ${row.pageHasShell ? "oui" : "non"} | ${row.layoutHasShell ? "oui" : "non"} | ${row.score} | ${row.issues.join(", ") || "-"} | ${row.warnings.join(", ") || "-"} |`
+      `| \`${row.route}\` | ${row.type} | ${row.hasShell ? "oui" : "non"} | ${row.hasRouteError ? "oui" : "non"} | ${row.hasRouteLoading ? "oui" : "non"} | ${row.hasNotFound ? "oui" : "non"} | ${row.score} | ${row.issues.join(", ") || "-"} | ${row.warnings.join(", ") || "-"} |`
   ),
   "",
 ].join("\n");

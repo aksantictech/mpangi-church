@@ -1,3 +1,5 @@
+import EmptyTablesEnhancer from "@/components/common/EmptyTablesEnhancer";
+import "@/styles/empty-tables.css";
 import ResponsiveTablesEnhancer from "@/components/mobile/ResponsiveTablesEnhancer";
 import "@/styles/responsive-tables.css";
 import { PwaInstallProvider } from "@/components/pwa/PwaInstallProvider";
@@ -51,6 +53,7 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full">
+        <EmptyTablesEnhancer />
         <ResponsiveTablesEnhancer />
         <ServiceWorkerRegister />
         <PwaRegister />
