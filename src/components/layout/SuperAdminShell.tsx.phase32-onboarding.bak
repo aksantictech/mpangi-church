@@ -6,7 +6,6 @@ import type { ReactNode } from "react";
 import { useState } from "react";
 import {
   Boxes,
-  Rocket,
   Building2,
   LayoutDashboard,
   Settings,
@@ -30,11 +29,6 @@ const menuItems = [
     label: "Modules",
     href: "/super-admin/modules",
     icon: Boxes,
-  },
-  {
-    label: "Onboarding",
-    href: "/super-admin/onboarding",
-    icon: Rocket,
   },
   {
     label: "Paramètres",
