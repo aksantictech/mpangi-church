@@ -1,43 +1,57 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Bell,
+  Camera,
   ChevronDown,
+  KeyRound,
   LogOut,
   Settings,
+  UserRound,
   UsersRound,
 } from "lucide-react";
-import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
 type Profile = {
-  full_name?: string | null;
-  email?: string | null;
-  role?: string | null;
+  id: string;
+  full_name: string;
+  email: string;
+  phone?: string;
+  avatar_url?: string;
+  role?: string;
+  status?: string;
+  church_id?: string | null;
 };
 
-type ProfilePayload = {
-  profile?: Profile | null;
-};
-
-function initials(name?: string | null, email?: string | null) {
-  const source = (name || email || "Utilisateur").trim();
-  const parts = source.split(/\s+/).filter(Boolean);
+function getInitials(name: string, email: string) {
+  const label = name || email || "MC";
+  const parts = label.trim().split(/\s+/).filter(Boolean);
 
   if (parts.length >= 2) {
     return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
   }
 
-  return source.slice(0, 2).toUpperCase();
+  return label.slice(0, 2).toUpperCase();
 }
 
-function shortName(name?: string | null, email?: string | null) {
-  const value = (name || email || "Utilisateur").trim();
+function normalizeRole(role?: string) {
+  const labels: Record<string, string> = {
+    church_admin: "Admin église",
+    pastor: "Pasteur",
+    assistant_pastor: "Pasteur assistant",
+    admin_eglise: "Admin église",
+    pasteur_t: "Pasteur T",
+    pasteur_a: "Pasteur A",
+    charge_afp: "Chargé AFP",
+    responsable_d: "Responsable D",
+    secretaire: "Secrétaire",
+    worker: "Ouvrier",
+    readonly: "Lecture seule",
+  };
 
-  if (value.length <= 22) return value;
-
-  return `${value.slice(0, 22)}...`;
+  return labels[role || ""] || role || "Utilisateur";
 }
 
 export default function ChurchDesktopTopBar() {
@@ -51,9 +65,9 @@ export default function ChurchDesktopTopBar() {
   useEffect(() => {
     let mounted = true;
 
-    fetch("/api/security/my-access", { cache: "no-store" })
+    fetch("/api/account/me", { cache: "no-store" })
       .then((response) => response.json())
-      .then((payload: ProfilePayload) => {
+      .then((payload) => {
         if (!mounted) return;
         setProfile(payload.profile ?? null);
       })
@@ -68,7 +82,7 @@ export default function ChurchDesktopTopBar() {
   }, []);
 
   useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
+    function closeOnOutsideClick(event: MouseEvent) {
       if (!dropdownRef.current) return;
 
       if (!dropdownRef.current.contains(event.target as Node)) {
@@ -76,17 +90,17 @@ export default function ChurchDesktopTopBar() {
       }
     }
 
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("mousedown", closeOnOutsideClick);
 
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    return () => document.removeEventListener("mousedown", closeOnOutsideClick);
   }, []);
 
-  const displayName = useMemo(
-    () => shortName(profile?.full_name, profile?.email),
-    [profile?.full_name, profile?.email]
-  );
+  const displayName = useMemo(() => {
+    return profile?.full_name || profile?.email || "Utilisateur";
+  }, [profile]);
+
+  const displayEmail = profile?.email || "";
+  const initials = getInitials(displayName, displayEmail);
 
   async function handleLogout() {
     try {
@@ -105,63 +119,118 @@ export default function ChurchDesktopTopBar() {
   }
 
   return (
-    <header className="hidden border-b border-[#DCEAF5] bg-[#F5F9FC]/95 px-6 py-4 backdrop-blur lg:block xl:px-8">
-      <div className="mx-auto flex w-full max-w-7xl items-center justify-end gap-3">
+    <header className="sticky top-0 z-40 hidden border-b border-[#DCEAF5] bg-white/95 px-6 py-3 backdrop-blur lg:block">
+      <div className="flex items-center justify-end gap-3">
         <Link
           href="/notifications"
-          className="relative flex h-12 w-12 items-center justify-center rounded-2xl border border-[#DCEAF5] bg-white text-[#03357A] shadow-sm transition hover:bg-[#EAF3FA]"
+          className="flex h-12 w-12 items-center justify-center rounded-2xl border border-[#DCEAF5] bg-white text-[#03357A] shadow-sm"
           aria-label="Notifications"
         >
           <Bell className="h-5 w-5" />
         </Link>
 
-        <div ref={dropdownRef} className="relative">
+        <div className="relative" ref={dropdownRef}>
           <button
             type="button"
             onClick={() => setOpen((value) => !value)}
-            className="flex min-w-[260px] items-center justify-between gap-3 rounded-2xl border border-[#DCEAF5] bg-white px-3 py-2 shadow-sm transition hover:bg-[#F8FBFD]"
+            className="flex min-h-12 items-center gap-3 rounded-2xl border border-[#DCEAF5] bg-white px-3 py-2 shadow-sm transition hover:border-[#03357A]/40"
           >
-            <span className="flex min-w-0 items-center gap-3">
-              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#03357A] text-sm font-black text-white">
-                {initials(profile?.full_name, profile?.email)}
+            {profile?.avatar_url ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={profile.avatar_url}
+                alt={displayName}
+                className="h-10 w-10 rounded-2xl object-cover"
+              />
+            ) : (
+              <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#03357A] text-sm font-black text-white">
+                {initials}
               </span>
+            )}
 
-              <span className="min-w-0 text-left">
-                <span className="block text-xs font-bold text-slate-400">
-                  Bienvenue
-                </span>
-                <span className="block truncate text-sm font-black text-[#03357A]">
-                  {displayName}
-                </span>
+            <span className="min-w-0 text-left">
+              <span className="block text-xs font-bold text-slate-400">
+                Bienvenue
+              </span>
+              <span className="block max-w-[260px] truncate text-sm font-black text-[#03357A]">
+                {displayName}
               </span>
             </span>
 
             <ChevronDown
-              className={`h-4 w-4 shrink-0 text-slate-400 transition ${
+              className={`h-4 w-4 text-slate-400 transition ${
                 open ? "rotate-180" : ""
               }`}
             />
           </button>
 
           {open && (
-            <div className="absolute right-0 z-50 mt-3 w-[280px] overflow-hidden rounded-3xl border border-[#DCEAF5] bg-white p-2 shadow-2xl shadow-slate-900/15">
-              <div className="rounded-2xl bg-[#F8FBFD] p-4">
-                <p className="text-sm font-black text-[#03357A]">
-                  {profile?.full_name || "Utilisateur"}
-                </p>
-                <p className="mt-1 truncate text-xs font-semibold text-slate-500">
-                  {profile?.email || "Compte connecté"}
-                </p>
-                <p className="mt-2 inline-flex rounded-full bg-[#EAF3FA] px-3 py-1 text-xs font-black text-[#03357A]">
-                  {profile?.role || "role"}
-                </p>
+            <div className="absolute right-0 mt-3 w-[min(92vw,360px)] overflow-hidden rounded-3xl border border-[#DCEAF5] bg-white shadow-2xl shadow-slate-900/15">
+              <div className="bg-[#F8FBFD] p-5">
+                <div className="flex items-center gap-4">
+                  {profile?.avatar_url ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={profile.avatar_url}
+                      alt={displayName}
+                      className="h-16 w-16 rounded-3xl object-cover"
+                    />
+                  ) : (
+                    <span className="flex h-16 w-16 items-center justify-center rounded-3xl bg-[#03357A] text-lg font-black text-white">
+                      {initials}
+                    </span>
+                  )}
+
+                  <div className="min-w-0">
+                    <h2 className="line-clamp-2 text-lg font-black text-[#03357A]">
+                      {displayName}
+                    </h2>
+
+                    {displayEmail && (
+                      <p className="mt-1 truncate text-sm font-semibold text-slate-500">
+                        {displayEmail}
+                      </p>
+                    )}
+
+                    <span className="mt-2 inline-flex rounded-full bg-[#EAF3FA] px-3 py-1 text-xs font-black text-[#03357A]">
+                      {normalizeRole(profile?.role)}
+                    </span>
+                  </div>
+                </div>
               </div>
 
-              <div className="mt-2 space-y-1">
+              <nav className="space-y-1 p-3">
+                <Link
+                  href="/profile"
+                  onClick={() => setOpen(false)}
+                  className="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-extrabold text-slate-600 hover:bg-[#EAF3FA] hover:text-[#03357A]"
+                >
+                  <UserRound className="h-4 w-4" />
+                  Modifier mon profil
+                </Link>
+
+                <Link
+                  href="/profile?photo=1"
+                  onClick={() => setOpen(false)}
+                  className="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-extrabold text-slate-600 hover:bg-[#EAF3FA] hover:text-[#03357A]"
+                >
+                  <Camera className="h-4 w-4" />
+                  Modifier ma photo
+                </Link>
+
+                <Link
+                  href="/profile/password"
+                  onClick={() => setOpen(false)}
+                  className="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-extrabold text-slate-600 hover:bg-[#EAF3FA] hover:text-[#03357A]"
+                >
+                  <KeyRound className="h-4 w-4" />
+                  Modifier le mot de passe
+                </Link>
+
                 <Link
                   href="/settings"
                   onClick={() => setOpen(false)}
-                  className="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-extrabold text-slate-600 transition hover:bg-[#EAF3FA] hover:text-[#03357A]"
+                  className="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-extrabold text-slate-600 hover:bg-[#EAF3FA] hover:text-[#03357A]"
                 >
                   <Settings className="h-4 w-4" />
                   Paramètres
@@ -170,7 +239,7 @@ export default function ChurchDesktopTopBar() {
                 <Link
                   href="/settings/users"
                   onClick={() => setOpen(false)}
-                  className="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-extrabold text-slate-600 transition hover:bg-[#EAF3FA] hover:text-[#03357A]"
+                  className="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-extrabold text-slate-600 hover:bg-[#EAF3FA] hover:text-[#03357A]"
                 >
                   <UsersRound className="h-4 w-4" />
                   Utilisateurs & rôles
@@ -180,12 +249,12 @@ export default function ChurchDesktopTopBar() {
                   type="button"
                   onClick={handleLogout}
                   disabled={logoutLoading}
-                  className="flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm font-extrabold text-red-700 transition hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm font-extrabold text-red-700 hover:bg-red-50 disabled:opacity-60"
                 >
                   <LogOut className="h-4 w-4" />
                   {logoutLoading ? "Déconnexion..." : "Déconnexion"}
                 </button>
-              </div>
+              </nav>
             </div>
           )}
         </div>
