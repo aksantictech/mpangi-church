@@ -1,5 +1,6 @@
 import {
   ArrowLeftRight,
+  BarChart3,
   Bell,
   CalendarDays,
   ClipboardList,
@@ -10,7 +11,9 @@ import {
   Landmark,
   LayoutDashboard,
   ListChecks,
+  MapPinned,
   Megaphone,
+  Network,
   PackageCheck,
   PieChart,
   PlayCircle,
@@ -29,6 +32,7 @@ export type ModuleCategory =
   | "system"
   | "spiritual"
   | "administration"
+  | "extensions"
   | "finance"
   | "patrimony";
 
@@ -71,6 +75,12 @@ export const MODULE_CATEGORY_META: Record<
     shortTitle: "Admin",
     description: "Courriers, transmissions, tâches et PV",
     icon: Inbox,
+  },
+  extensions: {
+    title: "Volet extensions",
+    shortTitle: "Extensions",
+    description: "Activités et rapports hebdomadaires",
+    icon: Network,
   },
   finance: {
     title: "Volet finances",
@@ -227,6 +237,28 @@ export const MODULE_MENU_ITEMS: ModuleMenuItem[] = [
   },
 
   {
+    code: "extension_activities",
+    label: "Extensions",
+    href: "/extensions",
+    icon: MapPinned,
+    category: "extensions",
+  },
+  {
+    code: "extension_activities",
+    label: "Activités",
+    href: "/extensions/activities",
+    icon: ClipboardList,
+    category: "extensions",
+  },
+  {
+    code: "extension_activities",
+    label: "Rapports",
+    href: "/extensions/reports",
+    icon: BarChart3,
+    category: "extensions",
+  },
+
+  {
     code: "finance_dashboard",
     label: "Dashboard finances",
     href: "/finance",
@@ -296,6 +328,7 @@ export const CATEGORY_ORDER: ModuleCategory[] = [
   "system",
   "spiritual",
   "administration",
+  "extensions",
   "finance",
   "patrimony",
 ];
