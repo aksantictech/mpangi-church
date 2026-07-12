@@ -16,7 +16,6 @@ import {
 import AppShell from "@/components/layout/AppShell";
 import MetricCard from "@/components/dashboard/MetricCard";
 import { createClient } from "@/lib/supabase/server";
-import RoleDashboardPanel from "@/components/dashboard/RoleDashboardPanel";
 
 function firstItem<T>(value: T | T[] | null | undefined): T | null {
   if (!value) return null;
@@ -476,8 +475,6 @@ function AlertCard({
     <div className={`rounded-2xl p-5 ${className}`}>
       <p className="font-extrabold">{title}</p>
       <p className="mt-1 text-sm opacity-80">{description}</p>
-    
-      <RoleDashboardPanel />
-</div>
+    </div>
   );
 }
