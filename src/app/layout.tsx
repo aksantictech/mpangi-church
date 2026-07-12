@@ -1,3 +1,5 @@
+import { PwaInstallProvider } from "@/components/pwa/PwaInstallProvider";
+import ServiceWorkerRegister from "@/components/pwa/ServiceWorkerRegister";
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import PwaRegister from "@/components/pwa/PwaRegister";
@@ -47,8 +49,9 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full">
+        <ServiceWorkerRegister />
         <PwaRegister />
-        {children}
+        <PwaInstallProvider>{children}</PwaInstallProvider>
       </body>
     </html>
   );
