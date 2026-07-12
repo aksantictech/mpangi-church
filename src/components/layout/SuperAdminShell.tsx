@@ -1,18 +1,20 @@
 "use client";
 
-import type { ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import type { ReactNode } from "react";
+import { useState } from "react";
 import {
-  Building2,
   Boxes,
+  Building2,
   LayoutDashboard,
-  Menu,
   Settings,
-  Shield,
+  ShieldCheck,
+  X,
 } from "lucide-react";
+import SuperAdminTopBar from "@/components/layout/SuperAdminTopBar";
 
-const items = [
+const menuItems = [
   {
     label: "Dashboard",
     href: "/super-admin/dashboard",
@@ -39,79 +41,94 @@ function isActive(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-export default function SuperAdminShell({ children }: { children: ReactNode }) {
+function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
 
   return (
-    <div className="min-h-dvh bg-[#F5F9FC] text-[#0F172A] lg:flex">
-      <aside className="hidden h-dvh w-[280px] shrink-0 border-r border-[#DCEAF5] bg-white p-3 lg:sticky lg:top-0 lg:block">
-        <div className="rounded-[1.6rem] bg-[#03357A] p-5 text-white">
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/15">
-            <Shield className="h-6 w-6" />
+    <aside className="flex h-full flex-col bg-white">
+      <div className="p-4">
+        <div className="rounded-[2rem] bg-[#03357A] p-5 text-white">
+          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/15">
+            <ShieldCheck className="h-7 w-7" />
           </div>
-          <p className="mt-4 text-xs font-black uppercase tracking-[0.25em] text-blue-100">
+
+          <p className="mt-5 text-xs font-black uppercase tracking-[0.35em]">
             Mpangi-church
           </p>
-          <h2 className="mt-2 text-xl font-black">Super admin</h2>
-          <p className="mt-1 text-xs font-semibold text-blue-100">
+          <h2 className="mt-4 text-2xl font-black">Super admin</h2>
+          <p className="mt-1 text-sm font-bold text-blue-100">
             Administration globale
           </p>
         </div>
+      </div>
 
-        <nav className="mt-4 space-y-1.5">
-          {items.map((item) => {
-            const Icon = item.icon;
-            const active = isActive(pathname, item.href);
+      <nav className="min-h-0 flex-1 space-y-2 overflow-y-auto px-4 pb-4">
+        {menuItems.map((item) => {
+          const Icon = item.icon;
+          const active = isActive(pathname, item.href);
 
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-extrabold transition ${
-                  active
-                    ? "bg-[#03357A] text-white shadow-sm"
-                    : "text-slate-600 hover:bg-[#EAF3FA] hover:text-[#03357A]"
-                }`}
-              >
-                <Icon className="h-4 w-4" />
-                {item.label}
-              </Link>
-            );
-          })}
-        </nav>
-      </aside>
-
-      <section className="min-w-0 flex-1">
-        <header className="sticky top-0 z-40 border-b border-[#DCEAF5] bg-white/95 px-4 py-3 shadow-sm backdrop-blur lg:hidden">
-          <div className="flex items-center justify-between">
-            <Link href="/super-admin/dashboard" className="flex items-center gap-3">
-              <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#03357A] text-white">
-                <Shield className="h-5 w-5" />
-              </span>
-              <span>
-                <span className="block text-sm font-black text-[#03357A]">
-                  Super admin
-                </span>
-                <span className="block text-xs font-semibold text-slate-500">
-                  Menu simplifié
-                </span>
-              </span>
-            </Link>
-
+          return (
             <Link
-              href="/super-admin/settings"
-              className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#EAF3FA] text-[#03357A]"
-              aria-label="Paramètres"
+              key={item.href}
+              href={item.href}
+              onClick={onNavigate}
+              className={`flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-black transition ${
+                active
+                  ? "bg-[#03357A] text-white shadow-sm"
+                  : "text-slate-600 hover:bg-[#EAF3FA] hover:text-[#03357A]"
+              }`}
             >
-              <Menu className="h-5 w-5" />
+              <Icon className="h-5 w-5" />
+              {item.label}
             </Link>
-          </div>
-        </header>
+          );
+        })}
+      </nav>
+    </aside>
+  );
+}
 
-        <main className="px-3 pb-8 pt-4 sm:px-5 lg:px-8 lg:pt-5">
-          <div className="mx-auto w-full max-w-7xl">{children}</div>
+export default function SuperAdminShell({ children }: { children: ReactNode }) {
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  return (
+    <div className="min-h-screen bg-[#F5F9FC]">
+      <div className="fixed inset-y-0 left-0 z-40 hidden w-[292px] border-r border-[#DCEAF5] lg:block">
+        <SidebarContent />
+      </div>
+
+      {mobileOpen && (
+        <div className="fixed inset-0 z-[80] lg:hidden">
+          <button
+            type="button"
+            aria-label="Fermer le menu"
+            onClick={() => setMobileOpen(false)}
+            className="absolute inset-0 bg-slate-950/50"
+          />
+
+          <div className="absolute inset-y-0 left-0 w-[86vw] max-w-[320px] shadow-2xl">
+            <div className="absolute right-3 top-3 z-10">
+              <button
+                type="button"
+                onClick={() => setMobileOpen(false)}
+                className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white/15 text-white"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            <SidebarContent onNavigate={() => setMobileOpen(false)} />
+          </div>
+        </div>
+      )}
+
+      <div className="lg:pl-[292px]">
+        <SuperAdminTopBar onOpenMobileMenu={() => setMobileOpen(true)} />
+
+        <main className="mx-auto w-full max-w-[1500px] px-4 py-6 sm:px-6 lg:px-8">
+          {children}
         </main>
-      </section>
+      </div>
     </div>
   );
 }
