@@ -586,6 +586,7 @@ export default async function PublicChurchPage({
         AKSANTIC Technology
       </footer>
 
+      {/* Une seule barre mobile publique : ne pas remettre PublicMobileActionBar. */}
       <PublicMobileBottomNav slug={churchSlug} />
     </main>
   );

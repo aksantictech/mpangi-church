@@ -4,10 +4,7 @@ import { redirect } from "next/navigation";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import { createOrUpdateUserAccount } from "@/lib/users/createUserAccount";
-import {
-  canCreateChurchUsers,
-  normalizeUserRole,
-} from "@/lib/users/userRoles";
+import { normalizeUserRole } from "@/lib/users/userRoles";
 
 function readString(formData: FormData, key: string) {
   return String(formData.get(key) || "").trim();
@@ -15,48 +12,41 @@ function readString(formData: FormData, key: string) {
 
 async function getCurrentProfile() {
   const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    redirect("/login?reason=auth_required");
-  }
+  if (!user) redirect("/login?reason=auth_required");
 
   const admin = createAdminClient();
-
   const { data: profile, error } = await admin
     .from("profiles")
-    .select("id, role, church_id")
+    .select("id, email, full_name, role, church_id")
     .eq("id", user.id)
     .maybeSingle();
 
-  if (error || !profile) {
-    redirect("/unauthorized?reason=profile_missing");
-  }
-
+  if (error || !profile) redirect("/unauthorized?reason=profile_missing");
   return profile;
 }
 
+function canCreateUsers(role: string | null | undefined) {
+  return ["super_admin", "church_admin", "admin_eglise", "pasteur_t", "pastor"]
+    .includes(String(role || ""));
+}
+
 export async function createChurchUserAction(formData: FormData) {
-  // Tout redirect susceptible d'être exécuté reste hors du try/catch.
+  // redirect() lève volontairement NEXT_REDIRECT. Tout contrôle pouvant
+  // rediriger doit rester hors du try/catch.
   const profile = await getCurrentProfile();
 
-  if (!canCreateChurchUsers(profile.role)) {
-    redirect(
-      `/settings/users/new?error=${encodeURIComponent(
-        "Vous n’avez pas l’autorisation de créer des utilisateurs."
-      )}`
-    );
+  if (!canCreateUsers(profile.role)) {
+    redirect(`/settings/users/new?error=${encodeURIComponent(
+      "Vous n’avez pas l’autorisation de créer des utilisateurs."
+    )}`);
   }
 
   if (!profile.church_id) {
-    redirect(
-      `/settings/users/new?error=${encodeURIComponent(
-        "Votre profil n’est rattaché à aucune église."
-      )}`
-    );
+    redirect(`/settings/users/new?error=${encodeURIComponent(
+      "Votre profil n’est rattaché à aucune église."
+    )}`);
   }
 
   let errorMessage = "";
@@ -70,15 +60,13 @@ export async function createChurchUserAction(formData: FormData) {
       status: readString(formData, "status") || "active",
       churchId: profile.church_id,
       updateExisting: true,
-    });
+});
   } catch (error: any) {
     errorMessage = error?.message || "Création impossible.";
   }
 
   if (errorMessage) {
-    redirect(
-      `/settings/users/new?error=${encodeURIComponent(errorMessage)}`
-    );
+    redirect(`/settings/users/new?error=${encodeURIComponent(errorMessage)}`);
   }
 
   redirect("/settings/users?createdUser=1");

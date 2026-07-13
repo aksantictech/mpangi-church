@@ -10,6 +10,7 @@ function readString(formData: FormData, key: string) {
 }
 
 export async function createSuperAdminUserAction(formData: FormData) {
+  // requireSuperAdmin peut rediriger : ne pas l'enfermer dans le try/catch.
   await requireSuperAdmin();
 
   let errorMessage = "";
@@ -23,15 +24,13 @@ export async function createSuperAdminUserAction(formData: FormData) {
       status: readString(formData, "status") || "active",
       churchId: readString(formData, "church_id") || null,
       updateExisting: true,
-    });
+});
   } catch (error: any) {
     errorMessage = error?.message || "Création impossible.";
   }
 
   if (errorMessage) {
-    redirect(
-      `/super-admin/users/new?error=${encodeURIComponent(errorMessage)}`
-    );
+    redirect(`/super-admin/users/new?error=${encodeURIComponent(errorMessage)}`);
   }
 
   redirect("/super-admin/settings?createdUser=1");

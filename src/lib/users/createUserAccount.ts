@@ -8,20 +8,24 @@ type CreateUserAccountInput = {
   role: string;
   churchId: string | null;
   status?: string;
-  allowExistingInSameChurch?: boolean;
-  allowExistingWithoutChurch?: boolean;
+  updateExisting?: boolean;
 };
+
+type ExistingProfile = {
+  id: string;
+  church_id: string | null;
+  role: string | null;
+} | null;
 
 function cleanEmail(email: string) {
   return email.trim().toLowerCase();
 }
 
 async function findAuthUserByEmail(admin: any, email: string) {
-  const targetEmail = cleanEmail(email);
-  let page = 1;
+  const target = cleanEmail(email);
   const perPage = 1000;
 
-  while (page <= 20) {
+  for (let page = 1; page <= 20; page += 1) {
     const { data, error } = await admin.auth.admin.listUsers({
       page,
       perPage,
@@ -31,31 +35,31 @@ async function findAuthUserByEmail(admin: any, email: string) {
       throw new Error(error.message);
     }
 
-    const users = data?.users ?? [];
-    const found = users.find(
-      (user: any) => cleanEmail(user.email || "") === targetEmail
+    const users = data?.users || [];
+    const match = users.find(
+      (user: any) => cleanEmail(user.email || "") === target
     );
 
-    if (found) return found;
-
-    if (users.length < perPage) return null;
-
-    page += 1;
+    if (match) return match;
+    if (users.length < perPage) break;
   }
 
   return null;
 }
 
-async function getExistingProfile(admin: any, userId: string) {
+async function readProfile(
+  admin: any,
+  userId: string
+): Promise<ExistingProfile> {
   const { data, error } = await admin
     .from("profiles")
-    .select("id, email, full_name, role, church_id, status")
+    .select("id, church_id, role")
     .eq("id", userId)
     .maybeSingle();
 
   if (error) return null;
 
-  return data;
+  return data as ExistingProfile;
 }
 
 async function upsertProfileSafely(admin: any, payload: Record<string, any>) {
@@ -83,10 +87,14 @@ async function upsertProfileSafely(admin: any, payload: Record<string, any>) {
     lastError = error;
   }
 
-  throw new Error(lastError?.message || "Impossible de créer le profil.");
+  throw new Error(
+    lastError?.message || "Impossible d’enregistrer le profil utilisateur."
+  );
 }
 
-export async function createOrUpdateUserAccount(input: CreateUserAccountInput) {
+export async function createOrUpdateUserAccount(
+  input: CreateUserAccountInput
+) {
   const admin = createAdminClient();
 
   const email = cleanEmail(input.email);
@@ -95,10 +103,17 @@ export async function createOrUpdateUserAccount(input: CreateUserAccountInput) {
   const role = normalizeUserRole(input.role);
   const churchId = input.churchId || null;
   const status = input.status || "active";
+  const updateExisting = input.updateExisting ?? true;
 
-  if (!fullName) throw new Error("Le nom complet est obligatoire.");
-  if (!email) throw new Error("L’email est obligatoire.");
-  if (!password || password.length < 6) {
+  if (!fullName) {
+    throw new Error("Le nom complet est obligatoire.");
+  }
+
+  if (!email) {
+    throw new Error("L’adresse email est obligatoire.");
+  }
+
+  if (password.length < 6) {
     throw new Error("Le mot de passe doit contenir au moins 6 caractères.");
   }
 
@@ -106,29 +121,18 @@ export async function createOrUpdateUserAccount(input: CreateUserAccountInput) {
   let created = false;
 
   if (authUser) {
-    const existingProfile = await getExistingProfile(admin, authUser.id);
-
-    const existingChurchId = existingProfile?.church_id || null;
-
-    if (
-      existingChurchId &&
-      churchId &&
-      existingChurchId !== churchId &&
-      !input.allowExistingWithoutChurch
-    ) {
+    if (!updateExisting) {
       throw new Error(
-        "Cet email existe déjà et il est rattaché à une autre église."
+        "Cet email existe déjà. Ouvrez Utilisateurs & rôles pour modifier le compte."
       );
     }
 
-    if (
-      existingChurchId &&
-      churchId &&
-      existingChurchId === churchId &&
-      !input.allowExistingInSameChurch
-    ) {
+    const existingProfile = await readProfile(admin, authUser.id);
+    const existingChurchId = existingProfile?.church_id || null;
+
+    if (existingChurchId && churchId && existingChurchId !== churchId) {
       throw new Error(
-        "Cet email existe déjà dans cette église. Ouvrez Utilisateurs & rôles pour modifier son rôle."
+        "Cet email existe déjà et il est rattaché à une autre église."
       );
     }
 
@@ -159,12 +163,6 @@ export async function createOrUpdateUserAccount(input: CreateUserAccountInput) {
     });
 
     if (error) {
-      if (error.message?.toLowerCase().includes("already")) {
-        throw new Error(
-          "Cet email existe déjà. Relancez la création ou modifiez le compte existant dans Utilisateurs & rôles."
-        );
-      }
-
       throw new Error(error.message);
     }
 
@@ -173,7 +171,7 @@ export async function createOrUpdateUserAccount(input: CreateUserAccountInput) {
   }
 
   if (!authUser?.id) {
-    throw new Error("Utilisateur introuvable après création.");
+    throw new Error("Identifiant utilisateur introuvable après création.");
   }
 
   const now = new Date().toISOString();

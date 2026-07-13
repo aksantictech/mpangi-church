@@ -1,0 +1,117 @@
+html,
+body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+
+*,
+*::before,
+*::after {
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+img,
+video,
+iframe,
+svg,
+canvas {
+  max-width: 100%;
+}
+
+main,
+section,
+article,
+header,
+footer,
+nav,
+form {
+  max-width: 100%;
+}
+
+input,
+select,
+textarea,
+button {
+  max-width: 100%;
+}
+
+pre,
+code {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 767px) {
+  body {
+    padding-bottom: calc(5.25rem + env(safe-area-inset-bottom));
+  }
+
+  main h1 {
+    font-size: clamp(1.85rem, 9vw, 2.75rem) !important;
+    line-height: 1.08 !important;
+    letter-spacing: -0.035em;
+  }
+
+  main h2 {
+    font-size: clamp(1.45rem, 7vw, 2.1rem) !important;
+    line-height: 1.12 !important;
+  }
+
+  main h3 {
+    font-size: clamp(1.1rem, 5.5vw, 1.45rem) !important;
+    line-height: 1.2 !important;
+  }
+
+  main p,
+  main li,
+  main label,
+  main a,
+  main button {
+    overflow-wrap: anywhere;
+  }
+
+  main [class*="rounded-[2rem]"],
+  main [class*="rounded-[2.5rem]"],
+  main [class*="rounded-[3rem]"] {
+    border-radius: 1.35rem !important;
+  }
+
+  main [class*="p-8"],
+  main [class*="p-10"],
+  main [class*="p-12"] {
+    padding: 1.25rem !important;
+  }
+
+  main [class*="px-8"],
+  main [class*="px-10"],
+  main [class*="px-12"] {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+
+  main [class*="text-6xl"],
+  main [class*="text-7xl"] {
+    font-size: clamp(2rem, 10vw, 3rem) !important;
+  }
+
+  .mobile-scroll-x {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .mobile-stack {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  .mobile-compact-card {
+    padding: 1rem !important;
+    border-radius: 1.25rem !important;
+  }
+}

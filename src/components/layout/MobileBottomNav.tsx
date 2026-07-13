@@ -4,22 +4,16 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   Bell,
-  LayoutDashboard,
-  Menu,
+  Home,
   QrCode,
   Settings,
 } from "lucide-react";
 
-const NAV_ITEMS = [
+const ITEMS = [
   {
     label: "Accueil",
     href: "/dashboard",
-    icon: LayoutDashboard,
-  },
-  {
-    label: "Menu",
-    href: "/mobile-menu",
-    icon: Menu,
+    icon: Home,
   },
   {
     label: "Scanner",
@@ -40,6 +34,7 @@ const NAV_ITEMS = [
 
 function isActive(pathname: string, href: string) {
   if (href === "/dashboard") return pathname === href;
+
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
@@ -47,9 +42,12 @@ export default function MobileBottomNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed bottom-3 left-3 right-3 z-50 lg:hidden">
-      <div className="grid grid-cols-5 gap-1 rounded-[1.7rem] border border-[#DCEAF5] bg-white/95 p-2 shadow-2xl shadow-slate-900/15 backdrop-blur">
-        {NAV_ITEMS.map((item) => {
+    <nav
+      aria-label="Navigation mobile"
+      className="fixed inset-x-0 bottom-0 z-50 border-t border-[#DCEAF5] bg-white/95 px-2 pb-[max(env(safe-area-inset-bottom),0.5rem)] pt-2 shadow-[0_-10px_30px_rgba(15,23,42,0.08)] backdrop-blur-xl lg:hidden"
+    >
+      <div className="mx-auto grid max-w-lg grid-cols-4 gap-1">
+        {ITEMS.map((item) => {
           const Icon = item.icon;
           const active = isActive(pathname, item.href);
 
@@ -57,13 +55,14 @@ export default function MobileBottomNav() {
             <Link
               key={item.href}
               href={item.href}
-              className={`flex min-h-[58px] flex-col items-center justify-center rounded-2xl px-1 text-[11px] font-extrabold transition ${
+              className={[
+                "flex min-h-14 min-w-0 flex-col items-center justify-center gap-1 rounded-2xl px-1 text-[11px] font-black transition",
                 active
                   ? "bg-[#03357A] text-white"
-                  : "text-slate-500 hover:bg-[#EAF3FA] hover:text-[#03357A]"
-              }`}
+                  : "text-slate-500 hover:bg-[#EAF3FA] hover:text-[#03357A]",
+              ].join(" ")}
             >
-              <Icon className="mb-1 h-5 w-5" />
+              <Icon className="h-5 w-5 shrink-0" />
               <span className="max-w-full truncate">{item.label}</span>
             </Link>
           );
