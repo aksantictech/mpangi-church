@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --webpack -p 3000",
+    "dev": "next dev --webpack",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
@@ -15,10 +15,8 @@
     "predeploy:check": "node scripts/predeploy-check.js",
     "predeploy:build": "node scripts/predeploy-check.js --build",
     "dev:turbo": "next dev",
-    "dev:clean": "node scripts/reset-next-dev-cache.js && next dev --webpack -p 3000",
-    "build:webpack": "next build --webpack",
-    "dev:3000": "next dev --webpack -p 3000",
-    "dev:hard": "powershell -ExecutionPolicy Bypass -File scripts/reset-next-local-hard.ps1 && next dev --webpack -p 3000"
+    "dev:clean": "node scripts/reset-next-dev-cache.js && next dev --webpack",
+    "build:webpack": "next build --webpack"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.0",

@@ -1,101 +1,92 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { revalidatePath } from "next/cache";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
-import {
-  CHURCH_ADMIN_ROLES,
-  PASTOR_ROLES,
-  normalizeChurchRole,
-} from "@/lib/roles";
+import { createOrUpdateUserAccount } from "@/lib/users/createUserAccount";
+import { normalizeUserRole } from "@/lib/users/userRoles";
 
-function text(value: FormDataEntryValue | null) {
-  return value === null || value === undefined ? "" : String(value).trim();
+function readString(formData: FormData, key: string) {
+  return String(formData.get(key) || "").trim();
 }
 
-async function requireChurchAdminProfile() {
+function go(path: string): never {
+  redirect(path);
+}
+
+async function getCurrentProfile() {
   const supabase = await createClient();
 
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) redirect("/login");
+  if (!user) {
+    go("/login?reason=auth_required");
+  }
 
-  const { data: profile } = await supabase
+  const admin = createAdminClient();
+
+  const { data: profile, error } = await admin
     .from("profiles")
-    .select("id, role, church_id, status")
-    .eq("user_id", user.id)
+    .select("id, email, full_name, role, church_id")
+    .eq("id", user.id)
     .maybeSingle();
 
-  if (!profile) redirect("/login");
-
-  if (profile.status && profile.status !== "active") redirect("/login");
-
-  const role = String(profile.role || "").toLowerCase();
-
-  if (!profile.church_id || (!CHURCH_ADMIN_ROLES.has(role) && !PASTOR_ROLES.has(role))) {
-    redirect("/dashboard");
+  if (error || !profile) {
+    go("/unauthorized?reason=profile_missing");
   }
 
   return profile;
 }
 
+function canCreateUsers(role: string | null | undefined) {
+  return [
+    "super_admin",
+    "church_admin",
+    "admin_eglise",
+    "pasteur_t",
+    "pastor",
+  ].includes(String(role || ""));
+}
+
 export async function createChurchUserAction(formData: FormData) {
-  const currentProfile = await requireChurchAdminProfile();
-  const admin = createAdminClient();
+  let target = "/settings/users/new";
 
-  const fullName = text(formData.get("full_name"));
-  const email = text(formData.get("email")).toLowerCase();
-  const password = text(formData.get("password"));
-  const role = normalizeChurchRole(formData.get("role"));
-  const status = text(formData.get("status")) || "active";
+  try {
+    const profile = await getCurrentProfile();
 
-  if (!fullName || !email || !password || password.length < 6) {
-    redirect("/settings/users/new?error=required");
-  }
+    if (!canCreateUsers(profile.role)) {
+      throw new Error("Vous n’avez pas l’autorisation de créer des utilisateurs.");
+    }
 
-  const { data: authData, error: authError } = await admin.auth.admin.createUser({
-    email,
-    password,
-    email_confirm: true,
-    user_metadata: {
-      full_name: fullName,
+    if (!profile.church_id) {
+      throw new Error("Votre profil n’est rattaché à aucune église.");
+    }
+
+    const fullName = readString(formData, "full_name");
+    const email = readString(formData, "email");
+    const password = readString(formData, "password");
+    const role = normalizeUserRole(readString(formData, "role"));
+    const status = readString(formData, "status") || "active";
+
+    await createOrUpdateUserAccount({
+      fullName,
+      email,
+      password,
       role,
-      church_id: currentProfile.church_id,
-    },
-  });
+      status,
+      churchId: profile.church_id,
+      allowExistingInSameChurch: true,
+      allowExistingWithoutChurch: true,
+    });
 
-  if (authError || !authData.user) {
-    const code = encodeURIComponent(authError?.message || "create");
-    redirect(`/settings/users/new?error=${code}`);
+    target = "/settings/users?createdUser=1";
+  } catch (error: any) {
+    target = `/settings/users/new?error=${encodeURIComponent(
+      error?.message || "Création impossible."
+    )}`;
   }
 
-  const { data: createdProfile, error: profileError } = await admin
-    .from("profiles")
-    .upsert(
-      {
-        user_id: authData.user.id,
-        full_name: fullName,
-        email,
-        role,
-        status,
-        church_id: currentProfile.church_id,
-        updated_at: new Date().toISOString(),
-      },
-      {
-        onConflict: "user_id",
-      }
-    )
-    .select("id")
-    .single();
-
-  if (profileError || !createdProfile) {
-    redirect(`/settings/users/new?error=${encodeURIComponent(profileError?.message || "profile")}`);
-  }
-
-  revalidatePath("/settings/users");
-
-  redirect(`/settings/users?profileId=${createdProfile.id}&created=1`);
+  redirect(target);
 }
