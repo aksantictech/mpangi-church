@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --webpack",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
@@ -13,10 +13,7 @@
     "cleanup:scan": "node scripts/cleanup-generated-backups.js",
     "cleanup:apply": "node scripts/cleanup-generated-backups.js --apply",
     "predeploy:check": "node scripts/predeploy-check.js",
-    "predeploy:build": "node scripts/predeploy-check.js --build",
-    "dev:turbo": "next dev",
-    "dev:clean": "node scripts/reset-next-dev-cache.js && next dev --webpack",
-    "build:webpack": "next build --webpack"
+    "predeploy:build": "node scripts/predeploy-check.js --build"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.0",

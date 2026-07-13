@@ -1,4 +1,3 @@
-import DevServiceWorkerCleanup from "@/components/pwa/DevServiceWorkerCleanup";
 import EmptyTablesEnhancer from "@/components/common/EmptyTablesEnhancer";
 import "@/styles/empty-tables.css";
 import ResponsiveTablesEnhancer from "@/components/mobile/ResponsiveTablesEnhancer";
@@ -54,7 +53,6 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full">
-        <DevServiceWorkerCleanup />
         <EmptyTablesEnhancer />
         <ResponsiveTablesEnhancer />
         <ServiceWorkerRegister />
