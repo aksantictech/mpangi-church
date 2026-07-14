@@ -2,9 +2,11 @@ import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
+import { requireAuthenticatedAccess } from "@/lib/security/sensitiveGuards";
 export const dynamic = "force-dynamic";
 
 export async function GET() {
+  await requireAuthenticatedAccess();
   const supabase = await createClient();
 
   const {

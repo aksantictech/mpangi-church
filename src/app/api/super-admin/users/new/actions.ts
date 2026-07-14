@@ -5,11 +5,13 @@ import { requireSuperAdmin } from "@/lib/security/access";
 import { createOrUpdateUserAccount } from "@/lib/users/createUserAccount";
 import { normalizeUserRole } from "@/lib/users/userRoles";
 
+import { requireSuperAdminAccess } from "@/lib/security/sensitiveGuards";
 function readString(formData: FormData, key: string) {
   return String(formData.get(key) || "").trim();
 }
 
 export async function createSuperAdminUserAction(formData: FormData) {
+  await requireSuperAdminAccess();
   // requireSuperAdmin peut rediriger : ne pas l'enfermer dans le try/catch.
   await requireSuperAdmin();
 

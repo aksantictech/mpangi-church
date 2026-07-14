@@ -4,6 +4,8 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireChurchModuleAccess } from "@/lib/modules/moduleAccess";
 
+import { requireAnyActionPermission } from "@/lib/security/secureAction";
+import { requireAnyModulePermission } from "@/lib/security/routeGuard";
 function txt(value: FormDataEntryValue | null) {
   return value === null || value === undefined ? "" : String(value).trim();
 }
@@ -46,6 +48,7 @@ function statusDates(status: string) {
 }
 
 export async function updateTransmissionStatusAction(formData: FormData) {
+  await requireAnyActionPermission(["transmissions","document_transmissions"], "update");
   const { admin, profile } = await requireChurchModuleAccess("document_transmissions");
 
   const id = txt(formData.get("id"));
@@ -83,6 +86,7 @@ export async function updateTransmissionStatusAction(formData: FormData) {
 }
 
 export async function archiveTransmissionAction(formData: FormData) {
+  await requireAnyActionPermission(["transmissions","document_transmissions"], "delete");
   const { admin, profile } = await requireChurchModuleAccess("document_transmissions");
 
   const id = txt(formData.get("id"));

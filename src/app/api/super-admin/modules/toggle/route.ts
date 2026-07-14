@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
+import { requireSuperAdminAccess } from "@/lib/security/sensitiveGuards";
 type ToggleModuleBody = {
   churchId?: string;
   moduleCode?: string;
@@ -66,6 +67,7 @@ async function requireSuperAdmin() {
 }
 
 export async function POST(request: Request) {
+  await requireSuperAdminAccess();
   try {
     const body = (await request.json()) as ToggleModuleBody;
 

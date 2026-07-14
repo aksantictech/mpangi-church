@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 
+import { requireAuthenticatedAccess } from "@/lib/security/sensitiveGuards";
 type BrowserPushSubscription = {
   endpoint?: string;
   keys?: {
@@ -10,6 +11,7 @@ type BrowserPushSubscription = {
 };
 
 export async function POST(request: Request) {
+  await requireAuthenticatedAccess();
   try {
     const body = await request.json();
 

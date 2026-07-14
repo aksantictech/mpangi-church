@@ -3,6 +3,8 @@ import webpush from "web-push";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
+import { requireAnyActionPermission } from "@/lib/security/secureAction";
+import { requireAnyModulePermission } from "@/lib/security/routeGuard";
 export const runtime = "nodejs";
 
 type BroadcastBody = {
@@ -119,6 +121,7 @@ function toWebPushSubscription(subscription: PushSubscriptionRow) {
 }
 
 export async function POST(request: Request) {
+  await requireAnyActionPermission(["notifications"], "approve");
   try {
     const body = (await request.json()) as BroadcastBody;
 

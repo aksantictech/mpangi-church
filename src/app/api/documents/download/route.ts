@@ -3,11 +3,14 @@ import { CHURCH_DOCUMENTS_BUCKET } from "@/lib/storage/churchDocuments";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
+import { requireAnyActionPermission } from "@/lib/security/secureAction";
+import { requireAnyModulePermission } from "@/lib/security/routeGuard";
 function getString(value: unknown) {
   return value === null || value === undefined ? "" : String(value).trim();
 }
 
 export async function GET(request: Request) {
+  await requireAnyModulePermission(["correspondence","inbox","transmissions","document_transmissions","minutes","meetings_minutes","assets","members","teachings"], "view");
   const url = new URL(request.url);
   const path = getString(url.searchParams.get("path"));
   const filename = getString(url.searchParams.get("filename"));

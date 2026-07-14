@@ -3,6 +3,8 @@ import * as webpush from "web-push";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
+import { requireAnyActionPermission } from "@/lib/security/secureAction";
+import { requireAnyModulePermission } from "@/lib/security/routeGuard";
 type RequestBody = {
   liveStreamEnabled?: boolean;
   liveStreamUrl?: string;
@@ -31,6 +33,7 @@ function configureWebPush() {
 }
 
 export async function POST(request: Request) {
+  await requireAnyActionPermission(["settings"], "create");
   try {
     const body = (await request.json()) as RequestBody;
 

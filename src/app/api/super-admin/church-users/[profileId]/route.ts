@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
+import { requireSuperAdminAccess } from "@/lib/security/sensitiveGuards";
 type AllowedRole =
   | "church_admin"
   | "pastor"
@@ -35,6 +36,7 @@ const allowedRoles: AllowedRole[] = [
 const allowedStatuses: AllowedStatus[] = ["active", "inactive"];
 
 export async function PATCH(request: Request, { params }: RouteProps) {
+  await requireSuperAdminAccess();
   try {
     const { profileId } = await params;
     const payload = (await request.json()) as UpdatePayload;

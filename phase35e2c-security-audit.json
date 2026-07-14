@@ -1,0 +1,365 @@
+{
+  "generatedAt": "2026-07-14T06:55:05.705Z",
+  "summary": {
+    "total": 59,
+    "public": 14,
+    "guarded": 42,
+    "review": 3
+  },
+  "files": [
+    {
+      "file": "src/app/administration/correspondence/actions.ts",
+      "publicRoute": false,
+      "guarded": true,
+      "status": "GUARDED"
+    },
+    {
+      "file": "src/app/administration/minutes/actions.ts",
+      "publicRoute": false,
+      "guarded": true,
+      "status": "GUARDED"
+    },
+    {
+      "file": "src/app/administration/tasks/actions.ts",
+      "publicRoute": false,
+      "guarded": true,
+      "status": "GUARDED"
+    },
+    {
+      "file": "src/app/administration/transmissions/actions.ts",
+      "publicRoute": false,
+      "guarded": true,
+      "status": "GUARDED"
+    },
+    {
+      "file": "src/app/api/account/me/route.ts",
+      "publicRoute": false,
+      "guarded": true,
+      "status": "GUARDED"
+    },
+    {
+      "file": "src/app/api/attendance/event-presence/route.ts",
+      "publicRoute": false,
+      "guarded": true,
+      "status": "GUARDED"
+    },
+    {
+      "file": "src/app/api/attendance/export/route.ts",
+      "publicRoute": false,
+      "guarded": true,
+      "status": "GUARDED"
+    },
+    {
+      "file": "src/app/api/attendance/scan/route.ts",
+      "publicRoute": false,
+      "guarded": true,
+      "status": "GUARDED"
+    },
+    {
+      "file": "src/app/api/bible/books/route.ts",
+      "publicRoute": true,
+      "guarded": false,
+      "status": "PUBLIC"
+    },
+    {
+      "file": "src/app/api/bible/chapter/route.ts",
+      "publicRoute": true,
+      "guarded": false,
+      "status": "PUBLIC"
+    },
+    {
+      "file": "src/app/api/bible/passage/route.ts",
+      "publicRoute": true,
+      "guarded": false,
+      "status": "PUBLIC"
+    },
+    {
+      "file": "src/app/api/bible/search/route.ts",
+      "publicRoute": true,
+      "guarded": false,
+      "status": "PUBLIC"
+    },
+    {
+      "file": "src/app/api/bible/versions/route.ts",
+      "publicRoute": true,
+      "guarded": false,
+      "status": "PUBLIC"
+    },
+    {
+      "file": "src/app/api/dashboard/role/route.ts",
+      "publicRoute": false,
+      "guarded": false,
+      "status": "REVIEW"
+    },
+    {
+      "file": "src/app/api/documents/download/route.ts",
+      "publicRoute": false,
+      "guarded": true,
+      "status": "GUARDED"
+    },
+    {
+      "file": "src/app/api/finance/reports/export/route.ts",
+      "publicRoute": false,
+      "guarded": true,
+      "status": "GUARDED"
+    },
+    {
+      "file": "src/app/api/members/actions/route.ts",
+      "publicRoute": false,
+      "guarded": true,
+      "status": "GUARDED"
+    },
+    {
+      "file": "src/app/api/modules/my-modules/route.ts",
+      "publicRoute": false,
+      "guarded": true,
+      "status": "GUARDED"
+    },
+    {
+      "file": "src/app/api/notifications/broadcast/route.ts",
+      "publicRoute": false,
+      "guarded": true,
+      "status": "GUARDED"
+    },
+    {
+      "file": "src/app/api/notifications/subscribe/route.ts",
+      "publicRoute": false,
+      "guarded": true,
+      "status": "GUARDED"
+    },
+    {
+      "file": "src/app/api/public/church-donations/route.ts",
+      "publicRoute": true,
+      "guarded": false,
+      "status": "PUBLIC"
+    },
+    {
+      "file": "src/app/api/public/member-registration/route.ts",
+      "publicRoute": true,
+      "guarded": false,
+      "status": "PUBLIC"
+    },
+    {
+      "file": "src/app/api/publications/route.ts",
+      "publicRoute": false,
+      "guarded": false,
+      "status": "REVIEW"
+    },
+    {
+      "file": "src/app/api/push/subscribe/route.ts",
+      "publicRoute": false,
+      "guarded": true,
+      "status": "GUARDED"
+    },
+    {
+      "file": "src/app/api/pwa/icon/route.ts",
+      "publicRoute": true,
+      "guarded": false,
+      "status": "PUBLIC"
+    },
+    {
+      "file": "src/app/api/pwa/icon/[size]/route.ts",
+      "publicRoute": true,
+      "guarded": false,
+      "status": "PUBLIC"
+    },
+    {
+      "file": "src/app/api/pwa/manifest/route.ts",
+      "publicRoute": true,
+      "guarded": false,
+      "status": "PUBLIC"
+    },
+    {
+      "file": "src/app/api/pwa/tenant/route.ts",
+      "publicRoute": true,
+      "guarded": false,
+      "status": "PUBLIC"
+    },
+    {
+      "file": "src/app/api/security/my-access/route.ts",
+      "publicRoute": false,
+      "guarded": true,
+      "status": "GUARDED"
+    },
+    {
+      "file": "src/app/api/security/my-capabilities/route.ts",
+      "publicRoute": false,
+      "guarded": true,
+      "status": "GUARDED"
+    },
+    {
+      "file": "src/app/api/security/navigation/route.ts",
+      "publicRoute": false,
+      "guarded": true,
+      "status": "GUARDED"
+    },
+    {
+      "file": "src/app/api/settings/live-stream/route.ts",
+      "publicRoute": false,
+      "guarded": true,
+      "status": "GUARDED"
+    },
+    {
+      "file": "src/app/api/settings/member-registration/route.ts",
+      "publicRoute": false,
+      "guarded": true,
+      "status": "GUARDED"
+    },
+    {
+      "file": "src/app/api/settings/users/new/actions.ts",
+      "publicRoute": false,
+      "guarded": true,
+      "status": "GUARDED"
+    },
+    {
+      "file": "src/app/api/souls/[id]/convert-to-member/route.ts",
+      "publicRoute": false,
+      "guarded": true,
+      "status": "GUARDED"
+    },
+    {
+      "file": "src/app/api/super-admin/church-modules/route.ts",
+      "publicRoute": false,
+      "guarded": true,
+      "status": "GUARDED"
+    },
+    {
+      "file": "src/app/api/super-admin/church-users/route.ts",
+      "publicRoute": false,
+      "guarded": true,
+      "status": "GUARDED"
+    },
+    {
+      "file": "src/app/api/super-admin/church-users/[profileId]/route.ts",
+      "publicRoute": false,
+      "guarded": true,
+      "status": "GUARDED"
+    },
+    {
+      "file": "src/app/api/super-admin/modules/toggle/route.ts",
+      "publicRoute": false,
+      "guarded": true,
+      "status": "GUARDED"
+    },
+    {
+      "file": "src/app/api/super-admin/onboarding/route.ts",
+      "publicRoute": false,
+      "guarded": true,
+      "status": "GUARDED"
+    },
+    {
+      "file": "src/app/api/super-admin/route.ts",
+      "publicRoute": false,
+      "guarded": true,
+      "status": "GUARDED"
+    },
+    {
+      "file": "src/app/api/super-admin/users/new/actions.ts",
+      "publicRoute": false,
+      "guarded": true,
+      "status": "GUARDED"
+    },
+    {
+      "file": "src/app/church/[slug]/icon.png/route.ts",
+      "publicRoute": true,
+      "guarded": false,
+      "status": "PUBLIC"
+    },
+    {
+      "file": "src/app/church/[slug]/manifest.webmanifest/route.ts",
+      "publicRoute": true,
+      "guarded": false,
+      "status": "PUBLIC"
+    },
+    {
+      "file": "src/app/extensions/actions.ts",
+      "publicRoute": false,
+      "guarded": false,
+      "status": "REVIEW"
+    },
+    {
+      "file": "src/app/finance/actions.ts",
+      "publicRoute": false,
+      "guarded": true,
+      "status": "GUARDED"
+    },
+    {
+      "file": "src/app/finance/budgets/actions.ts",
+      "publicRoute": false,
+      "guarded": true,
+      "status": "GUARDED"
+    },
+    {
+      "file": "src/app/finance/donations/actions.ts",
+      "publicRoute": false,
+      "guarded": true,
+      "status": "GUARDED"
+    },
+    {
+      "file": "src/app/manifest.json/route.ts",
+      "publicRoute": true,
+      "guarded": false,
+      "status": "PUBLIC"
+    },
+    {
+      "file": "src/app/my-work/actions.ts",
+      "publicRoute": false,
+      "guarded": true,
+      "status": "GUARDED"
+    },
+    {
+      "file": "src/app/patrimony/actions.ts",
+      "publicRoute": false,
+      "guarded": true,
+      "status": "GUARDED"
+    },
+    {
+      "file": "src/app/profile/actions.ts",
+      "publicRoute": false,
+      "guarded": true,
+      "status": "GUARDED"
+    },
+    {
+      "file": "src/app/settings/donations/actions.ts",
+      "publicRoute": false,
+      "guarded": true,
+      "status": "GUARDED"
+    },
+    {
+      "file": "src/app/settings/roles/actions.ts",
+      "publicRoute": false,
+      "guarded": true,
+      "status": "GUARDED"
+    },
+    {
+      "file": "src/app/settings/users/new/actions.ts",
+      "publicRoute": false,
+      "guarded": true,
+      "status": "GUARDED"
+    },
+    {
+      "file": "src/app/super-admin/profile/actions.ts",
+      "publicRoute": false,
+      "guarded": true,
+      "status": "GUARDED"
+    },
+    {
+      "file": "src/app/super-admin/users/new/actions.ts",
+      "publicRoute": false,
+      "guarded": true,
+      "status": "GUARDED"
+    },
+    {
+      "file": "src/app/teachings/actions.ts",
+      "publicRoute": false,
+      "guarded": true,
+      "status": "GUARDED"
+    },
+    {
+      "file": "src/app/transmissions/actions.ts",
+      "publicRoute": false,
+      "guarded": true,
+      "status": "GUARDED"
+    }
+  ]
+}

@@ -9,6 +9,8 @@ import {
   getYouTubeThumbnailUrl,
 } from "@/lib/youtube";
 
+import { requireAnyActionPermission } from "@/lib/security/secureAction";
+import { requireAnyModulePermission } from "@/lib/security/routeGuard";
 function text(value: FormDataEntryValue | null) {
   return value === null || value === undefined ? "" : String(value).trim();
 }
@@ -49,6 +51,7 @@ async function getChurchSlug(admin: any, churchId: string) {
 }
 
 export async function createTeachingAction(formData: FormData) {
+  await requireAnyActionPermission(["teachings"], "create");
   const { admin, profile } = await requireChurchModuleAccess("teachings");
   const payload = payloadFromForm(formData);
 
@@ -91,6 +94,7 @@ export async function createTeachingAction(formData: FormData) {
 }
 
 export async function updateTeachingAction(formData: FormData) {
+  await requireAnyActionPermission(["teachings"], "update");
   const { admin, profile } = await requireChurchModuleAccess("teachings");
   const id = text(formData.get("id"));
   const payload = payloadFromForm(formData);
@@ -121,6 +125,7 @@ export async function updateTeachingAction(formData: FormData) {
 }
 
 export async function publishTeachingAction(formData: FormData) {
+  await requireAnyActionPermission(["teachings"], "update");
   const { admin, profile } = await requireChurchModuleAccess("teachings");
   const id = text(formData.get("id"));
 
@@ -161,6 +166,7 @@ export async function publishTeachingAction(formData: FormData) {
 }
 
 export async function archiveTeachingAction(formData: FormData) {
+  await requireAnyActionPermission(["teachings"], "delete");
   const { admin, profile } = await requireChurchModuleAccess("teachings");
   const id = text(formData.get("id"));
 

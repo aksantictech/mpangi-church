@@ -2,12 +2,15 @@ import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
+import { requireAnyActionPermission } from "@/lib/security/secureAction";
+import { requireAnyModulePermission } from "@/lib/security/routeGuard";
 type RequestBody = {
   action?: "toggle" | "regenerate";
   enabled?: boolean;
 };
 
 export async function POST(request: Request) {
+  await requireAnyActionPermission(["settings"], "create");
   try {
     const body = (await request.json()) as RequestBody;
 

@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
 import { getSecurityContext } from "@/lib/security/access";
 
+import { requireAuthenticatedAccess } from "@/lib/security/sensitiveGuards";
 export async function GET() {
+  await requireAuthenticatedAccess();
   const context = await getSecurityContext();
 
   if (!context) {

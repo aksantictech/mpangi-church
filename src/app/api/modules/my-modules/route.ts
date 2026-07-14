@@ -11,6 +11,7 @@ import {
   WORKER_ROLES,
 } from "@/lib/roles";
 
+import { requireAuthenticatedAccess } from "@/lib/security/sensitiveGuards";
 function fallbackCanView(role: string, moduleCode: string) {
   if (CHURCH_ADMIN_ROLES.has(role)) return true;
 
@@ -95,6 +96,7 @@ function fallbackCanView(role: string, moduleCode: string) {
 }
 
 export async function GET() {
+  await requireAuthenticatedAccess();
   try {
     const context = await getSecurityContext();
 

@@ -4,6 +4,8 @@ import { redirect } from "next/navigation";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
+import { requireAnyActionPermission } from "@/lib/security/secureAction";
+import { requireAnyModulePermission } from "@/lib/security/routeGuard";
 const ALLOWED_ROLES = new Set([
   "super_admin",
   "church_admin",
@@ -53,6 +55,7 @@ async function getContext() {
 export async function updateDonationSettingsAction(
   formData: FormData
 ) {
+  await requireAnyActionPermission(["settings","donations"], "update");
   const { admin, churchId } = await getContext();
 
   const currencies = value(formData, "allowed_currencies")

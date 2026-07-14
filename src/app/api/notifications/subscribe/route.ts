@@ -2,7 +2,9 @@ import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
+import { requireAuthenticatedAccess } from "@/lib/security/sensitiveGuards";
 export async function POST(request: Request) {
+  await requireAuthenticatedAccess();
   try {
     const payload = await request.json();
 

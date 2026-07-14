@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 
+import { requireSuperAdminAccess } from "@/lib/security/sensitiveGuards";
 export const dynamic = "force-dynamic";
 
 export async function GET() {
+  await requireSuperAdminAccess();
   const supabase = await createClient();
 
   const {

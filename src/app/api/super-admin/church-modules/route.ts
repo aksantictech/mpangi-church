@@ -8,9 +8,11 @@ import {
   syncChurchModules,
 } from "@/lib/modules/moduleAdmin";
 
+import { requireSuperAdminAccess } from "@/lib/security/sensitiveGuards";
 export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
+  await requireSuperAdminAccess();
   await requireSuperAdmin();
 
   const url = new URL(request.url);
@@ -33,6 +35,7 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  await requireSuperAdminAccess();
   await requireSuperAdmin();
 
   const body = await request.json();

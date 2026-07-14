@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
+import { requireSuperAdminAccess } from "@/lib/security/sensitiveGuards";
 function cleanFileName(name: string) {
   return name
     .toLowerCase()
@@ -12,6 +13,7 @@ function cleanFileName(name: string) {
 }
 
 export async function updateSuperAdminProfile(formData: FormData) {
+  await requireSuperAdminAccess();
   const supabase = await createClient();
 
   const {

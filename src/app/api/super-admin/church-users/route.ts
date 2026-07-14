@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
+import { requireSuperAdminAccess } from "@/lib/security/sensitiveGuards";
 type CreateChurchUserPayload = {
   churchId: string;
   fullName: string;
@@ -11,6 +12,7 @@ type CreateChurchUserPayload = {
 };
 
 export async function POST(request: Request) {
+  await requireSuperAdminAccess();
   try {
     const payload = (await request.json()) as CreateChurchUserPayload;
 
