@@ -1,0 +1,5156 @@
+{
+  "generatedAt": "2026-07-14T09:25:55.015Z",
+  "summary": {
+    "churches": 5,
+    "profiles": 12,
+    "matrixRows": 91,
+    "findings": 42,
+    "critical": 8,
+    "high": 0,
+    "warning": 34
+  },
+  "matrix": [
+    {
+      "churchId": "7187d91e-ff23-49a4-8044-0d85dbb884ac",
+      "churchName": "Communauté Charismatique des Térébinthes",
+      "churchSlug": "communaute-charismatique-des-terebinthes",
+      "roleCode": "admin_eglise",
+      "usersCount": 0,
+      "permissionsCount": 2,
+      "viewModules": [
+        "finance_dashboard",
+        "assets"
+      ],
+      "createModules": [
+        "finance_dashboard",
+        "assets"
+      ],
+      "updateModules": [
+        "finance_dashboard",
+        "assets"
+      ],
+      "deleteModules": [
+        "finance_dashboard",
+        "assets"
+      ],
+      "approveModules": [],
+      "missingBaseline": [
+        "role_dashboard",
+        "my_work",
+        "members",
+        "attendance",
+        "public_requests",
+        "users",
+        "security"
+      ]
+    },
+    {
+      "churchId": "7187d91e-ff23-49a4-8044-0d85dbb884ac",
+      "churchName": "Communauté Charismatique des Térébinthes",
+      "churchSlug": "communaute-charismatique-des-terebinthes",
+      "roleCode": "assistant_pastor",
+      "usersCount": 0,
+      "permissionsCount": 2,
+      "viewModules": [
+        "finance_dashboard",
+        "assets"
+      ],
+      "createModules": [
+        "finance_dashboard",
+        "assets"
+      ],
+      "updateModules": [
+        "finance_dashboard",
+        "assets"
+      ],
+      "deleteModules": [],
+      "approveModules": [],
+      "missingBaseline": []
+    },
+    {
+      "churchId": "7187d91e-ff23-49a4-8044-0d85dbb884ac",
+      "churchName": "Communauté Charismatique des Térébinthes",
+      "churchSlug": "communaute-charismatique-des-terebinthes",
+      "roleCode": "charge_afp",
+      "usersCount": 0,
+      "permissionsCount": 4,
+      "viewModules": [
+        "meetings_minutes",
+        "finance_dashboard",
+        "asset_movements",
+        "assets"
+      ],
+      "createModules": [
+        "meetings_minutes",
+        "finance_dashboard",
+        "asset_movements",
+        "assets"
+      ],
+      "updateModules": [
+        "meetings_minutes",
+        "finance_dashboard",
+        "asset_movements",
+        "assets"
+      ],
+      "deleteModules": [
+        "meetings_minutes",
+        "finance_dashboard",
+        "asset_movements",
+        "assets"
+      ],
+      "approveModules": [],
+      "missingBaseline": [
+        "role_dashboard",
+        "my_work",
+        "offerings",
+        "expenses",
+        "budgets",
+        "donations"
+      ]
+    },
+    {
+      "churchId": "7187d91e-ff23-49a4-8044-0d85dbb884ac",
+      "churchName": "Communauté Charismatique des Térébinthes",
+      "churchSlug": "communaute-charismatique-des-terebinthes",
+      "roleCode": "church_admin",
+      "usersCount": 2,
+      "permissionsCount": 4,
+      "viewModules": [
+        "finance_dashboard",
+        "offerings",
+        "patrimony_dashboard",
+        "assets"
+      ],
+      "createModules": [
+        "finance_dashboard",
+        "offerings",
+        "patrimony_dashboard",
+        "assets"
+      ],
+      "updateModules": [
+        "finance_dashboard",
+        "offerings",
+        "patrimony_dashboard",
+        "assets"
+      ],
+      "deleteModules": [
+        "finance_dashboard",
+        "offerings",
+        "patrimony_dashboard",
+        "assets"
+      ],
+      "approveModules": [],
+      "missingBaseline": [
+        "role_dashboard",
+        "my_work",
+        "members",
+        "attendance",
+        "public_requests",
+        "users",
+        "security"
+      ]
+    },
+    {
+      "churchId": "7187d91e-ff23-49a4-8044-0d85dbb884ac",
+      "churchName": "Communauté Charismatique des Térébinthes",
+      "churchSlug": "communaute-charismatique-des-terebinthes",
+      "roleCode": "pasteur_a",
+      "usersCount": 0,
+      "permissionsCount": 3,
+      "viewModules": [
+        "meetings_minutes",
+        "finance_dashboard",
+        "assets"
+      ],
+      "createModules": [
+        "meetings_minutes",
+        "finance_dashboard",
+        "assets"
+      ],
+      "updateModules": [
+        "meetings_minutes",
+        "finance_dashboard",
+        "assets"
+      ],
+      "deleteModules": [],
+      "approveModules": [],
+      "missingBaseline": [
+        "role_dashboard",
+        "my_work",
+        "souls",
+        "attendance"
+      ]
+    },
+    {
+      "churchId": "7187d91e-ff23-49a4-8044-0d85dbb884ac",
+      "churchName": "Communauté Charismatique des Térébinthes",
+      "churchSlug": "communaute-charismatique-des-terebinthes",
+      "roleCode": "pasteur_t",
+      "usersCount": 0,
+      "permissionsCount": 2,
+      "viewModules": [
+        "finance_dashboard",
+        "assets"
+      ],
+      "createModules": [
+        "finance_dashboard",
+        "assets"
+      ],
+      "updateModules": [
+        "finance_dashboard",
+        "assets"
+      ],
+      "deleteModules": [
+        "finance_dashboard",
+        "assets"
+      ],
+      "approveModules": [],
+      "missingBaseline": [
+        "role_dashboard",
+        "my_work",
+        "souls",
+        "public_requests",
+        "attendance"
+      ]
+    },
+    {
+      "churchId": "7187d91e-ff23-49a4-8044-0d85dbb884ac",
+      "churchName": "Communauté Charismatique des Térébinthes",
+      "churchSlug": "communaute-charismatique-des-terebinthes",
+      "roleCode": "pastor",
+      "usersCount": 0,
+      "permissionsCount": 2,
+      "viewModules": [
+        "finance_dashboard",
+        "assets"
+      ],
+      "createModules": [
+        "finance_dashboard",
+        "assets"
+      ],
+      "updateModules": [
+        "finance_dashboard",
+        "assets"
+      ],
+      "deleteModules": [
+        "finance_dashboard",
+        "assets"
+      ],
+      "approveModules": [],
+      "missingBaseline": [
+        "role_dashboard",
+        "my_work",
+        "souls",
+        "public_requests"
+      ]
+    },
+    {
+      "churchId": "7187d91e-ff23-49a4-8044-0d85dbb884ac",
+      "churchName": "Communauté Charismatique des Térébinthes",
+      "churchSlug": "communaute-charismatique-des-terebinthes",
+      "roleCode": "readonly",
+      "usersCount": 0,
+      "permissionsCount": 4,
+      "viewModules": [
+        "meetings_minutes",
+        "finance_dashboard",
+        "financial_reports",
+        "patrimony_dashboard"
+      ],
+      "createModules": [],
+      "updateModules": [],
+      "deleteModules": [],
+      "approveModules": [],
+      "missingBaseline": [
+        "role_dashboard"
+      ]
+    },
+    {
+      "churchId": "7187d91e-ff23-49a4-8044-0d85dbb884ac",
+      "churchName": "Communauté Charismatique des Térébinthes",
+      "churchSlug": "communaute-charismatique-des-terebinthes",
+      "roleCode": "responsable_d",
+      "usersCount": 0,
+      "permissionsCount": 3,
+      "viewModules": [
+        "meetings_minutes",
+        "finance_dashboard",
+        "assets"
+      ],
+      "createModules": [
+        "meetings_minutes",
+        "finance_dashboard",
+        "assets"
+      ],
+      "updateModules": [
+        "meetings_minutes",
+        "finance_dashboard",
+        "assets"
+      ],
+      "deleteModules": [],
+      "approveModules": [],
+      "missingBaseline": [
+        "role_dashboard",
+        "my_work",
+        "members",
+        "attendance",
+        "departments",
+        "events"
+      ]
+    },
+    {
+      "churchId": "7187d91e-ff23-49a4-8044-0d85dbb884ac",
+      "churchName": "Communauté Charismatique des Térébinthes",
+      "churchSlug": "communaute-charismatique-des-terebinthes",
+      "roleCode": "secretaire",
+      "usersCount": 0,
+      "permissionsCount": 3,
+      "viewModules": [
+        "correspondence",
+        "meetings_minutes",
+        "finance_dashboard"
+      ],
+      "createModules": [
+        "correspondence",
+        "meetings_minutes",
+        "finance_dashboard"
+      ],
+      "updateModules": [
+        "correspondence",
+        "meetings_minutes",
+        "finance_dashboard"
+      ],
+      "deleteModules": [],
+      "approveModules": [],
+      "missingBaseline": [
+        "role_dashboard",
+        "my_work",
+        "transmissions",
+        "tasks",
+        "minutes"
+      ]
+    },
+    {
+      "churchId": "7187d91e-ff23-49a4-8044-0d85dbb884ac",
+      "churchName": "Communauté Charismatique des Térébinthes",
+      "churchSlug": "communaute-charismatique-des-terebinthes",
+      "roleCode": "worker",
+      "usersCount": 0,
+      "permissionsCount": 4,
+      "viewModules": [
+        "asset_movements",
+        "meetings_minutes",
+        "finance_dashboard",
+        "patrimony_dashboard"
+      ],
+      "createModules": [],
+      "updateModules": [],
+      "deleteModules": [],
+      "approveModules": [],
+      "missingBaseline": [
+        "role_dashboard",
+        "my_work",
+        "attendance"
+      ]
+    },
+    {
+      "churchId": "e311262d-9ca0-48b8-9b8a-dc14ede44346",
+      "churchName": "Impact Centre Chrétien Extension Kitambo",
+      "churchSlug": "icckitambo",
+      "roleCode": "admin",
+      "usersCount": 0,
+      "permissionsCount": 25,
+      "viewModules": [
+        "dashboard",
+        "members",
+        "attendance",
+        "teachings",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "financial_reports",
+        "patrimony_dashboard",
+        "assets",
+        "asset_maintenance",
+        "asset_movements"
+      ],
+      "createModules": [
+        "dashboard",
+        "members",
+        "attendance",
+        "teachings",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "financial_reports",
+        "patrimony_dashboard",
+        "assets",
+        "asset_maintenance",
+        "asset_movements"
+      ],
+      "updateModules": [
+        "dashboard",
+        "members",
+        "attendance",
+        "teachings",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "financial_reports",
+        "patrimony_dashboard",
+        "assets",
+        "asset_maintenance",
+        "asset_movements"
+      ],
+      "deleteModules": [
+        "teachings",
+        "publications"
+      ],
+      "approveModules": [
+        "dashboard",
+        "members",
+        "attendance",
+        "teachings",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "financial_reports",
+        "patrimony_dashboard",
+        "assets",
+        "asset_maintenance",
+        "asset_movements"
+      ],
+      "missingBaseline": []
+    },
+    {
+      "churchId": "e311262d-9ca0-48b8-9b8a-dc14ede44346",
+      "churchName": "Impact Centre Chrétien Extension Kitambo",
+      "churchSlug": "icckitambo",
+      "roleCode": "admin_eglise",
+      "usersCount": 0,
+      "permissionsCount": 1,
+      "viewModules": [
+        "attendance"
+      ],
+      "createModules": [
+        "attendance"
+      ],
+      "updateModules": [
+        "attendance"
+      ],
+      "deleteModules": [
+        "attendance"
+      ],
+      "approveModules": [],
+      "missingBaseline": [
+        "role_dashboard",
+        "my_work",
+        "members",
+        "public_requests",
+        "users",
+        "security"
+      ]
+    },
+    {
+      "churchId": "e311262d-9ca0-48b8-9b8a-dc14ede44346",
+      "churchName": "Impact Centre Chrétien Extension Kitambo",
+      "churchSlug": "icckitambo",
+      "roleCode": "admin_manager",
+      "usersCount": 0,
+      "permissionsCount": 15,
+      "viewModules": [
+        "dashboard",
+        "members",
+        "attendance",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes"
+      ],
+      "createModules": [
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes"
+      ],
+      "updateModules": [
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes"
+      ],
+      "deleteModules": [],
+      "approveModules": [
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes"
+      ],
+      "missingBaseline": []
+    },
+    {
+      "churchId": "e311262d-9ca0-48b8-9b8a-dc14ede44346",
+      "churchName": "Impact Centre Chrétien Extension Kitambo",
+      "churchSlug": "icckitambo",
+      "roleCode": "administration_manager",
+      "usersCount": 0,
+      "permissionsCount": 15,
+      "viewModules": [
+        "dashboard",
+        "members",
+        "attendance",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes"
+      ],
+      "createModules": [
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes"
+      ],
+      "updateModules": [
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes"
+      ],
+      "deleteModules": [],
+      "approveModules": [
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes"
+      ],
+      "missingBaseline": []
+    },
+    {
+      "churchId": "e311262d-9ca0-48b8-9b8a-dc14ede44346",
+      "churchName": "Impact Centre Chrétien Extension Kitambo",
+      "churchSlug": "icckitambo",
+      "roleCode": "administrator",
+      "usersCount": 0,
+      "permissionsCount": 25,
+      "viewModules": [
+        "dashboard",
+        "members",
+        "teachings",
+        "attendance",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "financial_reports",
+        "patrimony_dashboard",
+        "assets",
+        "asset_maintenance",
+        "asset_movements"
+      ],
+      "createModules": [
+        "dashboard",
+        "members",
+        "teachings",
+        "attendance",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "financial_reports",
+        "patrimony_dashboard",
+        "assets",
+        "asset_maintenance",
+        "asset_movements"
+      ],
+      "updateModules": [
+        "dashboard",
+        "members",
+        "teachings",
+        "attendance",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "financial_reports",
+        "patrimony_dashboard",
+        "assets",
+        "asset_maintenance",
+        "asset_movements"
+      ],
+      "deleteModules": [
+        "teachings",
+        "publications"
+      ],
+      "approveModules": [
+        "dashboard",
+        "members",
+        "teachings",
+        "attendance",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "financial_reports",
+        "patrimony_dashboard",
+        "assets",
+        "asset_maintenance",
+        "asset_movements"
+      ],
+      "missingBaseline": []
+    },
+    {
+      "churchId": "e311262d-9ca0-48b8-9b8a-dc14ede44346",
+      "churchName": "Impact Centre Chrétien Extension Kitambo",
+      "churchSlug": "icckitambo",
+      "roleCode": "afp_manager",
+      "usersCount": 0,
+      "permissionsCount": 2,
+      "viewModules": [
+        "publications",
+        "teachings"
+      ],
+      "createModules": [
+        "publications",
+        "teachings"
+      ],
+      "updateModules": [
+        "publications",
+        "teachings"
+      ],
+      "deleteModules": [],
+      "approveModules": [],
+      "missingBaseline": []
+    },
+    {
+      "churchId": "e311262d-9ca0-48b8-9b8a-dc14ede44346",
+      "churchName": "Impact Centre Chrétien Extension Kitambo",
+      "churchSlug": "icckitambo",
+      "roleCode": "assistant_pastor",
+      "usersCount": 0,
+      "permissionsCount": 1,
+      "viewModules": [
+        "attendance"
+      ],
+      "createModules": [
+        "attendance"
+      ],
+      "updateModules": [
+        "attendance"
+      ],
+      "deleteModules": [],
+      "approveModules": [],
+      "missingBaseline": []
+    },
+    {
+      "churchId": "e311262d-9ca0-48b8-9b8a-dc14ede44346",
+      "churchName": "Impact Centre Chrétien Extension Kitambo",
+      "churchSlug": "icckitambo",
+      "roleCode": "charge_administration",
+      "usersCount": 0,
+      "permissionsCount": 14,
+      "viewModules": [
+        "dashboard",
+        "members",
+        "attendance",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks"
+      ],
+      "createModules": [
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks"
+      ],
+      "updateModules": [
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks"
+      ],
+      "deleteModules": [],
+      "approveModules": [
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks"
+      ],
+      "missingBaseline": []
+    },
+    {
+      "churchId": "e311262d-9ca0-48b8-9b8a-dc14ede44346",
+      "churchName": "Impact Centre Chrétien Extension Kitambo",
+      "churchSlug": "icckitambo",
+      "roleCode": "charge_afp",
+      "usersCount": 0,
+      "permissionsCount": 2,
+      "viewModules": [
+        "appointments",
+        "attendance"
+      ],
+      "createModules": [
+        "appointments",
+        "attendance"
+      ],
+      "updateModules": [
+        "appointments",
+        "attendance"
+      ],
+      "deleteModules": [
+        "appointments",
+        "attendance"
+      ],
+      "approveModules": [],
+      "missingBaseline": [
+        "role_dashboard",
+        "my_work",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "donations"
+      ]
+    },
+    {
+      "churchId": "e311262d-9ca0-48b8-9b8a-dc14ede44346",
+      "churchName": "Impact Centre Chrétien Extension Kitambo",
+      "churchSlug": "icckitambo",
+      "roleCode": "charged_administration",
+      "usersCount": 0,
+      "permissionsCount": 14,
+      "viewModules": [
+        "dashboard",
+        "members",
+        "attendance",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks"
+      ],
+      "createModules": [
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks"
+      ],
+      "updateModules": [
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks"
+      ],
+      "deleteModules": [],
+      "approveModules": [
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks"
+      ],
+      "missingBaseline": []
+    },
+    {
+      "churchId": "e311262d-9ca0-48b8-9b8a-dc14ede44346",
+      "churchName": "Impact Centre Chrétien Extension Kitambo",
+      "churchSlug": "icckitambo",
+      "roleCode": "church_admin",
+      "usersCount": 1,
+      "permissionsCount": 4,
+      "viewModules": [
+        "dashboard",
+        "attendance",
+        "events",
+        "notifications"
+      ],
+      "createModules": [
+        "dashboard",
+        "attendance",
+        "events",
+        "notifications"
+      ],
+      "updateModules": [
+        "dashboard",
+        "attendance",
+        "events",
+        "notifications"
+      ],
+      "deleteModules": [
+        "dashboard",
+        "attendance",
+        "events",
+        "notifications"
+      ],
+      "approveModules": [
+        "dashboard",
+        "attendance",
+        "events",
+        "notifications"
+      ],
+      "missingBaseline": [
+        "role_dashboard",
+        "my_work",
+        "members",
+        "public_requests",
+        "users",
+        "security"
+      ]
+    },
+    {
+      "churchId": "e311262d-9ca0-48b8-9b8a-dc14ede44346",
+      "churchName": "Impact Centre Chrétien Extension Kitambo",
+      "churchSlug": "icckitambo",
+      "roleCode": "owner",
+      "usersCount": 0,
+      "permissionsCount": 25,
+      "viewModules": [
+        "dashboard",
+        "members",
+        "teachings",
+        "attendance",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "financial_reports",
+        "patrimony_dashboard",
+        "assets",
+        "asset_maintenance",
+        "asset_movements"
+      ],
+      "createModules": [
+        "dashboard",
+        "members",
+        "teachings",
+        "attendance",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "financial_reports",
+        "patrimony_dashboard",
+        "assets",
+        "asset_maintenance",
+        "asset_movements"
+      ],
+      "updateModules": [
+        "dashboard",
+        "members",
+        "teachings",
+        "attendance",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "financial_reports",
+        "patrimony_dashboard",
+        "assets",
+        "asset_maintenance",
+        "asset_movements"
+      ],
+      "deleteModules": [
+        "teachings",
+        "publications"
+      ],
+      "approveModules": [
+        "dashboard",
+        "members",
+        "teachings",
+        "attendance",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "financial_reports",
+        "patrimony_dashboard",
+        "assets",
+        "asset_maintenance",
+        "asset_movements"
+      ],
+      "missingBaseline": []
+    },
+    {
+      "churchId": "e311262d-9ca0-48b8-9b8a-dc14ede44346",
+      "churchName": "Impact Centre Chrétien Extension Kitambo",
+      "churchSlug": "icckitambo",
+      "roleCode": "pasteur",
+      "usersCount": 0,
+      "permissionsCount": 25,
+      "viewModules": [
+        "dashboard",
+        "members",
+        "attendance",
+        "teachings",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "financial_reports",
+        "patrimony_dashboard",
+        "assets",
+        "asset_maintenance",
+        "asset_movements"
+      ],
+      "createModules": [
+        "dashboard",
+        "members",
+        "attendance",
+        "teachings",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "financial_reports",
+        "patrimony_dashboard",
+        "assets",
+        "asset_maintenance",
+        "asset_movements"
+      ],
+      "updateModules": [
+        "dashboard",
+        "members",
+        "attendance",
+        "teachings",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "financial_reports",
+        "patrimony_dashboard",
+        "assets",
+        "asset_maintenance",
+        "asset_movements"
+      ],
+      "deleteModules": [],
+      "approveModules": [
+        "dashboard",
+        "members",
+        "attendance",
+        "teachings",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "financial_reports",
+        "patrimony_dashboard",
+        "assets",
+        "asset_maintenance",
+        "asset_movements"
+      ],
+      "missingBaseline": []
+    },
+    {
+      "churchId": "e311262d-9ca0-48b8-9b8a-dc14ede44346",
+      "churchName": "Impact Centre Chrétien Extension Kitambo",
+      "churchSlug": "icckitambo",
+      "roleCode": "pasteur_a",
+      "usersCount": 0,
+      "permissionsCount": 1,
+      "viewModules": [
+        "attendance"
+      ],
+      "createModules": [
+        "attendance"
+      ],
+      "updateModules": [
+        "attendance"
+      ],
+      "deleteModules": [],
+      "approveModules": [],
+      "missingBaseline": [
+        "role_dashboard",
+        "my_work",
+        "souls"
+      ]
+    },
+    {
+      "churchId": "e311262d-9ca0-48b8-9b8a-dc14ede44346",
+      "churchName": "Impact Centre Chrétien Extension Kitambo",
+      "churchSlug": "icckitambo",
+      "roleCode": "pasteur_t",
+      "usersCount": 0,
+      "permissionsCount": 1,
+      "viewModules": [
+        "attendance"
+      ],
+      "createModules": [
+        "attendance"
+      ],
+      "updateModules": [
+        "attendance"
+      ],
+      "deleteModules": [
+        "attendance"
+      ],
+      "approveModules": [],
+      "missingBaseline": [
+        "role_dashboard",
+        "my_work",
+        "souls",
+        "public_requests"
+      ]
+    },
+    {
+      "churchId": "e311262d-9ca0-48b8-9b8a-dc14ede44346",
+      "churchName": "Impact Centre Chrétien Extension Kitambo",
+      "churchSlug": "icckitambo",
+      "roleCode": "pastor",
+      "usersCount": 0,
+      "permissionsCount": 5,
+      "viewModules": [
+        "dashboard",
+        "members",
+        "attendance",
+        "events",
+        "notifications"
+      ],
+      "createModules": [
+        "dashboard",
+        "members",
+        "attendance",
+        "events",
+        "notifications"
+      ],
+      "updateModules": [
+        "dashboard",
+        "members",
+        "attendance",
+        "events",
+        "notifications"
+      ],
+      "deleteModules": [
+        "dashboard",
+        "members",
+        "attendance",
+        "events",
+        "notifications"
+      ],
+      "approveModules": [
+        "dashboard",
+        "members",
+        "attendance",
+        "events",
+        "notifications"
+      ],
+      "missingBaseline": [
+        "role_dashboard",
+        "my_work",
+        "souls",
+        "public_requests"
+      ]
+    },
+    {
+      "churchId": "e311262d-9ca0-48b8-9b8a-dc14ede44346",
+      "churchName": "Impact Centre Chrétien Extension Kitambo",
+      "churchSlug": "icckitambo",
+      "roleCode": "pastor_assistant",
+      "usersCount": 0,
+      "permissionsCount": 2,
+      "viewModules": [
+        "publications",
+        "teachings"
+      ],
+      "createModules": [
+        "publications",
+        "teachings"
+      ],
+      "updateModules": [
+        "publications",
+        "teachings"
+      ],
+      "deleteModules": [],
+      "approveModules": [],
+      "missingBaseline": []
+    },
+    {
+      "churchId": "e311262d-9ca0-48b8-9b8a-dc14ede44346",
+      "churchName": "Impact Centre Chrétien Extension Kitambo",
+      "churchSlug": "icckitambo",
+      "roleCode": "pastor_titulaire",
+      "usersCount": 0,
+      "permissionsCount": 2,
+      "viewModules": [
+        "publications",
+        "teachings"
+      ],
+      "createModules": [
+        "publications",
+        "teachings"
+      ],
+      "updateModules": [
+        "publications",
+        "teachings"
+      ],
+      "deleteModules": [],
+      "approveModules": [
+        "publications",
+        "teachings"
+      ],
+      "missingBaseline": []
+    },
+    {
+      "churchId": "e311262d-9ca0-48b8-9b8a-dc14ede44346",
+      "churchName": "Impact Centre Chrétien Extension Kitambo",
+      "churchSlug": "icckitambo",
+      "roleCode": "readonly",
+      "usersCount": 0,
+      "permissionsCount": 1,
+      "viewModules": [
+        "members"
+      ],
+      "createModules": [],
+      "updateModules": [],
+      "deleteModules": [],
+      "approveModules": [],
+      "missingBaseline": [
+        "role_dashboard"
+      ]
+    },
+    {
+      "churchId": "e311262d-9ca0-48b8-9b8a-dc14ede44346",
+      "churchName": "Impact Centre Chrétien Extension Kitambo",
+      "churchSlug": "icckitambo",
+      "roleCode": "responsable_d",
+      "usersCount": 0,
+      "permissionsCount": 3,
+      "viewModules": [
+        "appointments",
+        "members",
+        "attendance"
+      ],
+      "createModules": [
+        "appointments",
+        "members",
+        "attendance"
+      ],
+      "updateModules": [
+        "appointments",
+        "members",
+        "attendance"
+      ],
+      "deleteModules": [],
+      "approveModules": [],
+      "missingBaseline": [
+        "role_dashboard",
+        "my_work",
+        "departments",
+        "events"
+      ]
+    },
+    {
+      "churchId": "e311262d-9ca0-48b8-9b8a-dc14ede44346",
+      "churchName": "Impact Centre Chrétien Extension Kitambo",
+      "churchSlug": "icckitambo",
+      "roleCode": "secretaire",
+      "usersCount": 0,
+      "permissionsCount": 3,
+      "viewModules": [
+        "members",
+        "attendance",
+        "publications"
+      ],
+      "createModules": [
+        "members",
+        "attendance",
+        "publications"
+      ],
+      "updateModules": [
+        "members",
+        "attendance",
+        "publications"
+      ],
+      "deleteModules": [],
+      "approveModules": [],
+      "missingBaseline": [
+        "role_dashboard",
+        "my_work",
+        "correspondence",
+        "transmissions",
+        "tasks",
+        "minutes"
+      ]
+    },
+    {
+      "churchId": "e311262d-9ca0-48b8-9b8a-dc14ede44346",
+      "churchName": "Impact Centre Chrétien Extension Kitambo",
+      "churchSlug": "icckitambo",
+      "roleCode": "secretary",
+      "usersCount": 0,
+      "permissionsCount": 15,
+      "viewModules": [
+        "publications",
+        "teachings",
+        "dashboard",
+        "members",
+        "attendance",
+        "souls",
+        "departments",
+        "events",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks"
+      ],
+      "createModules": [
+        "publications",
+        "teachings",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks"
+      ],
+      "updateModules": [
+        "publications",
+        "teachings",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks"
+      ],
+      "deleteModules": [],
+      "approveModules": [
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks"
+      ],
+      "missingBaseline": []
+    },
+    {
+      "churchId": "e311262d-9ca0-48b8-9b8a-dc14ede44346",
+      "churchName": "Impact Centre Chrétien Extension Kitambo",
+      "churchSlug": "icckitambo",
+      "roleCode": "viewer",
+      "usersCount": 0,
+      "permissionsCount": 25,
+      "viewModules": [
+        "dashboard",
+        "members",
+        "publications",
+        "attendance",
+        "souls",
+        "teachings",
+        "departments",
+        "events",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "financial_reports",
+        "patrimony_dashboard",
+        "assets",
+        "asset_maintenance",
+        "asset_movements"
+      ],
+      "createModules": [],
+      "updateModules": [],
+      "deleteModules": [],
+      "approveModules": [],
+      "missingBaseline": []
+    },
+    {
+      "churchId": "e311262d-9ca0-48b8-9b8a-dc14ede44346",
+      "churchName": "Impact Centre Chrétien Extension Kitambo",
+      "churchSlug": "icckitambo",
+      "roleCode": "worker",
+      "usersCount": 0,
+      "permissionsCount": 4,
+      "viewModules": [
+        "dashboard",
+        "members",
+        "publications",
+        "attendance"
+      ],
+      "createModules": [],
+      "updateModules": [],
+      "deleteModules": [],
+      "approveModules": [],
+      "missingBaseline": [
+        "role_dashboard",
+        "my_work"
+      ]
+    },
+    {
+      "churchId": "642f3f12-1bb9-4c47-836e-7a410762253d",
+      "churchName": "Impact Centre Chretien RDC",
+      "churchSlug": "iccrdc",
+      "roleCode": "admin",
+      "usersCount": 0,
+      "permissionsCount": 25,
+      "viewModules": [
+        "patrimony_dashboard",
+        "dashboard",
+        "members",
+        "attendance",
+        "teachings",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "financial_reports",
+        "assets",
+        "asset_maintenance",
+        "asset_movements"
+      ],
+      "createModules": [
+        "patrimony_dashboard",
+        "dashboard",
+        "members",
+        "attendance",
+        "teachings",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "financial_reports",
+        "assets",
+        "asset_maintenance",
+        "asset_movements"
+      ],
+      "updateModules": [
+        "patrimony_dashboard",
+        "dashboard",
+        "members",
+        "attendance",
+        "teachings",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "financial_reports",
+        "assets",
+        "asset_maintenance",
+        "asset_movements"
+      ],
+      "deleteModules": [
+        "teachings",
+        "publications"
+      ],
+      "approveModules": [
+        "patrimony_dashboard",
+        "dashboard",
+        "members",
+        "attendance",
+        "teachings",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "financial_reports",
+        "assets",
+        "asset_maintenance",
+        "asset_movements"
+      ],
+      "missingBaseline": []
+    },
+    {
+      "churchId": "642f3f12-1bb9-4c47-836e-7a410762253d",
+      "churchName": "Impact Centre Chretien RDC",
+      "churchSlug": "iccrdc",
+      "roleCode": "admin_manager",
+      "usersCount": 0,
+      "permissionsCount": 15,
+      "viewModules": [
+        "dashboard",
+        "members",
+        "attendance",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes"
+      ],
+      "createModules": [
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes"
+      ],
+      "updateModules": [
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes"
+      ],
+      "deleteModules": [],
+      "approveModules": [
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes"
+      ],
+      "missingBaseline": []
+    },
+    {
+      "churchId": "642f3f12-1bb9-4c47-836e-7a410762253d",
+      "churchName": "Impact Centre Chretien RDC",
+      "churchSlug": "iccrdc",
+      "roleCode": "administration_manager",
+      "usersCount": 0,
+      "permissionsCount": 15,
+      "viewModules": [
+        "dashboard",
+        "members",
+        "attendance",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes"
+      ],
+      "createModules": [
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes"
+      ],
+      "updateModules": [
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes"
+      ],
+      "deleteModules": [],
+      "approveModules": [
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes"
+      ],
+      "missingBaseline": []
+    },
+    {
+      "churchId": "642f3f12-1bb9-4c47-836e-7a410762253d",
+      "churchName": "Impact Centre Chretien RDC",
+      "churchSlug": "iccrdc",
+      "roleCode": "administrator",
+      "usersCount": 0,
+      "permissionsCount": 25,
+      "viewModules": [
+        "dashboard",
+        "members",
+        "teachings",
+        "attendance",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "financial_reports",
+        "patrimony_dashboard",
+        "assets",
+        "asset_maintenance",
+        "asset_movements"
+      ],
+      "createModules": [
+        "dashboard",
+        "members",
+        "teachings",
+        "attendance",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "financial_reports",
+        "patrimony_dashboard",
+        "assets",
+        "asset_maintenance",
+        "asset_movements"
+      ],
+      "updateModules": [
+        "dashboard",
+        "members",
+        "teachings",
+        "attendance",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "financial_reports",
+        "patrimony_dashboard",
+        "assets",
+        "asset_maintenance",
+        "asset_movements"
+      ],
+      "deleteModules": [
+        "teachings",
+        "publications"
+      ],
+      "approveModules": [
+        "dashboard",
+        "members",
+        "teachings",
+        "attendance",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "financial_reports",
+        "patrimony_dashboard",
+        "assets",
+        "asset_maintenance",
+        "asset_movements"
+      ],
+      "missingBaseline": []
+    },
+    {
+      "churchId": "642f3f12-1bb9-4c47-836e-7a410762253d",
+      "churchName": "Impact Centre Chretien RDC",
+      "churchSlug": "iccrdc",
+      "roleCode": "afp_manager",
+      "usersCount": 0,
+      "permissionsCount": 2,
+      "viewModules": [
+        "publications",
+        "teachings"
+      ],
+      "createModules": [
+        "publications",
+        "teachings"
+      ],
+      "updateModules": [
+        "publications",
+        "teachings"
+      ],
+      "deleteModules": [],
+      "approveModules": [],
+      "missingBaseline": []
+    },
+    {
+      "churchId": "642f3f12-1bb9-4c47-836e-7a410762253d",
+      "churchName": "Impact Centre Chretien RDC",
+      "churchSlug": "iccrdc",
+      "roleCode": "charge_administration",
+      "usersCount": 0,
+      "permissionsCount": 14,
+      "viewModules": [
+        "dashboard",
+        "members",
+        "attendance",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks"
+      ],
+      "createModules": [
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks"
+      ],
+      "updateModules": [
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks"
+      ],
+      "deleteModules": [],
+      "approveModules": [
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks"
+      ],
+      "missingBaseline": []
+    },
+    {
+      "churchId": "642f3f12-1bb9-4c47-836e-7a410762253d",
+      "churchName": "Impact Centre Chretien RDC",
+      "churchSlug": "iccrdc",
+      "roleCode": "charged_administration",
+      "usersCount": 0,
+      "permissionsCount": 14,
+      "viewModules": [
+        "dashboard",
+        "members",
+        "attendance",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks"
+      ],
+      "createModules": [
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks"
+      ],
+      "updateModules": [
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks"
+      ],
+      "deleteModules": [],
+      "approveModules": [
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks"
+      ],
+      "missingBaseline": []
+    },
+    {
+      "churchId": "642f3f12-1bb9-4c47-836e-7a410762253d",
+      "churchName": "Impact Centre Chretien RDC",
+      "churchSlug": "iccrdc",
+      "roleCode": "church_admin",
+      "usersCount": 2,
+      "permissionsCount": 0,
+      "viewModules": [],
+      "createModules": [],
+      "updateModules": [],
+      "deleteModules": [],
+      "approveModules": [],
+      "missingBaseline": [
+        "role_dashboard",
+        "my_work",
+        "members",
+        "attendance",
+        "public_requests",
+        "users",
+        "security"
+      ]
+    },
+    {
+      "churchId": "642f3f12-1bb9-4c47-836e-7a410762253d",
+      "churchName": "Impact Centre Chretien RDC",
+      "churchSlug": "iccrdc",
+      "roleCode": "owner",
+      "usersCount": 0,
+      "permissionsCount": 25,
+      "viewModules": [
+        "dashboard",
+        "members",
+        "teachings",
+        "attendance",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "financial_reports",
+        "patrimony_dashboard",
+        "assets",
+        "asset_maintenance",
+        "asset_movements"
+      ],
+      "createModules": [
+        "dashboard",
+        "members",
+        "teachings",
+        "attendance",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "financial_reports",
+        "patrimony_dashboard",
+        "assets",
+        "asset_maintenance",
+        "asset_movements"
+      ],
+      "updateModules": [
+        "dashboard",
+        "members",
+        "teachings",
+        "attendance",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "financial_reports",
+        "patrimony_dashboard",
+        "assets",
+        "asset_maintenance",
+        "asset_movements"
+      ],
+      "deleteModules": [
+        "teachings",
+        "publications"
+      ],
+      "approveModules": [
+        "dashboard",
+        "members",
+        "teachings",
+        "attendance",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "financial_reports",
+        "patrimony_dashboard",
+        "assets",
+        "asset_maintenance",
+        "asset_movements"
+      ],
+      "missingBaseline": []
+    },
+    {
+      "churchId": "642f3f12-1bb9-4c47-836e-7a410762253d",
+      "churchName": "Impact Centre Chretien RDC",
+      "churchSlug": "iccrdc",
+      "roleCode": "pasteur",
+      "usersCount": 0,
+      "permissionsCount": 25,
+      "viewModules": [
+        "dashboard",
+        "members",
+        "attendance",
+        "teachings",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "financial_reports",
+        "patrimony_dashboard",
+        "assets",
+        "asset_maintenance",
+        "asset_movements"
+      ],
+      "createModules": [
+        "dashboard",
+        "members",
+        "attendance",
+        "teachings",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "financial_reports",
+        "patrimony_dashboard",
+        "assets",
+        "asset_maintenance",
+        "asset_movements"
+      ],
+      "updateModules": [
+        "dashboard",
+        "members",
+        "attendance",
+        "teachings",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "financial_reports",
+        "patrimony_dashboard",
+        "assets",
+        "asset_maintenance",
+        "asset_movements"
+      ],
+      "deleteModules": [],
+      "approveModules": [
+        "dashboard",
+        "members",
+        "attendance",
+        "teachings",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "financial_reports",
+        "patrimony_dashboard",
+        "assets",
+        "asset_maintenance",
+        "asset_movements"
+      ],
+      "missingBaseline": []
+    },
+    {
+      "churchId": "642f3f12-1bb9-4c47-836e-7a410762253d",
+      "churchName": "Impact Centre Chretien RDC",
+      "churchSlug": "iccrdc",
+      "roleCode": "pastor_assistant",
+      "usersCount": 0,
+      "permissionsCount": 2,
+      "viewModules": [
+        "publications",
+        "teachings"
+      ],
+      "createModules": [
+        "publications",
+        "teachings"
+      ],
+      "updateModules": [
+        "publications",
+        "teachings"
+      ],
+      "deleteModules": [],
+      "approveModules": [],
+      "missingBaseline": []
+    },
+    {
+      "churchId": "642f3f12-1bb9-4c47-836e-7a410762253d",
+      "churchName": "Impact Centre Chretien RDC",
+      "churchSlug": "iccrdc",
+      "roleCode": "pastor_titulaire",
+      "usersCount": 0,
+      "permissionsCount": 2,
+      "viewModules": [
+        "publications",
+        "teachings"
+      ],
+      "createModules": [
+        "publications",
+        "teachings"
+      ],
+      "updateModules": [
+        "publications",
+        "teachings"
+      ],
+      "deleteModules": [],
+      "approveModules": [
+        "publications",
+        "teachings"
+      ],
+      "missingBaseline": []
+    },
+    {
+      "churchId": "642f3f12-1bb9-4c47-836e-7a410762253d",
+      "churchName": "Impact Centre Chretien RDC",
+      "churchSlug": "iccrdc",
+      "roleCode": "secretary",
+      "usersCount": 0,
+      "permissionsCount": 15,
+      "viewModules": [
+        "publications",
+        "teachings",
+        "dashboard",
+        "members",
+        "attendance",
+        "souls",
+        "departments",
+        "events",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks"
+      ],
+      "createModules": [
+        "publications",
+        "teachings",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks"
+      ],
+      "updateModules": [
+        "publications",
+        "teachings",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks"
+      ],
+      "deleteModules": [],
+      "approveModules": [
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks"
+      ],
+      "missingBaseline": []
+    },
+    {
+      "churchId": "642f3f12-1bb9-4c47-836e-7a410762253d",
+      "churchName": "Impact Centre Chretien RDC",
+      "churchSlug": "iccrdc",
+      "roleCode": "viewer",
+      "usersCount": 0,
+      "permissionsCount": 25,
+      "viewModules": [
+        "dashboard",
+        "members",
+        "publications",
+        "attendance",
+        "souls",
+        "teachings",
+        "departments",
+        "events",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "financial_reports",
+        "patrimony_dashboard",
+        "assets",
+        "asset_maintenance",
+        "asset_movements"
+      ],
+      "createModules": [],
+      "updateModules": [],
+      "deleteModules": [],
+      "approveModules": [],
+      "missingBaseline": []
+    },
+    {
+      "churchId": "642f3f12-1bb9-4c47-836e-7a410762253d",
+      "churchName": "Impact Centre Chretien RDC",
+      "churchSlug": "iccrdc",
+      "roleCode": "worker",
+      "usersCount": 2,
+      "permissionsCount": 0,
+      "viewModules": [],
+      "createModules": [],
+      "updateModules": [],
+      "deleteModules": [],
+      "approveModules": [],
+      "missingBaseline": [
+        "role_dashboard",
+        "my_work",
+        "attendance"
+      ]
+    },
+    {
+      "churchId": "516b3cb4-ed5c-4489-9ac9-56ee88fa07b3",
+      "churchName": "Koinonia",
+      "churchSlug": "koino",
+      "roleCode": "admin",
+      "usersCount": 0,
+      "permissionsCount": 25,
+      "viewModules": [
+        "dashboard",
+        "members",
+        "attendance",
+        "teachings",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "financial_reports",
+        "patrimony_dashboard",
+        "assets",
+        "asset_maintenance",
+        "asset_movements"
+      ],
+      "createModules": [
+        "dashboard",
+        "members",
+        "attendance",
+        "teachings",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "financial_reports",
+        "patrimony_dashboard",
+        "assets",
+        "asset_maintenance",
+        "asset_movements"
+      ],
+      "updateModules": [
+        "dashboard",
+        "members",
+        "attendance",
+        "teachings",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "financial_reports",
+        "patrimony_dashboard",
+        "assets",
+        "asset_maintenance",
+        "asset_movements"
+      ],
+      "deleteModules": [
+        "teachings",
+        "publications"
+      ],
+      "approveModules": [
+        "dashboard",
+        "members",
+        "attendance",
+        "teachings",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "financial_reports",
+        "patrimony_dashboard",
+        "assets",
+        "asset_maintenance",
+        "asset_movements"
+      ],
+      "missingBaseline": []
+    },
+    {
+      "churchId": "516b3cb4-ed5c-4489-9ac9-56ee88fa07b3",
+      "churchName": "Koinonia",
+      "churchSlug": "koino",
+      "roleCode": "admin_eglise",
+      "usersCount": 0,
+      "permissionsCount": 8,
+      "viewModules": [
+        "dashboard",
+        "notifications",
+        "pwa_install",
+        "settings",
+        "members",
+        "souls",
+        "publications",
+        "teachings"
+      ],
+      "createModules": [
+        "dashboard",
+        "notifications",
+        "pwa_install",
+        "settings",
+        "members",
+        "souls",
+        "publications",
+        "teachings"
+      ],
+      "updateModules": [
+        "dashboard",
+        "notifications",
+        "pwa_install",
+        "settings",
+        "members",
+        "souls",
+        "publications",
+        "teachings"
+      ],
+      "deleteModules": [
+        "dashboard",
+        "notifications",
+        "pwa_install",
+        "settings",
+        "members",
+        "souls",
+        "publications",
+        "teachings"
+      ],
+      "approveModules": [],
+      "missingBaseline": [
+        "role_dashboard",
+        "my_work",
+        "attendance",
+        "public_requests",
+        "users",
+        "security"
+      ]
+    },
+    {
+      "churchId": "516b3cb4-ed5c-4489-9ac9-56ee88fa07b3",
+      "churchName": "Koinonia",
+      "churchSlug": "koino",
+      "roleCode": "admin_manager",
+      "usersCount": 0,
+      "permissionsCount": 15,
+      "viewModules": [
+        "dashboard",
+        "members",
+        "attendance",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes"
+      ],
+      "createModules": [
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes"
+      ],
+      "updateModules": [
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes"
+      ],
+      "deleteModules": [],
+      "approveModules": [
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes"
+      ],
+      "missingBaseline": []
+    },
+    {
+      "churchId": "516b3cb4-ed5c-4489-9ac9-56ee88fa07b3",
+      "churchName": "Koinonia",
+      "churchSlug": "koino",
+      "roleCode": "administration_manager",
+      "usersCount": 0,
+      "permissionsCount": 15,
+      "viewModules": [
+        "dashboard",
+        "members",
+        "attendance",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes"
+      ],
+      "createModules": [
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes"
+      ],
+      "updateModules": [
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes"
+      ],
+      "deleteModules": [],
+      "approveModules": [
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes"
+      ],
+      "missingBaseline": []
+    },
+    {
+      "churchId": "516b3cb4-ed5c-4489-9ac9-56ee88fa07b3",
+      "churchName": "Koinonia",
+      "churchSlug": "koino",
+      "roleCode": "administrator",
+      "usersCount": 0,
+      "permissionsCount": 25,
+      "viewModules": [
+        "dashboard",
+        "members",
+        "teachings",
+        "attendance",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "financial_reports",
+        "patrimony_dashboard",
+        "assets",
+        "asset_maintenance",
+        "asset_movements"
+      ],
+      "createModules": [
+        "dashboard",
+        "members",
+        "teachings",
+        "attendance",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "financial_reports",
+        "patrimony_dashboard",
+        "assets",
+        "asset_maintenance",
+        "asset_movements"
+      ],
+      "updateModules": [
+        "dashboard",
+        "members",
+        "teachings",
+        "attendance",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "financial_reports",
+        "patrimony_dashboard",
+        "assets",
+        "asset_maintenance",
+        "asset_movements"
+      ],
+      "deleteModules": [
+        "teachings",
+        "publications"
+      ],
+      "approveModules": [
+        "dashboard",
+        "members",
+        "teachings",
+        "attendance",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "financial_reports",
+        "patrimony_dashboard",
+        "assets",
+        "asset_maintenance",
+        "asset_movements"
+      ],
+      "missingBaseline": []
+    },
+    {
+      "churchId": "516b3cb4-ed5c-4489-9ac9-56ee88fa07b3",
+      "churchName": "Koinonia",
+      "churchSlug": "koino",
+      "roleCode": "afp_manager",
+      "usersCount": 0,
+      "permissionsCount": 2,
+      "viewModules": [
+        "publications",
+        "teachings"
+      ],
+      "createModules": [
+        "publications",
+        "teachings"
+      ],
+      "updateModules": [
+        "publications",
+        "teachings"
+      ],
+      "deleteModules": [],
+      "approveModules": [],
+      "missingBaseline": []
+    },
+    {
+      "churchId": "516b3cb4-ed5c-4489-9ac9-56ee88fa07b3",
+      "churchName": "Koinonia",
+      "churchSlug": "koino",
+      "roleCode": "assistant_pastor",
+      "usersCount": 0,
+      "permissionsCount": 9,
+      "viewModules": [
+        "dashboard",
+        "notifications",
+        "pwa_install",
+        "settings",
+        "members",
+        "souls",
+        "departments",
+        "publications",
+        "teachings"
+      ],
+      "createModules": [
+        "dashboard",
+        "notifications",
+        "pwa_install",
+        "settings",
+        "members",
+        "souls",
+        "departments",
+        "publications",
+        "teachings"
+      ],
+      "updateModules": [
+        "dashboard",
+        "notifications",
+        "pwa_install",
+        "settings",
+        "members",
+        "souls",
+        "departments",
+        "publications",
+        "teachings"
+      ],
+      "deleteModules": [],
+      "approveModules": [],
+      "missingBaseline": []
+    },
+    {
+      "churchId": "516b3cb4-ed5c-4489-9ac9-56ee88fa07b3",
+      "churchName": "Koinonia",
+      "churchSlug": "koino",
+      "roleCode": "charge_administration",
+      "usersCount": 0,
+      "permissionsCount": 14,
+      "viewModules": [
+        "dashboard",
+        "members",
+        "attendance",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks"
+      ],
+      "createModules": [
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks"
+      ],
+      "updateModules": [
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks"
+      ],
+      "deleteModules": [],
+      "approveModules": [
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks"
+      ],
+      "missingBaseline": []
+    },
+    {
+      "churchId": "516b3cb4-ed5c-4489-9ac9-56ee88fa07b3",
+      "churchName": "Koinonia",
+      "churchSlug": "koino",
+      "roleCode": "charge_afp",
+      "usersCount": 0,
+      "permissionsCount": 10,
+      "viewModules": [
+        "dashboard",
+        "notifications",
+        "pwa_install",
+        "settings",
+        "members",
+        "attendance",
+        "souls",
+        "publications",
+        "teachings",
+        "testimonies"
+      ],
+      "createModules": [
+        "dashboard",
+        "notifications",
+        "pwa_install",
+        "settings",
+        "members",
+        "attendance",
+        "souls",
+        "publications",
+        "teachings",
+        "testimonies"
+      ],
+      "updateModules": [
+        "dashboard",
+        "notifications",
+        "pwa_install",
+        "settings",
+        "members",
+        "attendance",
+        "souls",
+        "publications",
+        "teachings",
+        "testimonies"
+      ],
+      "deleteModules": [
+        "dashboard",
+        "notifications",
+        "pwa_install",
+        "settings",
+        "members",
+        "attendance",
+        "souls",
+        "publications",
+        "teachings",
+        "testimonies"
+      ],
+      "approveModules": [],
+      "missingBaseline": [
+        "role_dashboard",
+        "my_work",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "donations"
+      ]
+    },
+    {
+      "churchId": "516b3cb4-ed5c-4489-9ac9-56ee88fa07b3",
+      "churchName": "Koinonia",
+      "churchSlug": "koino",
+      "roleCode": "charged_administration",
+      "usersCount": 0,
+      "permissionsCount": 15,
+      "viewModules": [
+        "dashboard",
+        "members",
+        "attendance",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes"
+      ],
+      "createModules": [
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes"
+      ],
+      "updateModules": [
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes"
+      ],
+      "deleteModules": [],
+      "approveModules": [
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes"
+      ],
+      "missingBaseline": []
+    },
+    {
+      "churchId": "516b3cb4-ed5c-4489-9ac9-56ee88fa07b3",
+      "churchName": "Koinonia",
+      "churchSlug": "koino",
+      "roleCode": "church_admin",
+      "usersCount": 0,
+      "permissionsCount": 12,
+      "viewModules": [
+        "dashboard",
+        "attendance",
+        "teachings",
+        "souls",
+        "pwa_install",
+        "settings",
+        "events",
+        "publications",
+        "members",
+        "departments",
+        "notifications",
+        "correspondence"
+      ],
+      "createModules": [
+        "dashboard",
+        "attendance",
+        "teachings",
+        "souls",
+        "pwa_install",
+        "settings",
+        "events",
+        "publications",
+        "members",
+        "departments",
+        "notifications",
+        "correspondence"
+      ],
+      "updateModules": [
+        "dashboard",
+        "attendance",
+        "teachings",
+        "souls",
+        "pwa_install",
+        "settings",
+        "events",
+        "publications",
+        "members",
+        "departments",
+        "notifications",
+        "correspondence"
+      ],
+      "deleteModules": [
+        "dashboard",
+        "attendance",
+        "teachings",
+        "souls",
+        "pwa_install",
+        "settings",
+        "events",
+        "publications",
+        "members",
+        "departments",
+        "notifications",
+        "correspondence"
+      ],
+      "approveModules": [
+        "dashboard",
+        "attendance",
+        "teachings",
+        "souls",
+        "events",
+        "publications",
+        "members",
+        "departments",
+        "notifications",
+        "correspondence"
+      ],
+      "missingBaseline": [
+        "role_dashboard",
+        "my_work",
+        "public_requests",
+        "users",
+        "security"
+      ]
+    },
+    {
+      "churchId": "516b3cb4-ed5c-4489-9ac9-56ee88fa07b3",
+      "churchName": "Koinonia",
+      "churchSlug": "koino",
+      "roleCode": "owner",
+      "usersCount": 0,
+      "permissionsCount": 25,
+      "viewModules": [
+        "dashboard",
+        "members",
+        "teachings",
+        "attendance",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "financial_reports",
+        "patrimony_dashboard",
+        "assets",
+        "asset_maintenance",
+        "asset_movements"
+      ],
+      "createModules": [
+        "dashboard",
+        "members",
+        "teachings",
+        "attendance",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "financial_reports",
+        "patrimony_dashboard",
+        "assets",
+        "asset_maintenance",
+        "asset_movements"
+      ],
+      "updateModules": [
+        "dashboard",
+        "members",
+        "teachings",
+        "attendance",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "financial_reports",
+        "patrimony_dashboard",
+        "assets",
+        "asset_maintenance",
+        "asset_movements"
+      ],
+      "deleteModules": [
+        "teachings",
+        "publications"
+      ],
+      "approveModules": [
+        "dashboard",
+        "members",
+        "teachings",
+        "attendance",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "financial_reports",
+        "patrimony_dashboard",
+        "assets",
+        "asset_maintenance",
+        "asset_movements"
+      ],
+      "missingBaseline": []
+    },
+    {
+      "churchId": "516b3cb4-ed5c-4489-9ac9-56ee88fa07b3",
+      "churchName": "Koinonia",
+      "churchSlug": "koino",
+      "roleCode": "pasteur",
+      "usersCount": 0,
+      "permissionsCount": 25,
+      "viewModules": [
+        "dashboard",
+        "members",
+        "teachings",
+        "attendance",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "financial_reports",
+        "patrimony_dashboard",
+        "assets",
+        "asset_maintenance",
+        "asset_movements"
+      ],
+      "createModules": [
+        "dashboard",
+        "members",
+        "teachings",
+        "attendance",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "financial_reports",
+        "patrimony_dashboard",
+        "assets",
+        "asset_maintenance",
+        "asset_movements"
+      ],
+      "updateModules": [
+        "dashboard",
+        "members",
+        "teachings",
+        "attendance",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "financial_reports",
+        "patrimony_dashboard",
+        "assets",
+        "asset_maintenance",
+        "asset_movements"
+      ],
+      "deleteModules": [],
+      "approveModules": [
+        "dashboard",
+        "members",
+        "teachings",
+        "attendance",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "financial_reports",
+        "patrimony_dashboard",
+        "assets",
+        "asset_maintenance",
+        "asset_movements"
+      ],
+      "missingBaseline": []
+    },
+    {
+      "churchId": "516b3cb4-ed5c-4489-9ac9-56ee88fa07b3",
+      "churchName": "Koinonia",
+      "churchSlug": "koino",
+      "roleCode": "pasteur_a",
+      "usersCount": 0,
+      "permissionsCount": 9,
+      "viewModules": [
+        "dashboard",
+        "notifications",
+        "pwa_install",
+        "settings",
+        "members",
+        "attendance",
+        "souls",
+        "publications",
+        "teachings"
+      ],
+      "createModules": [
+        "dashboard",
+        "notifications",
+        "pwa_install",
+        "settings",
+        "members",
+        "attendance",
+        "souls",
+        "publications",
+        "teachings"
+      ],
+      "updateModules": [
+        "dashboard",
+        "notifications",
+        "pwa_install",
+        "settings",
+        "members",
+        "attendance",
+        "souls",
+        "publications",
+        "teachings"
+      ],
+      "deleteModules": [],
+      "approveModules": [],
+      "missingBaseline": [
+        "role_dashboard",
+        "my_work"
+      ]
+    },
+    {
+      "churchId": "516b3cb4-ed5c-4489-9ac9-56ee88fa07b3",
+      "churchName": "Koinonia",
+      "churchSlug": "koino",
+      "roleCode": "pasteur_t",
+      "usersCount": 0,
+      "permissionsCount": 9,
+      "viewModules": [
+        "dashboard",
+        "notifications",
+        "pwa_install",
+        "settings",
+        "members",
+        "souls",
+        "publications",
+        "teachings",
+        "public_requests"
+      ],
+      "createModules": [
+        "dashboard",
+        "notifications",
+        "pwa_install",
+        "settings",
+        "members",
+        "souls",
+        "publications",
+        "teachings",
+        "public_requests"
+      ],
+      "updateModules": [
+        "dashboard",
+        "notifications",
+        "pwa_install",
+        "settings",
+        "members",
+        "souls",
+        "publications",
+        "teachings",
+        "public_requests"
+      ],
+      "deleteModules": [
+        "dashboard",
+        "notifications",
+        "pwa_install",
+        "settings",
+        "members",
+        "souls",
+        "publications",
+        "teachings",
+        "public_requests"
+      ],
+      "approveModules": [],
+      "missingBaseline": [
+        "role_dashboard",
+        "my_work",
+        "attendance"
+      ]
+    },
+    {
+      "churchId": "516b3cb4-ed5c-4489-9ac9-56ee88fa07b3",
+      "churchName": "Koinonia",
+      "churchSlug": "koino",
+      "roleCode": "pastor",
+      "usersCount": 0,
+      "permissionsCount": 14,
+      "viewModules": [
+        "offerings",
+        "dashboard",
+        "members",
+        "attendance",
+        "teachings",
+        "pwa_install",
+        "settings",
+        "events",
+        "souls",
+        "departments",
+        "public_requests",
+        "notifications",
+        "testimonies",
+        "correspondence"
+      ],
+      "createModules": [
+        "offerings",
+        "dashboard",
+        "members",
+        "attendance",
+        "teachings",
+        "pwa_install",
+        "settings",
+        "events",
+        "souls",
+        "departments",
+        "public_requests",
+        "notifications",
+        "testimonies",
+        "correspondence"
+      ],
+      "updateModules": [
+        "offerings",
+        "dashboard",
+        "members",
+        "attendance",
+        "teachings",
+        "pwa_install",
+        "settings",
+        "events",
+        "souls",
+        "departments",
+        "public_requests",
+        "notifications",
+        "testimonies",
+        "correspondence"
+      ],
+      "deleteModules": [
+        "offerings",
+        "dashboard",
+        "members",
+        "attendance",
+        "teachings",
+        "pwa_install",
+        "settings",
+        "events",
+        "souls",
+        "departments",
+        "public_requests",
+        "notifications",
+        "testimonies",
+        "correspondence"
+      ],
+      "approveModules": [
+        "offerings",
+        "dashboard",
+        "members",
+        "attendance",
+        "teachings",
+        "events",
+        "souls",
+        "departments",
+        "public_requests",
+        "notifications",
+        "testimonies",
+        "correspondence"
+      ],
+      "missingBaseline": [
+        "role_dashboard",
+        "my_work"
+      ]
+    },
+    {
+      "churchId": "516b3cb4-ed5c-4489-9ac9-56ee88fa07b3",
+      "churchName": "Koinonia",
+      "churchSlug": "koino",
+      "roleCode": "pastor_assistant",
+      "usersCount": 0,
+      "permissionsCount": 2,
+      "viewModules": [
+        "publications",
+        "teachings"
+      ],
+      "createModules": [
+        "publications",
+        "teachings"
+      ],
+      "updateModules": [
+        "publications",
+        "teachings"
+      ],
+      "deleteModules": [],
+      "approveModules": [],
+      "missingBaseline": []
+    },
+    {
+      "churchId": "516b3cb4-ed5c-4489-9ac9-56ee88fa07b3",
+      "churchName": "Koinonia",
+      "churchSlug": "koino",
+      "roleCode": "pastor_titulaire",
+      "usersCount": 0,
+      "permissionsCount": 2,
+      "viewModules": [
+        "publications",
+        "teachings"
+      ],
+      "createModules": [
+        "publications",
+        "teachings"
+      ],
+      "updateModules": [
+        "publications",
+        "teachings"
+      ],
+      "deleteModules": [],
+      "approveModules": [
+        "publications",
+        "teachings"
+      ],
+      "missingBaseline": []
+    },
+    {
+      "churchId": "516b3cb4-ed5c-4489-9ac9-56ee88fa07b3",
+      "churchName": "Koinonia",
+      "churchSlug": "koino",
+      "roleCode": "readonly",
+      "usersCount": 0,
+      "permissionsCount": 10,
+      "viewModules": [
+        "dashboard",
+        "notifications",
+        "pwa_install",
+        "settings",
+        "members",
+        "attendance",
+        "souls",
+        "events",
+        "publications",
+        "testimonies"
+      ],
+      "createModules": [],
+      "updateModules": [],
+      "deleteModules": [],
+      "approveModules": [],
+      "missingBaseline": [
+        "role_dashboard"
+      ]
+    },
+    {
+      "churchId": "516b3cb4-ed5c-4489-9ac9-56ee88fa07b3",
+      "churchName": "Koinonia",
+      "churchSlug": "koino",
+      "roleCode": "responsable_d",
+      "usersCount": 0,
+      "permissionsCount": 10,
+      "viewModules": [
+        "dashboard",
+        "notifications",
+        "pwa_install",
+        "settings",
+        "members",
+        "attendance",
+        "souls",
+        "publications",
+        "teachings",
+        "testimonies"
+      ],
+      "createModules": [
+        "dashboard",
+        "notifications",
+        "pwa_install",
+        "settings",
+        "members",
+        "attendance",
+        "souls",
+        "publications",
+        "teachings",
+        "testimonies"
+      ],
+      "updateModules": [
+        "dashboard",
+        "notifications",
+        "pwa_install",
+        "settings",
+        "members",
+        "attendance",
+        "souls",
+        "publications",
+        "teachings",
+        "testimonies"
+      ],
+      "deleteModules": [],
+      "approveModules": [],
+      "missingBaseline": [
+        "role_dashboard",
+        "my_work",
+        "departments",
+        "events"
+      ]
+    },
+    {
+      "churchId": "516b3cb4-ed5c-4489-9ac9-56ee88fa07b3",
+      "churchName": "Koinonia",
+      "churchSlug": "koino",
+      "roleCode": "secretaire",
+      "usersCount": 0,
+      "permissionsCount": 13,
+      "viewModules": [
+        "dashboard",
+        "notifications",
+        "pwa_install",
+        "settings",
+        "members",
+        "attendance",
+        "souls",
+        "events",
+        "teachings",
+        "testimonies",
+        "publications",
+        "appointments",
+        "public_requests"
+      ],
+      "createModules": [
+        "dashboard",
+        "notifications",
+        "pwa_install",
+        "settings",
+        "members",
+        "attendance",
+        "souls",
+        "events",
+        "teachings",
+        "testimonies",
+        "publications",
+        "appointments",
+        "public_requests"
+      ],
+      "updateModules": [
+        "dashboard",
+        "notifications",
+        "pwa_install",
+        "settings",
+        "members",
+        "attendance",
+        "souls",
+        "events",
+        "teachings",
+        "testimonies",
+        "publications",
+        "appointments",
+        "public_requests"
+      ],
+      "deleteModules": [],
+      "approveModules": [],
+      "missingBaseline": [
+        "role_dashboard",
+        "my_work",
+        "correspondence",
+        "transmissions",
+        "tasks",
+        "minutes"
+      ]
+    },
+    {
+      "churchId": "516b3cb4-ed5c-4489-9ac9-56ee88fa07b3",
+      "churchName": "Koinonia",
+      "churchSlug": "koino",
+      "roleCode": "secretary",
+      "usersCount": 0,
+      "permissionsCount": 16,
+      "viewModules": [
+        "souls",
+        "events",
+        "expenses",
+        "publications",
+        "teachings",
+        "dashboard",
+        "members",
+        "attendance",
+        "departments",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks"
+      ],
+      "createModules": [
+        "publications",
+        "teachings",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks"
+      ],
+      "updateModules": [
+        "publications",
+        "teachings",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks"
+      ],
+      "deleteModules": [],
+      "approveModules": [
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks"
+      ],
+      "missingBaseline": []
+    },
+    {
+      "churchId": "516b3cb4-ed5c-4489-9ac9-56ee88fa07b3",
+      "churchName": "Koinonia",
+      "churchSlug": "koino",
+      "roleCode": "treasurer",
+      "usersCount": 0,
+      "permissionsCount": 2,
+      "viewModules": [
+        "financial_reports",
+        "souls"
+      ],
+      "createModules": [
+        "financial_reports"
+      ],
+      "updateModules": [
+        "financial_reports"
+      ],
+      "deleteModules": [],
+      "approveModules": [
+        "financial_reports"
+      ],
+      "missingBaseline": []
+    },
+    {
+      "churchId": "516b3cb4-ed5c-4489-9ac9-56ee88fa07b3",
+      "churchName": "Koinonia",
+      "churchSlug": "koino",
+      "roleCode": "tresorier",
+      "usersCount": 0,
+      "permissionsCount": 2,
+      "viewModules": [
+        "financial_reports",
+        "souls"
+      ],
+      "createModules": [
+        "financial_reports"
+      ],
+      "updateModules": [
+        "financial_reports"
+      ],
+      "deleteModules": [],
+      "approveModules": [
+        "financial_reports"
+      ],
+      "missingBaseline": []
+    },
+    {
+      "churchId": "516b3cb4-ed5c-4489-9ac9-56ee88fa07b3",
+      "churchName": "Koinonia",
+      "churchSlug": "koino",
+      "roleCode": "viewer",
+      "usersCount": 0,
+      "permissionsCount": 25,
+      "viewModules": [
+        "dashboard",
+        "members",
+        "publications",
+        "attendance",
+        "souls",
+        "teachings",
+        "departments",
+        "events",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "budgets",
+        "administrative_tasks",
+        "meetings_minutes",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "financial_reports",
+        "patrimony_dashboard",
+        "assets",
+        "asset_maintenance",
+        "asset_movements"
+      ],
+      "createModules": [],
+      "updateModules": [],
+      "deleteModules": [],
+      "approveModules": [],
+      "missingBaseline": []
+    },
+    {
+      "churchId": "516b3cb4-ed5c-4489-9ac9-56ee88fa07b3",
+      "churchName": "Koinonia",
+      "churchSlug": "koino",
+      "roleCode": "worker",
+      "usersCount": 0,
+      "permissionsCount": 15,
+      "viewModules": [
+        "dashboard",
+        "members",
+        "publications",
+        "attendance",
+        "events",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "pwa_install",
+        "administrative_tasks",
+        "meetings_minutes",
+        "settings",
+        "souls",
+        "teachings"
+      ],
+      "createModules": [],
+      "updateModules": [],
+      "deleteModules": [],
+      "approveModules": [],
+      "missingBaseline": [
+        "role_dashboard",
+        "my_work"
+      ]
+    },
+    {
+      "churchId": "e6519b26-01cf-442b-b982-9f507a3d3684",
+      "churchName": "La Maison de Miséricorde",
+      "churchSlug": "maison-misericorde-cmp",
+      "roleCode": "admin",
+      "usersCount": 0,
+      "permissionsCount": 25,
+      "viewModules": [
+        "dashboard",
+        "members",
+        "attendance",
+        "teachings",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "financial_reports",
+        "patrimony_dashboard",
+        "assets",
+        "asset_maintenance",
+        "asset_movements"
+      ],
+      "createModules": [
+        "dashboard",
+        "members",
+        "attendance",
+        "teachings",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "financial_reports",
+        "patrimony_dashboard",
+        "assets",
+        "asset_maintenance",
+        "asset_movements"
+      ],
+      "updateModules": [
+        "dashboard",
+        "members",
+        "attendance",
+        "teachings",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "financial_reports",
+        "patrimony_dashboard",
+        "assets",
+        "asset_maintenance",
+        "asset_movements"
+      ],
+      "deleteModules": [
+        "teachings",
+        "publications"
+      ],
+      "approveModules": [
+        "dashboard",
+        "members",
+        "attendance",
+        "teachings",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "financial_reports",
+        "patrimony_dashboard",
+        "assets",
+        "asset_maintenance",
+        "asset_movements"
+      ],
+      "missingBaseline": []
+    },
+    {
+      "churchId": "e6519b26-01cf-442b-b982-9f507a3d3684",
+      "churchName": "La Maison de Miséricorde",
+      "churchSlug": "maison-misericorde-cmp",
+      "roleCode": "admin_manager",
+      "usersCount": 0,
+      "permissionsCount": 15,
+      "viewModules": [
+        "dashboard",
+        "members",
+        "attendance",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes"
+      ],
+      "createModules": [
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes"
+      ],
+      "updateModules": [
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes"
+      ],
+      "deleteModules": [],
+      "approveModules": [
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes"
+      ],
+      "missingBaseline": []
+    },
+    {
+      "churchId": "e6519b26-01cf-442b-b982-9f507a3d3684",
+      "churchName": "La Maison de Miséricorde",
+      "churchSlug": "maison-misericorde-cmp",
+      "roleCode": "administration_manager",
+      "usersCount": 0,
+      "permissionsCount": 15,
+      "viewModules": [
+        "dashboard",
+        "members",
+        "attendance",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes"
+      ],
+      "createModules": [
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes"
+      ],
+      "updateModules": [
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes"
+      ],
+      "deleteModules": [],
+      "approveModules": [
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes"
+      ],
+      "missingBaseline": []
+    },
+    {
+      "churchId": "e6519b26-01cf-442b-b982-9f507a3d3684",
+      "churchName": "La Maison de Miséricorde",
+      "churchSlug": "maison-misericorde-cmp",
+      "roleCode": "administrator",
+      "usersCount": 0,
+      "permissionsCount": 25,
+      "viewModules": [
+        "dashboard",
+        "members",
+        "teachings",
+        "attendance",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "financial_reports",
+        "patrimony_dashboard",
+        "assets",
+        "asset_maintenance",
+        "asset_movements"
+      ],
+      "createModules": [
+        "dashboard",
+        "members",
+        "teachings",
+        "attendance",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "financial_reports",
+        "patrimony_dashboard",
+        "assets",
+        "asset_maintenance",
+        "asset_movements"
+      ],
+      "updateModules": [
+        "dashboard",
+        "members",
+        "teachings",
+        "attendance",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "financial_reports",
+        "patrimony_dashboard",
+        "assets",
+        "asset_maintenance",
+        "asset_movements"
+      ],
+      "deleteModules": [
+        "teachings",
+        "publications"
+      ],
+      "approveModules": [
+        "dashboard",
+        "members",
+        "teachings",
+        "attendance",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "financial_reports",
+        "patrimony_dashboard",
+        "assets",
+        "asset_maintenance",
+        "asset_movements"
+      ],
+      "missingBaseline": []
+    },
+    {
+      "churchId": "e6519b26-01cf-442b-b982-9f507a3d3684",
+      "churchName": "La Maison de Miséricorde",
+      "churchSlug": "maison-misericorde-cmp",
+      "roleCode": "afp_manager",
+      "usersCount": 0,
+      "permissionsCount": 2,
+      "viewModules": [
+        "publications",
+        "teachings"
+      ],
+      "createModules": [
+        "publications",
+        "teachings"
+      ],
+      "updateModules": [
+        "publications",
+        "teachings"
+      ],
+      "deleteModules": [],
+      "approveModules": [],
+      "missingBaseline": []
+    },
+    {
+      "churchId": "e6519b26-01cf-442b-b982-9f507a3d3684",
+      "churchName": "La Maison de Miséricorde",
+      "churchSlug": "maison-misericorde-cmp",
+      "roleCode": "charge_administration",
+      "usersCount": 0,
+      "permissionsCount": 14,
+      "viewModules": [
+        "dashboard",
+        "members",
+        "attendance",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks"
+      ],
+      "createModules": [
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks"
+      ],
+      "updateModules": [
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks"
+      ],
+      "deleteModules": [],
+      "approveModules": [
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks"
+      ],
+      "missingBaseline": []
+    },
+    {
+      "churchId": "e6519b26-01cf-442b-b982-9f507a3d3684",
+      "churchName": "La Maison de Miséricorde",
+      "churchSlug": "maison-misericorde-cmp",
+      "roleCode": "charged_administration",
+      "usersCount": 0,
+      "permissionsCount": 14,
+      "viewModules": [
+        "dashboard",
+        "members",
+        "attendance",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks"
+      ],
+      "createModules": [
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks"
+      ],
+      "updateModules": [
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks"
+      ],
+      "deleteModules": [],
+      "approveModules": [
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks"
+      ],
+      "missingBaseline": []
+    },
+    {
+      "churchId": "e6519b26-01cf-442b-b982-9f507a3d3684",
+      "churchName": "La Maison de Miséricorde",
+      "churchSlug": "maison-misericorde-cmp",
+      "roleCode": "church_admin",
+      "usersCount": 2,
+      "permissionsCount": 0,
+      "viewModules": [],
+      "createModules": [],
+      "updateModules": [],
+      "deleteModules": [],
+      "approveModules": [],
+      "missingBaseline": [
+        "role_dashboard",
+        "my_work",
+        "members",
+        "attendance",
+        "public_requests",
+        "users",
+        "security"
+      ]
+    },
+    {
+      "churchId": "e6519b26-01cf-442b-b982-9f507a3d3684",
+      "churchName": "La Maison de Miséricorde",
+      "churchSlug": "maison-misericorde-cmp",
+      "roleCode": "owner",
+      "usersCount": 0,
+      "permissionsCount": 25,
+      "viewModules": [
+        "dashboard",
+        "members",
+        "teachings",
+        "attendance",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "financial_reports",
+        "patrimony_dashboard",
+        "assets",
+        "asset_maintenance",
+        "asset_movements"
+      ],
+      "createModules": [
+        "dashboard",
+        "members",
+        "teachings",
+        "attendance",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "financial_reports",
+        "patrimony_dashboard",
+        "assets",
+        "asset_maintenance",
+        "asset_movements"
+      ],
+      "updateModules": [
+        "dashboard",
+        "members",
+        "teachings",
+        "attendance",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "financial_reports",
+        "patrimony_dashboard",
+        "assets",
+        "asset_maintenance",
+        "asset_movements"
+      ],
+      "deleteModules": [
+        "teachings",
+        "publications"
+      ],
+      "approveModules": [
+        "dashboard",
+        "members",
+        "teachings",
+        "attendance",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "financial_reports",
+        "patrimony_dashboard",
+        "assets",
+        "asset_maintenance",
+        "asset_movements"
+      ],
+      "missingBaseline": []
+    },
+    {
+      "churchId": "e6519b26-01cf-442b-b982-9f507a3d3684",
+      "churchName": "La Maison de Miséricorde",
+      "churchSlug": "maison-misericorde-cmp",
+      "roleCode": "pasteur",
+      "usersCount": 0,
+      "permissionsCount": 25,
+      "viewModules": [
+        "dashboard",
+        "members",
+        "teachings",
+        "attendance",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "financial_reports",
+        "patrimony_dashboard",
+        "assets",
+        "asset_maintenance",
+        "asset_movements"
+      ],
+      "createModules": [
+        "dashboard",
+        "members",
+        "teachings",
+        "attendance",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "financial_reports",
+        "patrimony_dashboard",
+        "assets",
+        "asset_maintenance",
+        "asset_movements"
+      ],
+      "updateModules": [
+        "dashboard",
+        "members",
+        "teachings",
+        "attendance",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "financial_reports",
+        "patrimony_dashboard",
+        "assets",
+        "asset_maintenance",
+        "asset_movements"
+      ],
+      "deleteModules": [],
+      "approveModules": [
+        "dashboard",
+        "members",
+        "teachings",
+        "attendance",
+        "souls",
+        "departments",
+        "events",
+        "publications",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "financial_reports",
+        "patrimony_dashboard",
+        "assets",
+        "asset_maintenance",
+        "asset_movements"
+      ],
+      "missingBaseline": []
+    },
+    {
+      "churchId": "e6519b26-01cf-442b-b982-9f507a3d3684",
+      "churchName": "La Maison de Miséricorde",
+      "churchSlug": "maison-misericorde-cmp",
+      "roleCode": "pastor_assistant",
+      "usersCount": 0,
+      "permissionsCount": 2,
+      "viewModules": [
+        "publications",
+        "teachings"
+      ],
+      "createModules": [
+        "publications",
+        "teachings"
+      ],
+      "updateModules": [
+        "publications",
+        "teachings"
+      ],
+      "deleteModules": [],
+      "approveModules": [],
+      "missingBaseline": []
+    },
+    {
+      "churchId": "e6519b26-01cf-442b-b982-9f507a3d3684",
+      "churchName": "La Maison de Miséricorde",
+      "churchSlug": "maison-misericorde-cmp",
+      "roleCode": "pastor_titulaire",
+      "usersCount": 0,
+      "permissionsCount": 2,
+      "viewModules": [
+        "publications",
+        "teachings"
+      ],
+      "createModules": [
+        "publications",
+        "teachings"
+      ],
+      "updateModules": [
+        "publications",
+        "teachings"
+      ],
+      "deleteModules": [],
+      "approveModules": [
+        "publications",
+        "teachings"
+      ],
+      "missingBaseline": []
+    },
+    {
+      "churchId": "e6519b26-01cf-442b-b982-9f507a3d3684",
+      "churchName": "La Maison de Miséricorde",
+      "churchSlug": "maison-misericorde-cmp",
+      "roleCode": "secretary",
+      "usersCount": 0,
+      "permissionsCount": 15,
+      "viewModules": [
+        "publications",
+        "teachings",
+        "dashboard",
+        "members",
+        "attendance",
+        "souls",
+        "departments",
+        "events",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks"
+      ],
+      "createModules": [
+        "publications",
+        "teachings",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks"
+      ],
+      "updateModules": [
+        "publications",
+        "teachings",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks"
+      ],
+      "deleteModules": [],
+      "approveModules": [
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks"
+      ],
+      "missingBaseline": []
+    },
+    {
+      "churchId": "e6519b26-01cf-442b-b982-9f507a3d3684",
+      "churchName": "La Maison de Miséricorde",
+      "churchSlug": "maison-misericorde-cmp",
+      "roleCode": "viewer",
+      "usersCount": 0,
+      "permissionsCount": 25,
+      "viewModules": [
+        "dashboard",
+        "members",
+        "publications",
+        "attendance",
+        "souls",
+        "teachings",
+        "departments",
+        "events",
+        "public_requests",
+        "appointments",
+        "testimonies",
+        "notifications",
+        "correspondence",
+        "document_transmissions",
+        "administrative_tasks",
+        "meetings_minutes",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "financial_reports",
+        "patrimony_dashboard",
+        "assets",
+        "asset_maintenance",
+        "asset_movements"
+      ],
+      "createModules": [],
+      "updateModules": [],
+      "deleteModules": [],
+      "approveModules": [],
+      "missingBaseline": []
+    },
+    {
+      "churchId": "e6519b26-01cf-442b-b982-9f507a3d3684",
+      "churchName": "La Maison de Miséricorde",
+      "churchSlug": "maison-misericorde-cmp",
+      "roleCode": "worker",
+      "usersCount": 1,
+      "permissionsCount": 0,
+      "viewModules": [],
+      "createModules": [],
+      "updateModules": [],
+      "deleteModules": [],
+      "approveModules": [],
+      "missingBaseline": [
+        "role_dashboard",
+        "my_work",
+        "attendance"
+      ]
+    }
+  ],
+  "findings": [
+    {
+      "severity": "warning",
+      "code": "BASELINE_MODULE_MISSING",
+      "church": "Communauté Charismatique des Térébinthes",
+      "role": "admin_eglise",
+      "modules": [
+        "role_dashboard",
+        "my_work",
+        "members",
+        "attendance",
+        "public_requests",
+        "users",
+        "security"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "BASELINE_MODULE_MISSING",
+      "church": "Communauté Charismatique des Térébinthes",
+      "role": "charge_afp",
+      "modules": [
+        "role_dashboard",
+        "my_work",
+        "offerings",
+        "expenses",
+        "budgets",
+        "donations"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "BASELINE_MODULE_MISSING",
+      "church": "Communauté Charismatique des Térébinthes",
+      "role": "church_admin",
+      "modules": [
+        "role_dashboard",
+        "my_work",
+        "members",
+        "attendance",
+        "public_requests",
+        "users",
+        "security"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "BASELINE_MODULE_MISSING",
+      "church": "Communauté Charismatique des Térébinthes",
+      "role": "pasteur_a",
+      "modules": [
+        "role_dashboard",
+        "my_work",
+        "souls",
+        "attendance"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "BASELINE_MODULE_MISSING",
+      "church": "Communauté Charismatique des Térébinthes",
+      "role": "pasteur_t",
+      "modules": [
+        "role_dashboard",
+        "my_work",
+        "souls",
+        "public_requests",
+        "attendance"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "BASELINE_MODULE_MISSING",
+      "church": "Communauté Charismatique des Térébinthes",
+      "role": "pastor",
+      "modules": [
+        "role_dashboard",
+        "my_work",
+        "souls",
+        "public_requests"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "BASELINE_MODULE_MISSING",
+      "church": "Communauté Charismatique des Térébinthes",
+      "role": "readonly",
+      "modules": [
+        "role_dashboard"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "BASELINE_MODULE_MISSING",
+      "church": "Communauté Charismatique des Térébinthes",
+      "role": "responsable_d",
+      "modules": [
+        "role_dashboard",
+        "my_work",
+        "members",
+        "attendance",
+        "departments",
+        "events"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "BASELINE_MODULE_MISSING",
+      "church": "Communauté Charismatique des Térébinthes",
+      "role": "secretaire",
+      "modules": [
+        "role_dashboard",
+        "my_work",
+        "transmissions",
+        "tasks",
+        "minutes"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "BASELINE_MODULE_MISSING",
+      "church": "Communauté Charismatique des Térébinthes",
+      "role": "worker",
+      "modules": [
+        "role_dashboard",
+        "my_work",
+        "attendance"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "BASELINE_MODULE_MISSING",
+      "church": "Impact Centre Chrétien Extension Kitambo",
+      "role": "admin_eglise",
+      "modules": [
+        "role_dashboard",
+        "my_work",
+        "members",
+        "public_requests",
+        "users",
+        "security"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "BASELINE_MODULE_MISSING",
+      "church": "Impact Centre Chrétien Extension Kitambo",
+      "role": "charge_afp",
+      "modules": [
+        "role_dashboard",
+        "my_work",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "donations"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "BASELINE_MODULE_MISSING",
+      "church": "Impact Centre Chrétien Extension Kitambo",
+      "role": "church_admin",
+      "modules": [
+        "role_dashboard",
+        "my_work",
+        "members",
+        "public_requests",
+        "users",
+        "security"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "BASELINE_MODULE_MISSING",
+      "church": "Impact Centre Chrétien Extension Kitambo",
+      "role": "pasteur_a",
+      "modules": [
+        "role_dashboard",
+        "my_work",
+        "souls"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "BASELINE_MODULE_MISSING",
+      "church": "Impact Centre Chrétien Extension Kitambo",
+      "role": "pasteur_t",
+      "modules": [
+        "role_dashboard",
+        "my_work",
+        "souls",
+        "public_requests"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "BASELINE_MODULE_MISSING",
+      "church": "Impact Centre Chrétien Extension Kitambo",
+      "role": "pastor",
+      "modules": [
+        "role_dashboard",
+        "my_work",
+        "souls",
+        "public_requests"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "BASELINE_MODULE_MISSING",
+      "church": "Impact Centre Chrétien Extension Kitambo",
+      "role": "readonly",
+      "modules": [
+        "role_dashboard"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "BASELINE_MODULE_MISSING",
+      "church": "Impact Centre Chrétien Extension Kitambo",
+      "role": "responsable_d",
+      "modules": [
+        "role_dashboard",
+        "my_work",
+        "departments",
+        "events"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "BASELINE_MODULE_MISSING",
+      "church": "Impact Centre Chrétien Extension Kitambo",
+      "role": "secretaire",
+      "modules": [
+        "role_dashboard",
+        "my_work",
+        "correspondence",
+        "transmissions",
+        "tasks",
+        "minutes"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "BASELINE_MODULE_MISSING",
+      "church": "Impact Centre Chrétien Extension Kitambo",
+      "role": "worker",
+      "modules": [
+        "role_dashboard",
+        "my_work"
+      ]
+    },
+    {
+      "severity": "critical",
+      "code": "ROLE_WITHOUT_PERMISSIONS",
+      "church": "Impact Centre Chretien RDC",
+      "role": "church_admin"
+    },
+    {
+      "severity": "critical",
+      "code": "ROLE_WITHOUT_VISIBLE_MODULE",
+      "church": "Impact Centre Chretien RDC",
+      "role": "church_admin"
+    },
+    {
+      "severity": "warning",
+      "code": "BASELINE_MODULE_MISSING",
+      "church": "Impact Centre Chretien RDC",
+      "role": "church_admin",
+      "modules": [
+        "role_dashboard",
+        "my_work",
+        "members",
+        "attendance",
+        "public_requests",
+        "users",
+        "security"
+      ]
+    },
+    {
+      "severity": "critical",
+      "code": "ROLE_WITHOUT_PERMISSIONS",
+      "church": "Impact Centre Chretien RDC",
+      "role": "worker"
+    },
+    {
+      "severity": "critical",
+      "code": "ROLE_WITHOUT_VISIBLE_MODULE",
+      "church": "Impact Centre Chretien RDC",
+      "role": "worker"
+    },
+    {
+      "severity": "warning",
+      "code": "BASELINE_MODULE_MISSING",
+      "church": "Impact Centre Chretien RDC",
+      "role": "worker",
+      "modules": [
+        "role_dashboard",
+        "my_work",
+        "attendance"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "BASELINE_MODULE_MISSING",
+      "church": "Koinonia",
+      "role": "admin_eglise",
+      "modules": [
+        "role_dashboard",
+        "my_work",
+        "attendance",
+        "public_requests",
+        "users",
+        "security"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "BASELINE_MODULE_MISSING",
+      "church": "Koinonia",
+      "role": "charge_afp",
+      "modules": [
+        "role_dashboard",
+        "my_work",
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "donations"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "BASELINE_MODULE_MISSING",
+      "church": "Koinonia",
+      "role": "church_admin",
+      "modules": [
+        "role_dashboard",
+        "my_work",
+        "public_requests",
+        "users",
+        "security"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "BASELINE_MODULE_MISSING",
+      "church": "Koinonia",
+      "role": "pasteur_a",
+      "modules": [
+        "role_dashboard",
+        "my_work"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "BASELINE_MODULE_MISSING",
+      "church": "Koinonia",
+      "role": "pasteur_t",
+      "modules": [
+        "role_dashboard",
+        "my_work",
+        "attendance"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "BASELINE_MODULE_MISSING",
+      "church": "Koinonia",
+      "role": "pastor",
+      "modules": [
+        "role_dashboard",
+        "my_work"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "BASELINE_MODULE_MISSING",
+      "church": "Koinonia",
+      "role": "readonly",
+      "modules": [
+        "role_dashboard"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "BASELINE_MODULE_MISSING",
+      "church": "Koinonia",
+      "role": "responsable_d",
+      "modules": [
+        "role_dashboard",
+        "my_work",
+        "departments",
+        "events"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "BASELINE_MODULE_MISSING",
+      "church": "Koinonia",
+      "role": "secretaire",
+      "modules": [
+        "role_dashboard",
+        "my_work",
+        "correspondence",
+        "transmissions",
+        "tasks",
+        "minutes"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "BASELINE_MODULE_MISSING",
+      "church": "Koinonia",
+      "role": "worker",
+      "modules": [
+        "role_dashboard",
+        "my_work"
+      ]
+    },
+    {
+      "severity": "critical",
+      "code": "ROLE_WITHOUT_PERMISSIONS",
+      "church": "La Maison de Miséricorde",
+      "role": "church_admin"
+    },
+    {
+      "severity": "critical",
+      "code": "ROLE_WITHOUT_VISIBLE_MODULE",
+      "church": "La Maison de Miséricorde",
+      "role": "church_admin"
+    },
+    {
+      "severity": "warning",
+      "code": "BASELINE_MODULE_MISSING",
+      "church": "La Maison de Miséricorde",
+      "role": "church_admin",
+      "modules": [
+        "role_dashboard",
+        "my_work",
+        "members",
+        "attendance",
+        "public_requests",
+        "users",
+        "security"
+      ]
+    },
+    {
+      "severity": "critical",
+      "code": "ROLE_WITHOUT_PERMISSIONS",
+      "church": "La Maison de Miséricorde",
+      "role": "worker"
+    },
+    {
+      "severity": "critical",
+      "code": "ROLE_WITHOUT_VISIBLE_MODULE",
+      "church": "La Maison de Miséricorde",
+      "role": "worker"
+    },
+    {
+      "severity": "warning",
+      "code": "BASELINE_MODULE_MISSING",
+      "church": "La Maison de Miséricorde",
+      "role": "worker",
+      "modules": [
+        "role_dashboard",
+        "my_work",
+        "attendance"
+      ]
+    }
+  ]
+}

@@ -225,6 +225,12 @@ export const ROUTE_PERMISSION_RULES: RoutePermissionRule[] = [
     action: "view",
   },
   {
+    id: "settings-security-validation",
+    pattern: /^\/settings\/security-validation(?:\/|$)/,
+    modules: ["security"],
+    action: "view",
+  },
+  {
     id: "settings-roles",
     pattern: /^\/settings\/roles(?:\/|$)/,
     modules: ["security"],

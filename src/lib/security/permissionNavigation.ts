@@ -200,6 +200,12 @@ const NAVIGATION_ITEMS: PermissionNavigationItem[] = [
   },
   {
     code: "security",
+    label: "Validation des rôles",
+    href: "/settings/security-validation",
+    category: "configuration",
+  },
+  {
+    code: "security",
     label: "Journal sécurité",
     href: "/settings/security-audit",
     category: "configuration",

@@ -1,0 +1,137 @@
+name: Mpangi-Church encrypted backup
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "30 1 * * *"
+
+permissions:
+  contents: read
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    env:
+      SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      BACKUP_ARCHIVE_PASSWORD: ${{ secrets.BACKUP_ARCHIVE_PASSWORD }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Setup Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Validate secrets
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$SUPABASE_DB_URL"
+          test -n "$NEXT_PUBLIC_SUPABASE_URL"
+          test -n "$SUPABASE_SERVICE_ROLE_KEY"
+          test -n "$BACKUP_ARCHIVE_PASSWORD"
+
+      - name: Select retention tier
+        id: tier
+        shell: bash
+        run: |
+          set -euo pipefail
+          DAY="$(date -u +%d)"
+          DOW="$(date -u +%u)"
+
+          if [ "$DAY" = "01" ]; then
+            echo "name=monthly" >> "$GITHUB_OUTPUT"
+            echo "days=90" >> "$GITHUB_OUTPUT"
+          elif [ "$DOW" = "7" ]; then
+            echo "name=weekly" >> "$GITHUB_OUTPUT"
+            echo "days=28" >> "$GITHUB_OUTPUT"
+          else
+            echo "name=daily" >> "$GITHUB_OUTPUT"
+            echo "days=7" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Backup database and Storage
+        id: paths
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          TIMESTAMP="$(date -u +%Y-%m-%d_%H-%M-%S)"
+          BACKUP_DIR="$RUNNER_TEMP/mpangi-church/$TIMESTAMP"
+          DB_DIR="$BACKUP_DIR/database"
+          STORAGE_DIR="$BACKUP_DIR/storage"
+
+          mkdir -p "$DB_DIR" "$STORAGE_DIR"
+
+          supabase db dump \
+            --db-url "$SUPABASE_DB_URL" \
+            -f "$DB_DIR/roles.sql" \
+            --role-only
+
+          supabase db dump \
+            --db-url "$SUPABASE_DB_URL" \
+            -f "$DB_DIR/schema.sql"
+
+          supabase db dump \
+            --db-url "$SUPABASE_DB_URL" \
+            -f "$DB_DIR/data.sql" \
+            --data-only \
+            --use-copy \
+            -x "storage.buckets_vectors" \
+            -x "storage.vector_indexes"
+
+          node scripts/backup/backup-storage.js \
+            --output "$STORAGE_DIR"
+
+          node scripts/backup/create-manifest.js \
+            --backup-dir "$BACKUP_DIR"
+
+          node scripts/backup/verify-backup.js \
+            --backup-dir "$BACKUP_DIR"
+
+          ARCHIVE="$RUNNER_TEMP/mpangi-church-${{ steps.tier.outputs.name }}-$TIMESTAMP.tar.gz"
+          ENCRYPTED="$ARCHIVE.enc"
+
+          tar -czf "$ARCHIVE" -C "$BACKUP_DIR" .
+
+          openssl enc \
+            -aes-256-cbc \
+            -salt \
+            -pbkdf2 \
+            -iter 100000 \
+            -in "$ARCHIVE" \
+            -out "$ENCRYPTED" \
+            -pass env:BACKUP_ARCHIVE_PASSWORD
+
+          sha256sum "$ENCRYPTED" > "$ENCRYPTED.sha256"
+          rm -rf "$BACKUP_DIR" "$ARCHIVE"
+
+          echo "encrypted=$ENCRYPTED" >> "$GITHUB_OUTPUT"
+          echo "checksum=$ENCRYPTED.sha256" >> "$GITHUB_OUTPUT"
+          echo "timestamp=$TIMESTAMP" >> "$GITHUB_OUTPUT"
+
+      - name: Upload encrypted artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: mpangi-church-${{ steps.tier.outputs.name }}-${{ steps.paths.outputs.timestamp }}
+          path: |
+            ${{ steps.paths.outputs.encrypted }}
+            ${{ steps.paths.outputs.checksum }}
+          retention-days: ${{ steps.tier.outputs.days }}
+          if-no-files-found: error
+          compression-level: 0
