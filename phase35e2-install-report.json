@@ -1,0 +1,30 @@
+{
+  "installedLayouts": [
+    "members",
+    "attendance",
+    "souls",
+    "departments",
+    "events",
+    "public-requests",
+    "teachings",
+    "notifications",
+    "finance",
+    "patrimony",
+    "administration",
+    "settings/users",
+    "settings/roles",
+    "dashboard/role",
+    "my-work"
+  ],
+  "skippedLayouts": [
+    {
+      "route": "extensions",
+      "reason": "layout_exists_manual_integration_required"
+    }
+  ],
+  "proxy": {
+    "status": "migrated",
+    "source": "src\\middleware.ts.deprecated",
+    "target": "src\\proxy.ts"
+  }
+}

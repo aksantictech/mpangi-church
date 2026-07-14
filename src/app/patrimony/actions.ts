@@ -5,6 +5,8 @@ import { redirect } from "next/navigation";
 import { requireChurchModuleAccess } from "@/lib/modules/moduleAccess";
 import { uploadChurchDocument } from "@/lib/storage/churchDocuments";
 
+import { requireAnyActionPermission } from "@/lib/security/secureAction";
+import { requireAnyModulePermission } from "@/lib/security/routeGuard";
 function txt(value: FormDataEntryValue | null) {
   return value === null || value === undefined ? "" : String(value).trim();
 }
@@ -77,6 +79,7 @@ function assetPayload(formData: FormData) {
 }
 
 export async function createPatrimonyAssetAction(formData: FormData) {
+  await requireAnyActionPermission(["patrimony","patrimony_dashboard","assets","maintenance","asset_maintenance","movements","asset_movements"], "create");
   const { admin, profile } = await requireChurchModuleAccess("assets");
   const payload = assetPayload(formData);
 
@@ -118,6 +121,7 @@ export async function createPatrimonyAssetAction(formData: FormData) {
 }
 
 export async function updatePatrimonyAssetAction(formData: FormData) {
+  await requireAnyActionPermission(["patrimony","patrimony_dashboard","assets","maintenance","asset_maintenance","movements","asset_movements"], "update");
   const { admin, profile } = await requireChurchModuleAccess("assets");
   const id = txt(formData.get("id"));
   const payload = assetPayload(formData);
@@ -166,6 +170,7 @@ export async function updatePatrimonyAssetAction(formData: FormData) {
 }
 
 export async function archivePatrimonyAssetAction(formData: FormData) {
+  await requireAnyActionPermission(["patrimony","patrimony_dashboard","assets","maintenance","asset_maintenance","movements","asset_movements"], "delete");
   const { admin, profile } = await requireChurchModuleAccess("assets");
   const id = txt(formData.get("id"));
   const redirectTo = txt(formData.get("redirectTo")) || "/patrimony/assets";
@@ -209,6 +214,7 @@ function maintenancePayload(formData: FormData) {
 }
 
 export async function createAssetMaintenanceAction(formData: FormData) {
+  await requireAnyActionPermission(["patrimony","patrimony_dashboard","assets","maintenance","asset_maintenance","movements","asset_movements"], "create");
   const { admin, profile } = await requireChurchModuleAccess("asset_maintenance");
   const payload = maintenancePayload(formData);
 
@@ -253,6 +259,7 @@ export async function createAssetMaintenanceAction(formData: FormData) {
 }
 
 export async function updateAssetMaintenanceStatusAction(formData: FormData) {
+  await requireAnyActionPermission(["patrimony","patrimony_dashboard","assets","maintenance","asset_maintenance","movements","asset_movements"], "update");
   const { admin, profile } = await requireChurchModuleAccess("asset_maintenance");
   const id = txt(formData.get("id"));
   const assetId = txt(formData.get("asset_id"));
@@ -309,6 +316,7 @@ function movementPayload(formData: FormData) {
 }
 
 export async function createAssetMovementAction(formData: FormData) {
+  await requireAnyActionPermission(["patrimony","patrimony_dashboard","assets","maintenance","asset_maintenance","movements","asset_movements"], "create");
   const { admin, profile } = await requireChurchModuleAccess("asset_movements");
   const payload = movementPayload(formData);
 

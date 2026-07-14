@@ -5,6 +5,8 @@ import { redirect } from "next/navigation";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
+import { requireAnyActionPermission } from "@/lib/security/secureAction";
+import { requireAnyModulePermission } from "@/lib/security/routeGuard";
 const ALLOWED_ROLES = new Set([
   "super_admin",
   "church_admin",
@@ -60,6 +62,7 @@ async function getContext() {
 export async function updateDonationStatusAction(
   formData: FormData
 ) {
+  await requireAnyActionPermission(["donations"], "update");
   const { admin, userId, churchId } = await getContext();
 
   const donationId = String(formData.get("donation_id") || "");

@@ -5,6 +5,8 @@ import { redirect } from "next/navigation";
 import { requireChurchModuleAccess } from "@/lib/modules/moduleAccess";
 import { uploadChurchDocument } from "@/lib/storage/churchDocuments";
 
+import { requireAnyActionPermission } from "@/lib/security/secureAction";
+import { requireAnyModulePermission } from "@/lib/security/routeGuard";
 function getString(value: FormDataEntryValue | null) {
   if (value === null || value === undefined) return "";
   return String(value).trim();
@@ -57,6 +59,7 @@ function buildStatusDates(status: string) {
 }
 
 export async function createTransmissionAction(formData: FormData) {
+  await requireAnyActionPermission(["transmissions","document_transmissions"], "create");
   const { admin, profile } = await requireChurchModuleAccess("document_transmissions");
 
   const title = getString(formData.get("title"));
@@ -132,6 +135,7 @@ export async function createTransmissionAction(formData: FormData) {
 }
 
 export async function updateTransmissionAction(formData: FormData) {
+  await requireAnyActionPermission(["transmissions","document_transmissions"], "update");
   const { admin, profile } = await requireChurchModuleAccess("document_transmissions");
 
   const id = getString(formData.get("id"));
@@ -217,6 +221,7 @@ export async function updateTransmissionAction(formData: FormData) {
 }
 
 export async function updateTransmissionStatusAction(formData: FormData) {
+  await requireAnyActionPermission(["transmissions","document_transmissions"], "update");
   const { admin, profile } = await requireChurchModuleAccess("document_transmissions");
 
   const id = getString(formData.get("id"));
@@ -253,6 +258,7 @@ export async function updateTransmissionStatusAction(formData: FormData) {
 }
 
 export async function archiveTransmissionAction(formData: FormData) {
+  await requireAnyActionPermission(["transmissions","document_transmissions"], "delete");
   const { admin, profile } = await requireChurchModuleAccess("document_transmissions");
 
   const id = getString(formData.get("id"));

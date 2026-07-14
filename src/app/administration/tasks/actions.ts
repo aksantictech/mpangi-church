@@ -5,6 +5,8 @@ import { redirect } from "next/navigation";
 import { requireChurchModuleAccess } from "@/lib/modules/moduleAccess";
 import { uploadChurchDocument } from "@/lib/storage/churchDocuments";
 
+import { requireAnyActionPermission } from "@/lib/security/secureAction";
+import { requireAnyModulePermission } from "@/lib/security/routeGuard";
 function txt(value: FormDataEntryValue | null) {
   return value === null || value === undefined ? "" : String(value).trim();
 }
@@ -79,6 +81,7 @@ function formPayload(formData: FormData) {
 }
 
 export async function createAdministrativeTaskAction(formData: FormData) {
+  await requireAnyActionPermission(["tasks","administrative_tasks"], "create");
   const { admin, profile } = await requireChurchModuleAccess("administrative_tasks");
   const payload = formPayload(formData);
 
@@ -127,6 +130,7 @@ export async function createAdministrativeTaskAction(formData: FormData) {
 }
 
 export async function updateAdministrativeTaskAction(formData: FormData) {
+  await requireAnyActionPermission(["tasks","administrative_tasks"], "update");
   const { admin, profile } = await requireChurchModuleAccess("administrative_tasks");
   const id = txt(formData.get("id"));
   const payload = formPayload(formData);
@@ -182,6 +186,7 @@ export async function updateAdministrativeTaskAction(formData: FormData) {
 }
 
 export async function updateAdministrativeTaskStatusAction(formData: FormData) {
+  await requireAnyActionPermission(["tasks","administrative_tasks"], "update");
   const { admin, profile } = await requireChurchModuleAccess("administrative_tasks");
   const id = txt(formData.get("id"));
   const status = normalize(
@@ -218,6 +223,7 @@ export async function updateAdministrativeTaskStatusAction(formData: FormData) {
 }
 
 export async function archiveAdministrativeTaskAction(formData: FormData) {
+  await requireAnyActionPermission(["tasks","administrative_tasks"], "delete");
   const { admin, profile } = await requireChurchModuleAccess("administrative_tasks");
   const id = txt(formData.get("id"));
   const redirectTo = txt(formData.get("redirectTo")) || "/administration/tasks";

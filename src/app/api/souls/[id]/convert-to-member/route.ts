@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 
+import { requireAnyActionPermission } from "@/lib/security/secureAction";
+import { requireAnyModulePermission } from "@/lib/security/routeGuard";
 type RouteProps = {
   params: Promise<{
     id: string;
@@ -25,6 +27,7 @@ function splitFullName(fullName?: string | null) {
 }
 
 export async function POST(_request: Request, { params }: RouteProps) {
+  await requireAnyActionPermission(["souls","members"], "create");
   try {
     const { id } = await params;
 

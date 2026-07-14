@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
+import { requireAnyActionPermission } from "@/lib/security/secureAction";
+import { requireAnyModulePermission } from "@/lib/security/routeGuard";
 type MemberAction = "activate" | "deactivate" | "archive" | "delete";
 
 type RequestBody = {
@@ -75,6 +77,7 @@ async function getCurrentProfile() {
 }
 
 export async function POST(request: Request) {
+  await requireAnyActionPermission(["members"], "create");
   try {
     const body = (await request.json()) as RequestBody;
 

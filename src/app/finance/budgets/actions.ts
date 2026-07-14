@@ -4,6 +4,8 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireChurchModuleAccess } from "@/lib/modules/moduleAccess";
 
+import { requireAnyActionPermission } from "@/lib/security/secureAction";
+import { requireAnyModulePermission } from "@/lib/security/routeGuard";
 function txt(value: FormDataEntryValue | null) {
   return value === null || value === undefined ? "" : String(value).trim();
 }
@@ -40,6 +42,7 @@ function payloadFromForm(formData: FormData) {
 }
 
 export async function createFinanceBudgetAction(formData: FormData) {
+  await requireAnyActionPermission(["budgets"], "create");
   const { admin, profile } = await requireChurchModuleAccess("budgets");
   const payload = payloadFromForm(formData);
 
@@ -74,6 +77,7 @@ export async function createFinanceBudgetAction(formData: FormData) {
 }
 
 export async function updateFinanceBudgetAction(formData: FormData) {
+  await requireAnyActionPermission(["budgets"], "update");
   const { admin, profile } = await requireChurchModuleAccess("budgets");
   const id = txt(formData.get("id"));
   const payload = payloadFromForm(formData);
@@ -111,6 +115,7 @@ export async function updateFinanceBudgetAction(formData: FormData) {
 }
 
 export async function archiveFinanceBudgetAction(formData: FormData) {
+  await requireAnyActionPermission(["budgets"], "delete");
   const { admin, profile } = await requireChurchModuleAccess("budgets");
   const id = txt(formData.get("id"));
   const redirectTo = txt(formData.get("redirectTo")) || "/finance/budgets";

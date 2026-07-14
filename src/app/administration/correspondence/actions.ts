@@ -5,6 +5,8 @@ import { redirect } from "next/navigation";
 import { requireChurchModuleAccess } from "@/lib/modules/moduleAccess";
 import { uploadChurchDocument } from "@/lib/storage/churchDocuments";
 
+import { requireAnyActionPermission } from "@/lib/security/secureAction";
+import { requireAnyModulePermission } from "@/lib/security/routeGuard";
 function getString(value: FormDataEntryValue | null) {
   if (value === null || value === undefined) return "";
   return String(value).trim();
@@ -51,6 +53,7 @@ function normalizeStatus(status: string) {
 }
 
 export async function createCorrespondenceAction(formData: FormData) {
+  await requireAnyActionPermission(["correspondence"], "create");
   const { admin, profile } = await requireChurchModuleAccess("correspondence");
 
   const type = normalizeType(getString(formData.get("type")));
@@ -123,6 +126,7 @@ export async function createCorrespondenceAction(formData: FormData) {
 }
 
 export async function updateCorrespondenceStatusAction(formData: FormData) {
+  await requireAnyActionPermission(["correspondence"], "update");
   const { admin, profile } = await requireChurchModuleAccess("correspondence");
   const id = getString(formData.get("id"));
   const status = normalizeStatus(getString(formData.get("status")));

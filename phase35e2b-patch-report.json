@@ -1,0 +1,295 @@
+{
+  "extensionLayout": {
+    "status": "patched",
+    "file": "src/app/extensions/layout.tsx"
+  },
+  "files": [
+    {
+      "file": "src/app/api/finance/reports/export/route.ts",
+      "status": "patched",
+      "patchedFunctions": [
+        {
+          "name": "GET",
+          "action": "view",
+          "status": "patched"
+        }
+      ],
+      "unresolvedFunctions": []
+    },
+    {
+      "file": "src/app/api/members/actions/route.ts",
+      "status": "patched",
+      "patchedFunctions": [
+        {
+          "name": "POST",
+          "action": "create",
+          "status": "patched"
+        }
+      ],
+      "unresolvedFunctions": []
+    },
+    {
+      "file": "src/app/api/settings/users/new/actions.ts",
+      "status": "patched",
+      "patchedFunctions": [
+        {
+          "name": "createChurchUserAction",
+          "action": "create",
+          "status": "patched"
+        }
+      ],
+      "unresolvedFunctions": []
+    },
+    {
+      "file": "src/app/finance/actions.ts",
+      "status": "patched",
+      "patchedFunctions": [
+        {
+          "name": "createFinanceTransactionAction",
+          "action": "create",
+          "status": "patched"
+        },
+        {
+          "name": "updateFinanceTransactionStatusAction",
+          "action": "update",
+          "status": "patched"
+        },
+        {
+          "name": "archiveFinanceTransactionAction",
+          "action": "delete",
+          "status": "patched"
+        }
+      ],
+      "unresolvedFunctions": []
+    },
+    {
+      "file": "src/app/finance/budgets/actions.ts",
+      "status": "patched",
+      "patchedFunctions": [
+        {
+          "name": "createFinanceBudgetAction",
+          "action": "create",
+          "status": "patched"
+        },
+        {
+          "name": "updateFinanceBudgetAction",
+          "action": "update",
+          "status": "patched"
+        },
+        {
+          "name": "archiveFinanceBudgetAction",
+          "action": "delete",
+          "status": "patched"
+        }
+      ],
+      "unresolvedFunctions": []
+    },
+    {
+      "file": "src/app/finance/donations/actions.ts",
+      "status": "patched",
+      "patchedFunctions": [
+        {
+          "name": "updateDonationStatusAction",
+          "action": "update",
+          "status": "patched"
+        }
+      ],
+      "unresolvedFunctions": []
+    },
+    {
+      "file": "src/app/patrimony/actions.ts",
+      "status": "patched",
+      "patchedFunctions": [
+        {
+          "name": "createPatrimonyAssetAction",
+          "action": "create",
+          "status": "patched"
+        },
+        {
+          "name": "updatePatrimonyAssetAction",
+          "action": "update",
+          "status": "patched"
+        },
+        {
+          "name": "archivePatrimonyAssetAction",
+          "action": "delete",
+          "status": "patched"
+        },
+        {
+          "name": "createAssetMaintenanceAction",
+          "action": "create",
+          "status": "patched"
+        },
+        {
+          "name": "updateAssetMaintenanceStatusAction",
+          "action": "update",
+          "status": "patched"
+        },
+        {
+          "name": "createAssetMovementAction",
+          "action": "create",
+          "status": "patched"
+        }
+      ],
+      "unresolvedFunctions": []
+    },
+    {
+      "file": "src/app/settings/users/new/actions.ts",
+      "status": "patched",
+      "patchedFunctions": [
+        {
+          "name": "createChurchUserAction",
+          "action": "create",
+          "status": "patched"
+        }
+      ],
+      "unresolvedFunctions": []
+    },
+    {
+      "file": "src/app/administration/correspondence/actions.ts",
+      "status": "patched",
+      "patchedFunctions": [
+        {
+          "name": "createCorrespondenceAction",
+          "action": "create",
+          "status": "patched"
+        },
+        {
+          "name": "updateCorrespondenceStatusAction",
+          "action": "update",
+          "status": "patched"
+        }
+      ],
+      "unresolvedFunctions": []
+    },
+    {
+      "file": "src/app/administration/minutes/actions.ts",
+      "status": "patched",
+      "patchedFunctions": [
+        {
+          "name": "createMeetingAction",
+          "action": "create",
+          "status": "patched"
+        },
+        {
+          "name": "updateMeetingAction",
+          "action": "update",
+          "status": "patched"
+        },
+        {
+          "name": "updateMeetingStatusAction",
+          "action": "update",
+          "status": "patched"
+        },
+        {
+          "name": "archiveMeetingAction",
+          "action": "delete",
+          "status": "patched"
+        }
+      ],
+      "unresolvedFunctions": []
+    },
+    {
+      "file": "src/app/administration/tasks/actions.ts",
+      "status": "patched",
+      "patchedFunctions": [
+        {
+          "name": "createAdministrativeTaskAction",
+          "action": "create",
+          "status": "patched"
+        },
+        {
+          "name": "updateAdministrativeTaskAction",
+          "action": "update",
+          "status": "patched"
+        },
+        {
+          "name": "updateAdministrativeTaskStatusAction",
+          "action": "update",
+          "status": "patched"
+        },
+        {
+          "name": "archiveAdministrativeTaskAction",
+          "action": "delete",
+          "status": "patched"
+        }
+      ],
+      "unresolvedFunctions": []
+    },
+    {
+      "file": "src/app/administration/transmissions/actions.ts",
+      "status": "patched",
+      "patchedFunctions": [
+        {
+          "name": "createTransmissionAction",
+          "action": "create",
+          "status": "patched"
+        },
+        {
+          "name": "updateTransmissionAction",
+          "action": "update",
+          "status": "patched"
+        },
+        {
+          "name": "updateTransmissionStatusAction",
+          "action": "update",
+          "status": "patched"
+        },
+        {
+          "name": "archiveTransmissionAction",
+          "action": "delete",
+          "status": "patched"
+        }
+      ],
+      "unresolvedFunctions": []
+    },
+    {
+      "file": "src/app/api/attendance/event-presence/route.ts",
+      "status": "patched",
+      "patchedFunctions": [
+        {
+          "name": "POST",
+          "action": "create",
+          "status": "patched"
+        }
+      ],
+      "unresolvedFunctions": []
+    },
+    {
+      "file": "src/app/api/attendance/export/route.ts",
+      "status": "patched",
+      "patchedFunctions": [
+        {
+          "name": "GET",
+          "action": "view",
+          "status": "patched"
+        }
+      ],
+      "unresolvedFunctions": []
+    },
+    {
+      "file": "src/app/api/attendance/scan/route.ts",
+      "status": "patched",
+      "patchedFunctions": [
+        {
+          "name": "POST",
+          "action": "create",
+          "status": "patched"
+        }
+      ],
+      "unresolvedFunctions": []
+    },
+    {
+      "file": "src/app/api/souls/[id]/convert-to-member/route.ts",
+      "status": "patched",
+      "patchedFunctions": [
+        {
+          "name": "POST",
+          "action": "create",
+          "status": "patched"
+        }
+      ],
+      "unresolvedFunctions": []
+    }
+  ]
+}

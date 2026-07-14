@@ -5,6 +5,8 @@ import { redirect } from "next/navigation";
 import { requireChurchModuleAccess } from "@/lib/modules/moduleAccess";
 import { uploadChurchDocument } from "@/lib/storage/churchDocuments";
 
+import { requireAnyActionPermission } from "@/lib/security/secureAction";
+import { requireAnyModulePermission } from "@/lib/security/routeGuard";
 function txt(value: FormDataEntryValue | null) {
   return value === null || value === undefined ? "" : String(value).trim();
 }
@@ -48,6 +50,7 @@ function payloadFromForm(formData: FormData) {
 }
 
 export async function createMeetingAction(formData: FormData) {
+  await requireAnyActionPermission(["minutes","meetings_minutes"], "create");
   const { admin, profile } = await requireChurchModuleAccess("meetings_minutes");
   const payload = payloadFromForm(formData);
 
@@ -92,6 +95,7 @@ export async function createMeetingAction(formData: FormData) {
 }
 
 export async function updateMeetingAction(formData: FormData) {
+  await requireAnyActionPermission(["minutes","meetings_minutes"], "update");
   const { admin, profile } = await requireChurchModuleAccess("meetings_minutes");
   const id = txt(formData.get("id"));
   const payload = payloadFromForm(formData);
@@ -146,6 +150,7 @@ export async function updateMeetingAction(formData: FormData) {
 }
 
 export async function updateMeetingStatusAction(formData: FormData) {
+  await requireAnyActionPermission(["minutes","meetings_minutes"], "update");
   const { admin, profile } = await requireChurchModuleAccess("meetings_minutes");
   const id = txt(formData.get("id"));
   const status = normalize(
@@ -173,6 +178,7 @@ export async function updateMeetingStatusAction(formData: FormData) {
 }
 
 export async function archiveMeetingAction(formData: FormData) {
+  await requireAnyActionPermission(["minutes","meetings_minutes"], "delete");
   const { admin, profile } = await requireChurchModuleAccess("meetings_minutes");
   const id = txt(formData.get("id"));
   const redirectTo = txt(formData.get("redirectTo")) || "/administration/minutes";

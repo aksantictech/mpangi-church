@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
+import { requireAnyActionPermission } from "@/lib/security/secureAction";
+import { requireAnyModulePermission } from "@/lib/security/routeGuard";
 function getString(value: unknown) {
   if (value === null || value === undefined) return "";
   return String(value).trim();
@@ -67,6 +69,7 @@ function getMethodLabel(method?: string | null) {
 }
 
 export async function GET(request: Request) {
+  await requireAnyModulePermission(["attendance"], "view");
   try {
     const url = new URL(request.url);
     const eventId = getString(url.searchParams.get("eventId"));

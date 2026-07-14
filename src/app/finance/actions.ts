@@ -5,6 +5,8 @@ import { redirect } from "next/navigation";
 import { requireChurchModuleAccess } from "@/lib/modules/moduleAccess";
 import { uploadChurchDocument } from "@/lib/storage/churchDocuments";
 
+import { requireAnyActionPermission } from "@/lib/security/secureAction";
+import { requireAnyModulePermission } from "@/lib/security/routeGuard";
 function txt(value: FormDataEntryValue | null) {
   return value === null || value === undefined ? "" : String(value).trim();
 }
@@ -81,6 +83,7 @@ function payloadFromForm(formData: FormData, forcedType?: "income" | "expense") 
 }
 
 export async function createFinanceTransactionAction(formData: FormData) {
+  await requireAnyActionPermission(["finance_dashboard","offerings","expenses","budgets"], "create");
   const forcedType = normalize(
     txt(formData.get("transaction_type")),
     ["income", "expense"],
@@ -140,6 +143,7 @@ export async function createFinanceTransactionAction(formData: FormData) {
 }
 
 export async function updateFinanceTransactionStatusAction(formData: FormData) {
+  await requireAnyActionPermission(["finance_dashboard","offerings","expenses","budgets"], "update");
   const transactionType = normalize(
     txt(formData.get("transaction_type")),
     ["income", "expense"],
@@ -182,6 +186,7 @@ export async function updateFinanceTransactionStatusAction(formData: FormData) {
 }
 
 export async function archiveFinanceTransactionAction(formData: FormData) {
+  await requireAnyActionPermission(["finance_dashboard","offerings","expenses","budgets"], "delete");
   const transactionType = normalize(
     txt(formData.get("transaction_type")),
     ["income", "expense"],

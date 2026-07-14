@@ -9,6 +9,8 @@ import {
   normalizeUserRole,
 } from "@/lib/users/userRoles";
 
+import { requireAnyActionPermission } from "@/lib/security/secureAction";
+import { requireAnyModulePermission } from "@/lib/security/routeGuard";
 function readString(formData: FormData, key: string) {
   return String(formData.get(key) || "").trim();
 }
@@ -36,6 +38,7 @@ async function getCurrentProfile() {
 }
 
 export async function createChurchUserAction(formData: FormData) {
+  await requireAnyActionPermission(["users"], "create");
   const profile = await getCurrentProfile();
 
   if (!canCreateChurchUsers(profile.role)) {

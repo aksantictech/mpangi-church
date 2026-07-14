@@ -1,0 +1,759 @@
+{
+  "generatedAt": "2026-07-14T06:36:43.053Z",
+  "layouts": [
+    {
+      "route": "/members",
+      "modules": [
+        "members"
+      ],
+      "layout": "src/app/members/layout.tsx",
+      "exists": true,
+      "guarded": true
+    },
+    {
+      "route": "/attendance",
+      "modules": [
+        "attendance"
+      ],
+      "layout": "src/app/attendance/layout.tsx",
+      "exists": true,
+      "guarded": true
+    },
+    {
+      "route": "/souls",
+      "modules": [
+        "souls"
+      ],
+      "layout": "src/app/souls/layout.tsx",
+      "exists": true,
+      "guarded": true
+    },
+    {
+      "route": "/departments",
+      "modules": [
+        "departments"
+      ],
+      "layout": "src/app/departments/layout.tsx",
+      "exists": true,
+      "guarded": true
+    },
+    {
+      "route": "/events",
+      "modules": [
+        "events"
+      ],
+      "layout": "src/app/events/layout.tsx",
+      "exists": true,
+      "guarded": true
+    },
+    {
+      "route": "/public-requests",
+      "modules": [
+        "public_requests"
+      ],
+      "layout": "src/app/public-requests/layout.tsx",
+      "exists": true,
+      "guarded": true
+    },
+    {
+      "route": "/teachings",
+      "modules": [
+        "teachings"
+      ],
+      "layout": "src/app/teachings/layout.tsx",
+      "exists": true,
+      "guarded": true
+    },
+    {
+      "route": "/notifications",
+      "modules": [
+        "notifications"
+      ],
+      "layout": "src/app/notifications/layout.tsx",
+      "exists": true,
+      "guarded": true
+    },
+    {
+      "route": "/finance",
+      "modules": [
+        "finance_dashboard",
+        "offerings",
+        "expenses",
+        "budgets",
+        "finance_reports",
+        "donations"
+      ],
+      "layout": "src/app/finance/layout.tsx",
+      "exists": true,
+      "guarded": true
+    },
+    {
+      "route": "/patrimony",
+      "modules": [
+        "patrimony",
+        "assets",
+        "maintenance",
+        "movements"
+      ],
+      "layout": "src/app/patrimony/layout.tsx",
+      "exists": true,
+      "guarded": true
+    },
+    {
+      "route": "/administration",
+      "modules": [
+        "correspondence",
+        "inbox",
+        "transmissions",
+        "tasks",
+        "minutes"
+      ],
+      "layout": "src/app/administration/layout.tsx",
+      "exists": true,
+      "guarded": true
+    },
+    {
+      "route": "/extensions",
+      "modules": [
+        "extensions"
+      ],
+      "layout": "src/app/extensions/layout.tsx",
+      "exists": true,
+      "guarded": true
+    },
+    {
+      "route": "/settings/users",
+      "modules": [
+        "users"
+      ],
+      "layout": "src/app/settings/users/layout.tsx",
+      "exists": true,
+      "guarded": true
+    },
+    {
+      "route": "/settings/roles",
+      "modules": [
+        "security"
+      ],
+      "layout": "src/app/settings/roles/layout.tsx",
+      "exists": true,
+      "guarded": true
+    },
+    {
+      "route": "/dashboard/role",
+      "modules": [
+        "role_dashboard"
+      ],
+      "layout": "src/app/dashboard/role/layout.tsx",
+      "exists": true,
+      "guarded": true
+    },
+    {
+      "route": "/my-work",
+      "modules": [
+        "my_work"
+      ],
+      "layout": "src/app/my-work/layout.tsx",
+      "exists": true,
+      "guarded": true
+    }
+  ],
+  "actionFiles": [
+    {
+      "file": "src/app/administration/correspondence/actions.ts",
+      "kind": "server_action",
+      "hasPermissionGuard": true,
+      "exportedMutations": 2
+    },
+    {
+      "file": "src/app/administration/minutes/actions.ts",
+      "kind": "server_action",
+      "hasPermissionGuard": true,
+      "exportedMutations": 4
+    },
+    {
+      "file": "src/app/administration/tasks/actions.ts",
+      "kind": "server_action",
+      "hasPermissionGuard": true,
+      "exportedMutations": 4
+    },
+    {
+      "file": "src/app/administration/transmissions/actions.ts",
+      "kind": "server_action",
+      "hasPermissionGuard": true,
+      "exportedMutations": 4
+    },
+    {
+      "file": "src/app/api/account/me/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": false,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/api/attendance/event-presence/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": true,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/api/attendance/export/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": true,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/api/attendance/scan/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": true,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/api/bible/books/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": false,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/api/bible/chapter/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": false,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/api/bible/passage/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": false,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/api/bible/search/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": false,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/api/bible/versions/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": false,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/api/dashboard/role/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": false,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/api/documents/download/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": false,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/api/finance/reports/export/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": true,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/api/members/actions/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": true,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/api/modules/my-modules/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": false,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/api/notifications/broadcast/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": false,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/api/notifications/subscribe/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": false,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/api/public/church-donations/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": false,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/api/public/member-registration/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": false,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/api/publications/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": false,
+      "exportedMutations": 2
+    },
+    {
+      "file": "src/app/api/push/subscribe/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": false,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/api/pwa/icon/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": false,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/api/pwa/icon/[size]/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": false,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/api/pwa/manifest/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": false,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/api/pwa/tenant/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": false,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/api/security/my-access/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": false,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/api/security/my-capabilities/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": true,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/api/security/navigation/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": false,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/api/settings/live-stream/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": false,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/api/settings/member-registration/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": false,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/api/settings/users/new/actions.ts",
+      "kind": "server_action",
+      "hasPermissionGuard": true,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/api/souls/[id]/convert-to-member/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": true,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/api/super-admin/church-modules/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": false,
+      "exportedMutations": 2
+    },
+    {
+      "file": "src/app/api/super-admin/church-users/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": false,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/api/super-admin/church-users/[profileId]/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": false,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/api/super-admin/modules/toggle/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": false,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/api/super-admin/onboarding/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": false,
+      "exportedMutations": 2
+    },
+    {
+      "file": "src/app/api/super-admin/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": false,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/api/super-admin/users/new/actions.ts",
+      "kind": "server_action",
+      "hasPermissionGuard": false,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/church/[slug]/icon.png/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": false,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/church/[slug]/manifest.webmanifest/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": false,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/extensions/actions.ts",
+      "kind": "server_action",
+      "hasPermissionGuard": false,
+      "exportedMutations": 4
+    },
+    {
+      "file": "src/app/finance/actions.ts",
+      "kind": "server_action",
+      "hasPermissionGuard": true,
+      "exportedMutations": 3
+    },
+    {
+      "file": "src/app/finance/budgets/actions.ts",
+      "kind": "server_action",
+      "hasPermissionGuard": true,
+      "exportedMutations": 3
+    },
+    {
+      "file": "src/app/finance/donations/actions.ts",
+      "kind": "server_action",
+      "hasPermissionGuard": true,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/manifest.json/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": false,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/my-work/actions.ts",
+      "kind": "server_action",
+      "hasPermissionGuard": true,
+      "exportedMutations": 2
+    },
+    {
+      "file": "src/app/patrimony/actions.ts",
+      "kind": "server_action",
+      "hasPermissionGuard": true,
+      "exportedMutations": 6
+    },
+    {
+      "file": "src/app/profile/actions.ts",
+      "kind": "server_action",
+      "hasPermissionGuard": false,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/settings/donations/actions.ts",
+      "kind": "server_action",
+      "hasPermissionGuard": false,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/settings/roles/actions.ts",
+      "kind": "server_action",
+      "hasPermissionGuard": true,
+      "exportedMutations": 2
+    },
+    {
+      "file": "src/app/settings/users/new/actions.ts",
+      "kind": "server_action",
+      "hasPermissionGuard": true,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/super-admin/profile/actions.ts",
+      "kind": "server_action",
+      "hasPermissionGuard": false,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/super-admin/users/new/actions.ts",
+      "kind": "server_action",
+      "hasPermissionGuard": false,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/teachings/actions.ts",
+      "kind": "server_action",
+      "hasPermissionGuard": false,
+      "exportedMutations": 4
+    },
+    {
+      "file": "src/app/transmissions/actions.ts",
+      "kind": "server_action",
+      "hasPermissionGuard": false,
+      "exportedMutations": 2
+    }
+  ],
+  "unguardedActions": [
+    {
+      "file": "src/app/api/account/me/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": false,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/api/bible/books/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": false,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/api/bible/chapter/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": false,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/api/bible/passage/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": false,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/api/bible/search/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": false,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/api/bible/versions/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": false,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/api/dashboard/role/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": false,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/api/documents/download/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": false,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/api/modules/my-modules/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": false,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/api/notifications/broadcast/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": false,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/api/notifications/subscribe/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": false,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/api/public/church-donations/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": false,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/api/public/member-registration/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": false,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/api/publications/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": false,
+      "exportedMutations": 2
+    },
+    {
+      "file": "src/app/api/push/subscribe/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": false,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/api/pwa/icon/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": false,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/api/pwa/icon/[size]/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": false,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/api/pwa/manifest/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": false,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/api/pwa/tenant/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": false,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/api/security/my-access/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": false,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/api/security/navigation/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": false,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/api/settings/live-stream/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": false,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/api/settings/member-registration/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": false,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/api/super-admin/church-modules/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": false,
+      "exportedMutations": 2
+    },
+    {
+      "file": "src/app/api/super-admin/church-users/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": false,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/api/super-admin/church-users/[profileId]/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": false,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/api/super-admin/modules/toggle/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": false,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/api/super-admin/onboarding/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": false,
+      "exportedMutations": 2
+    },
+    {
+      "file": "src/app/api/super-admin/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": false,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/api/super-admin/users/new/actions.ts",
+      "kind": "server_action",
+      "hasPermissionGuard": false,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/church/[slug]/icon.png/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": false,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/church/[slug]/manifest.webmanifest/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": false,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/extensions/actions.ts",
+      "kind": "server_action",
+      "hasPermissionGuard": false,
+      "exportedMutations": 4
+    },
+    {
+      "file": "src/app/manifest.json/route.ts",
+      "kind": "route_handler",
+      "hasPermissionGuard": false,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/profile/actions.ts",
+      "kind": "server_action",
+      "hasPermissionGuard": false,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/settings/donations/actions.ts",
+      "kind": "server_action",
+      "hasPermissionGuard": false,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/super-admin/profile/actions.ts",
+      "kind": "server_action",
+      "hasPermissionGuard": false,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/super-admin/users/new/actions.ts",
+      "kind": "server_action",
+      "hasPermissionGuard": false,
+      "exportedMutations": 1
+    },
+    {
+      "file": "src/app/teachings/actions.ts",
+      "kind": "server_action",
+      "hasPermissionGuard": false,
+      "exportedMutations": 4
+    },
+    {
+      "file": "src/app/transmissions/actions.ts",
+      "kind": "server_action",
+      "hasPermissionGuard": false,
+      "exportedMutations": 2
+    }
+  ]
+}
