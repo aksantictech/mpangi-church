@@ -1,0 +1,114 @@
+/* Mpangi-church — Phase 35D-5
+   Performance mobile, accessibilité et stabilité visuelle. */
+
+html[data-save-data="true"] *,
+html[data-low-power="true"] *,
+html[data-reduced-motion="true"] * {
+  scroll-behavior: auto !important;
+}
+
+html[data-reduced-motion="true"] *,
+html[data-reduced-motion="true"] *::before,
+html[data-reduced-motion="true"] *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+}
+
+html[data-save-data="true"] .mobile-decorative-effect,
+html[data-low-power="true"] .mobile-decorative-effect {
+  display: none !important;
+}
+
+html[data-save-data="true"] [class*="blur-"],
+html[data-low-power="true"] [class*="blur-"] {
+  filter: none !important;
+}
+
+html[data-save-data="true"] [class*="backdrop-blur"],
+html[data-low-power="true"] [class*="backdrop-blur"] {
+  backdrop-filter: none !important;
+}
+
+html[data-save-data="true"] [class*="shadow-2xl"],
+html[data-low-power="true"] [class*="shadow-2xl"] {
+  box-shadow: 0 8px 24px rgb(15 23 42 / 0.08) !important;
+}
+
+img[loading="lazy"] {
+  content-visibility: auto;
+}
+
+.mobile-content-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 420px;
+}
+
+.mobile-route-loading {
+  display: grid;
+  min-height: 60dvh;
+  place-items: center;
+  padding: 1rem;
+}
+
+.mobile-route-loading-card {
+  width: min(100%, 34rem);
+  border: 1px solid #dceaf5;
+  border-radius: 1.5rem;
+  background: white;
+  padding: 1.25rem;
+  box-shadow: 0 10px 30px rgb(15 23 42 / 0.06);
+}
+
+.mobile-skeleton {
+  position: relative;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  background: #eaf3fa;
+}
+
+.mobile-skeleton::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgb(255 255 255 / 0.7),
+      transparent
+    );
+  transform: translateX(-100%);
+  animation: mpangiSkeleton 1.35s infinite;
+}
+
+@keyframes mpangiSkeleton {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mobile-skeleton::after {
+    animation: none;
+  }
+}
+
+@media (max-width: 767px) {
+  .mobile-content-auto {
+    contain-intrinsic-size: 1px 320px;
+  }
+
+  .mobile-route-loading-card {
+    border-radius: 1.25rem;
+    padding: 1rem;
+  }
+
+  img {
+    height: auto;
+  }
+
+  iframe {
+    max-width: 100%;
+  }
+}

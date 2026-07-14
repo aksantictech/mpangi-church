@@ -1,3 +1,4 @@
+import "@/styles/mobile-performance-35d5.css";
 import "@/styles/mobile-experience-35d4.css";
 import "@/styles/mobile-tables-lists.css";
 import "@/styles/mobile-forms-hardening.css";
@@ -21,6 +22,7 @@ import MobileFormsEnhancer from "@/components/mobile/MobileFormsEnhancer";
 import MobileListsTablesEnhancer from "@/components/mobile/MobileListsTablesEnhancer";
 import MobileRouteExperienceEnhancer from "@/components/mobile/MobileRouteExperienceEnhancer";
 import PwaInstallCoordinator from "@/components/pwa/PwaInstallCoordinator";
+import MobilePerformanceCoordinator from "@/components/mobile/MobilePerformanceCoordinator";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -65,6 +67,7 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full">
+        <MobilePerformanceCoordinator />
         <MobileRouteExperienceEnhancer />
         <PwaInstallCoordinator />
         <MobileListsTablesEnhancer />
