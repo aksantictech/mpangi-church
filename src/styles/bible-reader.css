@@ -1,0 +1,67 @@
+.api-bible-content {
+  line-height: 1.95;
+  overflow-wrap: anywhere;
+}
+
+.api-bible-content p {
+  margin: 0 0 1rem;
+}
+
+.api-bible-content .v {
+  display: inline-block;
+  min-width: 1.45rem;
+  margin-right: 0.2rem;
+  vertical-align: super;
+  font-size: 0.68em;
+  line-height: 1;
+  font-weight: 900;
+  color: #2563eb;
+}
+
+.api-bible-content .s,
+.api-bible-content .s1,
+.api-bible-content .s2,
+.api-bible-content .ms,
+.api-bible-content .ms1,
+.api-bible-content .mt,
+.api-bible-content .mt1 {
+  display: block;
+  margin: 1.5rem 0 0.75rem;
+  font-weight: 900;
+  color: #03357a;
+}
+
+.api-bible-content .q,
+.api-bible-content .q1,
+.api-bible-content .q2,
+.api-bible-content .q3 {
+  display: block;
+  margin-left: 1.25rem;
+  font-style: italic;
+}
+
+.api-bible-content .wj {
+  color: #b91c1c;
+}
+
+.api-bible-content .b {
+  display: block;
+  min-height: 0.75rem;
+}
+
+@media (max-width: 767px) {
+  .api-bible-content {
+    line-height: 1.82;
+  }
+
+  .api-bible-content p {
+    margin-bottom: 0.85rem;
+  }
+
+  .api-bible-content .q,
+  .api-bible-content .q1,
+  .api-bible-content .q2,
+  .api-bible-content .q3 {
+    margin-left: 0.7rem;
+  }
+}

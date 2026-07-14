@@ -15,17 +15,13 @@ function readString(formData: FormData, key: string) {
 
 async function getCurrentProfile() {
   const supabase = await createClient();
-
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) {
-    redirect("/login?reason=auth_required");
-  }
+  if (!user) redirect("/login?reason=auth_required");
 
   const admin = createAdminClient();
-
   const { data: profile, error } = await admin
     .from("profiles")
     .select("id, role, church_id")
@@ -40,7 +36,6 @@ async function getCurrentProfile() {
 }
 
 export async function createChurchUserAction(formData: FormData) {
-  // Tout redirect susceptible d'être exécuté reste hors du try/catch.
   const profile = await getCurrentProfile();
 
   if (!canCreateChurchUsers(profile.role)) {
@@ -54,7 +49,7 @@ export async function createChurchUserAction(formData: FormData) {
   if (!profile.church_id) {
     redirect(
       `/settings/users/new?error=${encodeURIComponent(
-        "Votre profil n’est rattaché à aucune église."
+        "Votre profil administrateur n’est rattaché à aucune église."
       )}`
     );
   }
@@ -68,7 +63,7 @@ export async function createChurchUserAction(formData: FormData) {
       password: readString(formData, "password"),
       role: normalizeUserRole(readString(formData, "role")),
       status: readString(formData, "status") || "active",
-      churchId: profile.church_id,
+      churchId: String(profile.church_id),
       updateExisting: true,
     });
   } catch (error: any) {

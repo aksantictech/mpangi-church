@@ -2,7 +2,6 @@ import {
   ArrowLeftRight,
   BarChart3,
   Bell,
-  BookOpen,
   CalendarDays,
   ClipboardList,
   FileText,

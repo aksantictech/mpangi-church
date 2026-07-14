@@ -13,16 +13,17 @@ type CreateUserAccountInput = {
 
 type ExistingProfile = {
   id: string;
+  user_id: string;
   church_id: string | null;
   role: string | null;
 } | null;
 
-function cleanEmail(email: string) {
-  return email.trim().toLowerCase();
+function cleanEmail(value: string) {
+  return value.trim().toLowerCase();
 }
 
 async function findAuthUserByEmail(admin: any, email: string) {
-  const target = cleanEmail(email);
+  const targetEmail = cleanEmail(email);
   const perPage = 1000;
 
   for (let page = 1; page <= 20; page += 1) {
@@ -35,12 +36,12 @@ async function findAuthUserByEmail(admin: any, email: string) {
       throw new Error(error.message);
     }
 
-    const users = data?.users || [];
-    const match = users.find(
-      (user: any) => cleanEmail(user.email || "") === target
+    const users = data?.users ?? [];
+    const found = users.find(
+      (user: any) => cleanEmail(user.email || "") === targetEmail
     );
 
-    if (match) return match;
+    if (found) return found;
     if (users.length < perPage) break;
   }
 
@@ -49,12 +50,12 @@ async function findAuthUserByEmail(admin: any, email: string) {
 
 async function readProfile(
   admin: any,
-  userId: string
+  authUserId: string
 ): Promise<ExistingProfile> {
   const { data, error } = await admin
     .from("profiles")
-    .select("id, church_id, role")
-    .eq("id", userId)
+    .select("id, user_id, church_id, role")
+    .eq("user_id", authUserId)
     .maybeSingle();
 
   if (error) return null;
@@ -62,34 +63,73 @@ async function readProfile(
   return data as ExistingProfile;
 }
 
-async function upsertProfileSafely(admin: any, payload: Record<string, any>) {
-  const attempts = [
-    payload,
-    Object.fromEntries(
-      Object.entries(payload).filter(([key]) => key !== "status")
-    ),
-    Object.fromEntries(
-      Object.entries(payload).filter(
-        ([key]) => !["status", "created_at", "updated_at"].includes(key)
-      )
-    ),
-  ];
+async function saveProfile(
+  admin: any,
+  payload: {
+    user_id: string;
+    email: string;
+    full_name: string;
+    role: string;
+    status: string;
+    church_id: string | null;
+  }
+) {
+  const existing = await readProfile(admin, payload.user_id);
 
-  let lastError: any = null;
-
-  for (const attempt of attempts) {
+  if (existing) {
     const { error } = await admin
       .from("profiles")
-      .upsert(attempt, { onConflict: "id" });
+      .update({
+        email: payload.email,
+        full_name: payload.full_name,
+        role: payload.role,
+        status: payload.status,
+        church_id: payload.church_id,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("user_id", payload.user_id);
 
-    if (!error) return;
+    if (error) {
+      // Certains anciens schémas n'ont pas updated_at.
+      const { error: fallbackError } = await admin
+        .from("profiles")
+        .update({
+          email: payload.email,
+          full_name: payload.full_name,
+          role: payload.role,
+          status: payload.status,
+          church_id: payload.church_id,
+        })
+        .eq("user_id", payload.user_id);
 
-    lastError = error;
+      if (fallbackError) throw new Error(fallbackError.message);
+    }
+  } else {
+    // IMPORTANT : profiles.id est une clé propre à la table.
+    // On laisse PostgreSQL générer id et on remplit user_id avec auth.users.id.
+    const { error } = await admin.from("profiles").insert({
+      user_id: payload.user_id,
+      email: payload.email,
+      full_name: payload.full_name,
+      role: payload.role,
+      status: payload.status,
+      church_id: payload.church_id,
+    });
+
+    if (error) {
+      throw new Error(error.message);
+    }
   }
 
-  throw new Error(
-    lastError?.message || "Impossible d’enregistrer le profil utilisateur."
-  );
+  const verified = await readProfile(admin, payload.user_id);
+
+  if (!verified?.user_id) {
+    throw new Error(
+      "Le compte Auth existe, mais le profil public n’a pas été créé."
+    );
+  }
+
+  return verified;
 }
 
 export async function createOrUpdateUserAccount(
@@ -136,21 +176,26 @@ export async function createOrUpdateUserAccount(
       );
     }
 
-    const { error: updateError } = await admin.auth.admin.updateUserById(
+    const { data, error } = await admin.auth.admin.updateUserById(
       authUser.id,
       {
         password,
         email_confirm: true,
         user_metadata: {
+          ...(authUser.user_metadata || {}),
           full_name: fullName,
           role,
+          church_id: churchId,
+          status,
         },
       }
     );
 
-    if (updateError) {
-      throw new Error(updateError.message);
+    if (error) {
+      throw new Error(error.message);
     }
+
+    authUser = data.user;
   } else {
     const { data, error } = await admin.auth.admin.createUser({
       email,
@@ -159,6 +204,8 @@ export async function createOrUpdateUserAccount(
       user_metadata: {
         full_name: fullName,
         role,
+        church_id: churchId,
+        status,
       },
     });
 
@@ -174,23 +221,28 @@ export async function createOrUpdateUserAccount(
     throw new Error("Identifiant utilisateur introuvable après création.");
   }
 
-  const now = new Date().toISOString();
+  try {
+    await saveProfile(admin, {
+      user_id: authUser.id,
+      email,
+      full_name: fullName,
+      role,
+      status,
+      church_id: churchId,
+    });
+  } catch (error) {
+    if (created) {
+      await admin.auth.admin.deleteUser(authUser.id).catch(() => undefined);
+    }
 
-  await upsertProfileSafely(admin, {
-    id: authUser.id,
-    email,
-    full_name: fullName,
-    role,
-    status,
-    church_id: churchId,
-    created_at: now,
-    updated_at: now,
-  });
+    throw error;
+  }
 
   return {
     id: authUser.id,
     email,
     role,
+    churchId,
     created,
   };
 }

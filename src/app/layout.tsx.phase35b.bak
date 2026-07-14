@@ -1,4 +1,3 @@
-import "@/styles/bible-reader.css";
 import "@/styles/mobile-production-hardening.css";
 import TenantPwaBootstrap from "@/components/pwa/TenantPwaBootstrap";
 import DevServiceWorkerCleanup from "@/components/pwa/DevServiceWorkerCleanup";
