@@ -163,7 +163,7 @@ export async function GET() {
       title: config.title,
       subtitle: config.subtitle,
       focus: config.focus,
-      cards: config.cards.map((card) => ({
+      cards: (Array.isArray(config.cards) ? config.cards : []).map((card) => ({
         code: card.code,
         title: card.title,
         description: card.description,

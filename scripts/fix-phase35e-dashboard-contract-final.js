@@ -1,256 +1,57 @@
-import { createAdminClient } from "@/lib/supabase/admin";
-import {
-  getCurrentSecurityContext,
-  getCurrentRolePermissions,
-} from "@/lib/security/permissionEngine";
-import {
-  getModuleDefinition,
-  getRoleLabel,
-} from "@/lib/security/roleCatalog";
+const fs = require("fs");
+const path = require("path");
 
-type WidgetDefinition = {
-  code: string;
-  title: string;
-  description: string;
-  moduleCode: string;
-  href: string;
-};
+const ROOT = process.cwd();
 
-const WIDGETS: Record<string, WidgetDefinition> = {
-  overview: {
-    code: "overview",
-    title: "Vue d’ensemble",
-    description: "Accédez aux priorités de votre rôle.",
-    moduleCode: "role_dashboard",
-    href: "/dashboard/role",
-  },
-  members: {
-    code: "members",
-    title: "Membres",
-    description: "Consultez et accompagnez les membres.",
-    moduleCode: "members",
-    href: "/members",
-  },
-  attendance: {
-    code: "attendance",
-    title: "Présences",
-    description: "Suivez les présences et le scanner QR.",
-    moduleCode: "attendance",
-    href: "/attendance",
-  },
-  souls: {
-    code: "souls",
-    title: "Suivi des âmes",
-    description: "Consultez les suivis pastoraux prioritaires.",
-    moduleCode: "souls",
-    href: "/souls",
-  },
-  public_requests: {
-    code: "public_requests",
-    title: "Demandes publiques",
-    description: "Prières, rendez-vous et témoignages reçus.",
-    moduleCode: "public_requests",
-    href: "/public-requests",
-  },
-  tasks: {
-    code: "tasks",
-    title: "Mon travail",
-    description: "Traitez les missions liées à votre rôle.",
-    moduleCode: "my_work",
-    href: "/my-work",
-  },
-  finance: {
-    code: "finance",
-    title: "Finances",
-    description: "Consultez les opérations et rapports financiers.",
-    moduleCode: "finance_dashboard",
-    href: "/finance",
-  },
-  donations: {
-    code: "donations",
-    title: "Dons reçus",
-    description: "Vérifiez et confirmez les intentions de dons.",
-    moduleCode: "donations",
-    href: "/finance/donations",
-  },
-  departments: {
-    code: "departments",
-    title: "Départements",
-    description: "Pilotez les équipes et activités.",
-    moduleCode: "departments",
-    href: "/departments",
-  },
-  patrimony: {
-    code: "patrimony",
-    title: "Patrimoine",
-    description: "Suivez les biens, mouvements et maintenances.",
-    moduleCode: "patrimony",
-    href: "/patrimony",
-  },
-  maintenance: {
-    code: "maintenance",
-    title: "Maintenance",
-    description: "Traitez les opérations de maintenance.",
-    moduleCode: "maintenance",
-    href: "/patrimony/maintenance",
-  },
-  correspondence: {
-    code: "correspondence",
-    title: "Courriers",
-    description: "Traitez les courriers administratifs.",
-    moduleCode: "correspondence",
-    href: "/administration/correspondence",
-  },
-  minutes: {
-    code: "minutes",
-    title: "Procès-verbaux",
-    description: "Préparez et suivez les PV.",
-    moduleCode: "minutes",
-    href: "/administration/minutes",
-  },
-  transmissions: {
-    code: "transmissions",
-    title: "Transmissions",
-    description: "Suivez les documents transmis.",
-    moduleCode: "transmissions",
-    href: "/administration/transmissions",
-  },
-  security: {
-    code: "security",
-    title: "Rôles et accès",
-    description: "Contrôlez les autorisations de l’église.",
-    moduleCode: "security",
-    href: "/settings/roles",
-  },
-  users: {
-    code: "users",
-    title: "Utilisateurs",
-    description: "Créez et administrez les comptes.",
-    moduleCode: "users",
-    href: "/settings/users",
-  },
-  churches: {
-    code: "churches",
-    title: "Églises",
-    description: "Consultez les églises de la plateforme.",
-    moduleCode: "security",
-    href: "/super-admin/churches",
-  },
-};
+const helperPath = path.join(
+  ROOT,
+  "src",
+  "lib",
+  "dashboard",
+  "roleDashboard.ts"
+);
 
-async function safeCount(
-  table: string,
-  churchId: string,
-  extra?: (query: any) => any
-) {
-  const admin = createAdminClient();
+const routePath = path.join(
+  ROOT,
+  "src",
+  "app",
+  "api",
+  "dashboard",
+  "role",
+  "route.ts"
+);
 
-  let query = admin
-    .from(table)
-    .select("*", {
-      count: "exact",
-      head: true,
-    })
-    .eq("church_id", churchId);
-
-  if (extra) query = extra(query);
-
-  const { count, error } = await query;
-
-  if (error) return null;
-
-  return count ?? 0;
+if (!fs.existsSync(helperPath)) {
+  console.error("❌ Fichier introuvable :", helperPath);
+  process.exit(1);
 }
 
-export async function getRoleDashboardData() {
-  const context = await getCurrentSecurityContext();
+let source = fs.readFileSync(helperPath, "utf8");
 
-  if (!context.churchId) {
-    return {
-      context,
-      roleLabel: getRoleLabel(context.role),
-      widgets: [],
-      metrics: {},
-    };
-  }
+const backupPath =
+  `${helperPath}.phase35e-dashboard-contract-final.bak`;
 
-  const admin = createAdminClient();
-
-  const [{ data: widgetRows }, permissions] = await Promise.all([
-    admin
-      .from("church_role_dashboard_widgets")
-      .select("widget_code, position, is_enabled")
-      .eq("church_id", context.churchId)
-      .eq("role_code", context.role)
-      .eq("is_enabled", true)
-      .order("position", { ascending: true }),
-    getCurrentRolePermissions(),
-  ]);
-
-  const allowedModules = new Set(
-    permissions
-      .filter(
-        (permission) =>
-          permission.is_enabled && permission.can_view
-      )
-      .map((permission) => permission.module_code)
+if (!fs.existsSync(backupPath)) {
+  fs.copyFileSync(helperPath, backupPath);
+  console.log(
+    "✅ Backup créé :",
+    path.relative(ROOT, backupPath)
   );
-
-  if (context.role === "super_admin") {
-    Object.values(WIDGETS).forEach((widget) =>
-      allowedModules.add(widget.moduleCode)
-    );
-  }
-
-  const widgets = (widgetRows || [])
-    .map((row) => WIDGETS[row.widget_code])
-    .filter(Boolean)
-    .filter(
-      (widget) =>
-        widget.code === "overview" ||
-        allowedModules.has(widget.moduleCode)
-    );
-
-  const [members, openTasks, pendingDonations, soulFollowups] =
-    await Promise.all([
-      safeCount("members", context.churchId),
-      safeCount(
-        "church_user_role_tasks",
-        context.churchId,
-        (query) =>
-          query
-            .eq("assigned_to", context.userId)
-            .in("status", ["todo", "in_progress", "blocked"])
-      ),
-      safeCount(
-        "church_donations",
-        context.churchId,
-        (query) =>
-          query.in("status", [
-            "pending",
-            "awaiting_payment",
-            "submitted",
-          ])
-      ),
-      safeCount("soul_followups", context.churchId),
-    ]);
-
-  return {
-    context,
-    roleLabel: getRoleLabel(context.role),
-    widgets,
-    metrics: {
-      members,
-      openTasks,
-      pendingDonations,
-      soulFollowups,
-    },
-  };
 }
 
-export function resolveModuleLink(moduleCode: string) {
-  return getModuleDefinition(moduleCode);
+/*
+ * Tous les correctifs précédents avaient ajouté le bloc de compatibilité
+ * LegacyRoleDashboardConfig à la fin du fichier. On le remplace entièrement
+ * afin d'éviter les types partiels, les Promises et les propriétés manquantes.
+ */
+const compatibilityStart =
+  source.indexOf("export type LegacyRoleDashboardConfig");
+
+if (compatibilityStart >= 0) {
+  source = source.slice(0, compatibilityStart).trimEnd();
 }
+
+const compatibilityBlock = `
 
 export type LegacyRoleDashboardCard = {
   code: string;
@@ -263,22 +64,18 @@ export type LegacyRoleDashboardCard = {
   [key: string]: any;
 };
 
-export type LegacyRoleDashboardBaseConfig = {
+export type LegacyRoleDashboardConfig = {
+  role: string;
   title: string;
   subtitle: string;
   focus: string;
+  cards: LegacyRoleDashboardCard[];
   metrics: string[];
   widgets: string[];
   quickActions: any[];
   sections: any[];
+  [key: string]: any;
 };
-
-export type LegacyRoleDashboardConfig =
-  LegacyRoleDashboardBaseConfig & {
-    role: string;
-    cards: LegacyRoleDashboardCard[];
-    [key: string]: any;
-  };
 
 function readLegacyRoleCode(roleInput?: unknown) {
   if (
@@ -291,13 +88,13 @@ function readLegacyRoleCode(roleInput?: unknown) {
     )
       .trim()
       .toLowerCase()
-      .replace(/[\\s-]+/g, "_");
+      .replace(/[\\\\s-]+/g, "_");
   }
 
   return String(roleInput || "readonly")
     .trim()
     .toLowerCase()
-    .replace(/[\\s-]+/g, "_");
+    .replace(/[\\\\s-]+/g, "_");
 }
 
 function humanizeLegacyCode(code: string) {
@@ -367,7 +164,7 @@ function createLegacyCards(
   return metrics.map((code) => ({
     code,
     title: humanizeLegacyCode(code),
-    description: `Indicateur ${humanizeLegacyCode(code).toLowerCase()}.`,
+    description: \`Indicateur \${humanizeLegacyCode(code).toLowerCase()}.\`,
     href: legacyHrefForCode(code),
     metricKey: code,
     moduleCode: code,
@@ -415,7 +212,10 @@ export function getRoleDashboardConfig(
 
   const role = aliases[rawRole] || rawRole || "readonly";
 
-  const defaults: Record<string, LegacyRoleDashboardBaseConfig> = {
+  const defaults: Record<
+    string,
+    Omit<LegacyRoleDashboardConfig, "role" | "cards">
+  > = {
     super_admin: {
       title: "Pilotage de la plateforme",
       subtitle:
@@ -626,17 +426,14 @@ export function getRoleDashboardConfig(
     },
   };
 
-  const config: LegacyRoleDashboardBaseConfig =
-    defaults[role] ?? defaults.readonly;
+  const config = defaults[role] || defaults.readonly;
   const metrics = Array.isArray(config.metrics)
     ? config.metrics
     : [];
 
   return {
     role,
-    title: config.title,
-    subtitle: config.subtitle,
-    focus: config.focus,
+    ...config,
     metrics,
     widgets: Array.isArray(config.widgets)
       ? config.widgets
@@ -650,4 +447,46 @@ export function getRoleDashboardConfig(
     cards: createLegacyCards(metrics),
   };
 }
+`;
 
+source = source + compatibilityBlock + "\n";
+
+fs.writeFileSync(helperPath, source, "utf8");
+
+console.log(
+  "✅ Contrat dashboard définitif installé dans roleDashboard.ts."
+);
+
+/*
+ * Protection supplémentaire dans la route historique :
+ * même si une future configuration personnalisée omet cards,
+ * la route ne doit jamais planter sur .map().
+ */
+if (fs.existsSync(routePath)) {
+  let routeSource = fs.readFileSync(routePath, "utf8");
+  const routeBackup =
+    `${routePath}.phase35e-dashboard-contract-final.bak`;
+
+  if (!fs.existsSync(routeBackup)) {
+    fs.copyFileSync(routePath, routeBackup);
+    console.log(
+      "✅ Backup créé :",
+      path.relative(ROOT, routeBackup)
+    );
+  }
+
+  routeSource = routeSource.replace(
+    /cards:\s*config\.cards\.map\s*\(/g,
+    "cards: (Array.isArray(config.cards) ? config.cards : []).map("
+  );
+
+  fs.writeFileSync(routePath, routeSource, "utf8");
+
+  console.log(
+    "✅ Protection config.cards ajoutée dans la route API."
+  );
+} else {
+  console.log(
+    "⚠️ Route API dashboard introuvable ; helper corrigé uniquement."
+  );
+}

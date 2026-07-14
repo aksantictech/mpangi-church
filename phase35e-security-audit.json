@@ -1,0 +1,74 @@
+{
+  "generatedAt": "2026-07-14T05:43:04.605Z",
+  "churches": [
+    {
+      "id": "516b3cb4-ed5c-4489-9ac9-56ee88fa07b3",
+      "name": "Koinonia",
+      "slug": "koino",
+      "status": "archived"
+    },
+    {
+      "id": "e311262d-9ca0-48b8-9b8a-dc14ede44346",
+      "name": "Impact Centre Chrétien Extension Kitambo",
+      "slug": "icckitambo",
+      "status": "active"
+    },
+    {
+      "id": "e6519b26-01cf-442b-b982-9f507a3d3684",
+      "name": "La Maison de Miséricorde",
+      "slug": "maison-misericorde-cmp",
+      "status": "active"
+    },
+    {
+      "id": "642f3f12-1bb9-4c47-836e-7a410762253d",
+      "name": "Impact Centre Chretien RDC",
+      "slug": "iccrdc",
+      "status": "active"
+    },
+    {
+      "id": "7187d91e-ff23-49a4-8044-0d85dbb884ac",
+      "name": "Communauté Charismatique des Térébinthes",
+      "slug": "communaute-charismatique-des-terebinthes",
+      "status": "active"
+    }
+  ],
+  "profileIssues": [],
+  "permissionSummary": [
+    {
+      "church": "Koinonia",
+      "roles": 26,
+      "permissions": 329,
+      "widgets": 52,
+      "templates": 12
+    },
+    {
+      "church": "Impact Centre Chrétien Extension Kitambo",
+      "roles": 24,
+      "permissions": 230,
+      "widgets": 52,
+      "templates": 12
+    },
+    {
+      "church": "La Maison de Miséricorde",
+      "roles": 13,
+      "permissions": 204,
+      "widgets": 52,
+      "templates": 12
+    },
+    {
+      "church": "Impact Centre Chretien RDC",
+      "roles": 13,
+      "permissions": 204,
+      "widgets": 52,
+      "templates": 12
+    },
+    {
+      "church": "Communauté Charismatique des Térébinthes",
+      "roles": 11,
+      "permissions": 33,
+      "widgets": 52,
+      "templates": 12
+    }
+  ],
+  "taskIssues": []
+}
