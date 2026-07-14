@@ -1,0 +1,2824 @@
+[
+  {
+    "file": "src/components/settings/PublicPageSettingsForm.tsx",
+    "score": 78,
+    "issues": [
+      {
+        "code": "LONG_FORM",
+        "count": 26,
+        "weight": 3,
+        "score": 78,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/components/members/MemberForm.tsx",
+    "score": 71,
+    "issues": [
+      {
+        "code": "OVERFLOW_HIDDEN",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Peut masquer un texte ou une action sur mobile."
+      },
+      {
+        "code": "LONG_FORM",
+        "count": 23,
+        "weight": 3,
+        "score": 69,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/app/patrimony/assets/[id]/edit/page.tsx",
+    "score": 66,
+    "issues": [
+      {
+        "code": "LONG_FORM",
+        "count": 22,
+        "weight": 3,
+        "score": 66,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/components/super-admin/SuperAdminChurchForm.tsx",
+    "score": 66,
+    "issues": [
+      {
+        "code": "ABSOLUTE",
+        "count": 1,
+        "weight": 1,
+        "score": 1,
+        "message": "Position absolue à contrôler sur petits écrans."
+      },
+      {
+        "code": "OVERFLOW_HIDDEN",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Peut masquer un texte ou une action sur mobile."
+      },
+      {
+        "code": "LONG_FORM",
+        "count": 21,
+        "weight": 3,
+        "score": 63,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/app/patrimony/assets/new/page.tsx",
+    "score": 63,
+    "issues": [
+      {
+        "code": "LONG_FORM",
+        "count": 21,
+        "weight": 3,
+        "score": 63,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/app/administration/minutes/[id]/edit/page.tsx",
+    "score": 54,
+    "issues": [
+      {
+        "code": "LONG_FORM",
+        "count": 18,
+        "weight": 3,
+        "score": 54,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/components/public/PublicMemberRegistrationForm.tsx",
+    "score": 53,
+    "issues": [
+      {
+        "code": "OVERFLOW_HIDDEN",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Peut masquer un texte ou une action sur mobile."
+      },
+      {
+        "code": "LONG_FORM",
+        "count": 17,
+        "weight": 3,
+        "score": 51,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/app/administration/minutes/new/page.tsx",
+    "score": 51,
+    "issues": [
+      {
+        "code": "LONG_FORM",
+        "count": 17,
+        "weight": 3,
+        "score": 51,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/app/administration/correspondence/new/page.tsx",
+    "score": 48,
+    "issues": [
+      {
+        "code": "LONG_FORM",
+        "count": 16,
+        "weight": 3,
+        "score": 48,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/app/extensions/activities/new/page.tsx",
+    "score": 48,
+    "issues": [
+      {
+        "code": "LONG_FORM",
+        "count": 16,
+        "weight": 3,
+        "score": 48,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/app/finance/expenses/new/page.tsx",
+    "score": 48,
+    "issues": [
+      {
+        "code": "LONG_FORM",
+        "count": 16,
+        "weight": 3,
+        "score": 48,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/app/finance/offerings/new/page.tsx",
+    "score": 48,
+    "issues": [
+      {
+        "code": "LONG_FORM",
+        "count": 16,
+        "weight": 3,
+        "score": 48,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/app/administration/tasks/[id]/edit/page.tsx",
+    "score": 42,
+    "issues": [
+      {
+        "code": "LONG_FORM",
+        "count": 14,
+        "weight": 3,
+        "score": 42,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/app/administration/tasks/new/page.tsx",
+    "score": 39,
+    "issues": [
+      {
+        "code": "LONG_FORM",
+        "count": 13,
+        "weight": 3,
+        "score": 39,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/app/patrimony/maintenance/new/page.tsx",
+    "score": 39,
+    "issues": [
+      {
+        "code": "LONG_FORM",
+        "count": 13,
+        "weight": 3,
+        "score": 39,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/components/members/MemberEditForm.tsx",
+    "score": 39,
+    "issues": [
+      {
+        "code": "LONG_FORM",
+        "count": 13,
+        "weight": 3,
+        "score": 39,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/app/login/page.tsx",
+    "score": 37,
+    "issues": [
+      {
+        "code": "FIXED_WIDTH",
+        "count": 1,
+        "weight": 4,
+        "score": 4,
+        "message": "Largeur fixe importante susceptible de dépasser l’écran."
+      },
+      {
+        "code": "FIXED_POSITION",
+        "count": 1,
+        "weight": 3,
+        "score": 3,
+        "message": "Élément fixe : vérifier chevauchements et safe areas."
+      },
+      {
+        "code": "ABSOLUTE",
+        "count": 9,
+        "weight": 1,
+        "score": 9,
+        "message": "Position absolue à contrôler sur petits écrans."
+      },
+      {
+        "code": "OVERFLOW_HIDDEN",
+        "count": 4,
+        "weight": 2,
+        "score": 8,
+        "message": "Peut masquer un texte ou une action sur mobile."
+      },
+      {
+        "code": "GRID_4_PLUS",
+        "count": 2,
+        "weight": 2,
+        "score": 4,
+        "message": "Grille dense à prévoir en une colonne sur mobile."
+      },
+      {
+        "code": "LONG_FORM",
+        "count": 3,
+        "weight": 3,
+        "score": 9,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/app/patrimony/movements/new/page.tsx",
+    "score": 36,
+    "issues": [
+      {
+        "code": "LONG_FORM",
+        "count": 12,
+        "weight": 3,
+        "score": 36,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/app/administration/transmissions/[id]/edit/page.tsx",
+    "score": 33,
+    "issues": [
+      {
+        "code": "LONG_FORM",
+        "count": 11,
+        "weight": 3,
+        "score": 33,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/components/souls/SoulFollowupEditForm.tsx",
+    "score": 33,
+    "issues": [
+      {
+        "code": "LONG_FORM",
+        "count": 11,
+        "weight": 3,
+        "score": 33,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/components/souls/SoulFollowupForm.tsx",
+    "score": 33,
+    "issues": [
+      {
+        "code": "LONG_FORM",
+        "count": 11,
+        "weight": 3,
+        "score": 33,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/components/super-admin/ChurchForm.tsx",
+    "score": 33,
+    "issues": [
+      {
+        "code": "LONG_FORM",
+        "count": 11,
+        "weight": 3,
+        "score": 33,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/app/finance/budgets/[id]/edit/page.tsx",
+    "score": 30,
+    "issues": [
+      {
+        "code": "LONG_FORM",
+        "count": 10,
+        "weight": 3,
+        "score": 30,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/app/administration/tasks/page.tsx",
+    "score": 29,
+    "issues": [
+      {
+        "code": "ABSOLUTE",
+        "count": 1,
+        "weight": 1,
+        "score": 1,
+        "message": "Position absolue à contrôler sur petits écrans."
+      },
+      {
+        "code": "OVERFLOW_HIDDEN",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Peut masquer un texte ou une action sur mobile."
+      },
+      {
+        "code": "GRID_4_PLUS",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Grille dense à prévoir en une colonne sur mobile."
+      },
+      {
+        "code": "LONG_FORM",
+        "count": 8,
+        "weight": 3,
+        "score": 24,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/app/inbox/page.tsx",
+    "score": 29,
+    "issues": [
+      {
+        "code": "ABSOLUTE",
+        "count": 1,
+        "weight": 1,
+        "score": 1,
+        "message": "Position absolue à contrôler sur petits écrans."
+      },
+      {
+        "code": "OVERFLOW_HIDDEN",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Peut masquer un texte ou une action sur mobile."
+      },
+      {
+        "code": "GRID_4_PLUS",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Grille dense à prévoir en une colonne sur mobile."
+      },
+      {
+        "code": "LONG_FORM",
+        "count": 8,
+        "weight": 3,
+        "score": 24,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/app/administration/transmissions/new/page.tsx",
+    "score": 27,
+    "issues": [
+      {
+        "code": "LONG_FORM",
+        "count": 9,
+        "weight": 3,
+        "score": 27,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/app/extensions/[id]/edit/page.tsx",
+    "score": 27,
+    "issues": [
+      {
+        "code": "LONG_FORM",
+        "count": 9,
+        "weight": 3,
+        "score": 27,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/app/finance/budgets/new/page.tsx",
+    "score": 27,
+    "issues": [
+      {
+        "code": "LONG_FORM",
+        "count": 9,
+        "weight": 3,
+        "score": 27,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/app/finance/expenses/page.tsx",
+    "score": 27,
+    "issues": [
+      {
+        "code": "ABSOLUTE",
+        "count": 1,
+        "weight": 1,
+        "score": 1,
+        "message": "Position absolue à contrôler sur petits écrans."
+      },
+      {
+        "code": "OVERFLOW_HIDDEN",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Peut masquer un texte ou une action sur mobile."
+      },
+      {
+        "code": "LONG_FORM",
+        "count": 8,
+        "weight": 3,
+        "score": 24,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/app/finance/offerings/page.tsx",
+    "score": 27,
+    "issues": [
+      {
+        "code": "ABSOLUTE",
+        "count": 1,
+        "weight": 1,
+        "score": 1,
+        "message": "Position absolue à contrôler sur petits écrans."
+      },
+      {
+        "code": "OVERFLOW_HIDDEN",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Peut masquer un texte ou une action sur mobile."
+      },
+      {
+        "code": "LONG_FORM",
+        "count": 8,
+        "weight": 3,
+        "score": 24,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/app/administration/minutes/page.tsx",
+    "score": 26,
+    "issues": [
+      {
+        "code": "ABSOLUTE",
+        "count": 1,
+        "weight": 1,
+        "score": 1,
+        "message": "Position absolue à contrôler sur petits écrans."
+      },
+      {
+        "code": "OVERFLOW_HIDDEN",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Peut masquer un texte ou une action sur mobile."
+      },
+      {
+        "code": "GRID_4_PLUS",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Grille dense à prévoir en une colonne sur mobile."
+      },
+      {
+        "code": "LONG_FORM",
+        "count": 7,
+        "weight": 3,
+        "score": 21,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/app/administration/transmissions/page.tsx",
+    "score": 26,
+    "issues": [
+      {
+        "code": "ABSOLUTE",
+        "count": 1,
+        "weight": 1,
+        "score": 1,
+        "message": "Position absolue à contrôler sur petits écrans."
+      },
+      {
+        "code": "OVERFLOW_HIDDEN",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Peut masquer un texte ou une action sur mobile."
+      },
+      {
+        "code": "GRID_4_PLUS",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Grille dense à prévoir en une colonne sur mobile."
+      },
+      {
+        "code": "LONG_FORM",
+        "count": 7,
+        "weight": 3,
+        "score": 21,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/app/extensions/new/page.tsx",
+    "score": 24,
+    "issues": [
+      {
+        "code": "LONG_FORM",
+        "count": 8,
+        "weight": 3,
+        "score": 24,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/app/finance/budgets/page.tsx",
+    "score": 24,
+    "issues": [
+      {
+        "code": "ABSOLUTE",
+        "count": 1,
+        "weight": 1,
+        "score": 1,
+        "message": "Position absolue à contrôler sur petits écrans."
+      },
+      {
+        "code": "OVERFLOW_HIDDEN",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Peut masquer un texte ou une action sur mobile."
+      },
+      {
+        "code": "LONG_FORM",
+        "count": 7,
+        "weight": 3,
+        "score": 21,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/app/teachings/[id]/edit/page.tsx",
+    "score": 24,
+    "issues": [
+      {
+        "code": "LONG_FORM",
+        "count": 8,
+        "weight": 3,
+        "score": 24,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/components/donations/PublicDonationForm.tsx",
+    "score": 24,
+    "issues": [
+      {
+        "code": "LONG_FORM",
+        "count": 8,
+        "weight": 3,
+        "score": 24,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/components/events/EventEditForm.tsx",
+    "score": 24,
+    "issues": [
+      {
+        "code": "LONG_FORM",
+        "count": 8,
+        "weight": 3,
+        "score": 24,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/components/publications/PublicationForm.tsx",
+    "score": 24,
+    "issues": [
+      {
+        "code": "LONG_FORM",
+        "count": 8,
+        "weight": 3,
+        "score": 24,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/app/administration/correspondence/page.tsx",
+    "score": 23,
+    "issues": [
+      {
+        "code": "ABSOLUTE",
+        "count": 1,
+        "weight": 1,
+        "score": 1,
+        "message": "Position absolue à contrôler sur petits écrans."
+      },
+      {
+        "code": "OVERFLOW_HIDDEN",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Peut masquer un texte ou une action sur mobile."
+      },
+      {
+        "code": "GRID_4_PLUS",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Grille dense à prévoir en une colonne sur mobile."
+      },
+      {
+        "code": "LONG_FORM",
+        "count": 6,
+        "weight": 3,
+        "score": 18,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/app/administration/inbox/page.tsx",
+    "score": 23,
+    "issues": [
+      {
+        "code": "ABSOLUTE",
+        "count": 1,
+        "weight": 1,
+        "score": 1,
+        "message": "Position absolue à contrôler sur petits écrans."
+      },
+      {
+        "code": "OVERFLOW_HIDDEN",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Peut masquer un texte ou une action sur mobile."
+      },
+      {
+        "code": "GRID_4_PLUS",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Grille dense à prévoir en une colonne sur mobile."
+      },
+      {
+        "code": "LONG_FORM",
+        "count": 6,
+        "weight": 3,
+        "score": 18,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/app/patrimony/assets/page.tsx",
+    "score": 23,
+    "issues": [
+      {
+        "code": "ABSOLUTE",
+        "count": 1,
+        "weight": 1,
+        "score": 1,
+        "message": "Position absolue à contrôler sur petits écrans."
+      },
+      {
+        "code": "OVERFLOW_HIDDEN",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Peut masquer un texte ou une action sur mobile."
+      },
+      {
+        "code": "GRID_4_PLUS",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Grille dense à prévoir en une colonne sur mobile."
+      },
+      {
+        "code": "LONG_FORM",
+        "count": 6,
+        "weight": 3,
+        "score": 18,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/app/finance/reports/page.tsx",
+    "score": 22,
+    "issues": [
+      {
+        "code": "TABLE",
+        "count": 1,
+        "weight": 4,
+        "score": 4,
+        "message": "Tableau à rendre scrollable ou à doubler avec des cartes mobiles."
+      },
+      {
+        "code": "FIXED_WIDTH",
+        "count": 1,
+        "weight": 4,
+        "score": 4,
+        "message": "Largeur fixe importante susceptible de dépasser l’écran."
+      },
+      {
+        "code": "GRID_4_PLUS",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Grille dense à prévoir en une colonne sur mobile."
+      },
+      {
+        "code": "LONG_FORM",
+        "count": 4,
+        "weight": 3,
+        "score": 12,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/app/patrimony/maintenance/page.tsx",
+    "score": 21,
+    "issues": [
+      {
+        "code": "ABSOLUTE",
+        "count": 1,
+        "weight": 1,
+        "score": 1,
+        "message": "Position absolue à contrôler sur petits écrans."
+      },
+      {
+        "code": "OVERFLOW_HIDDEN",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Peut masquer un texte ou une action sur mobile."
+      },
+      {
+        "code": "LONG_FORM",
+        "count": 6,
+        "weight": 3,
+        "score": 18,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/app/settings/users/page.tsx",
+    "score": 21,
+    "issues": [
+      {
+        "code": "FIXED_WIDTH",
+        "count": 1,
+        "weight": 4,
+        "score": 4,
+        "message": "Largeur fixe importante susceptible de dépasser l’écran."
+      },
+      {
+        "code": "GRID_4_PLUS",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Grille dense à prévoir en une colonne sur mobile."
+      },
+      {
+        "code": "LONG_FORM",
+        "count": 5,
+        "weight": 3,
+        "score": 15,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/app/teachings/new/page.tsx",
+    "score": 21,
+    "issues": [
+      {
+        "code": "LONG_FORM",
+        "count": 7,
+        "weight": 3,
+        "score": 21,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/components/events/EventForm.tsx",
+    "score": 21,
+    "issues": [
+      {
+        "code": "LONG_FORM",
+        "count": 7,
+        "weight": 3,
+        "score": 21,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/components/public/JoinChurchForm.tsx",
+    "score": 21,
+    "issues": [
+      {
+        "code": "LONG_FORM",
+        "count": 7,
+        "weight": 3,
+        "score": 21,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/app/super-admin/churches/[id]/page.tsx",
+    "score": 20,
+    "issues": [
+      {
+        "code": "TABLE",
+        "count": 1,
+        "weight": 4,
+        "score": 4,
+        "message": "Tableau à rendre scrollable ou à doubler avec des cartes mobiles."
+      },
+      {
+        "code": "FIXED_WIDTH",
+        "count": 1,
+        "weight": 4,
+        "score": 4,
+        "message": "Largeur fixe importante susceptible de dépasser l’écran."
+      },
+      {
+        "code": "ABSOLUTE",
+        "count": 2,
+        "weight": 1,
+        "score": 2,
+        "message": "Position absolue à contrôler sur petits écrans."
+      },
+      {
+        "code": "OVERFLOW_HIDDEN",
+        "count": 3,
+        "weight": 2,
+        "score": 6,
+        "message": "Peut masquer un texte ou une action sur mobile."
+      },
+      {
+        "code": "GRID_4_PLUS",
+        "count": 2,
+        "weight": 2,
+        "score": 4,
+        "message": "Grille dense à prévoir en une colonne sur mobile."
+      }
+    ]
+  },
+  {
+    "file": "src/app/patrimony/movements/page.tsx",
+    "score": 18,
+    "issues": [
+      {
+        "code": "ABSOLUTE",
+        "count": 1,
+        "weight": 1,
+        "score": 1,
+        "message": "Position absolue à contrôler sur petits écrans."
+      },
+      {
+        "code": "OVERFLOW_HIDDEN",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Peut masquer un texte ou une action sur mobile."
+      },
+      {
+        "code": "LONG_FORM",
+        "count": 5,
+        "weight": 3,
+        "score": 15,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/app/profile/page.tsx",
+    "score": 18,
+    "issues": [
+      {
+        "code": "LONG_FORM",
+        "count": 6,
+        "weight": 3,
+        "score": 18,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/app/super-admin/profile/page.tsx",
+    "score": 18,
+    "issues": [
+      {
+        "code": "LONG_FORM",
+        "count": 6,
+        "weight": 3,
+        "score": 18,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/app/super-admin/users/new/page.tsx",
+    "score": 18,
+    "issues": [
+      {
+        "code": "LONG_FORM",
+        "count": 6,
+        "weight": 3,
+        "score": 18,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/app/extensions/reports/page.tsx",
+    "score": 16,
+    "issues": [
+      {
+        "code": "TABLE",
+        "count": 1,
+        "weight": 4,
+        "score": 4,
+        "message": "Tableau à rendre scrollable ou à doubler avec des cartes mobiles."
+      },
+      {
+        "code": "FIXED_WIDTH",
+        "count": 1,
+        "weight": 4,
+        "score": 4,
+        "message": "Largeur fixe importante susceptible de dépasser l’écran."
+      },
+      {
+        "code": "GRID_4_PLUS",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Grille dense à prévoir en une colonne sur mobile."
+      },
+      {
+        "code": "LONG_FORM",
+        "count": 2,
+        "weight": 3,
+        "score": 6,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/app/page.tsx",
+    "score": 16,
+    "issues": [
+      {
+        "code": "LARGE_TEXT",
+        "count": 2,
+        "weight": 2,
+        "score": 4,
+        "message": "Titre très grand à contrôler sur 320–390 px."
+      },
+      {
+        "code": "ABSOLUTE",
+        "count": 6,
+        "weight": 1,
+        "score": 6,
+        "message": "Position absolue à contrôler sur petits écrans."
+      },
+      {
+        "code": "OVERFLOW_HIDDEN",
+        "count": 2,
+        "weight": 2,
+        "score": 4,
+        "message": "Peut masquer un texte ou une action sur mobile."
+      },
+      {
+        "code": "GRID_4_PLUS",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Grille dense à prévoir en une colonne sur mobile."
+      }
+    ]
+  },
+  {
+    "file": "src/app/souls/page.tsx",
+    "score": 16,
+    "issues": [
+      {
+        "code": "TABLE",
+        "count": 1,
+        "weight": 4,
+        "score": 4,
+        "message": "Tableau à rendre scrollable ou à doubler avec des cartes mobiles."
+      },
+      {
+        "code": "FIXED_WIDTH",
+        "count": 1,
+        "weight": 4,
+        "score": 4,
+        "message": "Largeur fixe importante susceptible de dépasser l’écran."
+      },
+      {
+        "code": "ABSOLUTE",
+        "count": 1,
+        "weight": 1,
+        "score": 1,
+        "message": "Position absolue à contrôler sur petits écrans."
+      },
+      {
+        "code": "OVERFLOW_HIDDEN",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Peut masquer un texte ou une action sur mobile."
+      },
+      {
+        "code": "GRID_4_PLUS",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Grille dense à prévoir en une colonne sur mobile."
+      },
+      {
+        "code": "LONG_FORM",
+        "count": 1,
+        "weight": 3,
+        "score": 3,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/app/attendance/reports/[eventId]/page.tsx",
+    "score": 15,
+    "issues": [
+      {
+        "code": "ABSOLUTE",
+        "count": 2,
+        "weight": 1,
+        "score": 2,
+        "message": "Position absolue à contrôler sur petits écrans."
+      },
+      {
+        "code": "OVERFLOW_HIDDEN",
+        "count": 2,
+        "weight": 2,
+        "score": 4,
+        "message": "Peut masquer un texte ou une action sur mobile."
+      },
+      {
+        "code": "LONG_FORM",
+        "count": 3,
+        "weight": 3,
+        "score": 9,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/app/settings/users/new/page.tsx",
+    "score": 15,
+    "issues": [
+      {
+        "code": "LONG_FORM",
+        "count": 5,
+        "weight": 3,
+        "score": 15,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/app/teachings/page.tsx",
+    "score": 15,
+    "issues": [
+      {
+        "code": "ABSOLUTE",
+        "count": 1,
+        "weight": 1,
+        "score": 1,
+        "message": "Position absolue à contrôler sur petits écrans."
+      },
+      {
+        "code": "OVERFLOW_HIDDEN",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Peut masquer un texte ou une action sur mobile."
+      },
+      {
+        "code": "LONG_FORM",
+        "count": 4,
+        "weight": 3,
+        "score": 12,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/components/bible/BibleReaderClient.tsx",
+    "score": 15,
+    "issues": [
+      {
+        "code": "ABSOLUTE",
+        "count": 1,
+        "weight": 1,
+        "score": 1,
+        "message": "Position absolue à contrôler sur petits écrans."
+      },
+      {
+        "code": "OVERFLOW_HIDDEN",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Peut masquer un texte ou une action sur mobile."
+      },
+      {
+        "code": "LONG_FORM",
+        "count": 4,
+        "weight": 3,
+        "score": 12,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/components/public/AppointmentForm.tsx",
+    "score": 15,
+    "issues": [
+      {
+        "code": "LONG_FORM",
+        "count": 5,
+        "weight": 3,
+        "score": 15,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/components/public/PrayerRequestForm.tsx",
+    "score": 15,
+    "issues": [
+      {
+        "code": "LONG_FORM",
+        "count": 5,
+        "weight": 3,
+        "score": 15,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/components/settings/TrainingProgramEditForm.tsx",
+    "score": 15,
+    "issues": [
+      {
+        "code": "LONG_FORM",
+        "count": 5,
+        "weight": 3,
+        "score": 15,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/app/extensions/activities/page.tsx",
+    "score": 14,
+    "issues": [
+      {
+        "code": "TABLE",
+        "count": 1,
+        "weight": 4,
+        "score": 4,
+        "message": "Tableau à rendre scrollable ou à doubler avec des cartes mobiles."
+      },
+      {
+        "code": "FIXED_WIDTH",
+        "count": 1,
+        "weight": 4,
+        "score": 4,
+        "message": "Largeur fixe importante susceptible de dépasser l’écran."
+      },
+      {
+        "code": "LONG_FORM",
+        "count": 2,
+        "weight": 3,
+        "score": 6,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/app/members/page.tsx",
+    "score": 14,
+    "issues": [
+      {
+        "code": "TABLE",
+        "count": 1,
+        "weight": 4,
+        "score": 4,
+        "message": "Tableau à rendre scrollable ou à doubler avec des cartes mobiles."
+      },
+      {
+        "code": "FIXED_WIDTH",
+        "count": 1,
+        "weight": 4,
+        "score": 4,
+        "message": "Largeur fixe importante susceptible de dépasser l’écran."
+      },
+      {
+        "code": "ABSOLUTE",
+        "count": 1,
+        "weight": 1,
+        "score": 1,
+        "message": "Position absolue à contrôler sur petits écrans."
+      },
+      {
+        "code": "OVERFLOW_HIDDEN",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Peut masquer un texte ou une action sur mobile."
+      },
+      {
+        "code": "LONG_FORM",
+        "count": 1,
+        "weight": 3,
+        "score": 3,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/components/account/ProfileSettingsForm.tsx",
+    "score": 14,
+    "issues": [
+      {
+        "code": "OVERFLOW_HIDDEN",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Peut masquer un texte ou une action sur mobile."
+      },
+      {
+        "code": "LONG_FORM",
+        "count": 4,
+        "weight": 3,
+        "score": 12,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/components/attendance/AttendanceManualManager.tsx",
+    "score": 14,
+    "issues": [
+      {
+        "code": "TABLE",
+        "count": 1,
+        "weight": 4,
+        "score": 4,
+        "message": "Tableau à rendre scrollable ou à doubler avec des cartes mobiles."
+      },
+      {
+        "code": "FIXED_WIDTH",
+        "count": 1,
+        "weight": 4,
+        "score": 4,
+        "message": "Largeur fixe importante susceptible de dépasser l’écran."
+      },
+      {
+        "code": "ABSOLUTE",
+        "count": 1,
+        "weight": 1,
+        "score": 1,
+        "message": "Position absolue à contrôler sur petits écrans."
+      },
+      {
+        "code": "OVERFLOW_HIDDEN",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Peut masquer un texte ou une action sur mobile."
+      },
+      {
+        "code": "LONG_FORM",
+        "count": 1,
+        "weight": 3,
+        "score": 3,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/components/layout/SuperAdminShell.tsx",
+    "score": 13,
+    "issues": [
+      {
+        "code": "FIXED_WIDTH",
+        "count": 1,
+        "weight": 4,
+        "score": 4,
+        "message": "Largeur fixe importante susceptible de dépasser l’écran."
+      },
+      {
+        "code": "FIXED_POSITION",
+        "count": 2,
+        "weight": 3,
+        "score": 6,
+        "message": "Élément fixe : vérifier chevauchements et safe areas."
+      },
+      {
+        "code": "ABSOLUTE",
+        "count": 3,
+        "weight": 1,
+        "score": 3,
+        "message": "Position absolue à contrôler sur petits écrans."
+      }
+    ]
+  },
+  {
+    "file": "src/app/departments/page.tsx",
+    "score": 12,
+    "issues": [
+      {
+        "code": "TABLE",
+        "count": 1,
+        "weight": 4,
+        "score": 4,
+        "message": "Tableau à rendre scrollable ou à doubler avec des cartes mobiles."
+      },
+      {
+        "code": "FIXED_WIDTH",
+        "count": 1,
+        "weight": 4,
+        "score": 4,
+        "message": "Largeur fixe importante susceptible de dépasser l’écran."
+      },
+      {
+        "code": "ABSOLUTE",
+        "count": 1,
+        "weight": 1,
+        "score": 1,
+        "message": "Position absolue à contrôler sur petits écrans."
+      },
+      {
+        "code": "LONG_FORM",
+        "count": 1,
+        "weight": 3,
+        "score": 3,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/app/events/page.tsx",
+    "score": 12,
+    "issues": [
+      {
+        "code": "TABLE",
+        "count": 1,
+        "weight": 4,
+        "score": 4,
+        "message": "Tableau à rendre scrollable ou à doubler avec des cartes mobiles."
+      },
+      {
+        "code": "FIXED_WIDTH",
+        "count": 1,
+        "weight": 4,
+        "score": 4,
+        "message": "Largeur fixe importante susceptible de dépasser l’écran."
+      },
+      {
+        "code": "ABSOLUTE",
+        "count": 1,
+        "weight": 1,
+        "score": 1,
+        "message": "Position absolue à contrôler sur petits écrans."
+      },
+      {
+        "code": "LONG_FORM",
+        "count": 1,
+        "weight": 3,
+        "score": 3,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/app/super-admin/churches/page.tsx",
+    "score": 12,
+    "issues": [
+      {
+        "code": "ABSOLUTE",
+        "count": 3,
+        "weight": 1,
+        "score": 3,
+        "message": "Position absolue à contrôler sur petits écrans."
+      },
+      {
+        "code": "OVERFLOW_HIDDEN",
+        "count": 2,
+        "weight": 2,
+        "score": 4,
+        "message": "Peut masquer un texte ou une action sur mobile."
+      },
+      {
+        "code": "GRID_4_PLUS",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Grille dense à prévoir en une colonne sur mobile."
+      },
+      {
+        "code": "LONG_FORM",
+        "count": 1,
+        "weight": 3,
+        "score": 3,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/components/public/TestimonyForm.tsx",
+    "score": 12,
+    "issues": [
+      {
+        "code": "LONG_FORM",
+        "count": 4,
+        "weight": 3,
+        "score": 12,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/components/settings/LiveStreamSettingsForm.tsx",
+    "score": 12,
+    "issues": [
+      {
+        "code": "LONG_FORM",
+        "count": 4,
+        "weight": 3,
+        "score": 12,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/components/settings/TrainingProgramForm.tsx",
+    "score": 12,
+    "issues": [
+      {
+        "code": "LONG_FORM",
+        "count": 4,
+        "weight": 3,
+        "score": 12,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/components/super-admin/SuperAdminChurchUserForm.tsx",
+    "score": 12,
+    "issues": [
+      {
+        "code": "LONG_FORM",
+        "count": 4,
+        "weight": 3,
+        "score": 12,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/app/administration/tasks/[id]/page.tsx",
+    "score": 11,
+    "issues": [
+      {
+        "code": "GRID_4_PLUS",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Grille dense à prévoir en une colonne sur mobile."
+      },
+      {
+        "code": "LONG_FORM",
+        "count": 3,
+        "weight": 3,
+        "score": 9,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/app/administration/transmissions/[id]/page.tsx",
+    "score": 11,
+    "issues": [
+      {
+        "code": "GRID_4_PLUS",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Grille dense à prévoir en une colonne sur mobile."
+      },
+      {
+        "code": "LONG_FORM",
+        "count": 3,
+        "weight": 3,
+        "score": 9,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/app/finance/expenses/[id]/page.tsx",
+    "score": 11,
+    "issues": [
+      {
+        "code": "GRID_4_PLUS",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Grille dense à prévoir en une colonne sur mobile."
+      },
+      {
+        "code": "LONG_FORM",
+        "count": 3,
+        "weight": 3,
+        "score": 9,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/app/finance/offerings/[id]/page.tsx",
+    "score": 11,
+    "issues": [
+      {
+        "code": "GRID_4_PLUS",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Grille dense à prévoir en une colonne sur mobile."
+      },
+      {
+        "code": "LONG_FORM",
+        "count": 3,
+        "weight": 3,
+        "score": 9,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/components/members/MemberCardPrint.tsx",
+    "score": 11,
+    "issues": [
+      {
+        "code": "ABSOLUTE",
+        "count": 3,
+        "weight": 1,
+        "score": 3,
+        "message": "Position absolue à contrôler sur petits écrans."
+      },
+      {
+        "code": "OVERFLOW_HIDDEN",
+        "count": 4,
+        "weight": 2,
+        "score": 8,
+        "message": "Peut masquer un texte ou une action sur mobile."
+      }
+    ]
+  },
+  {
+    "file": "src/components/public/bible/BibleReaderClient.tsx",
+    "score": 11,
+    "issues": [
+      {
+        "code": "GRID_4_PLUS",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Grille dense à prévoir en une colonne sur mobile."
+      },
+      {
+        "code": "LONG_FORM",
+        "count": 3,
+        "weight": 3,
+        "score": 9,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/app/extensions/page.tsx",
+    "score": 10,
+    "issues": [
+      {
+        "code": "TABLE",
+        "count": 1,
+        "weight": 4,
+        "score": 4,
+        "message": "Tableau à rendre scrollable ou à doubler avec des cartes mobiles."
+      },
+      {
+        "code": "FIXED_WIDTH",
+        "count": 1,
+        "weight": 4,
+        "score": 4,
+        "message": "Largeur fixe importante susceptible de dépasser l’écran."
+      },
+      {
+        "code": "GRID_4_PLUS",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Grille dense à prévoir en une colonne sur mobile."
+      }
+    ]
+  },
+  {
+    "file": "src/app/finance/donations/page.tsx",
+    "score": 10,
+    "issues": [
+      {
+        "code": "WHITESPACE_NOWRAP",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Texte non sécable à vérifier sur téléphone."
+      },
+      {
+        "code": "OVERFLOW_HIDDEN",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Peut masquer un texte ou une action sur mobile."
+      },
+      {
+        "code": "LONG_FORM",
+        "count": 2,
+        "weight": 3,
+        "score": 6,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/app/super-admin/security/page.tsx",
+    "score": 10,
+    "issues": [
+      {
+        "code": "TABLE",
+        "count": 1,
+        "weight": 4,
+        "score": 4,
+        "message": "Tableau à rendre scrollable ou à doubler avec des cartes mobiles."
+      },
+      {
+        "code": "FIXED_WIDTH",
+        "count": 1,
+        "weight": 4,
+        "score": 4,
+        "message": "Largeur fixe importante susceptible de dépasser l’écran."
+      },
+      {
+        "code": "GRID_4_PLUS",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Grille dense à prévoir en une colonne sur mobile."
+      }
+    ]
+  },
+  {
+    "file": "src/components/attendance/EventQrScannerClient.tsx",
+    "score": 10,
+    "issues": [
+      {
+        "code": "OVERFLOW_HIDDEN",
+        "count": 2,
+        "weight": 2,
+        "score": 4,
+        "message": "Peut masquer un texte ou une action sur mobile."
+      },
+      {
+        "code": "LONG_FORM",
+        "count": 2,
+        "weight": 3,
+        "score": 6,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/app/notifications/NotificationBroadcastForm.tsx",
+    "score": 9,
+    "issues": [
+      {
+        "code": "LONG_FORM",
+        "count": 3,
+        "weight": 3,
+        "score": 9,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/app/notifications/page.tsx",
+    "score": 9,
+    "issues": [
+      {
+        "code": "LONG_FORM",
+        "count": 3,
+        "weight": 3,
+        "score": 9,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/app/settings/donations/page.tsx",
+    "score": 9,
+    "issues": [
+      {
+        "code": "LONG_FORM",
+        "count": 3,
+        "weight": 3,
+        "score": 9,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/components/departments/DepartmentForm.tsx",
+    "score": 9,
+    "issues": [
+      {
+        "code": "LONG_FORM",
+        "count": 3,
+        "weight": 3,
+        "score": 9,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/components/notifications/NotificationBroadcastForm.tsx",
+    "score": 9,
+    "issues": [
+      {
+        "code": "LONG_FORM",
+        "count": 3,
+        "weight": 3,
+        "score": 9,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/components/public/PublicFormLayout.tsx",
+    "score": 9,
+    "issues": [
+      {
+        "code": "FIXED_POSITION",
+        "count": 1,
+        "weight": 3,
+        "score": 3,
+        "message": "Élément fixe : vérifier chevauchements et safe areas."
+      },
+      {
+        "code": "ABSOLUTE",
+        "count": 2,
+        "weight": 1,
+        "score": 2,
+        "message": "Position absolue à contrôler sur petits écrans."
+      },
+      {
+        "code": "OVERFLOW_HIDDEN",
+        "count": 2,
+        "weight": 2,
+        "score": 4,
+        "message": "Peut masquer un texte ou une action sur mobile."
+      }
+    ]
+  },
+  {
+    "file": "src/app/administration/correspondence/[id]/page.tsx",
+    "score": 8,
+    "issues": [
+      {
+        "code": "GRID_4_PLUS",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Grille dense à prévoir en une colonne sur mobile."
+      },
+      {
+        "code": "LONG_FORM",
+        "count": 2,
+        "weight": 3,
+        "score": 6,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/app/administration/minutes/[id]/page.tsx",
+    "score": 8,
+    "issues": [
+      {
+        "code": "GRID_4_PLUS",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Grille dense à prévoir en une colonne sur mobile."
+      },
+      {
+        "code": "LONG_FORM",
+        "count": 2,
+        "weight": 3,
+        "score": 6,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/app/church/[slug]/page.tsx",
+    "score": 8,
+    "issues": [
+      {
+        "code": "ABSOLUTE",
+        "count": 2,
+        "weight": 1,
+        "score": 2,
+        "message": "Position absolue à contrôler sur petits écrans."
+      },
+      {
+        "code": "OVERFLOW_HIDDEN",
+        "count": 3,
+        "weight": 2,
+        "score": 6,
+        "message": "Peut masquer un texte ou une action sur mobile."
+      }
+    ]
+  },
+  {
+    "file": "src/app/finance/page.tsx",
+    "score": 8,
+    "issues": [
+      {
+        "code": "GRID_4_PLUS",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Grille dense à prévoir en une colonne sur mobile."
+      },
+      {
+        "code": "LONG_FORM",
+        "count": 2,
+        "weight": 3,
+        "score": 6,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/app/souls/[id]/page.tsx",
+    "score": 8,
+    "issues": [
+      {
+        "code": "OVERFLOW_HIDDEN",
+        "count": 3,
+        "weight": 2,
+        "score": 6,
+        "message": "Peut masquer un texte ou une action sur mobile."
+      },
+      {
+        "code": "GRID_4_PLUS",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Grille dense à prévoir en une colonne sur mobile."
+      }
+    ]
+  },
+  {
+    "file": "src/app/super-admin/dashboard/page.tsx",
+    "score": 8,
+    "issues": [
+      {
+        "code": "TABLE",
+        "count": 1,
+        "weight": 4,
+        "score": 4,
+        "message": "Tableau à rendre scrollable ou à doubler avec des cartes mobiles."
+      },
+      {
+        "code": "OVERFLOW_HIDDEN",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Peut masquer un texte ou une action sur mobile."
+      },
+      {
+        "code": "GRID_4_PLUS",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Grille dense à prévoir en une colonne sur mobile."
+      }
+    ]
+  },
+  {
+    "file": "src/app/teachings/[id]/page.tsx",
+    "score": 8,
+    "issues": [
+      {
+        "code": "OVERFLOW_HIDDEN",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Peut masquer un texte ou une action sur mobile."
+      },
+      {
+        "code": "LONG_FORM",
+        "count": 2,
+        "weight": 3,
+        "score": 6,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/components/attendance/AttendanceManager.tsx",
+    "score": 8,
+    "issues": [
+      {
+        "code": "ABSOLUTE",
+        "count": 1,
+        "weight": 1,
+        "score": 1,
+        "message": "Position absolue à contrôler sur petits écrans."
+      },
+      {
+        "code": "OVERFLOW_HIDDEN",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Peut masquer un texte ou une action sur mobile."
+      },
+      {
+        "code": "GRID_4_PLUS",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Grille dense à prévoir en une colonne sur mobile."
+      },
+      {
+        "code": "LONG_FORM",
+        "count": 1,
+        "weight": 3,
+        "score": 3,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/components/account/AccountMenu.tsx",
+    "score": 7,
+    "issues": [
+      {
+        "code": "ABSOLUTE",
+        "count": 1,
+        "weight": 1,
+        "score": 1,
+        "message": "Position absolue à contrôler sur petits écrans."
+      },
+      {
+        "code": "OVERFLOW_HIDDEN",
+        "count": 3,
+        "weight": 2,
+        "score": 6,
+        "message": "Peut masquer un texte ou une action sur mobile."
+      }
+    ]
+  },
+  {
+    "file": "src/app/members/[id]/page.tsx",
+    "score": 6,
+    "issues": [
+      {
+        "code": "OVERFLOW_HIDDEN",
+        "count": 2,
+        "weight": 2,
+        "score": 4,
+        "message": "Peut masquer un texte ou une action sur mobile."
+      },
+      {
+        "code": "GRID_4_PLUS",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Grille dense à prévoir en une colonne sur mobile."
+      }
+    ]
+  },
+  {
+    "file": "src/app/profile/password/page.tsx",
+    "score": 6,
+    "issues": [
+      {
+        "code": "LONG_FORM",
+        "count": 2,
+        "weight": 3,
+        "score": 6,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/app/settings/trainings/page.tsx",
+    "score": 6,
+    "issues": [
+      {
+        "code": "TABLE",
+        "count": 1,
+        "weight": 4,
+        "score": 4,
+        "message": "Tableau à rendre scrollable ou à doubler avec des cartes mobiles."
+      },
+      {
+        "code": "OVERFLOW_HIDDEN",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Peut masquer un texte ou une action sur mobile."
+      }
+    ]
+  },
+  {
+    "file": "src/app/super-admin/profile/password/page.tsx",
+    "score": 6,
+    "issues": [
+      {
+        "code": "LONG_FORM",
+        "count": 2,
+        "weight": 3,
+        "score": 6,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/components/account/PasswordSettingsForm.tsx",
+    "score": 6,
+    "issues": [
+      {
+        "code": "LONG_FORM",
+        "count": 2,
+        "weight": 3,
+        "score": 6,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/components/members/MemberDepartmentsManager.tsx",
+    "score": 6,
+    "issues": [
+      {
+        "code": "LONG_FORM",
+        "count": 2,
+        "weight": 3,
+        "score": 6,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/components/members/MemberTrainingsManager.tsx",
+    "score": 6,
+    "issues": [
+      {
+        "code": "LONG_FORM",
+        "count": 2,
+        "weight": 3,
+        "score": 6,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/components/souls/SoulFollowupNoteForm.tsx",
+    "score": 6,
+    "issues": [
+      {
+        "code": "LONG_FORM",
+        "count": 2,
+        "weight": 3,
+        "score": 6,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/components/super-admin/onboarding/OnboardingDashboardClient.tsx",
+    "score": 6,
+    "issues": [
+      {
+        "code": "ABSOLUTE",
+        "count": 1,
+        "weight": 1,
+        "score": 1,
+        "message": "Position absolue à contrôler sur petits écrans."
+      },
+      {
+        "code": "OVERFLOW_HIDDEN",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Peut masquer un texte ou une action sur mobile."
+      },
+      {
+        "code": "LONG_FORM",
+        "count": 1,
+        "weight": 3,
+        "score": 3,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/components/layout/MobileBottomNav.tsx",
+    "score": 5,
+    "issues": [
+      {
+        "code": "FIXED_POSITION",
+        "count": 1,
+        "weight": 3,
+        "score": 3,
+        "message": "Élément fixe : vérifier chevauchements et safe areas."
+      },
+      {
+        "code": "GRID_4_PLUS",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Grille dense à prévoir en une colonne sur mobile."
+      }
+    ]
+  },
+  {
+    "file": "src/components/layout/MobileTopBar.tsx",
+    "score": 5,
+    "issues": [
+      {
+        "code": "FIXED_POSITION",
+        "count": 1,
+        "weight": 3,
+        "score": 3,
+        "message": "Élément fixe : vérifier chevauchements et safe areas."
+      },
+      {
+        "code": "ABSOLUTE",
+        "count": 2,
+        "weight": 1,
+        "score": 2,
+        "message": "Position absolue à contrôler sur petits écrans."
+      }
+    ]
+  },
+  {
+    "file": "src/components/members/MemberPhotoUploadForm.tsx",
+    "score": 5,
+    "issues": [
+      {
+        "code": "OVERFLOW_HIDDEN",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Peut masquer un texte ou une action sur mobile."
+      },
+      {
+        "code": "LONG_FORM",
+        "count": 1,
+        "weight": 3,
+        "score": 3,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/components/public/PublicMobileActionBar.tsx",
+    "score": 5,
+    "issues": [
+      {
+        "code": "FIXED_POSITION",
+        "count": 1,
+        "weight": 3,
+        "score": 3,
+        "message": "Élément fixe : vérifier chevauchements et safe areas."
+      },
+      {
+        "code": "GRID_4_PLUS",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Grille dense à prévoir en une colonne sur mobile."
+      }
+    ]
+  },
+  {
+    "file": "src/components/public/PublicMobileBottomNav.tsx",
+    "score": 5,
+    "issues": [
+      {
+        "code": "FIXED_POSITION",
+        "count": 1,
+        "weight": 3,
+        "score": 3,
+        "message": "Élément fixe : vérifier chevauchements et safe areas."
+      },
+      {
+        "code": "GRID_4_PLUS",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Grille dense à prévoir en une colonne sur mobile."
+      }
+    ]
+  },
+  {
+    "file": "src/app/departments/[id]/page.tsx",
+    "score": 4,
+    "issues": [
+      {
+        "code": "OVERFLOW_HIDDEN",
+        "count": 2,
+        "weight": 2,
+        "score": 4,
+        "message": "Peut masquer un texte ou une action sur mobile."
+      }
+    ]
+  },
+  {
+    "file": "src/app/events/[id]/page.tsx",
+    "score": 4,
+    "issues": [
+      {
+        "code": "OVERFLOW_HIDDEN",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Peut masquer un texte ou une action sur mobile."
+      },
+      {
+        "code": "GRID_4_PLUS",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Grille dense à prévoir en une colonne sur mobile."
+      }
+    ]
+  },
+  {
+    "file": "src/app/finance/budgets/[id]/page.tsx",
+    "score": 4,
+    "issues": [
+      {
+        "code": "OVERFLOW_HIDDEN",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Peut masquer un texte ou une action sur mobile."
+      },
+      {
+        "code": "GRID_4_PLUS",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Grille dense à prévoir en une colonne sur mobile."
+      }
+    ]
+  },
+  {
+    "file": "src/components/attendance/AttendanceQrScanner.tsx",
+    "score": 4,
+    "issues": [
+      {
+        "code": "OVERFLOW_HIDDEN",
+        "count": 2,
+        "weight": 2,
+        "score": 4,
+        "message": "Peut masquer un texte ou une action sur mobile."
+      }
+    ]
+  },
+  {
+    "file": "src/components/layout/Topbar.tsx",
+    "score": 4,
+    "issues": [
+      {
+        "code": "ABSOLUTE",
+        "count": 1,
+        "weight": 1,
+        "score": 1,
+        "message": "Position absolue à contrôler sur petits écrans."
+      },
+      {
+        "code": "LONG_FORM",
+        "count": 1,
+        "weight": 3,
+        "score": 3,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/components/mobile/ResponsiveTableShell.tsx",
+    "score": 4,
+    "issues": [
+      {
+        "code": "TABLE",
+        "count": 1,
+        "weight": 4,
+        "score": 4,
+        "message": "Tableau à rendre scrollable ou à doubler avec des cartes mobiles."
+      }
+    ]
+  },
+  {
+    "file": "src/app/church/[slug]/teachings/page.tsx",
+    "score": 3,
+    "issues": [
+      {
+        "code": "ABSOLUTE",
+        "count": 1,
+        "weight": 1,
+        "score": 1,
+        "message": "Position absolue à contrôler sur petits écrans."
+      },
+      {
+        "code": "OVERFLOW_HIDDEN",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Peut masquer un texte ou une action sur mobile."
+      }
+    ]
+  },
+  {
+    "file": "src/components/departments/DepartmentImportBox.tsx",
+    "score": 3,
+    "issues": [
+      {
+        "code": "LONG_FORM",
+        "count": 1,
+        "weight": 3,
+        "score": 3,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/components/layout/ChurchDesktopTopBar.tsx",
+    "score": 3,
+    "issues": [
+      {
+        "code": "ABSOLUTE",
+        "count": 1,
+        "weight": 1,
+        "score": 1,
+        "message": "Position absolue à contrôler sur petits écrans."
+      },
+      {
+        "code": "OVERFLOW_HIDDEN",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Peut masquer un texte ou une action sur mobile."
+      }
+    ]
+  },
+  {
+    "file": "src/components/layout/SuperAdminTopBar.tsx",
+    "score": 3,
+    "issues": [
+      {
+        "code": "ABSOLUTE",
+        "count": 1,
+        "weight": 1,
+        "score": 1,
+        "message": "Position absolue à contrôler sur petits écrans."
+      },
+      {
+        "code": "OVERFLOW_HIDDEN",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Peut masquer un texte ou une action sur mobile."
+      }
+    ]
+  },
+  {
+    "file": "src/components/members/MemberImportBox.tsx",
+    "score": 3,
+    "issues": [
+      {
+        "code": "LONG_FORM",
+        "count": 1,
+        "weight": 3,
+        "score": 3,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/components/members/MemberRowActions.tsx",
+    "score": 3,
+    "issues": [
+      {
+        "code": "ABSOLUTE",
+        "count": 1,
+        "weight": 1,
+        "score": 1,
+        "message": "Position absolue à contrôler sur petits écrans."
+      },
+      {
+        "code": "OVERFLOW_HIDDEN",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Peut masquer un texte ou une action sur mobile."
+      }
+    ]
+  },
+  {
+    "file": "src/components/mobile/MobileActionBar.tsx",
+    "score": 3,
+    "issues": [
+      {
+        "code": "FIXED_POSITION",
+        "count": 1,
+        "weight": 3,
+        "score": 3,
+        "message": "Élément fixe : vérifier chevauchements et safe areas."
+      }
+    ]
+  },
+  {
+    "file": "src/components/public/ChurchTeachingsBlock.tsx",
+    "score": 3,
+    "issues": [
+      {
+        "code": "ABSOLUTE",
+        "count": 1,
+        "weight": 1,
+        "score": 1,
+        "message": "Position absolue à contrôler sur petits écrans."
+      },
+      {
+        "code": "OVERFLOW_HIDDEN",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Peut masquer un texte ou une action sur mobile."
+      }
+    ]
+  },
+  {
+    "file": "src/components/pwa/UniversalInstallButton.tsx",
+    "score": 3,
+    "issues": [
+      {
+        "code": "FIXED_POSITION",
+        "count": 1,
+        "weight": 3,
+        "score": 3,
+        "message": "Élément fixe : vérifier chevauchements et safe areas."
+      }
+    ]
+  },
+  {
+    "file": "src/components/super-admin/SuperAdminUserActions.tsx",
+    "score": 3,
+    "issues": [
+      {
+        "code": "LONG_FORM",
+        "count": 1,
+        "weight": 3,
+        "score": 3,
+        "message": "Formulaire : vérifier empilement, labels et boutons."
+      }
+    ]
+  },
+  {
+    "file": "src/app/appointments/page.tsx",
+    "score": 2,
+    "issues": [
+      {
+        "code": "GRID_4_PLUS",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Grille dense à prévoir en une colonne sur mobile."
+      }
+    ]
+  },
+  {
+    "file": "src/app/attendance/scanner/[eventId]/page.tsx",
+    "score": 2,
+    "issues": [
+      {
+        "code": "OVERFLOW_HIDDEN",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Peut masquer un texte ou une action sur mobile."
+      }
+    ]
+  },
+  {
+    "file": "src/app/church/[slug]/don/page.tsx",
+    "score": 2,
+    "issues": [
+      {
+        "code": "OVERFLOW_HIDDEN",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Peut masquer un texte ou une action sur mobile."
+      }
+    ]
+  },
+  {
+    "file": "src/app/church/[slug]/teachings/[id]/page.tsx",
+    "score": 2,
+    "issues": [
+      {
+        "code": "OVERFLOW_HIDDEN",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Peut masquer un texte ou une action sur mobile."
+      }
+    ]
+  },
+  {
+    "file": "src/app/dashboard/page.tsx",
+    "score": 2,
+    "issues": [
+      {
+        "code": "GRID_4_PLUS",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Grille dense à prévoir en une colonne sur mobile."
+      }
+    ]
+  },
+  {
+    "file": "src/app/members/[id]/qr/page.tsx",
+    "score": 2,
+    "issues": [
+      {
+        "code": "OVERFLOW_HIDDEN",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Peut masquer un texte ou une action sur mobile."
+      }
+    ]
+  },
+  {
+    "file": "src/app/patrimony/assets/[id]/page.tsx",
+    "score": 2,
+    "issues": [
+      {
+        "code": "GRID_4_PLUS",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Grille dense à prévoir en une colonne sur mobile."
+      }
+    ]
+  },
+  {
+    "file": "src/app/patrimony/page.tsx",
+    "score": 2,
+    "issues": [
+      {
+        "code": "GRID_4_PLUS",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Grille dense à prévoir en une colonne sur mobile."
+      }
+    ]
+  },
+  {
+    "file": "src/app/public-requests/page.tsx",
+    "score": 2,
+    "issues": [
+      {
+        "code": "GRID_4_PLUS",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Grille dense à prévoir en une colonne sur mobile."
+      }
+    ]
+  },
+  {
+    "file": "src/app/super-admin/settings/page.tsx",
+    "score": 2,
+    "issues": [
+      {
+        "code": "GRID_4_PLUS",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Grille dense à prévoir en une colonne sur mobile."
+      }
+    ]
+  },
+  {
+    "file": "src/components/brand/AppLogo.tsx",
+    "score": 2,
+    "issues": [
+      {
+        "code": "OVERFLOW_HIDDEN",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Peut masquer un texte ou une action sur mobile."
+      }
+    ]
+  },
+  {
+    "file": "src/components/modules/MobileModuleAccordion.tsx",
+    "score": 2,
+    "issues": [
+      {
+        "code": "OVERFLOW_HIDDEN",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Peut masquer un texte ou une action sur mobile."
+      }
+    ]
+  },
+  {
+    "file": "src/components/public/bible/PublicBibleBlock.tsx",
+    "score": 2,
+    "issues": [
+      {
+        "code": "OVERFLOW_HIDDEN",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Peut masquer un texte ou une action sur mobile."
+      }
+    ]
+  },
+  {
+    "file": "src/components/public/PublicDonationSection.tsx",
+    "score": 2,
+    "issues": [
+      {
+        "code": "OVERFLOW_HIDDEN",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Peut masquer un texte ou une action sur mobile."
+      }
+    ]
+  },
+  {
+    "file": "src/components/public/PublicTeachingsSection.tsx",
+    "score": 2,
+    "issues": [
+      {
+        "code": "OVERFLOW_HIDDEN",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Peut masquer un texte ou une action sur mobile."
+      }
+    ]
+  },
+  {
+    "file": "src/components/super-admin/onboarding/ChurchOnboardingClient.tsx",
+    "score": 2,
+    "issues": [
+      {
+        "code": "OVERFLOW_HIDDEN",
+        "count": 1,
+        "weight": 2,
+        "score": 2,
+        "message": "Peut masquer un texte ou une action sur mobile."
+      }
+    ]
+  },
+  {
+    "file": "src/components/layout/HeaderActions.tsx",
+    "score": 1,
+    "issues": [
+      {
+        "code": "ABSOLUTE",
+        "count": 1,
+        "weight": 1,
+        "score": 1,
+        "message": "Position absolue à contrôler sur petits écrans."
+      }
+    ]
+  }
+]

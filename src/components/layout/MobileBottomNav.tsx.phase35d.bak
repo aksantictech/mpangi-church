@@ -29,7 +29,8 @@ const ITEMS = [
     label: "Réglages",
     href: "/settings",
     icon: Settings,
-  }];
+  },
+];
 
 function isActive(pathname: string, href: string) {
   if (href === "/dashboard") return pathname === href;
@@ -58,7 +59,8 @@ export default function MobileBottomNav() {
                 "flex min-h-14 min-w-0 flex-col items-center justify-center gap-1 rounded-2xl px-1 text-[11px] font-black transition",
                 active
                   ? "bg-[#03357A] text-white"
-                  : "text-slate-500 hover:bg-[#EAF3FA] hover:text-[#03357A]"].join(" ")}
+                  : "text-slate-500 hover:bg-[#EAF3FA] hover:text-[#03357A]",
+              ].join(" ")}
             >
               <Icon className="h-5 w-5 shrink-0" />
               <span className="max-w-full truncate">{item.label}</span>
