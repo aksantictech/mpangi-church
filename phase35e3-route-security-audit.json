@@ -1,0 +1,312 @@
+{
+  "generatedAt": "2026-07-14T07:56:22.776Z",
+  "summary": {
+    "total": 60,
+    "public": 14,
+    "guarded": 43,
+    "criticalReview": 0,
+    "review": 3
+  },
+  "files": [
+    {
+      "file": "src/app/administration/correspondence/actions.ts",
+      "status": "GUARDED",
+      "guard": "requireAnyActionPermission"
+    },
+    {
+      "file": "src/app/administration/minutes/actions.ts",
+      "status": "GUARDED",
+      "guard": "requireAnyActionPermission"
+    },
+    {
+      "file": "src/app/administration/tasks/actions.ts",
+      "status": "GUARDED",
+      "guard": "requireAnyActionPermission"
+    },
+    {
+      "file": "src/app/administration/transmissions/actions.ts",
+      "status": "GUARDED",
+      "guard": "requireAnyActionPermission"
+    },
+    {
+      "file": "src/app/api/account/me/route.ts",
+      "status": "GUARDED",
+      "guard": "requireAuthenticatedAccess"
+    },
+    {
+      "file": "src/app/api/attendance/event-presence/route.ts",
+      "status": "GUARDED",
+      "guard": "requireAnyActionPermission"
+    },
+    {
+      "file": "src/app/api/attendance/export/route.ts",
+      "status": "GUARDED",
+      "guard": "requireAnyActionPermission"
+    },
+    {
+      "file": "src/app/api/attendance/scan/route.ts",
+      "status": "GUARDED",
+      "guard": "requireAnyActionPermission"
+    },
+    {
+      "file": "src/app/api/bible/books/route.ts",
+      "status": "PUBLIC",
+      "guard": null
+    },
+    {
+      "file": "src/app/api/bible/chapter/route.ts",
+      "status": "PUBLIC",
+      "guard": null
+    },
+    {
+      "file": "src/app/api/bible/passage/route.ts",
+      "status": "PUBLIC",
+      "guard": null
+    },
+    {
+      "file": "src/app/api/bible/search/route.ts",
+      "status": "PUBLIC",
+      "guard": null
+    },
+    {
+      "file": "src/app/api/bible/versions/route.ts",
+      "status": "PUBLIC",
+      "guard": null
+    },
+    {
+      "file": "src/app/api/dashboard/role/route.ts",
+      "status": "REVIEW",
+      "guard": null
+    },
+    {
+      "file": "src/app/api/documents/download/route.ts",
+      "status": "GUARDED",
+      "guard": "requireAnyActionPermission"
+    },
+    {
+      "file": "src/app/api/finance/reports/export/route.ts",
+      "status": "GUARDED",
+      "guard": "requireAnyActionPermission"
+    },
+    {
+      "file": "src/app/api/members/actions/route.ts",
+      "status": "GUARDED",
+      "guard": "requireAnyActionPermission"
+    },
+    {
+      "file": "src/app/api/modules/my-modules/route.ts",
+      "status": "GUARDED",
+      "guard": "requireAuthenticatedAccess"
+    },
+    {
+      "file": "src/app/api/notifications/broadcast/route.ts",
+      "status": "GUARDED",
+      "guard": "requireAnyActionPermission"
+    },
+    {
+      "file": "src/app/api/notifications/subscribe/route.ts",
+      "status": "GUARDED",
+      "guard": "requireAuthenticatedAccess"
+    },
+    {
+      "file": "src/app/api/public/church-donations/route.ts",
+      "status": "PUBLIC",
+      "guard": null
+    },
+    {
+      "file": "src/app/api/public/member-registration/route.ts",
+      "status": "PUBLIC",
+      "guard": null
+    },
+    {
+      "file": "src/app/api/publications/route.ts",
+      "status": "REVIEW",
+      "guard": null
+    },
+    {
+      "file": "src/app/api/push/subscribe/route.ts",
+      "status": "GUARDED",
+      "guard": "requireAuthenticatedAccess"
+    },
+    {
+      "file": "src/app/api/pwa/icon/route.ts",
+      "status": "PUBLIC",
+      "guard": null
+    },
+    {
+      "file": "src/app/api/pwa/icon/[size]/route.ts",
+      "status": "PUBLIC",
+      "guard": null
+    },
+    {
+      "file": "src/app/api/pwa/manifest/route.ts",
+      "status": "PUBLIC",
+      "guard": null
+    },
+    {
+      "file": "src/app/api/pwa/tenant/route.ts",
+      "status": "PUBLIC",
+      "guard": null
+    },
+    {
+      "file": "src/app/api/security/audit/route.ts",
+      "status": "GUARDED",
+      "guard": "getCurrentSecurityContext"
+    },
+    {
+      "file": "src/app/api/security/my-access/route.ts",
+      "status": "GUARDED",
+      "guard": "requireAuthenticatedAccess"
+    },
+    {
+      "file": "src/app/api/security/my-capabilities/route.ts",
+      "status": "GUARDED",
+      "guard": "getCurrentSecurityContext"
+    },
+    {
+      "file": "src/app/api/security/navigation/route.ts",
+      "status": "GUARDED",
+      "guard": "getAllowedNavigationItems"
+    },
+    {
+      "file": "src/app/api/settings/live-stream/route.ts",
+      "status": "GUARDED",
+      "guard": "requireAnyActionPermission"
+    },
+    {
+      "file": "src/app/api/settings/member-registration/route.ts",
+      "status": "GUARDED",
+      "guard": "requireAnyActionPermission"
+    },
+    {
+      "file": "src/app/api/settings/users/new/actions.ts",
+      "status": "GUARDED",
+      "guard": "requireAnyActionPermission"
+    },
+    {
+      "file": "src/app/api/souls/[id]/convert-to-member/route.ts",
+      "status": "GUARDED",
+      "guard": "requireAnyActionPermission"
+    },
+    {
+      "file": "src/app/api/super-admin/church-modules/route.ts",
+      "status": "GUARDED",
+      "guard": "requireSuperAdminAccess"
+    },
+    {
+      "file": "src/app/api/super-admin/church-users/route.ts",
+      "status": "GUARDED",
+      "guard": "requireSuperAdminAccess"
+    },
+    {
+      "file": "src/app/api/super-admin/church-users/[profileId]/route.ts",
+      "status": "GUARDED",
+      "guard": "requireSuperAdminAccess"
+    },
+    {
+      "file": "src/app/api/super-admin/modules/toggle/route.ts",
+      "status": "GUARDED",
+      "guard": "requireSuperAdminAccess"
+    },
+    {
+      "file": "src/app/api/super-admin/onboarding/route.ts",
+      "status": "GUARDED",
+      "guard": "requireSuperAdminAccess"
+    },
+    {
+      "file": "src/app/api/super-admin/route.ts",
+      "status": "GUARDED",
+      "guard": "requireSuperAdminAccess"
+    },
+    {
+      "file": "src/app/api/super-admin/users/new/actions.ts",
+      "status": "GUARDED",
+      "guard": "requireSuperAdminAccess"
+    },
+    {
+      "file": "src/app/church/[slug]/icon.png/route.ts",
+      "status": "PUBLIC",
+      "guard": null
+    },
+    {
+      "file": "src/app/church/[slug]/manifest.webmanifest/route.ts",
+      "status": "PUBLIC",
+      "guard": null
+    },
+    {
+      "file": "src/app/extensions/actions.ts",
+      "status": "REVIEW",
+      "guard": null
+    },
+    {
+      "file": "src/app/finance/actions.ts",
+      "status": "GUARDED",
+      "guard": "requireAnyActionPermission"
+    },
+    {
+      "file": "src/app/finance/budgets/actions.ts",
+      "status": "GUARDED",
+      "guard": "requireAnyActionPermission"
+    },
+    {
+      "file": "src/app/finance/donations/actions.ts",
+      "status": "GUARDED",
+      "guard": "requireAnyActionPermission"
+    },
+    {
+      "file": "src/app/manifest.json/route.ts",
+      "status": "PUBLIC",
+      "guard": null
+    },
+    {
+      "file": "src/app/my-work/actions.ts",
+      "status": "GUARDED",
+      "guard": "getCurrentSecurityContext"
+    },
+    {
+      "file": "src/app/patrimony/actions.ts",
+      "status": "GUARDED",
+      "guard": "requireAnyActionPermission"
+    },
+    {
+      "file": "src/app/profile/actions.ts",
+      "status": "GUARDED",
+      "guard": "requireAuthenticatedAccess"
+    },
+    {
+      "file": "src/app/settings/donations/actions.ts",
+      "status": "GUARDED",
+      "guard": "requireAnyActionPermission"
+    },
+    {
+      "file": "src/app/settings/roles/actions.ts",
+      "status": "GUARDED",
+      "guard": "getCurrentSecurityContext"
+    },
+    {
+      "file": "src/app/settings/users/new/actions.ts",
+      "status": "GUARDED",
+      "guard": "requireAnyActionPermission"
+    },
+    {
+      "file": "src/app/super-admin/profile/actions.ts",
+      "status": "GUARDED",
+      "guard": "requireSuperAdminAccess"
+    },
+    {
+      "file": "src/app/super-admin/users/new/actions.ts",
+      "status": "GUARDED",
+      "guard": "requireSuperAdminAccess"
+    },
+    {
+      "file": "src/app/teachings/actions.ts",
+      "status": "GUARDED",
+      "guard": "requireAnyActionPermission"
+    },
+    {
+      "file": "src/app/transmissions/actions.ts",
+      "status": "GUARDED",
+      "guard": "requireAnyActionPermission"
+    }
+  ]
+}

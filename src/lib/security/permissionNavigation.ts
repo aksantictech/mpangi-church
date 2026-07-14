@@ -198,6 +198,12 @@ const NAVIGATION_ITEMS: PermissionNavigationItem[] = [
     href: "/settings/roles",
     category: "configuration",
   },
+  {
+    code: "security",
+    label: "Journal sécurité",
+    href: "/settings/security-audit",
+    category: "configuration",
+  },
 ];
 
 export async function getAllowedNavigationItems() {

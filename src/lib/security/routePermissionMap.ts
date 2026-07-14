@@ -219,6 +219,12 @@ export const ROUTE_PERMISSION_RULES: RoutePermissionRule[] = [
     action: "view",
   },
   {
+    id: "settings-security-audit",
+    pattern: /^\/settings\/security-audit(?:\/|$)/,
+    modules: ["security"],
+    action: "view",
+  },
+  {
     id: "settings-roles",
     pattern: /^\/settings\/roles(?:\/|$)/,
     modules: ["security"],

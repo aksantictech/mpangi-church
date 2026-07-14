@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { recordSecurityEvent } from "@/lib/security/securityAudit";
 import {
   canAccessModule,
   getCurrentSecurityContext,
@@ -45,6 +46,14 @@ export async function requireAnyModulePermission(
   );
 
   if (!allowed) {
+    await recordSecurityEvent({
+      action: "permission.denied",
+      resourceType: "module",
+      status: "denied",
+      severity: "high",
+      metadata: { modules: moduleCodes, permissionAction: action, mode: "any" },
+    });
+
     redirect(
       `/unauthorized?reason=module_access&modules=${encodeURIComponent(
         moduleCodes.join(",")
@@ -65,6 +74,14 @@ export async function requireAllModulePermissions(
   );
 
   if (!allowed) {
+    await recordSecurityEvent({
+      action: "permission.denied",
+      resourceType: "module",
+      status: "denied",
+      severity: "high",
+      metadata: { modules: moduleCodes, permissionAction: action, mode: "all" },
+    });
+
     redirect(
       `/unauthorized?reason=module_access_all&modules=${encodeURIComponent(
         moduleCodes.join(",")

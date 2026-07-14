@@ -1,0 +1,14 @@
+{
+  "generatedAt": "2026-07-14T07:56:22.670Z",
+  "summary": {
+    "churches": 5,
+    "profiles": 12,
+    "permissions": 1000,
+    "tasks": 0,
+    "auditLogs": 0,
+    "findings": 0,
+    "tableErrors": 0
+  },
+  "findings": [],
+  "errors": []
+}
