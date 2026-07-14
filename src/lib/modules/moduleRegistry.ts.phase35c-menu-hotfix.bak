@@ -269,14 +269,6 @@ export const MODULE_MENU_ITEMS: ModuleMenuItem[] = [
   },
   {
     code: "offerings",
-    label: "Dons reçus",
-    href: "/finance/donations",
-    icon: HandCoins,
-    category: "finance",
-  },
-
-  {
-    code: "offerings",
     label: "Entrées / offrandes",
     href: "/finance/offerings",
     icon: ReceiptText,

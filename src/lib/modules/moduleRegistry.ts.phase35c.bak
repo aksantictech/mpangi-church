@@ -7,7 +7,6 @@ import {
   ClipboardList,
   FileText,
   HeartHandshake,
-  HandCoins,
   Home,
   Inbox,
   Landmark,
@@ -267,14 +266,6 @@ export const MODULE_MENU_ITEMS: ModuleMenuItem[] = [
     icon: Wallet,
     category: "finance",
   },
-  {
-    code: "offerings",
-    label: "Dons reçus",
-    href: "/finance/donations",
-    icon: HandCoins,
-    category: "finance",
-  },
-
   {
     code: "offerings",
     label: "Entrées / offrandes",
