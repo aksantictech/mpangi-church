@@ -45,3 +45,11 @@ next-env.d.ts
 mobile-performance-report.json
 public-assets-report.json
 backup-files-report.json
+
+mpangi-production-stabilization-context.zip
+
+.phase35s-backup/
+
+.env.backup
+
+backups/
