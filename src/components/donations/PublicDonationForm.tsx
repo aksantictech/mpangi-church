@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  ArrowLeft,
   Banknote,
   Building2,
   CheckCircle2,
@@ -10,11 +11,27 @@ import {
   LockKeyhole,
   Smartphone,
 } from "lucide-react";
-import { FormEvent, useMemo, useState } from "react";
 import {
-  DONATION_METHODS,
+  FormEvent,
+  useMemo,
+  useState,
+} from "react";
+import {
+  DONATION_PAYMENT_CHANNELS,
   DONATION_PURPOSES,
+  type DonationPaymentChannel,
 } from "@/lib/donations/constants";
+
+type MobileMoneyChannel = {
+  value:
+    | "mpesa"
+    | "airtel_money"
+    | "orange_money";
+  label: string;
+  enabled: boolean;
+  number?: string | null;
+  accountName?: string | null;
+};
 
 type ChurchDonationConfig = {
   slug: string;
@@ -23,10 +40,11 @@ type ChurchDonationConfig = {
   defaultCurrency: string;
   allowedCurrencies: string[];
   minimumAmount: number;
-  mobileMoneyNumber?: string | null;
-  mobileMoneyName?: string | null;
+  mobileMoneyChannels: MobileMoneyChannel[];
+  cardEnabled: boolean;
   cardUrl?: string | null;
   cardProviderName?: string | null;
+  bankEnabled: boolean;
   bankName?: string | null;
   bankAccountName?: string | null;
   bankAccountNumber?: string | null;
@@ -36,8 +54,47 @@ type ChurchDonationConfig = {
   cashEnabled: boolean;
 };
 
-const METHOD_ICONS = {
-  mobile_money: Smartphone,
+type PaymentOption = {
+  value: DonationPaymentChannel;
+  label: string;
+  method:
+    | "mobile_money"
+    | "card"
+    | "bank_transfer"
+    | "cash";
+  description: string;
+};
+
+type DonationResult = {
+  reference: string;
+  status: string;
+  confirmationUrl: string;
+  paymentUrl?: string | null;
+  instructions?: {
+    mobileMoney?: {
+      operator?: string | null;
+      number?: string | null;
+      accountName?: string | null;
+    } | null;
+    bank?: {
+      bankName?: string | null;
+      accountName?: string | null;
+      accountNumber?: string | null;
+      iban?: string | null;
+      swift?: string | null;
+      details?: string | null;
+    } | null;
+    receiptEmail?: string | null;
+  };
+};
+
+const CHANNEL_ICONS: Record<
+  DonationPaymentChannel,
+  typeof Smartphone
+> = {
+  mpesa: Smartphone,
+  airtel_money: Smartphone,
+  orange_money: Smartphone,
   card: CreditCard,
   bank_transfer: Building2,
   cash: Banknote,
@@ -48,85 +105,196 @@ export default function PublicDonationForm({
 }: {
   church: ChurchDonationConfig;
 }) {
+  const [step, setStep] = useState<1 | 2>(1);
+
   const [amount, setAmount] = useState("");
-  const [currency, setCurrency] = useState(church.defaultCurrency);
-  const [method, setMethod] = useState("mobile_money");
-  const [purpose, setPurpose] = useState("offering");
-  const [donorName, setDonorName] = useState("");
-  const [donorEmail, setDonorEmail] = useState("");
-  const [donorPhone, setDonorPhone] = useState("");
+  const [currency, setCurrency] =
+    useState(church.defaultCurrency);
+  const [purpose, setPurpose] =
+    useState("offering");
+
+  const [donorName, setDonorName] =
+    useState("");
+  const [donorEmail, setDonorEmail] =
+    useState("");
+  const [donorPhone, setDonorPhone] =
+    useState("");
   const [note, setNote] = useState("");
-  const [isAnonymous, setIsAnonymous] = useState(false);
+  const [isAnonymous, setIsAnonymous] =
+    useState(false);
 
-  const [submitting, setSubmitting] = useState(false);
+  const [channel, setChannel] =
+    useState<DonationPaymentChannel | "">("");
+
+  const [submitting, setSubmitting] =
+    useState(false);
   const [error, setError] = useState("");
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] =
+    useState<DonationResult | null>(null);
 
-  const availableMethods = useMemo(
-    () =>
-      DONATION_METHODS.filter((item) => {
-        if (item.value === "mobile_money") {
-          return Boolean(church.mobileMoneyNumber);
+  const paymentOptions =
+    useMemo<PaymentOption[]>(() => {
+      const options: PaymentOption[] = [];
+
+      for (const item of church.mobileMoneyChannels) {
+        if (item.enabled && item.number) {
+          options.push({
+            value: item.value,
+            label: item.label,
+            method: "mobile_money",
+            description:
+              "Transfert vers le numéro officiel de l’église.",
+          });
         }
+      }
 
-        if (item.value === "card") {
-          return Boolean(church.cardUrl);
-        }
+      if (church.cardEnabled && church.cardUrl) {
+        options.push({
+          value: "card",
+          label:
+            church.cardProviderName ||
+            "Carte bancaire",
+          method: "card",
+          description:
+            "Ouverture de la page sécurisée du prestataire.",
+        });
+      }
 
-        if (item.value === "bank_transfer") {
-          return Boolean(
-            church.bankAccountNumber || church.bankIban
-          );
-        }
+      if (
+        church.bankEnabled &&
+        (
+          church.bankAccountNumber ||
+          church.bankIban
+        )
+      ) {
+        options.push({
+          value: "bank_transfer",
+          label: "Virement bancaire",
+          method: "bank_transfer",
+          description:
+            "Coordonnées bancaires officielles de l’église.",
+        });
+      }
 
-        if (item.value === "cash") {
-          return church.cashEnabled;
-        }
+      if (church.cashEnabled) {
+        options.push({
+          value: "cash",
+          label: "Espèces",
+          method: "cash",
+          description:
+            "Enregistrez une référence avant la remise.",
+        });
+      }
 
-        return false;
-      }),
-    [church]
-  );
+      return options;
+    }, [church]);
 
-  async function submitDonation(event: FormEvent) {
+  const selectedOption =
+    paymentOptions.find(
+      (item) => item.value === channel
+    ) || null;
+
+  function continueToPayment() {
+    setError("");
+
+    const numericAmount = Number(amount);
+
+    if (
+      !Number.isFinite(numericAmount) ||
+      numericAmount < church.minimumAmount
+    ) {
+      setError(
+        `Le montant minimum est de ${church.minimumAmount} ${currency}.`
+      );
+      return;
+    }
+
+    if (!isAnonymous && !donorName.trim()) {
+      setError(
+        "Renseignez votre nom ou activez le don anonyme."
+      );
+      return;
+    }
+
+    if (paymentOptions.length === 0) {
+      setError(
+        "Aucun moyen de paiement n’est configuré."
+      );
+      return;
+    }
+
+    if (!channel) {
+      setChannel(paymentOptions[0].value);
+    }
+
+    setStep(2);
+  }
+
+  async function submitDonation(
+    event: FormEvent
+  ) {
     event.preventDefault();
+
+    if (!selectedOption) {
+      setError(
+        "Choisissez un moyen de paiement."
+      );
+      return;
+    }
+
+    if (
+      selectedOption.method ===
+        "mobile_money" &&
+      !donorPhone.trim()
+    ) {
+      setError(
+        "Le numéro de téléphone du donateur est requis pour le suivi Mobile Money."
+      );
+      return;
+    }
+
     setSubmitting(true);
     setError("");
     setResult(null);
 
     try {
-      const response = await fetch("/api/public/church-donations", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          slug: church.slug,
-          amount: Number(amount),
-          currency,
-          method,
-          purpose,
-          donorName,
-          donorEmail,
-          donorPhone,
-          note,
-          isAnonymous,
-        }),
-      });
+      const response = await fetch(
+        "/api/public/church-donations",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            slug: church.slug,
+            amount: Number(amount),
+            currency,
+            channel: selectedOption.value,
+            purpose,
+            donorName,
+            donorEmail,
+            donorPhone,
+            note,
+            isAnonymous,
+          }),
+        }
+      );
 
       const payload = await response.json();
 
       if (!response.ok) {
         throw new Error(
-          payload?.error || "Impossible d’enregistrer le don."
+          payload?.error ||
+            "Impossible d’enregistrer le don."
         );
       }
 
       setResult(payload.data);
 
       if (payload.data?.paymentUrl) {
-        window.location.href = payload.data.paymentUrl;
-        return;
+        window.location.assign(
+          payload.data.paymentUrl
+        );
       }
     } catch (submitError: any) {
       setError(
@@ -146,70 +314,113 @@ export default function PublicDonationForm({
         </div>
 
         <h2 className="mt-5 text-2xl font-black text-[#03357A]">
-          Intention de don enregistrée
+          Don enregistré
         </h2>
 
         <p className="mt-3 text-sm leading-7 text-slate-600">
-          Votre référence est :
+          Conservez cette référence :
         </p>
 
         <div className="mt-3 rounded-2xl bg-[#EAF3FA] p-4 text-center text-lg font-black tracking-wide text-[#03357A]">
           {result.reference}
         </div>
 
-        {method === "mobile_money" &&
-          result.instructions?.mobileMoney && (
-            <div className="mt-5 rounded-2xl border border-[#DCEAF5] bg-[#F8FBFD] p-4">
-              <p className="font-black text-[#03357A]">
-                Effectuez le transfert Mobile Money
-              </p>
-              <p className="mt-2 text-sm text-slate-600">
-                Opérateur :{" "}
-                <strong>
-                  {result.instructions.mobileMoney.operator}
-                </strong>
-              </p>
-              <p className="mt-1 text-sm text-slate-600">
-                Numéro :{" "}
-                <strong>
-                  {result.instructions.mobileMoney.number}
-                </strong>
-              </p>
-              <p className="mt-3 text-xs leading-6 text-slate-500">
-                Utilisez la référence du don comme motif lorsque le
-                service le permet.
-              </p>
-            </div>
-          )}
+        {result.instructions?.mobileMoney && (
+          <div className="mt-5 rounded-2xl border border-[#C9DBEA] bg-[#F8FBFD] p-4">
+            <p className="font-black text-[#03357A]">
+              Effectuez maintenant le transfert
+            </p>
 
-        {method === "bank_transfer" &&
-          result.instructions?.bank && (
-            <div className="mt-5 space-y-2 rounded-2xl border border-[#DCEAF5] bg-[#F8FBFD] p-4 text-sm text-slate-600">
-              <p className="font-black text-[#03357A]">
-                Coordonnées bancaires
-              </p>
-              <p>Banque : {result.instructions.bank.bankName || "-"}</p>
-              <p>
-                Titulaire :{" "}
-                {result.instructions.bank.accountName || "-"}
-              </p>
-              <p>
-                Compte :{" "}
-                {result.instructions.bank.accountNumber || "-"}
-              </p>
-              <p>IBAN : {result.instructions.bank.iban || "-"}</p>
-              <p>SWIFT : {result.instructions.bank.swift || "-"}</p>
-              {result.instructions.bank.details && (
-                <p className="whitespace-pre-line pt-2">
-                  {result.instructions.bank.details}
-                </p>
+            <dl className="mt-3 grid gap-2 text-sm text-slate-700">
+              <div>
+                <dt className="font-bold">
+                  Opérateur
+                </dt>
+                <dd>
+                  {result.instructions.mobileMoney.operator ||
+                    "-"}
+                </dd>
+              </div>
+
+              <div>
+                <dt className="font-bold">
+                  Numéro
+                </dt>
+                <dd className="text-lg font-black text-[#03357A]">
+                  {result.instructions.mobileMoney.number ||
+                    "-"}
+                </dd>
+              </div>
+
+              {result.instructions.mobileMoney
+                .accountName && (
+                <div>
+                  <dt className="font-bold">
+                    Titulaire
+                  </dt>
+                  <dd>
+                    {
+                      result.instructions.mobileMoney
+                        .accountName
+                    }
+                  </dd>
+                </div>
               )}
-            </div>
-          )}
+            </dl>
 
-        {method === "cash" && (
-          <div className="mt-5 rounded-2xl border border-[#DCEAF5] bg-[#F8FBFD] p-4 text-sm leading-7 text-slate-600">
-            Présentez cette référence lors de la remise de votre don à
+            <p className="mt-3 text-xs leading-6 text-slate-500">
+              Indiquez la référence du don comme motif lorsque
+              l’opérateur le permet. L’équipe financière confirmera
+              ensuite la réception.
+            </p>
+          </div>
+        )}
+
+        {result.instructions?.bank && (
+          <div className="mt-5 space-y-2 rounded-2xl border border-[#C9DBEA] bg-[#F8FBFD] p-4 text-sm text-slate-700">
+            <p className="font-black text-[#03357A]">
+              Coordonnées bancaires
+            </p>
+            <p>
+              Banque :{" "}
+              {result.instructions.bank.bankName ||
+                "-"}
+            </p>
+            <p>
+              Titulaire :{" "}
+              {result.instructions.bank.accountName ||
+                "-"}
+            </p>
+            <p>
+              Compte :{" "}
+              {result.instructions.bank
+                .accountNumber || "-"}
+            </p>
+            <p>
+              IBAN :{" "}
+              {result.instructions.bank.iban ||
+                "-"}
+            </p>
+            <p>
+              SWIFT :{" "}
+              {result.instructions.bank.swift ||
+                "-"}
+            </p>
+
+            {result.instructions.bank.details && (
+              <p className="whitespace-pre-line pt-2">
+                {
+                  result.instructions.bank
+                    .details
+                }
+              </p>
+            )}
+          </div>
+        )}
+
+        {selectedOption?.method === "cash" && (
+          <div className="mt-5 rounded-2xl border border-[#C9DBEA] bg-[#F8FBFD] p-4 text-sm leading-7 text-slate-700">
+            Présentez la référence lors de la remise du don à
             l’église.
           </div>
         )}
@@ -235,14 +446,41 @@ export default function PublicDonationForm({
         </div>
 
         <div className="min-w-0">
-          <h2 className="text-xl font-black text-[#03357A] sm:text-2xl">
-            Préparer mon don
+          <p className="text-xs font-black uppercase tracking-[0.16em] text-[#3F79B3]">
+            Étape {step} sur 2
+          </p>
+
+          <h2 className="mt-1 text-xl font-black text-[#03357A] sm:text-2xl">
+            {step === 1
+              ? "Informations du don"
+              : "Choisissez le paiement"}
           </h2>
+
           <p className="mt-1 text-sm leading-6 text-slate-500">
-            Choisissez le montant, l’affectation et le mode de
-            donation.
+            {step === 1
+              ? "Montant, affectation et coordonnées de suivi."
+              : "Sélectionnez le canal qui sera utilisé pour ce don."}
           </p>
         </div>
+      </div>
+
+      <div className="mt-5 grid grid-cols-2 gap-2">
+        <div
+          className={[
+            "h-2 rounded-full",
+            step >= 1
+              ? "bg-[#2563EB]"
+              : "bg-slate-200",
+          ].join(" ")}
+        />
+        <div
+          className={[
+            "h-2 rounded-full",
+            step >= 2
+              ? "bg-[#8B5CF6]"
+              : "bg-slate-200",
+          ].join(" ")}
+        />
       </div>
 
       {error && (
@@ -251,180 +489,273 @@ export default function PublicDonationForm({
         </div>
       )}
 
-      <div className="mt-6 grid gap-4 sm:grid-cols-[1fr_150px]">
-        <label className="space-y-2">
-          <span className="text-sm font-black text-[#03357A]">
-            Montant
-          </span>
-          <input
-            required
-            type="number"
-            inputMode="decimal"
-            min={church.minimumAmount}
-            step="0.01"
-            value={amount}
-            onChange={(event) => setAmount(event.target.value)}
-            placeholder={`Minimum ${church.minimumAmount}`}
-            className="min-h-12 w-full rounded-2xl border border-[#DCEAF5] bg-[#F8FBFD] px-4 text-base font-bold outline-none focus:border-[#03357A]"
-          />
-        </label>
+      {step === 1 ? (
+        <>
+          <div className="mt-6 grid gap-4 sm:grid-cols-[1fr_150px]">
+            <label className="space-y-2">
+              <span className="text-sm font-black text-[#03357A]">
+                Montant
+              </span>
+              <input
+                required
+                type="number"
+                inputMode="decimal"
+                min={church.minimumAmount}
+                step="0.01"
+                value={amount}
+                onChange={(event) =>
+                  setAmount(event.target.value)
+                }
+                placeholder={`Minimum ${church.minimumAmount}`}
+                className="mpangi-form-control"
+              />
+            </label>
 
-        <label className="space-y-2">
-          <span className="text-sm font-black text-[#03357A]">
-            Devise
-          </span>
-          <select
-            value={currency}
-            onChange={(event) => setCurrency(event.target.value)}
-            className="min-h-12 w-full rounded-2xl border border-[#DCEAF5] bg-[#F8FBFD] px-4 font-bold text-[#03357A] outline-none"
-          >
-            {church.allowedCurrencies.map((item) => (
-              <option key={item} value={item}>
-                {item}
-              </option>
-            ))}
-          </select>
-        </label>
-      </div>
-
-      <label className="mt-4 block space-y-2">
-        <span className="text-sm font-black text-[#03357A]">
-          Affectation
-        </span>
-        <select
-          value={purpose}
-          onChange={(event) => setPurpose(event.target.value)}
-          className="min-h-12 w-full rounded-2xl border border-[#DCEAF5] bg-[#F8FBFD] px-4 font-bold text-[#03357A] outline-none"
-        >
-          {DONATION_PURPOSES.map((item) => (
-            <option key={item.value} value={item.value}>
-              {item.label}
-            </option>
-          ))}
-        </select>
-      </label>
-
-      <fieldset className="mt-5">
-        <legend className="text-sm font-black text-[#03357A]">
-          Mode de donation
-        </legend>
-
-        <div className="mt-3 grid gap-3 sm:grid-cols-2">
-          {availableMethods.map((item) => {
-            const Icon = METHOD_ICONS[item.value];
-            const active = method === item.value;
-
-            return (
-              <button
-                key={item.value}
-                type="button"
-                onClick={() => setMethod(item.value)}
-                className={[
-                  "min-h-24 rounded-2xl border p-4 text-left transition",
-                  active
-                    ? "border-[#03357A] bg-[#EAF3FA] ring-2 ring-[#03357A]/10"
-                    : "border-[#DCEAF5] bg-[#F8FBFD]",
-                ].join(" ")}
+            <label className="space-y-2">
+              <span className="text-sm font-black text-[#03357A]">
+                Devise
+              </span>
+              <select
+                value={currency}
+                onChange={(event) =>
+                  setCurrency(event.target.value)
+                }
+                className="mpangi-form-control"
               >
-                <Icon className="h-5 w-5 text-[#03357A]" />
-                <p className="mt-3 font-black text-[#03357A]">
+                {church.allowedCurrencies.map(
+                  (item) => (
+                    <option
+                      key={item}
+                      value={item}
+                    >
+                      {item}
+                    </option>
+                  )
+                )}
+              </select>
+            </label>
+          </div>
+
+          <label className="mt-4 block space-y-2">
+            <span className="text-sm font-black text-[#03357A]">
+              Affectation
+            </span>
+            <select
+              value={purpose}
+              onChange={(event) =>
+                setPurpose(event.target.value)
+              }
+              className="mpangi-form-control"
+            >
+              {DONATION_PURPOSES.map((item) => (
+                <option
+                  key={item.value}
+                  value={item.value}
+                >
                   {item.label}
-                </p>
-                <p className="mt-1 text-xs leading-5 text-slate-500">
-                  {item.description}
-                </p>
-              </button>
-            );
-          })}
-        </div>
-      </fieldset>
+                </option>
+              ))}
+            </select>
+          </label>
 
-      <label className="mt-5 flex items-center gap-3 rounded-2xl bg-[#F8FBFD] p-4">
-        <input
-          type="checkbox"
-          checked={isAnonymous}
-          onChange={(event) => setIsAnonymous(event.target.checked)}
-          className="h-5 w-5 rounded border-[#DCEAF5]"
-        />
-        <span className="text-sm font-bold text-slate-700">
-          Effectuer ce don anonymement
-        </span>
-      </label>
-
-      {!isAnonymous && (
-        <div className="mt-5 grid gap-4 sm:grid-cols-2">
-          <label className="space-y-2">
-            <span className="text-sm font-black text-[#03357A]">
-              Nom complet
-            </span>
+          <label className="mt-5 flex items-center gap-3 rounded-2xl bg-[#F8FBFD] p-4">
             <input
-              required
-              value={donorName}
-              onChange={(event) => setDonorName(event.target.value)}
-              className="min-h-12 w-full rounded-2xl border border-[#DCEAF5] bg-[#F8FBFD] px-4 outline-none focus:border-[#03357A]"
+              type="checkbox"
+              checked={isAnonymous}
+              onChange={(event) =>
+                setIsAnonymous(
+                  event.target.checked
+                )
+              }
+              className="h-5 w-5 rounded border-[#C9DBEA]"
+            />
+            <span className="text-sm font-bold text-slate-700">
+              Effectuer ce don anonymement
+            </span>
+          </label>
+
+          <div className="mt-5 grid gap-4 sm:grid-cols-2">
+            {!isAnonymous && (
+              <label className="space-y-2">
+                <span className="text-sm font-black text-[#03357A]">
+                  Nom complet
+                </span>
+                <input
+                  value={donorName}
+                  onChange={(event) =>
+                    setDonorName(
+                      event.target.value
+                    )
+                  }
+                  className="mpangi-form-control"
+                  placeholder="Nom du donateur"
+                />
+              </label>
+            )}
+
+            <label className="space-y-2">
+              <span className="text-sm font-black text-[#03357A]">
+                Téléphone
+              </span>
+              <input
+                value={donorPhone}
+                onChange={(event) =>
+                  setDonorPhone(
+                    event.target.value
+                  )
+                }
+                className="mpangi-form-control"
+                placeholder="+243..."
+              />
+            </label>
+
+            <label className="space-y-2 sm:col-span-2">
+              <span className="text-sm font-black text-[#03357A]">
+                Email pour le suivi
+              </span>
+              <input
+                type="email"
+                value={donorEmail}
+                onChange={(event) =>
+                  setDonorEmail(
+                    event.target.value
+                  )
+                }
+                className="mpangi-form-control"
+                placeholder="Facultatif"
+              />
+            </label>
+          </div>
+
+          <label className="mt-5 block space-y-2">
+            <span className="text-sm font-black text-[#03357A]">
+              Message ou précision
+            </span>
+            <textarea
+              rows={4}
+              value={note}
+              onChange={(event) =>
+                setNote(event.target.value)
+              }
+              className="mpangi-form-control min-h-28 py-3"
+              placeholder="Facultatif"
             />
           </label>
 
-          <label className="space-y-2">
-            <span className="text-sm font-black text-[#03357A]">
-              Téléphone
-            </span>
-            <input
-              value={donorPhone}
-              onChange={(event) => setDonorPhone(event.target.value)}
-              className="min-h-12 w-full rounded-2xl border border-[#DCEAF5] bg-[#F8FBFD] px-4 outline-none focus:border-[#03357A]"
-            />
-          </label>
+          <button
+            type="button"
+            onClick={continueToPayment}
+            className="mt-5 inline-flex min-h-13 w-full items-center justify-center rounded-2xl bg-[#03357A] px-5 py-4 text-sm font-black text-white shadow-lg shadow-blue-900/15"
+          >
+            Continuer vers le paiement
+          </button>
+        </>
+      ) : (
+        <>
+          <fieldset className="mt-6">
+            <legend className="text-sm font-black text-[#03357A]">
+              Moyens disponibles
+            </legend>
 
-          <label className="space-y-2 sm:col-span-2">
-            <span className="text-sm font-black text-[#03357A]">
-              Email pour le suivi
-            </span>
-            <input
-              type="email"
-              value={donorEmail}
-              onChange={(event) => setDonorEmail(event.target.value)}
-              className="min-h-12 w-full rounded-2xl border border-[#DCEAF5] bg-[#F8FBFD] px-4 outline-none focus:border-[#03357A]"
-            />
-          </label>
-        </div>
-      )}
+            <div className="mt-3 grid gap-3 sm:grid-cols-2">
+              {paymentOptions.map((item) => {
+                const Icon =
+                  CHANNEL_ICONS[item.value];
 
-      <label className="mt-5 block space-y-2">
-        <span className="text-sm font-black text-[#03357A]">
-          Message ou précision
-        </span>
-        <textarea
-          rows={4}
-          value={note}
-          onChange={(event) => setNote(event.target.value)}
-          className="w-full rounded-2xl border border-[#DCEAF5] bg-[#F8FBFD] px-4 py-3 outline-none focus:border-[#03357A]"
-          placeholder="Facultatif"
-        />
-      </label>
+                const active =
+                  channel === item.value;
 
-      <div className="mt-5 flex items-start gap-3 rounded-2xl bg-green-50 p-4 text-sm leading-6 text-green-800">
-        <LockKeyhole className="mt-0.5 h-5 w-5 shrink-0" />
-        <p>
-          Les informations servent uniquement au suivi du don. Les
-          paiements par carte sont effectués sur le service sécurisé
-          configuré par l’église.
-        </p>
-      </div>
+                return (
+                  <button
+                    key={item.value}
+                    type="button"
+                    onClick={() =>
+                      setChannel(item.value)
+                    }
+                    className={[
+                      "min-h-28 rounded-2xl border p-4 text-left transition",
+                      active
+                        ? "border-[#03357A] bg-[#EAF3FA] ring-2 ring-[#03357A]/10"
+                        : "border-[#C9DBEA] bg-[#F8FBFD]",
+                    ].join(" ")}
+                  >
+                    <Icon className="h-6 w-6 text-[#03357A]" />
+                    <p className="mt-3 font-black text-[#03357A]">
+                      {item.label}
+                    </p>
+                    <p className="mt-1 text-xs leading-5 text-slate-600">
+                      {item.description}
+                    </p>
+                  </button>
+                );
+              })}
+            </div>
+          </fieldset>
 
-      <button
-        type="submit"
-        disabled={submitting || availableMethods.length === 0}
-        className="mt-5 inline-flex min-h-13 w-full items-center justify-center gap-2 rounded-2xl bg-[#03357A] px-5 py-4 text-sm font-black text-white shadow-lg shadow-blue-900/15 disabled:opacity-50"
-      >
-        {submitting && <Loader2 className="h-5 w-5 animate-spin" />}
-        {submitting ? "Enregistrement…" : "Continuer"}
-      </button>
+          <div className="mt-5 rounded-2xl bg-[#EAF3FA] p-4">
+            <p className="text-sm font-black text-[#03357A]">
+              Résumé du don
+            </p>
+            <p className="mt-2 text-sm font-semibold text-slate-700">
+              {amount} {currency} ·{" "}
+              {
+                DONATION_PURPOSES.find(
+                  (item) =>
+                    item.value === purpose
+                )?.label
+              }
+            </p>
+          </div>
 
-      {availableMethods.length === 0 && (
-        <p className="mt-3 text-center text-sm font-bold text-red-600">
-          Aucun mode de donation n’est encore configuré.
-        </p>
+          <div className="mt-5 flex items-start gap-3 rounded-2xl bg-green-50 p-4 text-sm leading-6 text-green-800">
+            <LockKeyhole className="mt-0.5 h-5 w-5 shrink-0" />
+            <p>
+              Mpangi-Church ne demande jamais le numéro complet
+              d’une carte bancaire. La saisie de carte se fait
+              uniquement sur la page sécurisée du prestataire.
+            </p>
+          </div>
+
+          <div className="mt-5 grid gap-3 sm:grid-cols-2">
+            <button
+              type="button"
+              onClick={() => {
+                setStep(1);
+                setError("");
+              }}
+              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-[#EAF3FA] px-5 text-sm font-black text-[#03357A]"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Modifier le don
+            </button>
+
+            <button
+              type="submit"
+              disabled={
+                submitting ||
+                paymentOptions.length === 0 ||
+                !channel
+              }
+              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-[#03357A] px-5 text-sm font-black text-white disabled:opacity-50"
+            >
+              {submitting && (
+                <Loader2 className="h-5 w-5 animate-spin" />
+              )}
+              {submitting
+                ? "Préparation…"
+                : selectedOption?.method ===
+                    "card"
+                  ? "Ouvrir le paiement sécurisé"
+                  : "Enregistrer et afficher les instructions"}
+            </button>
+          </div>
+
+          {paymentOptions.length === 0 && (
+            <p className="mt-3 text-center text-sm font-bold text-red-600">
+              Aucun moyen de paiement n’est encore configuré.
+            </p>
+          )}
+        </>
       )}
     </form>
   );

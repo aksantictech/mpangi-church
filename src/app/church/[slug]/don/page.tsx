@@ -1,16 +1,43 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, HeartHandshake, ShieldCheck } from "lucide-react";
+import {
+  ArrowLeft,
+  BookOpen,
+  HeartHandshake,
+} from "lucide-react";
+import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import PublicDonationForm from "@/components/donations/PublicDonationForm";
 import PublicMobileBottomNav from "@/components/public/PublicMobileBottomNav";
 import { createClient } from "@/lib/supabase/server";
 
 type PageProps = {
-  params: Promise<{ slug: string }>;
+  params: Promise<{
+    slug: string;
+  }>;
 };
 
-export async function generateMetadata({ params }: PageProps) {
+const DEFAULT_VERSE =
+  "Honore l’Éternel avec tes biens, et avec les prémices de tout ton revenu : alors tes greniers seront remplis d’abondance.";
+
+function isTenantHost(host: string) {
+  const rootDomain =
+    process.env.NEXT_PUBLIC_ROOT_DOMAIN ||
+    "mpangi-church.app";
+
+  const normalized = host
+    .split(":")[0]
+    .toLowerCase();
+
+  return (
+    normalized.endsWith(`.${rootDomain}`) &&
+    normalized !== `www.${rootDomain}`
+  );
+}
+
+export async function generateMetadata({
+  params,
+}: PageProps) {
   const { slug } = await params;
 
   return {
@@ -24,39 +51,67 @@ export default async function PublicDonationPage({
   params,
 }: PageProps) {
   const { slug } = await params;
-  const supabase = await createClient();
+  const requestHeaders = await headers();
 
-  const { data: church, error } = await supabase
-    .from("churches")
-    .select(
+  const returnHref = isTenantHost(
+    requestHeaders.get("host") || ""
+  )
+    ? "/"
+    : `/church/${slug}`;
+
+  const supabase =
+    await createClient();
+
+  const { data: church, error } =
+    await supabase
+      .from("churches")
+      .select(
+        `
+        id,
+        name,
+        public_name,
+        slug,
+        status,
+        public_enabled,
+        logo_url,
+
+        donation_enabled,
+        donation_message,
+        donation_bible_verse_text,
+        donation_bible_verse_reference,
+        donation_default_currency,
+        donation_allowed_currencies,
+        donation_min_amount,
+
+        donation_mpesa_enabled,
+        donation_mpesa_number,
+        donation_mpesa_name,
+
+        donation_airtel_enabled,
+        donation_airtel_number,
+        donation_airtel_name,
+
+        donation_orange_enabled,
+        donation_orange_number,
+        donation_orange_name,
+
+        donation_card_enabled,
+        donation_card_url,
+        donation_card_provider_name,
+
+        donation_bank_enabled,
+        donation_bank_name,
+        donation_bank_account_name,
+        donation_bank_account_number,
+        donation_bank_iban,
+        donation_bank_swift,
+        donation_bank_details,
+
+        donation_cash_enabled
       `
-      id,
-      name,
-      public_name,
-      slug,
-      status,
-      public_enabled,
-      logo_url,
-      donation_enabled,
-      donation_message,
-      donation_default_currency,
-      donation_allowed_currencies,
-      donation_min_amount,
-      donation_mobile_money,
-      donation_mobile_money_name,
-      donation_card_url,
-      donation_card_provider_name,
-      donation_bank_name,
-      donation_bank_account_name,
-      donation_bank_account_number,
-      donation_bank_iban,
-      donation_bank_swift,
-      donation_bank_details,
-      donation_cash_enabled
-    `
-    )
-    .eq("slug", slug)
-    .maybeSingle();
+      )
+      .eq("slug", slug)
+      .maybeSingle();
 
   if (
     error ||
@@ -73,24 +128,33 @@ export default async function PublicDonationPage({
     church.name?.trim() ||
     "Église";
 
-  const currencies = Array.isArray(church.donation_allowed_currencies)
-    ? church.donation_allowed_currencies
-        .map((item: string) => item.toUpperCase())
-        .filter(Boolean)
-    : [church.donation_default_currency || "CDF"];
+  const currencies =
+    Array.isArray(
+      church.donation_allowed_currencies
+    )
+      ? church.donation_allowed_currencies
+          .map((item: string) =>
+            item.toUpperCase()
+          )
+          .filter(Boolean)
+      : [
+          church.donation_default_currency ||
+            "CDF",
+        ];
 
-  const defaultCurrency = currencies.includes(
-    church.donation_default_currency
-  )
-    ? church.donation_default_currency
-    : currencies[0] || "CDF";
+  const defaultCurrency =
+    currencies.includes(
+      church.donation_default_currency
+    )
+      ? church.donation_default_currency
+      : currencies[0] || "CDF";
 
   return (
     <main className="min-h-screen overflow-x-hidden bg-[#F5F9FC] pb-24 lg:pb-10">
       <section className="bg-gradient-to-br from-[#03357A] via-[#2563EB] to-[#8B5CF6] px-4 py-5 text-white sm:px-6 sm:py-8">
         <div className="mx-auto max-w-6xl">
           <Link
-            href={`/church/${slug}`}
+            href={returnHref}
             className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-white/15 px-4 py-3 text-sm font-black ring-1 ring-white/20"
           >
             <ArrowLeft className="h-4 w-4" />
@@ -131,9 +195,12 @@ export default async function PublicDonationPage({
               )}
 
               <div>
-                <p className="font-black">{churchName}</p>
+                <p className="font-black">
+                  {churchName}
+                </p>
+
                 <p className="mt-1 text-xs text-blue-100">
-                  Plateforme sécurisée Mpangi-church
+                  Don et suivi sécurisé
                 </p>
               </div>
             </div>
@@ -146,33 +213,100 @@ export default async function PublicDonationPage({
           church={{
             slug,
             name: churchName,
-            donationMessage: church.donation_message,
+            donationMessage:
+              church.donation_message,
             defaultCurrency,
-            allowedCurrencies: currencies,
-            minimumAmount: Number(church.donation_min_amount || 1),
-            mobileMoneyNumber: church.donation_mobile_money,
-            mobileMoneyName: church.donation_mobile_money_name,
-            cardUrl: church.donation_card_url,
-            cardProviderName: church.donation_card_provider_name,
-            bankName: church.donation_bank_name,
-            bankAccountName: church.donation_bank_account_name,
-            bankAccountNumber: church.donation_bank_account_number,
-            bankIban: church.donation_bank_iban,
-            bankSwift: church.donation_bank_swift,
-            bankDetails: church.donation_bank_details,
-            cashEnabled: church.donation_cash_enabled !== false,
+            allowedCurrencies:
+              currencies,
+            minimumAmount: Number(
+              church.donation_min_amount ||
+                1
+            ),
+
+            mobileMoneyChannels: [
+              {
+                value: "mpesa",
+                label: "M-Pesa",
+                enabled: Boolean(
+                  church.donation_mpesa_enabled
+                ),
+                number:
+                  church.donation_mpesa_number,
+                accountName:
+                  church.donation_mpesa_name,
+              },
+              {
+                value: "airtel_money",
+                label: "Airtel Money",
+                enabled: Boolean(
+                  church.donation_airtel_enabled
+                ),
+                number:
+                  church.donation_airtel_number,
+                accountName:
+                  church.donation_airtel_name,
+              },
+              {
+                value: "orange_money",
+                label: "Orange Money",
+                enabled: Boolean(
+                  church.donation_orange_enabled
+                ),
+                number:
+                  church.donation_orange_number,
+                accountName:
+                  church.donation_orange_name,
+              },
+            ],
+
+            cardEnabled: Boolean(
+              church.donation_card_enabled
+            ),
+            cardUrl:
+              church.donation_card_url,
+            cardProviderName:
+              church.donation_card_provider_name,
+
+            bankEnabled: Boolean(
+              church.donation_bank_enabled
+            ),
+            bankName:
+              church.donation_bank_name,
+            bankAccountName:
+              church.donation_bank_account_name,
+            bankAccountNumber:
+              church.donation_bank_account_number,
+            bankIban:
+              church.donation_bank_iban,
+            bankSwift:
+              church.donation_bank_swift,
+            bankDetails:
+              church.donation_bank_details,
+
+            cashEnabled:
+              church.donation_cash_enabled !==
+              false,
           }}
         />
 
         <aside className="space-y-4">
           <div className="rounded-[1.5rem] border border-[#DCEAF5] bg-white p-5 shadow-sm">
-            <ShieldCheck className="h-7 w-7 text-green-600" />
-            <h2 className="mt-4 text-lg font-black text-[#03357A]">
-              Transparence et suivi
-            </h2>
-            <p className="mt-2 text-sm leading-7 text-slate-600">
-              Chaque intention reçoit une référence unique. L’équipe
-              financière de l’église confirme ensuite la réception.
+            <BookOpen className="h-7 w-7 text-[#8B5CF6]" />
+
+            <p className="mt-4 text-xs font-black uppercase tracking-[0.18em] text-[#8B5CF6]">
+              Donner avec foi
+            </p>
+
+            <blockquote className="mt-3 text-lg font-black leading-8 text-[#03357A]">
+              «{" "}
+              {church.donation_bible_verse_text ||
+                DEFAULT_VERSE}{" "}
+              »
+            </blockquote>
+
+            <p className="mt-3 text-sm font-black text-[#3F79B3]">
+              {church.donation_bible_verse_reference ||
+                "Proverbes 3:9-10"}
             </p>
           </div>
 
@@ -180,10 +314,15 @@ export default async function PublicDonationPage({
             <p className="text-xs font-black uppercase tracking-[0.2em] text-blue-100">
               Affectations disponibles
             </p>
+
             <ul className="mt-4 space-y-3 text-sm font-bold">
               <li>Offrandes et dîmes</li>
-              <li>Mission et évangélisation</li>
-              <li>Construction et patrimoine</li>
+              <li>
+                Mission et évangélisation
+              </li>
+              <li>
+                Construction et patrimoine
+              </li>
               <li>Actions sociales</li>
               <li>Actions de grâce</li>
             </ul>
@@ -191,7 +330,9 @@ export default async function PublicDonationPage({
         </aside>
       </section>
 
-      <PublicMobileBottomNav slug={slug} />
+      <PublicMobileBottomNav
+        slug={slug}
+      />
     </main>
   );
 }

@@ -3,6 +3,7 @@ import { CheckCircle2, Home } from "lucide-react";
 import { notFound } from "next/navigation";
 import {
   formatDonationAmount,
+  getDonationChannelLabel,
   getDonationMethodLabel,
   getDonationPurposeLabel,
   getDonationStatusLabel,
@@ -38,6 +39,7 @@ export default async function DonationSuccessPage({
       amount,
       currency,
       method,
+      payment_channel,
       purpose,
       status,
       created_at,
@@ -97,7 +99,14 @@ export default async function DonationSuccessPage({
           />
           <Info
             label="Mode"
-            value={getDonationMethodLabel(donation.method)}
+            value={
+              getDonationChannelLabel(
+                donation.payment_channel
+              ) ||
+              getDonationMethodLabel(
+                donation.method
+              )
+            }
           />
           <Info
             label="Statut"

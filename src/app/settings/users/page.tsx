@@ -2,6 +2,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { UserPlus } from "lucide-react";
+import ChurchUserProfileActions from "@/components/settings/ChurchUserProfileActions";
 
 import AppShell from "@/components/layout/AppShell";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -12,6 +13,9 @@ type SettingsUsersPageProps = {
     profileId?: string;
     saved?: string;
     created?: string;
+    createdUser?: string;
+    updated?: string;
+    deleted?: string;
   }>;
 };
 
@@ -147,7 +151,7 @@ export default async function SettingsUsersPage({
   const [{ data: users }, { data: enabledModules }] = await Promise.all([
     admin
       .from("profiles")
-      .select("id, full_name, email, role, status")
+      .select("id, user_id, full_name, email, role, status")
       .eq("church_id", adminProfile.church_id)
       .order("full_name", { ascending: true }),
 
@@ -234,7 +238,7 @@ export default async function SettingsUsersPage({
           </div>
         </section>
 
-        {params.created && (
+        {(params.created || params.createdUser) && (
           <div className="rounded-2xl bg-green-50 p-4 text-sm font-extrabold text-green-700">
             Utilisateur créé avec succès.
           </div>
@@ -243,6 +247,12 @@ export default async function SettingsUsersPage({
         {params.saved && (
           <div className="rounded-2xl bg-green-50 p-4 text-sm font-extrabold text-green-700">
             Permissions enregistrées.
+          </div>
+        )}
+
+        {params.deleted && (
+          <div className="rounded-2xl bg-green-50 p-4 text-sm font-extrabold text-green-700">
+            Utilisateur supprimé définitivement.
           </div>
         )}
 
@@ -342,6 +352,19 @@ export default async function SettingsUsersPage({
                     personnalisée.
                   </div>
                 </div>
+
+
+                <ChurchUserProfileActions
+                  profile={{
+                    id: selectedUser.id,
+                    userId: selectedUser.user_id,
+                    fullName: selectedUser.full_name,
+                    email: selectedUser.email,
+                    role: selectedUser.role,
+                    status: selectedUser.status,
+                  }}
+                  currentProfileId={adminProfile.id}
+                />
 
                 <div className="mt-5 space-y-4">
                   {moduleRows.map((module: any) => {

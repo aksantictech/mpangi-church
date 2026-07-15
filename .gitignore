@@ -53,3 +53,7 @@ mpangi-production-stabilization-context.zip
 .env.backup
 
 backups/
+
+.phase35t-backup/
+payload/
+mpangi-*-context.zip

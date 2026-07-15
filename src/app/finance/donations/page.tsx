@@ -12,6 +12,7 @@ import { createClient } from "@/lib/supabase/server";
 import {
   DONATION_STATUSES,
   formatDonationAmount,
+  getDonationChannelLabel,
   getDonationMethodLabel,
   getDonationPurposeLabel,
   getDonationStatusLabel,

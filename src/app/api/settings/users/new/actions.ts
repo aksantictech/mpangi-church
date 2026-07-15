@@ -27,7 +27,7 @@ async function getCurrentProfile() {
   const { data: profile, error } = await admin
     .from("profiles")
     .select("id, role, church_id")
-    .eq("id", user.id)
+    .eq("user_id", user.id)
     .maybeSingle();
 
   if (error || !profile) {
