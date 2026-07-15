@@ -23,7 +23,6 @@ import MobileListsTablesEnhancer from "@/components/mobile/MobileListsTablesEnha
 import MobileRouteExperienceEnhancer from "@/components/mobile/MobileRouteExperienceEnhancer";
 import PwaInstallCoordinator from "@/components/pwa/PwaInstallCoordinator";
 import MobilePerformanceCoordinator from "@/components/mobile/MobilePerformanceCoordinator";
-import PermissionNavigationDomFilter from "@/components/security/PermissionNavigationDomFilter";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -68,7 +67,7 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full">
-        <PermissionNavigationDomFilter />
+        
         <MobilePerformanceCoordinator />
         <MobileRouteExperienceEnhancer />
         <PwaInstallCoordinator />
