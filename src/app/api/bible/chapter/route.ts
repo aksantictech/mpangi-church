@@ -9,7 +9,8 @@ import {
 export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest) {
-  const bibleId = request.nextUrl.searchParams.get("bibleId")?.trim() || "";
+  const bibleId =
+    request.nextUrl.searchParams.get("bibleId")?.trim() || "";
   const chapterId =
     request.nextUrl.searchParams.get("chapterId")?.trim() || "";
 
@@ -17,10 +18,14 @@ export async function GET(request: NextRequest) {
     !bibleId ||
     !chapterId ||
     !isSafeBibleIdentifier(bibleId) ||
-    !isSafeBibleIdentifier(chapterId)
+    !isSafeBibleIdentifier(chapterId) ||
+    !/^[1-3]?[A-Z]{2,4}\.\d+$/i.test(chapterId)
   ) {
     return NextResponse.json(
-      { error: "Version ou chapitre invalide." },
+      {
+        error: "Version ou chapitre invalide.",
+        details: { bibleId, chapterId },
+      },
       { status: 400 }
     );
   }
@@ -32,7 +37,6 @@ export async function GET(request: NextRequest) {
     "include-chapter-numbers": "false",
     "include-verse-numbers": "true",
     "include-verse-spans": "true",
-    "use-org-id": "false",
     "fums-version": "3",
   });
 
@@ -40,7 +44,9 @@ export async function GET(request: NextRequest) {
     const response = await apiBibleFetch<BibleChapterContent>(
       `/bibles/${encodeURIComponent(
         bibleId
-      )}/chapters/${encodeURIComponent(chapterId)}?${query.toString()}`,
+      )}/chapters/${encodeURIComponent(
+        chapterId
+      )}?${query.toString()}`,
       { revalidate: 600 }
     );
 
@@ -48,7 +54,9 @@ export async function GET(request: NextRequest) {
       {
         data: {
           ...response.data,
-          content: sanitizeScriptureHtml(response.data?.content || ""),
+          content: sanitizeScriptureHtml(
+            response.data?.content || ""
+          ),
         },
         fumsToken: response.meta?.fumsToken || null,
       },
@@ -61,7 +69,10 @@ export async function GET(request: NextRequest) {
   } catch (error: any) {
     return NextResponse.json(
       {
-        error: error?.message || "Impossible de charger ce chapitre.",
+        error:
+          error?.message ||
+          "Impossible de charger ce chapitre.",
+        details: { bibleId, chapterId },
       },
       { status: 503 }
     );

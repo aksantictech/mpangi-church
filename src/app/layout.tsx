@@ -17,6 +17,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import PwaRegister from "@/components/pwa/PwaRegister";
 import "./globals.css";
+import "@/styles/production-stabilization.css";
 
 import MobileFormsEnhancer from "@/components/mobile/MobileFormsEnhancer";
 import MobileListsTablesEnhancer from "@/components/mobile/MobileListsTablesEnhancer";

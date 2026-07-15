@@ -17,6 +17,7 @@ import {
   Warehouse,
 } from "lucide-react";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { buildChurchPublicUrl } from "@/lib/tenant/domain";
 
 export const dynamic = "force-dynamic";
 
@@ -27,6 +28,7 @@ type PublicChurch = {
   id: string;
   name: string;
   slug: string;
+  subdomain: string | null;
   logo_url: string | null;
   city: string | null;
   country: string | null;
@@ -39,7 +41,7 @@ async function getPublicChurches(): Promise<PublicChurch[]> {
 
     const { data, error } = await admin
       .from("churches")
-      .select("id, name, slug, logo_url, city, country, status")
+      .select("id, name, slug, subdomain, logo_url, city, country, status")
       .neq("status", "archived")
       .order("name", { ascending: true })
       .limit(12);
@@ -126,7 +128,7 @@ export default async function PublicHomePage() {
   );
 
   return (
-    <main className="min-h-screen overflow-hidden bg-[#F5F9FC] text-[#0F172A]">
+    <main data-mpangi-global-home className="min-h-screen overflow-hidden bg-[#F5F9FC] text-[#0F172A]">
       <style
         dangerouslySetInnerHTML={{
           __html: `
@@ -331,7 +333,7 @@ export default async function PublicHomePage() {
           </p>
         </div>
 
-        <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        <div data-mpangi-global-modules-grid className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {features.map((feature) => {
             const Icon = feature.icon;
 
@@ -358,7 +360,7 @@ export default async function PublicHomePage() {
             </p>
           </div>
 
-          <div className="grid gap-3 md:grid-cols-2">
+          <div data-mpangi-global-process-grid className="grid gap-3 md:grid-cols-2">
             {steps.map((step, index) => (
               <article key={step} className="rounded-3xl border border-white/10 bg-white/10 p-5 backdrop-blur">
                 <p className="text-sm font-black text-blue-200">Étape {index + 1}</p>
@@ -385,9 +387,9 @@ export default async function PublicHomePage() {
           </div>
 
           {churches.length > 0 ? (
-            <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            <div data-mpangi-global-churches-grid className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
               {churches.map((church) => (
-                <Link key={church.id} href={`/church/${church.slug}`} className="group rounded-3xl border border-[#DCEAF5] bg-[#F8FBFD] p-5 transition hover:-translate-y-1 hover:border-[#03357A]/30 hover:bg-white hover:shadow-xl hover:shadow-blue-900/10">
+                <Link key={church.id} href={buildChurchPublicUrl(church)} className="group rounded-3xl border border-[#DCEAF5] bg-[#F8FBFD] p-5 transition hover:-translate-y-1 hover:border-[#03357A]/30 hover:bg-white hover:shadow-xl hover:shadow-blue-900/10">
                   <div className="flex items-start gap-4">
                     <ChurchLogo church={church} />
                     <div className="min-w-0 flex-1">

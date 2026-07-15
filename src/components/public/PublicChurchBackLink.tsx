@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
+import { buildChurchPublicUrl } from "@/lib/tenant/domain";
 
 type PublicChurchBackLinkProps = {
   fallbackSlug?: string | null;
@@ -31,7 +32,7 @@ export default function PublicChurchBackLink({
 
   return (
     <Link
-      href={`/church/${slug}`}
+      href={buildChurchPublicUrl({ slug })}
       className="mb-6 inline-flex items-center gap-2 rounded-2xl border border-[#DCEAF5] bg-white px-5 py-3 text-sm font-extrabold text-[#03357A] shadow-sm hover:bg-[#EAF3FA]"
     >
       <ArrowLeft className="h-4 w-4" />

@@ -17,6 +17,10 @@ import SuperAdminShell from "@/components/layout/SuperAdminShell";
 import MetricCard from "@/components/dashboard/MetricCard";
 import ChurchStatusActionButton from "@/components/super-admin/ChurchStatusActionButton";
 import { createClient } from "@/lib/supabase/server";
+import {
+  buildChurchPublicUrl,
+  canonicalSubdomainForChurch,
+} from "@/lib/tenant/domain";
 
 export default async function SuperAdminChurchesPage() {
   const supabase = await createClient();
@@ -36,7 +40,7 @@ export default async function SuperAdminChurchesPage() {
     supabase
       .from("churches")
       .select(
-        "id, name, slug, logo_url, address, city, country, phone, whatsapp, status, created_at"
+        "id, name, slug, subdomain, logo_url, address, city, country, phone, whatsapp, status, created_at"
       )
       .order("created_at", { ascending: false }),
   ]);
@@ -71,13 +75,15 @@ export default async function SuperAdminChurchesPage() {
             >
               <Plus className="h-5 w-5" />
               Ajouter une église
-            </Link><Link
-href="/super-admin/users/new"
+            </Link>
+
+            <Link
+              href="/super-admin/users/new"
 className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#03357A] px-5 py-3 text-sm font-extrabold text-white"
->
- <UserPlus className="h-4 w-4" />
- Créer un utilisateur
-</Link>
+            >
+              <UserPlus className="h-4 w-4" />
+              Créer un utilisateur
+            </Link>
           </div>
         </section>
 
@@ -200,7 +206,7 @@ className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#03357A
                           </h3>
 
                           <p className="text-xs text-blue-100">
-                            /church/{church.slug}
+                            {canonicalSubdomainForChurch(church)}.mpangi-church.app
                           </p>
                         </div>
                       </div>
@@ -230,7 +236,7 @@ className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#03357A
 
                       <div className="flex items-center gap-2">
                         <Globe2 className="h-4 w-4 text-[#3F79B3]" />
-                        <span>{church.slug}</span>
+                        <span>{canonicalSubdomainForChurch(church)}.mpangi-church.app</span>
                       </div>
                     </div>
 
@@ -274,7 +280,7 @@ className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#03357A
                       )}
 
                       <Link
-                        href={`/church/${church.slug}`}
+                        href={buildChurchPublicUrl(church)}
                         target="_blank"
                         className="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#03357A] to-[#2563EB] px-4 py-2 text-sm font-bold text-white shadow-sm hover:from-[#022B63] hover:to-[#1D4ED8]"
                       >

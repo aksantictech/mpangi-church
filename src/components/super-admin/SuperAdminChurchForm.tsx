@@ -4,11 +4,17 @@ import { FormEvent, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ImageIcon, Save, UploadCloud, X } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import {
+  buildChurchPublicUrl,
+  canonicalSubdomainForChurch,
+  normalizeSubdomain,
+} from "@/lib/tenant/domain";
 
 type ChurchFormInitial = {
   id?: string;
   name?: string | null;
   slug?: string | null;
+  subdomain?: string | null;
   status?: string | null;
   logo_url?: string | null;
   pastor_photo_url?: string | null;
@@ -62,6 +68,10 @@ export default function SuperAdminChurchForm({
 
   const [name, setName] = useState(initialChurch?.name ?? "");
   const [slug, setSlug] = useState(initialChurch?.slug ?? "");
+  const [subdomain, setSubdomain] = useState(
+    initialChurch?.subdomain ??
+      canonicalSubdomainForChurch({ slug: initialChurch?.slug })
+  );
   const [status, setStatus] = useState(initialChurch?.status ?? "active");
 
   const [address, setAddress] = useState(initialChurch?.address ?? "");
@@ -119,7 +129,12 @@ export default function SuperAdminChurchForm({
     setName(value);
 
     if (!isEditMode && !slug) {
-      setSlug(slugify(value));
+      const generatedSlug = slugify(value);
+      setSlug(generatedSlug);
+
+      if (!subdomain) {
+        setSubdomain(normalizeSubdomain(generatedSlug));
+      }
     }
   }
 
@@ -167,6 +182,9 @@ export default function SuperAdminChurchForm({
       }
 
       const finalSlug = slugify(slug || name);
+      const finalSubdomain = normalizeSubdomain(
+        subdomain || canonicalSubdomainForChurch({ slug: finalSlug })
+      );
 
       if (!finalSlug) {
         throw new Error("Le slug public est obligatoire.");
@@ -190,6 +208,7 @@ export default function SuperAdminChurchForm({
       const payload = {
         name: name.trim(),
         slug: finalSlug,
+        subdomain: finalSubdomain,
         status,
         logo_url: logoUrl,
         pastor_photo_url: pastorPhotoUrl,
@@ -300,6 +319,25 @@ export default function SuperAdminChurchForm({
             />
             <p className="mt-2 text-xs text-slate-500">
               Lien public : /church/{slug || "slug-eglise"}
+            </p>
+          </div>
+
+          <div>
+            <label className={labelClass}>Sous-domaine public *</label>
+            <input
+              className={inputClass}
+              value={subdomain}
+              onChange={(event) =>
+                setSubdomain(normalizeSubdomain(event.target.value))
+              }
+              placeholder="ex. icckinshasa"
+              required
+            />
+            <p className="mt-2 break-all text-xs text-slate-500">
+              {buildChurchPublicUrl({
+                slug: slug || slugify(name),
+                subdomain,
+              })}
             </p>
           </div>
 

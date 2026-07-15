@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import BibleReaderClient from "@/components/bible/BibleReaderClient";
 import PublicMobileBottomNav from "@/components/public/PublicMobileBottomNav";
 import { createClient } from "@/lib/supabase/server";
+import { buildChurchPublicUrl } from "@/lib/tenant/domain";
 
 type PageProps = {
   params: Promise<{
@@ -49,7 +50,7 @@ export default async function PublicChurchBiblePage({
     <main className="min-h-screen bg-[#F5F9FC] px-3 py-5 pb-24 sm:px-6 sm:py-8">
       <div className="mx-auto mb-4 max-w-7xl">
         <Link
-          href={`/church/${slug}`}
+          href={buildChurchPublicUrl(church)}
           className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-white px-4 py-3 text-sm font-black text-[#03357A] shadow-sm ring-1 ring-[#DCEAF5]"
         >
           <ArrowLeft className="h-4 w-4" />

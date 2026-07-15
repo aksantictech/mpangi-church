@@ -24,6 +24,7 @@ import PublicLiveStreamSection from "@/components/public/PublicLiveStreamSection
 import PublicMobileBottomNav from "@/components/public/PublicMobileBottomNav";
 import PublicTestimoniesSection from "@/components/public/PublicTestimoniesSection";
 import { createClient } from "@/lib/supabase/server";
+import { buildChurchPublicUrl } from "@/lib/tenant/domain";
 
 type PublicChurchPageProps = {
   params: Promise<{
@@ -41,6 +42,7 @@ type PublicChurch = {
   name: string | null;
   public_name: string | null;
   slug: string | null;
+  subdomain: string | null;
   status: string | null;
 
   logo_url: string | null;
@@ -183,6 +185,7 @@ export default async function PublicChurchPage({
       name,
       public_name,
       slug,
+      subdomain,
       status,
       logo_url,
       pastor_photo_url,
@@ -253,7 +256,7 @@ export default async function PublicChurchPage({
     church.public_hero_title?.trim() || `Bienvenue à ${churchPublicName}`;
 
   return (
-    <main className="min-h-screen overflow-x-hidden bg-[#F5F9FC] pb-24 text-[#0F172A] lg:pb-0">
+    <main data-mpangi-public-page className="min-h-screen overflow-x-hidden bg-[#F5F9FC] pb-24 text-[#0F172A] lg:pb-0">
       <style>
         {`
           @keyframes mmFloat {
@@ -319,7 +322,7 @@ export default async function PublicChurchPage({
 
             {church.login_enabled && (
               <Link
-                href={`/login?church=${encodeURIComponent(churchSlug)}`}
+                href={buildChurchPublicUrl(church, "/login")}
                 className="inline-flex w-fit shrink-0 items-center gap-2 rounded-2xl bg-white/15 px-4 py-2.5 text-sm font-bold ring-1 ring-white/20 hover:bg-white/20"
               >
                 <LockKeyhole className="h-4 w-4" />
@@ -345,14 +348,14 @@ export default async function PublicChurchPage({
 
               <div className="mt-5 grid gap-3 sm:grid-cols-2">
                 <HeroButton
-                  href={`/church/${churchSlug}/prayer`}
+                  href={buildChurchPublicUrl(church, "/prayer")}
                   icon={HeartHandshake}
                   label="Demander une prière"
                   variant="white"
                 />
 
                 <HeroButton
-                  href={`/church/${churchSlug}/appointment`}
+                  href={buildChurchPublicUrl(church, "/appointment")}
                   icon={CalendarDays}
                   label="Demander un rendez-vous"
                   variant="glass"
@@ -366,14 +369,14 @@ export default async function PublicChurchPage({
                 </a>
 
                 <HeroButton
-                  href={`/church/${churchSlug}/join`}
+                  href={buildChurchPublicUrl(church, "/join")}
                   icon={UserPlus}
                   label="Rejoindre l’église"
                   variant="glass"
                 />
 
                 <HeroButton
-                  href={`/church/${churchSlug}/testimony`}
+                  href={buildChurchPublicUrl(church, "/testimony")}
                   icon={Sparkles}
                   label="Partager un témoignage"
                   variant="glass"

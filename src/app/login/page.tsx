@@ -16,6 +16,11 @@ import {
 import AppLogo from "@/components/brand/AppLogo";
 import { getDashboardPathByRole } from "@/lib/auth/redirect-by-role";
 import { createClient } from "@/lib/supabase/client";
+import {
+  buildChurchPublicUrl,
+  buildMainAppUrl,
+  getTenantSubdomainFromHost,
+} from "@/lib/tenant/domain";
 
 type ChurchContext = {
   id: string;
@@ -23,6 +28,7 @@ type ChurchContext = {
   public_name: string | null;
   pwa_name: string | null;
   slug: string | null;
+  subdomain: string | null;
   logo_url: string | null;
 };
 
@@ -72,22 +78,47 @@ export default function LoginPage() {
     : "/forgot-password";
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const slug = params.get("church") || "";
-
-    setChurchSlug(slug);
-
-    if (!slug) {
-      setChurchInfo(null);
-      return;
-    }
-
     let isMounted = true;
 
-    async function loadChurch() {
+    async function resolveChurchContext() {
+      const params = new URLSearchParams(window.location.search);
+      let slug = params.get("church")?.trim() || "";
+
+      if (!slug) {
+        const tenantSubdomain = getTenantSubdomainFromHost(
+          window.location.hostname
+        );
+
+        if (tenantSubdomain) {
+          try {
+            const response = await fetch("/api/pwa/tenant", {
+              cache: "no-store",
+            });
+            const payload = await response.json();
+
+            if (response.ok && payload.slug) {
+              slug = String(payload.slug);
+            }
+          } catch {
+            // Le proxy injecte aussi le tenant côté serveur.
+          }
+        }
+      }
+
+      if (!isMounted) return;
+
+      setChurchSlug(slug);
+
+      if (!slug) {
+        setChurchInfo(null);
+        return;
+      }
+
       const { data } = await supabase
         .from("churches")
-        .select("id, name, public_name, pwa_name, slug, logo_url")
+        .select(
+          "id, name, public_name, pwa_name, slug, subdomain, logo_url"
+        )
         .eq("slug", slug)
         .maybeSingle();
 
@@ -96,7 +127,7 @@ export default function LoginPage() {
       setChurchInfo((data as ChurchContext | null) || null);
     }
 
-    void loadChurch();
+    void resolveChurchContext();
 
     return () => {
       isMounted = false;
@@ -156,16 +187,47 @@ export default function LoginPage() {
       return;
     }
 
-    router.push(getDashboardPathByRole(profile.role));
+    const dashboardPath = getDashboardPathByRole(profile.role);
+
+    if (profile.role === "super_admin") {
+      window.location.assign(
+        buildMainAppUrl("/super-admin/dashboard")
+      );
+      return;
+    }
+
+    let targetChurch = churchInfo;
+
+    if (!targetChurch && profile.church_id) {
+      const { data: profileChurch } = await supabase
+        .from("churches")
+        .select(
+          "id, name, public_name, pwa_name, slug, subdomain, logo_url"
+        )
+        .eq("id", profile.church_id)
+        .maybeSingle();
+
+      targetChurch =
+        (profileChurch as ChurchContext | null) || null;
+    }
+
+    if (targetChurch?.slug) {
+      window.location.assign(
+        buildChurchPublicUrl(targetChurch, dashboardPath)
+      );
+      return;
+    }
+
+    router.replace(dashboardPath);
     router.refresh();
   }
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#F5F9FC]">
+    <main data-mpangi-login className="relative min-h-screen overflow-hidden bg-[#F5F9FC]">
       <div className="fixed left-4 top-4 z-30 flex flex-wrap gap-2">
         {churchInfo?.slug ? (
           <Link
-            href={`/church/${churchInfo.slug}`}
+            href={buildChurchPublicUrl(churchInfo)}
             className="inline-flex items-center gap-2 rounded-2xl border border-[#DCEAF5] bg-white/90 px-4 py-3 text-sm font-extrabold text-[#03357A] shadow-sm backdrop-blur hover:bg-[#EAF3FA]"
           >
             <ArrowLeft className="h-4 w-4" />

@@ -42,7 +42,6 @@ export default function SuperAdminTopBar({
 }) {
   const router = useRouter();
   const dropdownRef = useRef<HTMLDivElement | null>(null);
-
   const [profile, setProfile] = useState<Profile | null>(null);
   const [open, setOpen] = useState(false);
   const [logoutLoading, setLogoutLoading] = useState(false);
@@ -53,12 +52,10 @@ export default function SuperAdminTopBar({
     fetch("/api/account/me", { cache: "no-store" })
       .then((response) => response.json())
       .then((payload) => {
-        if (!mounted) return;
-        setProfile(payload.profile ?? null);
+        if (mounted) setProfile(payload.profile ?? null);
       })
       .catch(() => {
-        if (!mounted) return;
-        setProfile(null);
+        if (mounted) setProfile(null);
       });
 
     return () => {
@@ -67,35 +64,35 @@ export default function SuperAdminTopBar({
   }, []);
 
   useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (!dropdownRef.current) return;
-
-      if (!dropdownRef.current.contains(event.target as Node)) {
+    function closeOutside(event: MouseEvent) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setOpen(false);
       }
     }
 
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("mousedown", closeOutside);
 
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    return () =>
+      document.removeEventListener("mousedown", closeOutside);
   }, []);
 
-  const displayName = useMemo(() => {
-    return profile?.full_name || profile?.email || "Super admin";
-  }, [profile]);
-
+  const displayName = useMemo(
+    () => profile?.full_name || profile?.email || "Super admin",
+    [profile]
+  );
   const displayEmail = profile?.email || "";
   const displayInitials = initials(displayName, displayEmail);
 
   async function handleLogout() {
     try {
       setLogoutLoading(true);
-
       await fetch("/logout", {
         method: "POST",
         cache: "no-store",
       });
-
       router.replace("/login?logout=1");
       router.refresh();
     } finally {
@@ -104,33 +101,36 @@ export default function SuperAdminTopBar({
   }
 
   return (
-    <header className="sticky top-0 z-50 border-b border-[#DCEAF5] bg-white/95 px-4 py-3 backdrop-blur">
-      <div className="flex items-center justify-between gap-4">
+    <header
+      data-mpangi-superadmin-topbar
+      className="sticky top-0 z-[60] border-b border-[#DCEAF5] bg-white/95 px-3 py-3 backdrop-blur sm:px-5"
+    >
+      <div className="flex min-h-12 items-center justify-between gap-3">
         <div className="flex min-w-0 items-center gap-3">
           <button
             type="button"
             onClick={onOpenMobileMenu}
-            className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#EAF3FA] text-[#03357A] lg:hidden"
-            aria-label="Ouvrir le menu"
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#EAF3FA] text-[#03357A] lg:hidden"
+            aria-label="Ouvrir les options"
           >
             <Menu className="h-5 w-5" />
           </button>
 
-          <div className="hidden min-w-0 lg:block">
-            <p className="text-xs font-black uppercase tracking-[0.25em] text-slate-400">
+          <div className="min-w-0">
+            <p className="text-[10px] font-black uppercase tracking-[0.22em] text-slate-400 sm:text-xs">
               Super admin
             </p>
-            <h1 className="truncate text-lg font-black text-[#03357A]">
+            <h1 className="truncate text-base font-black text-[#03357A] sm:text-lg">
               Administration globale
             </h1>
           </div>
         </div>
 
-        <div className="relative" ref={dropdownRef}>
+        <div className="relative shrink-0" ref={dropdownRef}>
           <button
             type="button"
             onClick={() => setOpen((value) => !value)}
-            className="flex min-h-12 items-center gap-3 rounded-2xl border border-[#DCEAF5] bg-white px-3 py-2 shadow-sm transition hover:border-[#03357A]/40"
+            className="flex min-h-12 items-center gap-2 rounded-2xl border border-[#DCEAF5] bg-white p-1.5 pr-2 shadow-sm"
           >
             {profile?.avatar_url ? (
               // eslint-disable-next-line @next/next/no-img-element
@@ -145,11 +145,11 @@ export default function SuperAdminTopBar({
               </span>
             )}
 
-            <span className="hidden min-w-0 text-left sm:block">
+            <span className="hidden min-w-0 text-left md:block">
               <span className="block text-xs font-bold text-slate-400">
                 Bienvenue
               </span>
-              <span className="block max-w-[220px] truncate text-sm font-black text-[#03357A]">
+              <span className="block max-w-[180px] truncate text-sm font-black text-[#03357A]">
                 {displayName}
               </span>
             </span>
@@ -162,18 +162,21 @@ export default function SuperAdminTopBar({
           </button>
 
           {open && (
-            <div className="absolute right-0 mt-3 w-[min(92vw,340px)] overflow-hidden rounded-3xl border border-[#DCEAF5] bg-white shadow-2xl shadow-slate-900/15">
-              <div className="bg-[#F8FBFD] p-5">
-                <div className="flex items-center gap-4">
+            <div
+              data-mpangi-account-dropdown
+              className="fixed left-3 right-3 top-[76px] z-[110] overflow-hidden rounded-3xl border border-[#DCEAF5] bg-white shadow-2xl sm:absolute sm:left-auto sm:right-0 sm:top-auto sm:mt-3 sm:w-[350px]"
+            >
+              <div className="bg-[#F8FBFD] p-4 sm:p-5">
+                <div className="flex min-w-0 items-center gap-3">
                   {profile?.avatar_url ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
                       src={profile.avatar_url}
                       alt={displayName}
-                      className="h-16 w-16 rounded-3xl object-cover"
+                      className="h-14 w-14 shrink-0 rounded-2xl object-cover"
                     />
                   ) : (
-                    <span className="flex h-16 w-16 items-center justify-center rounded-3xl bg-[#03357A] text-lg font-black text-white">
+                    <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-[#03357A] font-black text-white">
                       {displayInitials}
                     </span>
                   )}
@@ -182,11 +185,9 @@ export default function SuperAdminTopBar({
                     <h2 className="truncate text-lg font-black text-[#03357A]">
                       {displayName}
                     </h2>
-                    {displayEmail && (
-                      <p className="truncate text-sm font-semibold text-slate-500">
-                        {displayEmail}
-                      </p>
-                    )}
+                    <p className="truncate text-sm font-semibold text-slate-500">
+                      {displayEmail}
+                    </p>
                     <span className="mt-2 inline-flex rounded-full bg-[#EAF3FA] px-3 py-1 text-xs font-black text-[#03357A]">
                       {profile?.role || "super_admin"}
                     </span>
@@ -198,44 +199,40 @@ export default function SuperAdminTopBar({
                 <Link
                   href="/super-admin/profile"
                   onClick={() => setOpen(false)}
-                  className="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-extrabold text-slate-600 hover:bg-[#EAF3FA] hover:text-[#03357A]"
+                  className="flex min-h-11 items-center gap-3 rounded-2xl px-4 py-3 text-sm font-extrabold text-slate-600 hover:bg-[#EAF3FA] hover:text-[#03357A]"
                 >
                   <UserRound className="h-4 w-4" />
                   Modifier mon profil
                 </Link>
-
                 <Link
                   href="/super-admin/profile?photo=1"
                   onClick={() => setOpen(false)}
-                  className="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-extrabold text-slate-600 hover:bg-[#EAF3FA] hover:text-[#03357A]"
+                  className="flex min-h-11 items-center gap-3 rounded-2xl px-4 py-3 text-sm font-extrabold text-slate-600 hover:bg-[#EAF3FA] hover:text-[#03357A]"
                 >
                   <Camera className="h-4 w-4" />
                   Modifier ma photo
                 </Link>
-
                 <Link
                   href="/super-admin/profile/password"
                   onClick={() => setOpen(false)}
-                  className="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-extrabold text-slate-600 hover:bg-[#EAF3FA] hover:text-[#03357A]"
+                  className="flex min-h-11 items-center gap-3 rounded-2xl px-4 py-3 text-sm font-extrabold text-slate-600 hover:bg-[#EAF3FA] hover:text-[#03357A]"
                 >
                   <KeyRound className="h-4 w-4" />
                   Modifier le mot de passe
                 </Link>
-
                 <Link
                   href="/super-admin/settings"
                   onClick={() => setOpen(false)}
-                  className="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-extrabold text-slate-600 hover:bg-[#EAF3FA] hover:text-[#03357A]"
+                  className="flex min-h-11 items-center gap-3 rounded-2xl px-4 py-3 text-sm font-extrabold text-slate-600 hover:bg-[#EAF3FA] hover:text-[#03357A]"
                 >
                   <Settings className="h-4 w-4" />
                   Paramètres super admin
                 </Link>
-
                 <button
                   type="button"
                   onClick={handleLogout}
                   disabled={logoutLoading}
-                  className="flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm font-extrabold text-red-700 hover:bg-red-50 disabled:opacity-60"
+                  className="flex min-h-11 w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm font-extrabold text-red-700 hover:bg-red-50 disabled:opacity-60"
                 >
                   {logoutLoading ? (
                     <X className="h-4 w-4 animate-pulse" />

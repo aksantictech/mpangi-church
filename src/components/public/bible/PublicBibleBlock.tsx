@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowRight, BookOpen, CheckCircle2 } from "lucide-react";
+import { buildChurchPublicUrl } from "@/lib/tenant/domain";
 
 export default function PublicBibleBlock({
   slug,
@@ -46,7 +47,7 @@ export default function PublicBibleBlock({
         </div>
 
         <Link
-          href={`/church/${slug}/bible`}
+          href={buildChurchPublicUrl({ slug }, "/bible")}
           className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-[#03357A] px-5 py-3 text-sm font-black text-white shadow-lg shadow-blue-900/15"
         >
           Lire la Bible

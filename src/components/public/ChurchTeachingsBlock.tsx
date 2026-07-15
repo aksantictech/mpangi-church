@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { PlayCircle } from "lucide-react";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { buildChurchPublicUrl } from "@/lib/tenant/domain";
 
 export default async function ChurchTeachingsBlock({
   churchId,
@@ -37,7 +38,7 @@ export default async function ChurchTeachingsBlock({
         </div>
 
         <Link
-          href={`/church/${slug}/teachings`}
+          href={buildChurchPublicUrl({ slug }, "/public-teachings")}
           className="rounded-2xl bg-[#EAF3FA] px-4 py-2 text-sm font-extrabold text-[#03357A]"
         >
           Voir tout
@@ -48,7 +49,7 @@ export default async function ChurchTeachingsBlock({
         {teachings.map((teaching: any) => (
           <Link
             key={teaching.id}
-            href={`/church/${slug}/teachings/${teaching.id}`}
+            href={buildChurchPublicUrl({ slug }, `/public-teachings/${teaching.id}`)}
             className="group overflow-hidden rounded-3xl border border-[#DCEAF5] bg-[#F8FBFD]"
           >
             <div className="relative aspect-video bg-slate-200">
