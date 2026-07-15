@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 
-import { requireAuthenticatedAccess } from "@/lib/security/sensitiveGuards";
 type BrowserPushSubscription = {
   endpoint?: string;
   keys?: {
@@ -10,73 +9,115 @@ type BrowserPushSubscription = {
   };
 };
 
-export async function POST(request: Request) {
-  await requireAuthenticatedAccess();
+export async function POST(
+  request: Request
+) {
   try {
-    const body = await request.json();
+    const body =
+      await request.json();
 
-    const churchId = String(body.churchId || "").trim();
-    const subscription = body.subscription as BrowserPushSubscription;
+    const churchId =
+      String(
+        body.churchId || ""
+      ).trim();
 
-    if (!churchId || !subscription?.endpoint) {
+    const subscription =
+      body.subscription as BrowserPushSubscription;
+
+    if (
+      !churchId ||
+      !subscription?.endpoint ||
+      !subscription.keys?.p256dh ||
+      !subscription.keys?.auth
+    ) {
       return NextResponse.json(
-        { error: "Abonnement invalide." },
+        {
+          error:
+            "Abonnement invalide.",
+        },
         { status: 400 }
       );
     }
 
-    const p256dh = subscription.keys?.p256dh;
-    const auth = subscription.keys?.auth;
+    const admin =
+      createAdminClient();
 
-    if (!p256dh || !auth) {
+    const { data: church } =
+      await admin
+        .from("churches")
+        .select(
+          "id, status, public_enabled"
+        )
+        .eq("id", churchId)
+        .maybeSingle();
+
+    if (
+      !church ||
+      church.status !==
+        "active" ||
+      !church.public_enabled
+    ) {
       return NextResponse.json(
-        { error: "Clés d’abonnement invalides." },
-        { status: 400 }
-      );
-    }
-
-    const admin = createAdminClient();
-
-    const { data: church } = await admin
-      .from("churches")
-      .select("id, status, public_enabled")
-      .eq("id", churchId)
-      .maybeSingle();
-
-    if (!church || church.status !== "active" || !church.public_enabled) {
-      return NextResponse.json(
-        { error: "Église non disponible." },
+        {
+          error:
+            "Église non disponible.",
+        },
         { status: 404 }
       );
     }
 
-    const userAgent = request.headers.get("user-agent") || null;
-
-    const { error } = await admin.from("push_subscriptions").upsert(
-      {
-        church_id: churchId,
-        endpoint: subscription.endpoint,
-        p256dh,
-        auth,
-        user_agent: userAgent,
-        updated_at: new Date().toISOString(),
-      },
-      {
-        onConflict: "church_id,endpoint",
-      }
-    );
+    const { error } =
+      await admin
+        .from(
+          "church_notification_subscriptions"
+        )
+        .upsert(
+          {
+            church_id:
+              churchId,
+            profile_id: null,
+            endpoint:
+              subscription.endpoint,
+            p256dh:
+              subscription.keys.p256dh,
+            auth:
+              subscription.keys.auth,
+            user_agent:
+              request.headers.get(
+                "user-agent"
+              ),
+            active: true,
+            updated_at:
+              new Date().toISOString(),
+          },
+          {
+            onConflict:
+              "endpoint",
+          }
+        );
 
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 400 });
+      return NextResponse.json(
+        {
+          error:
+            error.message,
+        },
+        { status: 400 }
+      );
     }
 
     return NextResponse.json({
       success: true,
-      message: "Notifications activées.",
+      message:
+        "Notifications activées.",
     });
-  } catch {
+  } catch (error: any) {
     return NextResponse.json(
-      { error: "Erreur pendant l’activation des notifications." },
+      {
+        error:
+          error?.message ||
+          "Erreur pendant l’activation des notifications.",
+      },
       { status: 500 }
     );
   }

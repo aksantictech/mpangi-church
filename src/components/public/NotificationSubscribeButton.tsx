@@ -1,7 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { BellRing, CheckCircle2, Loader2 } from "lucide-react";
+import {
+  BellRing,
+  CheckCircle2,
+  Loader2,
+} from "lucide-react";
+import {
+  useEffect,
+  useState,
+} from "react";
 
 type NotificationSubscribeButtonProps = {
   churchId: string;
@@ -9,17 +16,39 @@ type NotificationSubscribeButtonProps = {
   className?: string;
 };
 
-function urlBase64ToUint8Array(base64String: string) {
-  const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
-  const base64 = `${base64String}${padding}`
-    .replace(/-/g, "+")
-    .replace(/_/g, "/");
+function urlBase64ToUint8Array(
+  base64String: string
+) {
+  const padding = "=".repeat(
+    (
+      4 -
+      (base64String.length %
+        4)
+    ) % 4
+  );
 
-  const rawData = window.atob(base64);
-  const outputArray = new Uint8Array(rawData.length);
+  const base64 =
+    `${base64String}${padding}`
+      .replace(/-/g, "+")
+      .replace(/_/g, "/");
 
-  for (let index = 0; index < rawData.length; index += 1) {
-    outputArray[index] = rawData.charCodeAt(index);
+  const rawData =
+    window.atob(base64);
+
+  const outputArray =
+    new Uint8Array(
+      rawData.length
+    );
+
+  for (
+    let index = 0;
+    index < rawData.length;
+    index += 1
+  ) {
+    outputArray[index] =
+      rawData.charCodeAt(
+        index
+      );
   }
 
   return outputArray;
@@ -30,38 +59,100 @@ export default function NotificationSubscribeButton({
   label = "Activer les notifications",
   className,
 }: NotificationSubscribeButtonProps) {
-  const [isSupported, setIsSupported] = useState(false);
-  const [permission, setPermission] =
-    useState<NotificationPermission>("default");
-  const [isLoading, setIsLoading] = useState(false);
-  const [message, setMessage] = useState("");
+  const [
+    isSupported,
+    setIsSupported,
+  ] = useState(false);
+
+  const [
+    isSubscribed,
+    setIsSubscribed,
+  ] = useState(false);
+
+  const [
+    isLoading,
+    setIsLoading,
+  ] = useState(false);
+
+  const [
+    message,
+    setMessage,
+  ] = useState("");
 
   useEffect(() => {
-    const supported =
-      typeof window !== "undefined" &&
-      "Notification" in window &&
-      "serviceWorker" in navigator &&
-      "PushManager" in window;
+    let active = true;
 
-    setIsSupported(supported);
+    async function detectStatus() {
+      const supported =
+        typeof window !==
+          "undefined" &&
+        "Notification" in
+          window &&
+        "serviceWorker" in
+          navigator &&
+        "PushManager" in
+          window;
 
-    if (supported) {
-      setPermission(Notification.permission);
+      if (!active) return;
+
+      setIsSupported(
+        supported
+      );
+
+      if (!supported) return;
+
+      try {
+        const registration =
+          await navigator.serviceWorker.getRegistration(
+            "/"
+          );
+
+        const subscription =
+          await registration?.pushManager.getSubscription();
+
+        if (active) {
+          setIsSubscribed(
+            Boolean(
+              subscription &&
+                Notification.permission ===
+                  "granted"
+            )
+          );
+        }
+      } catch {
+        if (active) {
+          setIsSubscribed(
+            false
+          );
+        }
+      }
     }
+
+    detectStatus();
+
+    return () => {
+      active = false;
+    };
   }, []);
 
   async function handleSubscribe() {
     setMessage("");
 
     if (!isSupported) {
-      setMessage("Ce navigateur ne supporte pas les notifications push.");
+      setMessage(
+        "Ce navigateur ne supporte pas les notifications Push."
+      );
       return;
     }
 
-    const publicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
+    const publicKey =
+      process.env
+        .NEXT_PUBLIC_VAPID_PUBLIC_KEY;
 
     if (!publicKey) {
-      setMessage("Clé publique VAPID manquante.");
+      setMessage(
+        "La clé publique VAPID n’est pas configurée."
+      );
       return;
     }
 
@@ -69,58 +160,92 @@ export default function NotificationSubscribeButton({
 
     try {
       const registration =
-        (await navigator.serviceWorker.getRegistration("/")) ||
-        (await navigator.serviceWorker.register("/sw.js", { scope: "/" }));
+        (
+          await navigator.serviceWorker.getRegistration(
+            "/"
+          )
+        ) ||
+        (
+          await navigator.serviceWorker.register(
+            "/sw.js",
+            {
+              scope: "/",
+            }
+          )
+        );
 
       await navigator.serviceWorker.ready;
 
-      const nextPermission = await Notification.requestPermission();
-      setPermission(nextPermission);
+      const permission =
+        await Notification.requestPermission();
 
-      if (nextPermission !== "granted") {
-        setIsLoading(false);
-        setMessage("Autorisation refusée.");
+      if (
+        permission !==
+        "granted"
+      ) {
+        setMessage(
+          "Autorisation refusée. Réactivez les notifications dans les paramètres du site."
+        );
         return;
       }
 
-      let subscription = await registration.pushManager.getSubscription();
+      let subscription =
+        await registration.pushManager.getSubscription();
 
       if (!subscription) {
-        subscription = await registration.pushManager.subscribe({
-          userVisibleOnly: true,
-          applicationServerKey: urlBase64ToUint8Array(publicKey),
-        });
+        subscription =
+          await registration.pushManager.subscribe(
+            {
+              userVisibleOnly:
+                true,
+              applicationServerKey:
+                urlBase64ToUint8Array(
+                  publicKey
+                ),
+            }
+          );
       }
 
-      const response = await fetch("/api/push/subscribe", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          churchId,
-          subscription: subscription.toJSON(),
-        }),
-      });
+      const response =
+        await fetch(
+          "/api/push/subscribe",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type":
+                "application/json",
+            },
+            body: JSON.stringify({
+              churchId,
+              subscription:
+                subscription.toJSON(),
+            }),
+          }
+        );
 
-      const payload = await response.json();
-
-      setIsLoading(false);
+      const payload =
+        await response.json();
 
       if (!response.ok) {
-        setMessage(payload.error || "Impossible d’activer les notifications.");
-        return;
+        throw new Error(
+          payload.error ||
+            "Impossible d’activer les notifications."
+        );
       }
 
-      setMessage("Notifications activées.");
-    } catch (error) {
-      setIsLoading(false);
-
+      setIsSubscribed(true);
       setMessage(
-        error instanceof Error
-          ? error.message
-          : "Impossible d’activer les notifications."
+        "Notifications activées sur cet appareil."
       );
+    } catch (
+      subscribeError: any
+    ) {
+      setMessage(
+        subscribeError?.message ||
+          "Impossible d’activer les notifications."
+      );
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -128,26 +253,46 @@ export default function NotificationSubscribeButton({
     <div>
       <button
         type="button"
-        onClick={handleSubscribe}
-        disabled={isLoading || permission === "granted"}
+        onClick={
+          handleSubscribe
+        }
+        disabled={
+          isLoading ||
+          isSubscribed
+        }
         className={
           className ||
-          "inline-flex items-center justify-center gap-2 rounded-2xl bg-[#03357A] px-5 py-3 text-sm font-extrabold text-white shadow-sm hover:bg-[#022B63] disabled:opacity-70"
+          [
+            "inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl px-5 py-3 text-sm font-black shadow-sm transition",
+            isSubscribed
+              ? "bg-green-50 text-green-700"
+              : "bg-[#03357A] text-white hover:bg-[#022B63]",
+          ].join(" ")
         }
       >
         {isLoading ? (
           <Loader2 className="h-4 w-4 animate-spin" />
-        ) : permission === "granted" ? (
+        ) : isSubscribed ? (
           <CheckCircle2 className="h-4 w-4" />
         ) : (
           <BellRing className="h-4 w-4" />
         )}
 
-        {permission === "granted" ? "Notifications activées" : label}
+        {isSubscribed
+          ? "Notifications activées"
+          : label}
       </button>
 
+      {!isSupported && (
+        <p className="mt-2 max-w-md text-xs font-semibold leading-5 text-amber-700">
+          Ce navigateur ne
+          supporte pas les
+          notifications Push.
+        </p>
+      )}
+
       {message && (
-        <p className="mt-2 max-w-md text-xs font-semibold text-slate-500">
+        <p className="mt-2 max-w-md text-xs font-semibold leading-5 text-slate-600">
           {message}
         </p>
       )}

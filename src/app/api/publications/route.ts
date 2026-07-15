@@ -1,62 +1,81 @@
 import { NextResponse } from "next/server";
-import * as webpush from "web-push";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
+import { sendChurchNotification } from "@/lib/notifications/push";
 
-type CreatePublicationBody = {
-  title?: string;
-  description?: string;
-  content?: string;
-  publicationType?: string;
-  videoUrl?: string;
-  isPublished?: boolean;
-  isFeatured?: boolean;
-  notify?: boolean;
-};
+type PublicationAction =
+  | "publish"
+  | "unpublish"
+  | "feature"
+  | "unfeature"
+  | "notify"
+  | "delete";
 
 type PatchPublicationBody = {
   publicationId?: string;
-  action?: "publish" | "unpublish" | "feature" | "unfeature" | "notify" | "delete";
+  action?: PublicationAction;
 };
 
-function getString(value: unknown) {
-  if (value === null || value === undefined) return "";
-  return String(value).trim();
+const PUBLICATION_TYPES = new Set([
+  "news",
+  "event",
+  "announcement",
+  "teaching",
+  "sermon",
+  "video",
+  "message",
+]);
+
+const PUBLICATION_BUCKET = "church-publications";
+const MAX_IMAGE_SIZE = 4 * 1024 * 1024;
+
+function getString(value: unknown, maxLength = 5000) {
+  if (value === null || value === undefined) {
+    return "";
+  }
+
+  return String(value).trim().slice(0, maxLength);
 }
 
-function getYoutubeEmbedUrl(url: string) {
-  if (!url) return null;
+function getBoolean(value: unknown) {
+  return (
+    value === true ||
+    value === "true" ||
+    value === "on" ||
+    value === "1"
+  );
+}
 
-  if (url.includes("youtube.com/embed/")) {
-    return url;
-  }
+function getYoutubeVideoId(url: string) {
+  if (!url) return null;
 
   const watchMatch = url.match(/[?&]v=([^&]+)/);
 
   if (watchMatch?.[1]) {
-    return `https://www.youtube.com/embed/${watchMatch[1]}`;
+    return watchMatch[1];
   }
 
   const shortMatch = url.match(/youtu\.be\/([^?&]+)/);
 
   if (shortMatch?.[1]) {
-    return `https://www.youtube.com/embed/${shortMatch[1]}`;
+    return shortMatch[1];
   }
 
-  return null;
+  const embedMatch = url.match(
+    /youtube\.com\/embed\/([^?&/]+)/
+  );
+
+  return embedMatch?.[1] || null;
 }
 
-function configureWebPush() {
-  const publicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
-  const privateKey = process.env.VAPID_PRIVATE_KEY;
-  const subject = process.env.VAPID_SUBJECT || "mailto:contact@aksantictech.com";
-
-  if (!publicKey || !privateKey) {
-    return false;
-  }
-
-  webpush.setVapidDetails(subject, publicKey, privateKey);
-  return true;
+function getPublicationTypeLabel(value: string) {
+  if (value === "news") return "Actualité";
+  if (value === "event") return "Événement";
+  if (value === "announcement") return "Annonce";
+  if (value === "sermon") return "Prédication";
+  if (value === "video") return "Vidéo";
+  if (value === "message") return "Message";
+  return "Enseignement";
 }
 
 async function getCurrentProfile() {
@@ -76,7 +95,7 @@ async function getCurrentProfile() {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("id, role, church_id, status")
+    .select("id, user_id, role, church_id, status")
     .eq("user_id", user.id)
     .maybeSingle();
 
@@ -88,7 +107,10 @@ async function getCurrentProfile() {
     };
   }
 
-  if (profile.status && profile.status !== "active") {
+  if (
+    profile.status &&
+    !["active", "actif"].includes(profile.status)
+  ) {
     return {
       error: "Compte désactivé.",
       status: 403,
@@ -96,18 +118,14 @@ async function getCurrentProfile() {
     };
   }
 
-  if (profile.role === "super_admin") {
+  if (
+    profile.role === "super_admin" ||
+    !profile.church_id
+  ) {
     return {
-      error: "Action réservée aux administrateurs d’église.",
+      error:
+        "Cette action doit être effectuée depuis un espace église.",
       status: 403,
-      profile: null,
-    };
-  }
-
-  if (!profile.church_id) {
-    return {
-      error: "Aucune église rattachée à ce compte.",
-      status: 400,
       profile: null,
     };
   }
@@ -119,154 +137,371 @@ async function getCurrentProfile() {
   };
 }
 
-async function sendPublicationNotification({
+async function parseCreateBody(request: Request) {
+  const contentType =
+    request.headers.get("content-type") || "";
+
+  if (
+    contentType.includes(
+      "multipart/form-data"
+    )
+  ) {
+    const formData =
+      await request.formData();
+
+    const imageValue =
+      formData.get("coverImage");
+
+    return {
+      title: getString(
+        formData.get("title"),
+        180
+      ),
+      excerpt: getString(
+        formData.get("description"),
+        1000
+      ),
+      content: getString(
+        formData.get("content"),
+        10000
+      ),
+      category:
+        getString(
+          formData.get("publicationType"),
+          40
+        ) || "teaching",
+      videoUrl: getString(
+        formData.get("videoUrl"),
+        1000
+      ),
+      isPublished: getBoolean(
+        formData.get("isPublished")
+      ),
+      isFeatured: getBoolean(
+        formData.get("isFeatured")
+      ),
+      notify: getBoolean(
+        formData.get("notify")
+      ),
+      coverImage:
+        imageValue instanceof File &&
+        imageValue.size > 0
+          ? imageValue
+          : null,
+    };
+  }
+
+  const body =
+    (await request.json()) as Record<
+      string,
+      unknown
+    >;
+
+  return {
+    title: getString(
+      body.title,
+      180
+    ),
+    excerpt: getString(
+      body.description,
+      1000
+    ),
+    content: getString(
+      body.content,
+      10000
+    ),
+    category:
+      getString(
+        body.publicationType,
+        40
+      ) || "teaching",
+    videoUrl: getString(
+      body.videoUrl,
+      1000
+    ),
+    isPublished: getBoolean(
+      body.isPublished
+    ),
+    isFeatured: getBoolean(
+      body.isFeatured
+    ),
+    notify: getBoolean(body.notify),
+    coverImage: null as File | null,
+  };
+}
+
+async function uploadCoverImage({
+  admin,
   churchId,
+  file,
+}: {
+  admin: ReturnType<
+    typeof createAdminClient
+  >;
+  churchId: string;
+  file: File;
+}) {
+  const allowedTypes =
+    new Map<string, string>([
+      ["image/jpeg", "jpg"],
+      ["image/png", "png"],
+      ["image/webp", "webp"],
+    ]);
+
+  const extension =
+    allowedTypes.get(file.type);
+
+  if (!extension) {
+    throw new Error(
+      "La photo doit être au format JPG, PNG ou WebP."
+    );
+  }
+
+  if (file.size > MAX_IMAGE_SIZE) {
+    throw new Error(
+      "La photo ne peut pas dépasser 4 Mo."
+    );
+  }
+
+  const objectPath = `${churchId}/${new Date().getUTCFullYear()}/${crypto.randomUUID()}.${extension}`;
+
+  const content = Buffer.from(
+    await file.arrayBuffer()
+  );
+
+  const { error } = await admin.storage
+    .from(PUBLICATION_BUCKET)
+    .upload(objectPath, content, {
+      contentType: file.type,
+      cacheControl: "3600",
+      upsert: false,
+    });
+
+  if (error) {
+    throw new Error(
+      `Photo non envoyée : ${error.message}`
+    );
+  }
+
+  const {
+    data: { publicUrl },
+  } = admin.storage
+    .from(PUBLICATION_BUCKET)
+    .getPublicUrl(objectPath);
+
+  return {
+    imageUrl: publicUrl,
+    imagePath: objectPath,
+  };
+}
+
+async function notifySubscribers({
+  churchId,
+  profileId,
   title,
-  body,
+  excerpt,
+  category,
 }: {
   churchId: string;
+  profileId: string;
   title: string;
-  body: string;
+  excerpt: string;
+  category: string;
 }) {
-  const configured = configureWebPush();
+  try {
+    const result =
+      await sendChurchNotification({
+        churchId,
+        createdBy: profileId,
+        title: `${getPublicationTypeLabel(
+          category
+        )} : ${title}`,
+        body:
+          excerpt ||
+          "Une nouvelle publication vient d’être ajoutée par votre église.",
+        url: "/#actualites",
+        type: "publication",
+        data: {
+          category,
+        },
+      });
 
-  if (!configured) {
+    return {
+      sentCount:
+        result.successCount,
+      failedCount:
+        result.failureCount,
+      warning:
+        result.recipientsCount === 0
+          ? "Publication enregistrée, mais aucun appareil n’est encore abonné."
+          : null,
+    };
+  } catch (error: any) {
     return {
       sentCount: 0,
       failedCount: 0,
       warning:
-        "Publication enregistrée, mais notifications non envoyées : clés VAPID manquantes.",
+        error?.message ||
+        "Publication enregistrée, mais les notifications n’ont pas pu être envoyées.",
     };
   }
-
-  const admin = createAdminClient();
-
-  const { data: church } = await admin
-    .from("churches")
-    .select("id, slug, name, public_name")
-    .eq("id", churchId)
-    .maybeSingle();
-
-  if (!church?.slug) {
-    return {
-      sentCount: 0,
-      failedCount: 0,
-      warning: "Église introuvable pour l’envoi des notifications.",
-    };
-  }
-
-  const { data: subscriptions } = await admin
-    .from("push_subscriptions")
-    .select("id, endpoint, p256dh, auth")
-    .eq("church_id", churchId);
-
-  const payload = JSON.stringify({
-    title,
-    body,
-    url: `/church/${church.slug}`,
-    icon: "/images/mpangi-logo.png",
-    badge: "/images/mpangi-logo.png",
-  });
-
-  let sentCount = 0;
-  let failedCount = 0;
-
-  for (const subscription of subscriptions ?? []) {
-    try {
-      await webpush.sendNotification(
-        {
-          endpoint: subscription.endpoint,
-          keys: {
-            p256dh: subscription.p256dh,
-            auth: subscription.auth,
-          },
-        },
-        payload
-      );
-
-      sentCount += 1;
-    } catch (error: any) {
-      failedCount += 1;
-
-      if (error?.statusCode === 404 || error?.statusCode === 410) {
-        await admin
-          .from("push_subscriptions")
-          .delete()
-          .eq("id", subscription.id);
-      }
-    }
-  }
-
-  return {
-    sentCount,
-    failedCount,
-    warning: null,
-  };
 }
 
-export async function POST(request: Request) {
+export async function POST(
+  request: Request
+) {
+  let uploadedImagePath:
+    | string
+    | null = null;
+
   try {
-    const { profile, error, status } = await getCurrentProfile();
+    const {
+      profile,
+      error,
+      status,
+    } = await getCurrentProfile();
 
     if (!profile) {
-      return NextResponse.json({ error }, { status });
+      return NextResponse.json(
+        { error },
+        { status }
+      );
     }
 
-    const body = (await request.json()) as CreatePublicationBody;
+    const body =
+      await parseCreateBody(request);
 
-    const title = getString(body.title);
-    const description = getString(body.description);
-    const content = getString(body.content);
-    const publicationType = getString(body.publicationType) || "teaching";
-    const videoUrl = getString(body.videoUrl);
-
-    if (!title) {
+    if (!body.title) {
       return NextResponse.json(
-        { error: "Le titre est obligatoire." },
+        {
+          error:
+            "Le titre est obligatoire.",
+        },
         { status: 400 }
       );
     }
 
     if (
-      !["teaching", "video", "message", "announcement", "sermon"].includes(
-        publicationType
+      !PUBLICATION_TYPES.has(
+        body.category
       )
     ) {
       return NextResponse.json(
-        { error: "Type de publication invalide." },
+        {
+          error:
+            "Type de publication invalide.",
+        },
         { status: 400 }
       );
     }
 
-    const isPublished = Boolean(body.isPublished || body.notify);
-    const videoEmbedUrl = videoUrl ? getYoutubeEmbedUrl(videoUrl) : null;
+    const admin =
+      createAdminClient();
 
-    const admin = createAdminClient();
+    let imageUrl: string | null =
+      null;
 
-    const { data: publication, error: insertError } = await admin
-      .from("church_publications")
+    if (body.coverImage) {
+      const uploaded =
+        await uploadCoverImage({
+          admin,
+          churchId:
+            profile.church_id,
+          file: body.coverImage,
+        });
+
+      imageUrl =
+        uploaded.imageUrl;
+      uploadedImagePath =
+        uploaded.imagePath;
+    }
+
+    const published =
+      body.isPublished ||
+      body.notify;
+
+    const youtubeVideoId =
+      getYoutubeVideoId(
+        body.videoUrl
+      );
+
+    const {
+      data: publication,
+      error: insertError,
+    } = await admin
+      .from(
+        "church_publications"
+      )
       .insert({
-        church_id: profile.church_id,
-        title,
-        description: description || null,
-        content: content || null,
-        publication_type: publicationType,
-        video_url: videoUrl || null,
-        video_embed_url: videoEmbedUrl,
-        is_published: isPublished,
-        is_featured: Boolean(body.isFeatured),
-        published_at: isPublished ? new Date().toISOString() : null,
-        created_by: profile.id,
+        church_id:
+          profile.church_id,
+        title: body.title,
+        excerpt:
+          body.excerpt || null,
+        content:
+          body.content || null,
+        category:
+          body.category,
+        image_url:
+          imageUrl,
+        image_path:
+          uploadedImagePath,
+        video_url:
+          body.videoUrl || null,
+        youtube_url:
+          body.videoUrl || null,
+        youtube_video_id:
+          youtubeVideoId,
+        status: published
+          ? "published"
+          : "draft",
+        is_public: true,
+        is_featured:
+          body.isFeatured,
+        notify_subscribers:
+          body.notify,
+        published_at: published
+          ? new Date().toISOString()
+          : null,
+        notified_at: null,
+        created_by:
+          profile.id,
+        updated_by:
+          profile.id,
       })
-      .select("id, title, description")
+      .select(
+        "id, title, excerpt, category"
+      )
       .single();
 
-    if (insertError || !publication) {
+    if (
+      insertError ||
+      !publication
+    ) {
+      if (uploadedImagePath) {
+        await admin.storage
+          .from(
+            PUBLICATION_BUCKET
+          )
+          .remove([
+            uploadedImagePath,
+          ]);
+      }
+
       return NextResponse.json(
         {
           error:
             insertError?.message ||
             "Impossible d’enregistrer la publication.",
+          code:
+            insertError?.code ||
+            null,
+          details:
+            insertError?.details ||
+            null,
+          hint:
+            insertError?.hint ||
+            null,
         },
         { status: 400 }
       );
@@ -274,171 +509,363 @@ export async function POST(request: Request) {
 
     let sentCount = 0;
     let failedCount = 0;
-    let warning: string | null = null;
+    let warning:
+      | string
+      | null = null;
 
     if (body.notify) {
-      const notifyResult = await sendPublicationNotification({
-        churchId: profile.church_id,
-        title: `Nouvel enseignement : ${title}`,
-        body:
-          description ||
-          "Un nouvel enseignement vient d’être publié par votre église.",
-      });
+      const notifyResult =
+        await notifySubscribers({
+          churchId:
+            profile.church_id,
+          profileId:
+            profile.id,
+          title:
+            publication.title,
+          excerpt:
+            publication.excerpt ||
+            "",
+          category:
+            publication.category ||
+            "teaching",
+        });
 
-      sentCount = notifyResult.sentCount;
-      failedCount = notifyResult.failedCount;
-      warning = notifyResult.warning;
+      sentCount =
+        notifyResult.sentCount;
+      failedCount =
+        notifyResult.failedCount;
+      warning =
+        notifyResult.warning;
 
       await admin
-        .from("church_publications")
+        .from(
+          "church_publications"
+        )
         .update({
-          notified_at: new Date().toISOString(),
+          notified_at:
+            new Date().toISOString(),
         })
-        .eq("id", publication.id);
+        .eq(
+          "id",
+          publication.id
+        )
+        .eq(
+          "church_id",
+          profile.church_id
+        );
     }
 
     return NextResponse.json({
       success: true,
-      publicationId: publication.id,
+      publicationId:
+        publication.id,
       sentCount,
       failedCount,
       warning,
     });
-  } catch {
+  } catch (caughtError: any) {
     return NextResponse.json(
-      { error: "Erreur inattendue pendant la publication." },
+      {
+        error:
+          caughtError?.message ||
+          "Erreur inattendue pendant la publication.",
+        code:
+          caughtError?.code ||
+          null,
+        details:
+          caughtError?.details ||
+          null,
+        hint:
+          caughtError?.hint ||
+          null,
+      },
       { status: 500 }
     );
   }
 }
 
-export async function PATCH(request: Request) {
+export async function PATCH(
+  request: Request
+) {
   try {
-    const { profile, error, status } = await getCurrentProfile();
+    const {
+      profile,
+      error,
+      status,
+    } = await getCurrentProfile();
 
     if (!profile) {
-      return NextResponse.json({ error }, { status });
+      return NextResponse.json(
+        { error },
+        { status }
+      );
     }
 
-    const body = (await request.json()) as PatchPublicationBody;
+    const body =
+      (await request.json()) as PatchPublicationBody;
 
-    const publicationId = getString(body.publicationId);
-    const action = body.action;
+    const publicationId =
+      getString(
+        body.publicationId,
+        80
+      );
 
-    if (!publicationId || !action) {
+    const action =
+      body.action;
+
+    if (
+      !publicationId ||
+      !action
+    ) {
       return NextResponse.json(
-        { error: "Action invalide." },
+        {
+          error:
+            "Action invalide.",
+        },
         { status: 400 }
       );
     }
 
-    const admin = createAdminClient();
+    const admin =
+      createAdminClient();
 
-    const { data: publication } = await admin
-      .from("church_publications")
-      .select("id, church_id, title, description, is_published, is_featured")
+    const {
+      data: publication,
+      error:
+        publicationError,
+    } = await admin
+      .from(
+        "church_publications"
+      )
+      .select(
+        "id, church_id, title, excerpt, category, status, is_featured, image_path"
+      )
       .eq("id", publicationId)
-      .eq("church_id", profile.church_id)
+      .eq(
+        "church_id",
+        profile.church_id
+      )
       .maybeSingle();
 
-    if (!publication) {
+    if (
+      publicationError ||
+      !publication
+    ) {
       return NextResponse.json(
-        { error: "Publication introuvable." },
+        {
+          error:
+            publicationError?.message ||
+            "Publication introuvable.",
+        },
         { status: 404 }
       );
     }
 
     if (action === "delete") {
-      const { error: deleteError } = await admin
-        .from("church_publications")
-        .delete()
-        .eq("id", publicationId)
-        .eq("church_id", profile.church_id);
+      const { error: deleteError } =
+        await admin
+          .from(
+            "church_publications"
+          )
+          .delete()
+          .eq(
+            "id",
+            publicationId
+          )
+          .eq(
+            "church_id",
+            profile.church_id
+          );
 
       if (deleteError) {
         return NextResponse.json(
-          { error: deleteError.message },
+          {
+            error:
+              deleteError.message,
+          },
           { status: 400 }
         );
       }
 
-      return NextResponse.json({ success: true });
-    }
-
-    if (action === "notify") {
-      if (!publication.is_published) {
-        await admin
-          .from("church_publications")
-          .update({
-            is_published: true,
-            published_at: new Date().toISOString(),
-          })
-          .eq("id", publicationId)
-          .eq("church_id", profile.church_id);
+      if (
+        publication.image_path
+      ) {
+        await admin.storage
+          .from(
+            PUBLICATION_BUCKET
+          )
+          .remove([
+            publication.image_path,
+          ]);
       }
-
-      const notifyResult = await sendPublicationNotification({
-        churchId: profile.church_id,
-        title: `Nouvel enseignement : ${publication.title}`,
-        body:
-          publication.description ||
-          "Un nouvel enseignement vient d’être publié par votre église.",
-      });
-
-      await admin
-        .from("church_publications")
-        .update({
-          notified_at: new Date().toISOString(),
-        })
-        .eq("id", publicationId)
-        .eq("church_id", profile.church_id);
 
       return NextResponse.json({
         success: true,
-        sentCount: notifyResult.sentCount,
-        failedCount: notifyResult.failedCount,
-        warning: notifyResult.warning,
       });
     }
 
-    const updates: Record<string, unknown> = {
-      updated_at: new Date().toISOString(),
+    if (action === "notify") {
+      if (
+        publication.status !==
+        "published"
+      ) {
+        await admin
+          .from(
+            "church_publications"
+          )
+          .update({
+            status: "published",
+            is_public: true,
+            published_at:
+              new Date().toISOString(),
+            updated_by:
+              profile.id,
+          })
+          .eq(
+            "id",
+            publicationId
+          )
+          .eq(
+            "church_id",
+            profile.church_id
+          );
+      }
+
+      const notifyResult =
+        await notifySubscribers({
+          churchId:
+            profile.church_id,
+          profileId:
+            profile.id,
+          title:
+            publication.title,
+          excerpt:
+            publication.excerpt ||
+            "",
+          category:
+            publication.category ||
+            "teaching",
+        });
+
+      await admin
+        .from(
+          "church_publications"
+        )
+        .update({
+          notified_at:
+            new Date().toISOString(),
+          notify_subscribers:
+            true,
+          updated_by:
+            profile.id,
+        })
+        .eq(
+          "id",
+          publicationId
+        )
+        .eq(
+          "church_id",
+          profile.church_id
+        );
+
+      return NextResponse.json({
+        success: true,
+        sentCount:
+          notifyResult.sentCount,
+        failedCount:
+          notifyResult.failedCount,
+        warning:
+          notifyResult.warning,
+      });
+    }
+
+    const updates: Record<
+      string,
+      unknown
+    > = {
+      updated_at:
+        new Date().toISOString(),
+      updated_by:
+        profile.id,
     };
 
     if (action === "publish") {
-      updates.is_published = true;
-      updates.published_at = new Date().toISOString();
+      updates.status =
+        "published";
+      updates.is_public = true;
+      updates.published_at =
+        new Date().toISOString();
     }
 
-    if (action === "unpublish") {
-      updates.is_published = false;
+    if (
+      action === "unpublish"
+    ) {
+      updates.status = "draft";
     }
 
     if (action === "feature") {
       updates.is_featured = true;
     }
 
-    if (action === "unfeature") {
+    if (
+      action === "unfeature"
+    ) {
       updates.is_featured = false;
     }
 
-    const { error: updateError } = await admin
-      .from("church_publications")
-      .update(updates)
-      .eq("id", publicationId)
-      .eq("church_id", profile.church_id);
+    const { error: updateError } =
+      await admin
+        .from(
+          "church_publications"
+        )
+        .update(updates)
+        .eq(
+          "id",
+          publicationId
+        )
+        .eq(
+          "church_id",
+          profile.church_id
+        );
 
     if (updateError) {
       return NextResponse.json(
-        { error: updateError.message },
+        {
+          error:
+            updateError.message,
+          code:
+            updateError.code ||
+            null,
+          details:
+            updateError.details ||
+            null,
+          hint:
+            updateError.hint ||
+            null,
+        },
         { status: 400 }
       );
     }
 
-    return NextResponse.json({ success: true });
-  } catch {
+    return NextResponse.json({
+      success: true,
+    });
+  } catch (caughtError: any) {
     return NextResponse.json(
-      { error: "Erreur inattendue pendant la mise à jour." },
+      {
+        error:
+          caughtError?.message ||
+          "Erreur inattendue pendant la mise à jour.",
+        code:
+          caughtError?.code ||
+          null,
+        details:
+          caughtError?.details ||
+          null,
+        hint:
+          caughtError?.hint ||
+          null,
+      },
       { status: 500 }
     );
   }
