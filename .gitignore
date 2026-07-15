@@ -57,3 +57,14 @@ backups/
 .phase35t-backup/
 payload/
 mpangi-*-context.zip
+.phase35u-final-backup/
+
+.env.backup
+
+payload/
+
+.phase35u-backup/
+
+*.zip
+
+backups/

@@ -2,66 +2,76 @@
 
 import {
   Bookmark,
-  BookmarkCheck,
   BookOpen,
   ChevronLeft,
   ChevronRight,
-  Copy,
+  Loader2,
   Minus,
   Moon,
-  Plus,
   Search,
   Share2,
   Sun,
+  Type,
   X,
 } from "lucide-react";
-import { FormEvent, useEffect, useMemo, useState } from "react";
-import BibleFumsTracker from "@/components/bible/BibleFumsTracker";
+import {
+  FormEvent,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 
 type BibleVersion = {
   id: string;
-  abbreviation: string;
-  abbreviationLocal: string;
-  name: string;
-  nameLocal: string;
+  abbreviation?: string;
+  abbreviationLocal?: string;
+  name?: string;
+  nameLocal?: string;
   copyright?: string;
-  info?: string;
+  language?: {
+    id?: string;
+    name?: string;
+    nameLocal?: string;
+  };
 };
 
 type BibleChapterSummary = {
   id: string;
+  bibleId: string;
   number: string;
-  reference: string;
   bookId: string;
+  reference: string;
 };
 
 type BibleBook = {
   id: string;
+  bibleId: string;
+  abbreviation?: string;
   name: string;
-  nameLong: string;
-  abbreviation: string;
-  chapters: BibleChapterSummary[];
+  nameLong?: string;
+  chapters?: BibleChapterSummary[];
 };
 
-type ChapterNavigation = {
-  id: string;
-  number: string;
-} | null;
-
-type BibleChapter = {
+type BibleChapterContent = {
   id: string;
   bibleId: string;
   number: string;
   bookId: string;
   reference: string;
   content: string;
-  verseCount: number;
+  verseCount?: number;
   copyright?: string;
-  previous?: ChapterNavigation;
-  next?: ChapterNavigation;
+  next?: {
+    id: string;
+    number: string;
+  } | null;
+  previous?: {
+    id: string;
+    number: string;
+  } | null;
 };
 
-type SearchResult = {
+type SearchVerse = {
   id: string;
   bibleId: string;
   bookId: string;
@@ -70,721 +80,1207 @@ type SearchResult = {
   text: string;
 };
 
-type SavedReading = {
-  bibleId: string;
-  chapterId: string;
-  reference: string;
-  savedAt: string;
-};
+type ReaderTheme =
+  | "light"
+  | "sepia"
+  | "dark";
 
-type ReaderTheme = "light" | "sepia" | "dark";
+const STORAGE_KEY =
+  "mpangi-bible-reader-v2";
 
-const SETTINGS_KEY = "mpangi-bible-settings-v1";
-const BOOKMARKS_KEY = "mpangi-bible-bookmarks-v1";
-
-async function readJson(response: Response) {
-  const payload = await response.json();
-
-  if (!response.ok) {
-    throw new Error(payload?.error || "Une erreur est survenue.");
+function getVersionLabel(
+  version?: BibleVersion
+) {
+  if (!version) {
+    return "Version";
   }
 
-  return payload;
+  const abbreviation =
+    version.abbreviationLocal ||
+    version.abbreviation ||
+    "";
+
+  const name =
+    version.nameLocal ||
+    version.name ||
+    "Bible";
+
+  return abbreviation
+    ? `${abbreviation} — ${name}`
+    : name;
 }
 
-function chapterBookId(chapterId: string) {
-  return chapterId.split(".")[0] || "";
+function getShortBookName(
+  book?: BibleBook
+) {
+  if (!book) return "Livre";
+
+  const raw =
+    book.name?.trim() ||
+    book.nameLong?.trim() ||
+    "Livre";
+
+  const aliases: Array<
+    [RegExp, string]
+  > = [
+    [
+      /le premier livre de mo[iï]se.*gen[eè]se/i,
+      "Genèse",
+    ],
+    [
+      /le deuxi[eè]me livre de mo[iï]se.*exode/i,
+      "Exode",
+    ],
+    [
+      /le troisi[eè]me livre de mo[iï]se.*l[eé]vitique/i,
+      "Lévitique",
+    ],
+    [
+      /le quatri[eè]me livre de mo[iï]se.*nombres/i,
+      "Nombres",
+    ],
+    [
+      /le cinqui[eè]me livre de mo[iï]se.*deut[eé]ronome/i,
+      "Deutéronome",
+    ],
+  ];
+
+  for (const [
+    pattern,
+    replacement,
+  ] of aliases) {
+    if (pattern.test(raw)) {
+      return replacement;
+    }
+  }
+
+  return raw
+    .replace(
+      /^Le livre de\s+/i,
+      ""
+    )
+    .replace(
+      /^L['’]Évangile selon\s+/i,
+      ""
+    )
+    .replace(
+      /^Évangile selon\s+/i,
+      ""
+    );
+}
+
+function chapterOptions(
+  book?: BibleBook
+) {
+  return (book?.chapters || []).filter(
+    (chapter) =>
+      chapter.id &&
+      /^\d+$/.test(
+        String(
+          chapter.number
+        )
+      )
+  );
+}
+
+function themeClasses(
+  theme: ReaderTheme
+) {
+  if (theme === "dark") {
+    return {
+      shell:
+        "bg-slate-950 text-slate-100",
+      card:
+        "border-slate-800 bg-slate-900",
+      muted:
+        "text-slate-300",
+      field:
+        "border-slate-700 bg-slate-950 text-slate-100",
+      soft:
+        "bg-slate-800 text-slate-100",
+    };
+  }
+
+  if (theme === "sepia") {
+    return {
+      shell:
+        "bg-[#F4E8D0] text-[#3B2F24]",
+      card:
+        "border-[#D8C49D] bg-[#FFF8E8]",
+      muted:
+        "text-[#6B5843]",
+      field:
+        "border-[#D8C49D] bg-[#FFFDF5] text-[#3B2F24]",
+      soft:
+        "bg-[#EAD8B5] text-[#4D3B2A]",
+    };
+  }
+
+  return {
+    shell:
+      "bg-[#F5F9FC] text-slate-800",
+    card:
+      "border-[#DCEAF5] bg-white",
+    muted:
+      "text-slate-600",
+    field:
+      "border-[#C9DBEA] bg-white text-slate-900",
+    soft:
+      "bg-[#EAF3FA] text-[#03357A]",
+  };
 }
 
 export default function BibleReaderClient({
   churchSlug,
   churchName,
 }: {
-  churchSlug?: string;
-  churchName?: string;
+  churchSlug: string;
+  churchName: string;
 }) {
-  const [versions, setVersions] = useState<BibleVersion[]>([]);
-  const [books, setBooks] = useState<BibleBook[]>([]);
-  const [selectedBibleId, setSelectedBibleId] = useState("");
-  const [selectedBookId, setSelectedBookId] = useState("");
-  const [selectedChapterId, setSelectedChapterId] = useState("");
-  const [chapter, setChapter] = useState<BibleChapter | null>(null);
-  const [fumsToken, setFumsToken] = useState<string | null>(null);
-
-  const [loadingVersions, setLoadingVersions] = useState(true);
-  const [loadingBooks, setLoadingBooks] = useState(false);
-  const [loadingChapter, setLoadingChapter] = useState(false);
-  const [error, setError] = useState("");
-
-  const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
-  const [searching, setSearching] = useState(false);
-  const [showSearch, setShowSearch] = useState(false);
-
-  const [fontScale, setFontScale] = useState(1);
-  const [theme, setTheme] = useState<ReaderTheme>("light");
-  const [bookmarks, setBookmarks] = useState<SavedReading[]>([]);
-  const [copied, setCopied] = useState(false);
-
-  const selectedVersion = useMemo(
-    () => versions.find((version) => version.id === selectedBibleId) || null,
-    [versions, selectedBibleId]
+  const [
+    versions,
+    setVersions,
+  ] = useState<BibleVersion[]>(
+    []
   );
 
-  const selectedBook = useMemo(
-    () => books.find((book) => book.id === selectedBookId) || null,
-    [books, selectedBookId]
+  const [
+    books,
+    setBooks,
+  ] = useState<BibleBook[]>(
+    []
   );
 
-  const selectedChapters = selectedBook?.chapters || [];
+  const [
+    bibleId,
+    setBibleId,
+  ] = useState("");
 
-  const isBookmarked = Boolean(
-    chapter &&
-      bookmarks.some(
-        (bookmark) =>
-          bookmark.bibleId === selectedBibleId &&
-          bookmark.chapterId === chapter.id
-      )
+  const [
+    bookId,
+    setBookId,
+  ] = useState("");
+
+  const [
+    chapterId,
+    setChapterId,
+  ] = useState("");
+
+  const [
+    chapter,
+    setChapter,
+  ] =
+    useState<BibleChapterContent | null>(
+      null
+    );
+
+  const [
+    loadingVersions,
+    setLoadingVersions,
+  ] = useState(true);
+
+  const [
+    loadingBooks,
+    setLoadingBooks,
+  ] = useState(false);
+
+  const [
+    loadingChapter,
+    setLoadingChapter,
+  ] = useState(false);
+
+  const [
+    error,
+    setError,
+  ] = useState("");
+
+  const [
+    fontScale,
+    setFontScale,
+  ] = useState(100);
+
+  const [
+    theme,
+    setTheme,
+  ] =
+    useState<ReaderTheme>(
+      "light"
+    );
+
+  const [
+    searchOpen,
+    setSearchOpen,
+  ] = useState(false);
+
+  const [
+    searchQuery,
+    setSearchQuery,
+  ] = useState("");
+
+  const [
+    searchResults,
+    setSearchResults,
+  ] = useState<SearchVerse[]>(
+    []
   );
+
+  const [
+    searching,
+    setSearching,
+  ] = useState(false);
+
+  const [
+    favorite,
+    setFavorite,
+  ] = useState(false);
+
+  const selectedVersion =
+    useMemo(
+      () =>
+        versions.find(
+          (version) =>
+            version.id ===
+            bibleId
+        ),
+      [versions, bibleId]
+    );
+
+  const selectedBook =
+    useMemo(
+      () =>
+        books.find(
+          (book) =>
+            book.id === bookId
+        ),
+      [books, bookId]
+    );
+
+  const chapters =
+    useMemo(
+      () =>
+        chapterOptions(
+          selectedBook
+        ),
+      [selectedBook]
+    );
+
+  const classes =
+    themeClasses(theme);
 
   useEffect(() => {
     try {
-      const savedSettings = JSON.parse(
-        localStorage.getItem(SETTINGS_KEY) || "{}"
-      );
+      const saved =
+        JSON.parse(
+          localStorage.getItem(
+            STORAGE_KEY
+          ) || "{}"
+        );
 
-      const savedBookmarks = JSON.parse(
-        localStorage.getItem(BOOKMARKS_KEY) || "[]"
-      );
-
-      if (savedSettings?.fontScale) {
-        setFontScale(Number(savedSettings.fontScale));
+      if (
+        typeof saved.fontScale ===
+        "number"
+      ) {
+        setFontScale(
+          Math.min(
+            145,
+            Math.max(
+              85,
+              saved.fontScale
+            )
+          )
+        );
       }
 
       if (
-        savedSettings?.theme === "light" ||
-        savedSettings?.theme === "sepia" ||
-        savedSettings?.theme === "dark"
+        ["light", "sepia", "dark"].includes(
+          saved.theme
+        )
       ) {
-        setTheme(savedSettings.theme);
-      }
-
-      if (Array.isArray(savedBookmarks)) {
-        setBookmarks(savedBookmarks);
+        setTheme(
+          saved.theme
+        );
       }
     } catch {
-      // Les préférences corrompues sont simplement ignorées.
+      // Les préférences locales restent facultatives.
     }
   }, []);
 
   useEffect(() => {
-    let cancelled = false;
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        bibleId,
+        bookId,
+        chapterId,
+        fontScale,
+        theme,
+      })
+    );
+  }, [
+    bibleId,
+    bookId,
+    chapterId,
+    fontScale,
+    theme,
+  ]);
+
+  useEffect(() => {
+    let active = true;
 
     async function loadVersions() {
       setLoadingVersions(true);
       setError("");
 
       try {
-        const response = await fetch("/api/bible/versions", {
-          cache: "no-store",
-        });
+        const response =
+          await fetch(
+            "/api/bible/versions",
+            {
+              cache: "no-store",
+            }
+          );
 
-        const payload = await readJson(response);
-        const availableVersions = payload.data || [];
+        const payload =
+          await response.json();
 
-        if (cancelled) return;
+        if (!response.ok) {
+          throw new Error(
+            payload.error ||
+              "Impossible de charger les versions bibliques."
+          );
+        }
 
-        setVersions(availableVersions);
+        const nextVersions =
+          (payload.data ||
+            []) as BibleVersion[];
 
-        const savedSettings = JSON.parse(
-          localStorage.getItem(SETTINGS_KEY) || "{}"
+        if (!active) return;
+
+        setVersions(
+          nextVersions
         );
 
-        const savedBibleId = availableVersions.some(
-          (version: BibleVersion) =>
-            version.id === savedSettings?.bibleId
-        )
-          ? savedSettings.bibleId
-          : "";
+        let savedBibleId = "";
 
-        setSelectedBibleId(
-          savedBibleId || payload.defaultBibleId || availableVersions[0]?.id || ""
-        );
+        try {
+          savedBibleId =
+            JSON.parse(
+              localStorage.getItem(
+                STORAGE_KEY
+              ) || "{}"
+            ).bibleId || "";
+        } catch {
+          savedBibleId = "";
+        }
 
-        if (availableVersions.length === 0) {
+        const firstId =
+          nextVersions.find(
+            (item) =>
+              item.id ===
+              savedBibleId
+          )?.id ||
+          payload.defaultBibleId ||
+          nextVersions[0]?.id ||
+          "";
+
+        setBibleId(firstId);
+
+        if (
+          nextVersions.length === 0
+        ) {
           setError(
             "Aucune version française n’est disponible avec la clé API.Bible actuelle."
           );
         }
-      } catch (loadError: any) {
-        if (!cancelled) {
+      } catch (
+        loadError: any
+      ) {
+        if (active) {
           setError(
             loadError?.message ||
               "Impossible de charger les versions bibliques."
           );
         }
       } finally {
-        if (!cancelled) setLoadingVersions(false);
+        if (active) {
+          setLoadingVersions(
+            false
+          );
+        }
       }
     }
 
     loadVersions();
 
     return () => {
-      cancelled = true;
+      active = false;
     };
   }, []);
 
   useEffect(() => {
-    if (!selectedBibleId) return;
+    if (!bibleId) {
+      setBooks([]);
+      setBookId("");
+      setChapterId("");
+      setChapter(null);
+      return;
+    }
 
-    let cancelled = false;
+    let active = true;
 
     async function loadBooks() {
       setLoadingBooks(true);
       setError("");
-      setBooks([]);
-      setSelectedBookId("");
-      setSelectedChapterId("");
-      setChapter(null);
 
       try {
-        const response = await fetch(
-          `/api/bible/books?bibleId=${encodeURIComponent(
-            selectedBibleId
-          )}`,
-          { cache: "no-store" }
-        );
+        const response =
+          await fetch(
+            `/api/bible/books?bibleId=${encodeURIComponent(
+              bibleId
+            )}`,
+            {
+              cache: "no-store",
+            }
+          );
 
-        const payload = await readJson(response);
-        const availableBooks: BibleBook[] = payload.data || [];
+        const payload =
+          await response.json();
 
-        if (cancelled) return;
-
-        setBooks(availableBooks);
-
-        const savedSettings = JSON.parse(
-          localStorage.getItem(SETTINGS_KEY) || "{}"
-        );
-
-        const savedBook = availableBooks.find(
-          (book) => book.id === savedSettings?.bookId
-        );
-
-        const initialBook =
-          savedBook ||
-          availableBooks.find((book) => book.id === "GEN") ||
-          availableBooks[0];
-
-        if (!initialBook) {
-          setError("Aucun livre n’est disponible pour cette version.");
-          return;
+        if (!response.ok) {
+          throw new Error(
+            payload.error ||
+              "Impossible de charger les livres."
+          );
         }
 
-        const savedChapter = initialBook.chapters.find(
-          (chapterItem) =>
-            chapterItem.id === savedSettings?.chapterId
+        const nextBooks =
+          (payload.data ||
+            []) as BibleBook[];
+
+        if (!active) return;
+
+        setBooks(nextBooks);
+
+        let savedBookId = "";
+
+        try {
+          savedBookId =
+            JSON.parse(
+              localStorage.getItem(
+                STORAGE_KEY
+              ) || "{}"
+            ).bookId || "";
+        } catch {
+          savedBookId = "";
+        }
+
+        const nextBook =
+          nextBooks.find(
+            (item) =>
+              item.id ===
+              savedBookId
+          ) ||
+          nextBooks.find(
+            (item) =>
+              item.id
+                .toUpperCase()
+                .startsWith(
+                  "GEN"
+                )
+          ) ||
+          nextBooks[0];
+
+        setBookId(
+          nextBook?.id || ""
         );
 
-        const initialChapter =
-          savedChapter ||
-          initialBook.chapters.find(
-            (chapterItem) => chapterItem.number === "1"
-          ) ||
-          initialBook.chapters[0];
+        const nextChapters =
+          chapterOptions(
+            nextBook
+          );
 
-        setSelectedBookId(initialBook.id);
-        setSelectedChapterId(initialChapter?.id || "");
-      } catch (loadError: any) {
-        if (!cancelled) {
-          setError(loadError?.message || "Impossible de charger les livres.");
+        setChapterId(
+          nextChapters[0]?.id ||
+            ""
+        );
+      } catch (
+        loadError: any
+      ) {
+        if (active) {
+          setError(
+            loadError?.message ||
+              "Impossible de charger les livres."
+          );
         }
       } finally {
-        if (!cancelled) setLoadingBooks(false);
+        if (active) {
+          setLoadingBooks(
+            false
+          );
+        }
       }
     }
 
     loadBooks();
 
     return () => {
-      cancelled = true;
+      active = false;
     };
-  }, [selectedBibleId]);
+  }, [bibleId]);
 
   useEffect(() => {
-    if (!selectedBibleId || !selectedChapterId) return;
+    if (
+      !bibleId ||
+      !chapterId
+    ) {
+      setChapter(null);
+      return;
+    }
 
-    let cancelled = false;
+    let active = true;
 
     async function loadChapter() {
-      setLoadingChapter(true);
+      setLoadingChapter(
+        true
+      );
       setError("");
 
       try {
-        const response = await fetch(
-          `/api/bible/chapter?bibleId=${encodeURIComponent(
-            selectedBibleId
-          )}&chapterId=${encodeURIComponent(selectedChapterId)}`,
-          { cache: "no-store" }
-        );
+        const response =
+          await fetch(
+            `/api/bible/chapter?bibleId=${encodeURIComponent(
+              bibleId
+            )}&chapterId=${encodeURIComponent(
+              chapterId
+            )}`,
+            {
+              cache: "no-store",
+            }
+          );
 
-        const payload = await readJson(response);
+        const payload =
+          await response.json();
 
-        if (cancelled) return;
-
-        setChapter(payload.data);
-        setFumsToken(payload.fumsToken || null);
-
-        const bookId = payload.data?.bookId || chapterBookId(selectedChapterId);
-
-        if (bookId && bookId !== selectedBookId) {
-          setSelectedBookId(bookId);
+        if (!response.ok) {
+          throw new Error(
+            [
+              payload.error,
+              payload.details
+                ? JSON.stringify(
+                    payload.details
+                  )
+                : "",
+            ]
+              .filter(Boolean)
+              .join(" — ")
+          );
         }
 
-        localStorage.setItem(
-          SETTINGS_KEY,
-          JSON.stringify({
-            bibleId: selectedBibleId,
-            bookId,
-            chapterId: selectedChapterId,
-            fontScale,
-            theme,
-          })
-        );
-      } catch (loadError: any) {
-        if (!cancelled) {
+        if (active) {
+          setChapter(
+            payload.data ||
+              null
+          );
+        }
+      } catch (
+        loadError: any
+      ) {
+        if (active) {
+          setChapter(null);
           setError(
-            loadError?.message || "Impossible de charger le chapitre."
+            loadError?.message ||
+              "Impossible de charger ce chapitre."
           );
         }
       } finally {
-        if (!cancelled) setLoadingChapter(false);
+        if (active) {
+          setLoadingChapter(
+            false
+          );
+        }
       }
     }
 
     loadChapter();
 
     return () => {
-      cancelled = true;
+      active = false;
     };
   }, [
-    selectedBibleId,
-    selectedChapterId,
-    selectedBookId,
-    fontScale,
-    theme,
+    bibleId,
+    chapterId,
   ]);
 
   useEffect(() => {
-    if (!selectedBibleId) return;
+    if (!chapter?.reference) {
+      setFavorite(false);
+      return;
+    }
 
-    const current = {
-      bibleId: selectedBibleId,
-      bookId: selectedBookId,
-      chapterId: selectedChapterId,
-      fontScale,
-      theme,
-    };
+    try {
+      const favorites =
+        JSON.parse(
+          localStorage.getItem(
+            "mpangi-bible-favorites"
+          ) || "[]"
+        ) as string[];
 
-    localStorage.setItem(SETTINGS_KEY, JSON.stringify(current));
+      setFavorite(
+        favorites.includes(
+          `${bibleId}:${chapter.id}`
+        )
+      );
+    } catch {
+      setFavorite(false);
+    }
   }, [
-    selectedBibleId,
-    selectedBookId,
-    selectedChapterId,
-    fontScale,
-    theme,
+    bibleId,
+    chapter?.id,
+    chapter?.reference,
   ]);
 
-  function selectBook(bookId: string) {
-    setSelectedBookId(bookId);
+  function handleBookChange(
+    nextBookId: string
+  ) {
+    setBookId(nextBookId);
 
-    const book = books.find((item) => item.id === bookId);
-    const firstChapter =
-      book?.chapters.find((item) => item.number === "1") ||
-      book?.chapters[0];
+    const nextBook =
+      books.find(
+        (item) =>
+          item.id ===
+          nextBookId
+      );
 
-    setSelectedChapterId(firstChapter?.id || "");
+    const nextChapters =
+      chapterOptions(nextBook);
+
+    setChapterId(
+      nextChapters[0]?.id ||
+        ""
+    );
   }
 
-  function goToChapter(chapterId: string) {
-    if (!chapterId) return;
+  async function shareChapter() {
+    const title =
+      chapter?.reference ||
+      `${getShortBookName(
+        selectedBook
+      )} ${chapter?.number || ""}`;
 
-    const bookId = chapterBookId(chapterId);
+    const text = `${title} — ${getVersionLabel(
+      selectedVersion
+    )}`;
 
-    if (bookId) setSelectedBookId(bookId);
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title,
+          text,
+          url:
+            window.location.href,
+        });
+      } else {
+        await navigator.clipboard.writeText(
+          `${text}\n${window.location.href}`
+        );
 
-    setSelectedChapterId(chapterId);
-    setShowSearch(false);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+        alert(
+          "Lien copié dans le presse-papiers."
+        );
+      }
+    } catch {
+      // Un abandon volontaire du partage n'est pas une erreur.
+    }
   }
 
-  async function searchBible(event: FormEvent) {
+  function toggleFavorite() {
+    if (!chapter?.id) return;
+
+    const key =
+      `${bibleId}:${chapter.id}`;
+
+    let favorites: string[] =
+      [];
+
+    try {
+      favorites =
+        JSON.parse(
+          localStorage.getItem(
+            "mpangi-bible-favorites"
+          ) || "[]"
+        );
+    } catch {
+      favorites = [];
+    }
+
+    const next =
+      favorites.includes(key)
+        ? favorites.filter(
+            (item) =>
+              item !== key
+          )
+        : [
+            ...favorites,
+            key,
+          ];
+
+    localStorage.setItem(
+      "mpangi-bible-favorites",
+      JSON.stringify(next)
+    );
+
+    setFavorite(
+      next.includes(key)
+    );
+  }
+
+  async function runSearch(
+    event: FormEvent
+  ) {
     event.preventDefault();
 
-    if (!selectedBibleId || searchQuery.trim().length < 2) return;
+    if (
+      searchQuery.trim().length <
+      2
+    ) {
+      setError(
+        "Saisissez au moins deux caractères pour la recherche."
+      );
+      return;
+    }
 
     setSearching(true);
     setError("");
 
     try {
-      const response = await fetch(
-        `/api/bible/search?bibleId=${encodeURIComponent(
-          selectedBibleId
-        )}&query=${encodeURIComponent(searchQuery.trim())}`,
-        { cache: "no-store" }
+      const response =
+        await fetch(
+          `/api/bible/search?bibleId=${encodeURIComponent(
+            bibleId
+          )}&query=${encodeURIComponent(
+            searchQuery.trim()
+          )}`,
+          {
+            cache: "no-store",
+          }
+        );
+
+      const payload =
+        await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          payload.error ||
+            "La recherche a échoué."
+        );
+      }
+
+      setSearchResults(
+        payload.data || []
       );
-
-      const payload = await readJson(response);
-
-      setSearchResults(payload.data || []);
-      setFumsToken(payload.fumsToken || null);
-    } catch (searchError: any) {
-      setError(searchError?.message || "La recherche a échoué.");
+    } catch (
+      searchError: any
+    ) {
+      setError(
+        searchError?.message ||
+          "La recherche a échoué."
+      );
     } finally {
       setSearching(false);
     }
   }
 
-  function toggleBookmark() {
-    if (!chapter) return;
-
-    let nextBookmarks: SavedReading[];
-
-    if (isBookmarked) {
-      nextBookmarks = bookmarks.filter(
-        (bookmark) =>
-          !(
-            bookmark.bibleId === selectedBibleId &&
-            bookmark.chapterId === chapter.id
-          )
-      );
-    } else {
-      nextBookmarks = [
-        {
-          bibleId: selectedBibleId,
-          chapterId: chapter.id,
-          reference: chapter.reference,
-          savedAt: new Date().toISOString(),
-        },
-        ...bookmarks,
-      ].slice(0, 50);
-    }
-
-    setBookmarks(nextBookmarks);
-    localStorage.setItem(BOOKMARKS_KEY, JSON.stringify(nextBookmarks));
-  }
-
-  async function shareChapter() {
-    if (!chapter) return;
-
-    const url = new URL(window.location.href);
-    url.searchParams.set("bible", selectedBibleId);
-    url.searchParams.set("chapter", chapter.id);
-
-    const shareData = {
-      title: chapter.reference,
-      text: `${chapter.reference} — ${selectedVersion?.nameLocal || selectedVersion?.name || "Bible"}`,
-      url: url.toString(),
-    };
-
-    try {
-      if (navigator.share) {
-        await navigator.share(shareData);
-        return;
-      }
-
-      await navigator.clipboard.writeText(url.toString());
-      setCopied(true);
-      window.setTimeout(() => setCopied(false), 2000);
-    } catch {
-      // Annulation du partage : aucune erreur visible nécessaire.
-    }
-  }
-
-  const themeClass =
-    theme === "dark"
-      ? "bg-[#111827] text-slate-100"
-      : theme === "sepia"
-        ? "bg-[#FFF8E7] text-[#4B3621]"
-        : "bg-white text-slate-800";
-
-  if (loadingVersions) {
-    return (
-      <div className="rounded-[2rem] border border-[#DCEAF5] bg-white p-8 text-center shadow-sm">
-        <BookOpen className="mx-auto h-10 w-10 animate-pulse text-[#03357A]" />
-        <p className="mt-4 font-black text-[#03357A]">
-          Préparation de la Bible…
-        </p>
-      </div>
+  function openSearchResult(
+    result: SearchVerse
+  ) {
+    setBookId(
+      result.bookId
     );
+    setChapterId(
+      result.chapterId
+    );
+    setSearchOpen(false);
+    setSearchResults([]);
+    setSearchQuery("");
   }
 
   return (
-    <section className="mx-auto w-full max-w-7xl">
-      <BibleFumsTracker token={fumsToken} />
-
-      <header className="rounded-[1.75rem] bg-gradient-to-br from-[#03357A] via-[#2563EB] to-[#8B5CF6] p-5 text-white shadow-xl shadow-blue-900/20 sm:p-7">
-        <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+    <div
+      data-bible-reader
+      data-bible-theme={theme}
+      className={[
+        "mx-auto w-full max-w-7xl space-y-4 rounded-[1.5rem] transition-colors",
+        classes.shell,
+      ].join(" ")}
+      style={
+        {
+          "--bible-font-scale":
+            fontScale,
+        } as React.CSSProperties
+      }
+    >
+      <section className="overflow-hidden rounded-[1.75rem] bg-gradient-to-br from-[#03357A] via-[#2563EB] to-[#8B5CF6] p-4 text-white shadow-lg shadow-blue-900/20 sm:p-6">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div className="min-w-0">
-            <p className="text-xs font-black uppercase tracking-[0.26em] text-blue-100">
+            <p className="text-[11px] font-black uppercase tracking-[0.22em] text-blue-100">
               Lecture biblique
             </p>
 
-            <h1 className="mt-2 break-words text-3xl font-black sm:text-4xl">
-              {churchName
-                ? `Bible — ${churchName}`
-                : "Lire et étudier la Bible"}
+            <h1 className="mt-2 break-words text-2xl font-black sm:text-4xl">
+              Bible — {churchName}
             </h1>
 
-            <p className="mt-3 max-w-3xl text-sm leading-7 text-blue-50">
-              Choisissez une version française autorisée, un livre et un
-              chapitre. Recherchez un mot ou une référence et reprenez votre
-              lecture sur cet appareil.
+            <p className="mt-2 max-w-3xl text-sm leading-6 text-blue-50 sm:leading-7">
+              Choisissez une
+              version française,
+              un livre et un
+              chapitre. Les
+              versions disponibles
+              sont chargées selon
+              l’accès API de
+              l’application.
             </p>
           </div>
 
-          <div className="flex flex-wrap gap-2">
+          <div className="grid grid-cols-3 gap-2 sm:flex">
             <button
               type="button"
-              onClick={() => setShowSearch((current) => !current)}
-              className="inline-flex min-h-11 items-center gap-2 rounded-2xl bg-white px-4 py-3 text-sm font-black text-[#03357A]"
+              onClick={() =>
+                setSearchOpen(
+                  true
+                )
+              }
+              disabled={!bibleId}
+              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-white px-3 text-xs font-black text-[#03357A] disabled:opacity-50 sm:px-4 sm:text-sm"
             >
-              {showSearch ? (
-                <X className="h-4 w-4" />
-              ) : (
-                <Search className="h-4 w-4" />
-              )}
+              <Search className="h-4 w-4" />
               Rechercher
             </button>
 
             <button
               type="button"
-              onClick={toggleBookmark}
+              onClick={
+                toggleFavorite
+              }
               disabled={!chapter}
-              className="inline-flex min-h-11 items-center gap-2 rounded-2xl bg-white/15 px-4 py-3 text-sm font-black text-white ring-1 ring-white/25 disabled:opacity-50"
+              className={[
+                "inline-flex min-h-11 items-center justify-center gap-2 rounded-xl px-3 text-xs font-black ring-1 ring-white/20 disabled:opacity-50 sm:px-4 sm:text-sm",
+                favorite
+                  ? "bg-amber-300 text-amber-950"
+                  : "bg-white/10 text-white",
+              ].join(" ")}
             >
-              {isBookmarked ? (
-                <BookmarkCheck className="h-4 w-4" />
-              ) : (
-                <Bookmark className="h-4 w-4" />
-              )}
+              <Bookmark
+                className={[
+                  "h-4 w-4",
+                  favorite
+                    ? "fill-current"
+                    : "",
+                ].join(" ")}
+              />
               Favori
             </button>
 
             <button
               type="button"
-              onClick={shareChapter}
+              onClick={
+                shareChapter
+              }
               disabled={!chapter}
-              className="inline-flex min-h-11 items-center gap-2 rounded-2xl bg-white/15 px-4 py-3 text-sm font-black text-white ring-1 ring-white/25 disabled:opacity-50"
+              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-white/10 px-3 text-xs font-black text-white ring-1 ring-white/20 disabled:opacity-50 sm:px-4 sm:text-sm"
             >
-              {copied ? (
-                <Copy className="h-4 w-4" />
-              ) : (
-                <Share2 className="h-4 w-4" />
-              )}
-              {copied ? "Copié" : "Partager"}
+              <Share2 className="h-4 w-4" />
+              Partager
             </button>
           </div>
         </div>
-      </header>
+      </section>
 
       {error && (
-        <div className="mt-4 rounded-2xl border border-red-100 bg-red-50 p-4 text-sm font-bold text-red-700">
+        <div className="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm font-bold leading-6 text-red-700">
           {error}
         </div>
       )}
 
-      {showSearch && (
-        <section className="mt-4 rounded-[1.5rem] border border-[#DCEAF5] bg-white p-4 shadow-sm sm:p-5">
-          <form
-            onSubmit={searchBible}
-            className="flex flex-col gap-3 sm:flex-row"
-          >
-            <div className="relative min-w-0 flex-1">
-              <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
-
-              <input
-                value={searchQuery}
-                onChange={(event) => setSearchQuery(event.target.value)}
-                placeholder="Ex. amour, Jean 3:16, foi…"
-                className="min-h-12 w-full rounded-2xl border border-[#DCEAF5] bg-[#F8FBFD] pl-12 pr-4 text-sm font-bold outline-none focus:border-[#03357A]"
-              />
-            </div>
-
-            <button
-              type="submit"
-              disabled={searching || searchQuery.trim().length < 2}
-              className="min-h-12 rounded-2xl bg-[#03357A] px-5 text-sm font-black text-white disabled:opacity-50"
-            >
-              {searching ? "Recherche…" : "Rechercher"}
-            </button>
-          </form>
-
-          {searchResults.length > 0 && (
-            <div className="mt-4 grid gap-3">
-              {searchResults.map((result) => (
-                <button
-                  key={`${result.id}-${result.reference}`}
-                  type="button"
-                  onClick={() => goToChapter(result.chapterId)}
-                  className="rounded-2xl border border-[#DCEAF5] bg-[#F8FBFD] p-4 text-left transition hover:border-[#03357A]/30 hover:bg-white"
-                >
-                  <p className="font-black text-[#03357A]">
-                    {result.reference}
-                  </p>
-                  <p className="mt-2 line-clamp-3 text-sm leading-6 text-slate-600">
-                    {result.text}
-                  </p>
-                </button>
-              ))}
-            </div>
-          )}
-        </section>
-      )}
-
-      <section className="mt-4 grid gap-3 rounded-[1.5rem] border border-[#DCEAF5] bg-white p-4 shadow-sm sm:grid-cols-3 sm:p-5">
-        <label className="space-y-2">
-          <span className="text-xs font-black uppercase tracking-wide text-slate-500">
-            Version française
-          </span>
-          <select
-            value={selectedBibleId}
-            onChange={(event) => setSelectedBibleId(event.target.value)}
-            className="min-h-12 w-full rounded-2xl border border-[#DCEAF5] bg-[#F8FBFD] px-4 text-sm font-bold text-[#03357A] outline-none"
-          >
-            {versions.map((version) => (
-              <option key={version.id} value={version.id}>
-                {version.abbreviationLocal || version.abbreviation} —{" "}
-                {version.nameLocal || version.name}
-              </option>
-            ))}
-          </select>
-        </label>
-
-        <label className="space-y-2">
-          <span className="text-xs font-black uppercase tracking-wide text-slate-500">
-            Livre
-          </span>
-          <select
-            value={selectedBookId}
-            onChange={(event) => selectBook(event.target.value)}
-            disabled={loadingBooks}
-            className="min-h-12 w-full rounded-2xl border border-[#DCEAF5] bg-[#F8FBFD] px-4 text-sm font-bold text-[#03357A] outline-none disabled:opacity-60"
-          >
-            {books.map((book) => (
-              <option key={book.id} value={book.id}>
-                {book.nameLong || book.name}
-              </option>
-            ))}
-          </select>
-        </label>
-
-        <label className="space-y-2">
-          <span className="text-xs font-black uppercase tracking-wide text-slate-500">
-            Chapitre
-          </span>
-          <select
-            value={selectedChapterId}
-            onChange={(event) =>
-              setSelectedChapterId(event.target.value)
-            }
-            disabled={loadingBooks || selectedChapters.length === 0}
-            className="min-h-12 w-full rounded-2xl border border-[#DCEAF5] bg-[#F8FBFD] px-4 text-sm font-bold text-[#03357A] outline-none disabled:opacity-60"
-          >
-            {selectedChapters.map((chapterItem) => (
-              <option key={chapterItem.id} value={chapterItem.id}>
-                {chapterItem.number}
-              </option>
-            ))}
-          </select>
-        </label>
-      </section>
-
-      <section className="mt-4 flex flex-col gap-3 rounded-[1.5rem] border border-[#DCEAF5] bg-white p-3 shadow-sm sm:flex-row sm:items-center sm:justify-between sm:p-4">
-        <div className="flex flex-wrap items-center gap-2">
-          <button
-            type="button"
-            onClick={() =>
-              setFontScale((value) => Math.max(0.85, value - 0.1))
-            }
-            className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#EAF3FA] text-[#03357A]"
-            aria-label="Réduire la taille du texte"
-          >
-            <Minus className="h-4 w-4" />
-          </button>
-
-          <span className="min-w-16 text-center text-sm font-black text-[#03357A]">
-            {Math.round(fontScale * 100)} %
-          </span>
-
-          <button
-            type="button"
-            onClick={() =>
-              setFontScale((value) => Math.min(1.45, value + 0.1))
-            }
-            className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#EAF3FA] text-[#03357A]"
-            aria-label="Augmenter la taille du texte"
-          >
-            <Plus className="h-4 w-4" />
-          </button>
-        </div>
-
-        <div className="grid grid-cols-3 gap-2">
-          {[
-            { value: "light" as const, label: "Clair", icon: Sun },
-            { value: "sepia" as const, label: "Sépia", icon: BookOpen },
-            { value: "dark" as const, label: "Nuit", icon: Moon },
-          ].map((item) => {
-            const Icon = item.icon;
-
-            return (
-              <button
-                key={item.value}
-                type="button"
-                onClick={() => setTheme(item.value)}
-                className={[
-                  "inline-flex min-h-11 items-center justify-center gap-2 rounded-xl px-3 text-xs font-black",
-                  theme === item.value
-                    ? "bg-[#03357A] text-white"
-                    : "bg-[#F8FBFD] text-slate-600",
-                ].join(" ")}
-              >
-                <Icon className="h-4 w-4" />
-                {item.label}
-              </button>
-            );
-          })}
-        </div>
-      </section>
-
-      <article
+      <section
         className={[
-          "mt-4 overflow-hidden rounded-[1.75rem] border border-[#DCEAF5] shadow-sm",
-          themeClass,
+          "rounded-[1.5rem] border p-3 shadow-sm sm:p-5",
+          classes.card,
         ].join(" ")}
       >
-        <div className="flex flex-col gap-3 border-b border-current/10 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
-          <div className="min-w-0">
-            <p className="text-xs font-black uppercase tracking-[0.2em] opacity-60">
-              {selectedVersion?.abbreviationLocal ||
-                selectedVersion?.abbreviation ||
-                "Bible"}
+        <div className="grid gap-3 lg:grid-cols-[1.25fr_1.25fr_0.65fr]">
+          <label className="space-y-2">
+            <span className="text-xs font-black uppercase tracking-wide text-[#64748B]">
+              Version française
+            </span>
+
+            <select
+              value={bibleId}
+              onChange={(event) =>
+                setBibleId(
+                  event.target.value
+                )
+              }
+              disabled={
+                loadingVersions
+              }
+              className={[
+                "min-h-12 w-full rounded-2xl border px-4 text-sm font-bold outline-none focus:border-[#03357A] focus:ring-4 focus:ring-[#03357A]/10",
+                classes.field,
+              ].join(" ")}
+            >
+              {loadingVersions && (
+                <option value="">
+                  Chargement...
+                </option>
+              )}
+
+              {versions.map(
+                (version) => (
+                  <option
+                    key={
+                      version.id
+                    }
+                    value={
+                      version.id
+                    }
+                  >
+                    {getVersionLabel(
+                      version
+                    )}
+                  </option>
+                )
+              )}
+            </select>
+          </label>
+
+          <label className="space-y-2">
+            <span className="text-xs font-black uppercase tracking-wide text-[#64748B]">
+              Livre
+            </span>
+
+            <select
+              value={bookId}
+              onChange={(event) =>
+                handleBookChange(
+                  event.target.value
+                )
+              }
+              disabled={
+                loadingBooks ||
+                books.length ===
+                  0
+              }
+              className={[
+                "min-h-12 w-full rounded-2xl border px-4 text-sm font-bold outline-none focus:border-[#03357A] focus:ring-4 focus:ring-[#03357A]/10",
+                classes.field,
+              ].join(" ")}
+            >
+              {loadingBooks && (
+                <option value="">
+                  Chargement...
+                </option>
+              )}
+
+              {books.map(
+                (book) => (
+                  <option
+                    key={
+                      book.id
+                    }
+                    value={
+                      book.id
+                    }
+                  >
+                    {getShortBookName(
+                      book
+                    )}
+                  </option>
+                )
+              )}
+            </select>
+          </label>
+
+          <label className="space-y-2">
+            <span className="text-xs font-black uppercase tracking-wide text-[#64748B]">
+              Chapitre
+            </span>
+
+            <select
+              value={chapterId}
+              onChange={(event) =>
+                setChapterId(
+                  event.target.value
+                )
+              }
+              disabled={
+                chapters.length ===
+                0
+              }
+              className={[
+                "min-h-12 w-full rounded-2xl border px-4 text-sm font-bold outline-none focus:border-[#03357A] focus:ring-4 focus:ring-[#03357A]/10",
+                classes.field,
+              ].join(" ")}
+            >
+              {chapters.map(
+                (item) => (
+                  <option
+                    key={
+                      item.id
+                    }
+                    value={
+                      item.id
+                    }
+                  >
+                    {item.number}
+                  </option>
+                )
+              )}
+            </select>
+          </label>
+        </div>
+      </section>
+
+      <section
+        className={[
+          "rounded-[1.5rem] border p-3 shadow-sm sm:p-4",
+          classes.card,
+        ].join(" ")}
+      >
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <Type className="h-5 w-5 text-[#03357A]" />
+
+            <button
+              type="button"
+              onClick={() =>
+                setFontScale(
+                  (value) =>
+                    Math.max(
+                      85,
+                      value - 10
+                    )
+                )
+              }
+              className={[
+                "flex h-10 w-10 items-center justify-center rounded-xl",
+                classes.soft,
+              ].join(" ")}
+              aria-label="Réduire la taille du texte"
+            >
+              <Minus className="h-4 w-4" />
+            </button>
+
+            <span className="min-w-14 text-center text-sm font-black">
+              {fontScale} %
+            </span>
+
+            <button
+              type="button"
+              onClick={() =>
+                setFontScale(
+                  (value) =>
+                    Math.min(
+                      145,
+                      value + 10
+                    )
+                )
+              }
+              className={[
+                "flex h-10 w-10 items-center justify-center rounded-xl text-lg font-black",
+                classes.soft,
+              ].join(" ")}
+              aria-label="Augmenter la taille du texte"
+            >
+              +
+            </button>
+          </div>
+
+          <div className="grid grid-cols-3 gap-1 rounded-2xl bg-black/5 p-1">
+            <ThemeButton
+              active={
+                theme === "light"
+              }
+              label="Clair"
+              icon={Sun}
+              onClick={() =>
+                setTheme("light")
+              }
+            />
+
+            <ThemeButton
+              active={
+                theme === "sepia"
+              }
+              label="Sépia"
+              icon={BookOpen}
+              onClick={() =>
+                setTheme("sepia")
+              }
+            />
+
+            <ThemeButton
+              active={
+                theme === "dark"
+              }
+              label="Nuit"
+              icon={Moon}
+              onClick={() =>
+                setTheme("dark")
+              }
+            />
+          </div>
+        </div>
+      </section>
+
+      <section
+        className={[
+          "overflow-hidden rounded-[1.5rem] border shadow-sm",
+          classes.card,
+        ].join(" ")}
+      >
+        <div className="flex flex-col gap-3 border-b border-current/10 p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5">
+          <div>
+            <p className="text-[11px] font-black uppercase tracking-[0.2em] text-[#64748B]">
+              {selectedVersion
+                ? selectedVersion.abbreviationLocal ||
+                  selectedVersion.abbreviation ||
+                  "Bible"
+                : "Bible"}
             </p>
 
-            <h2 className="mt-1 break-words text-2xl font-black">
-              {chapter?.reference || "Sélectionnez un chapitre"}
+            <h2 className="mt-1 text-2xl font-black text-[#03357A] dark:text-blue-300">
+              {chapter?.reference ||
+                `${getShortBookName(
+                  selectedBook
+                )} ${
+                  chapter?.number ||
+                  ""
+                }`}
             </h2>
           </div>
 
           <div className="grid grid-cols-2 gap-2">
             <button
               type="button"
-              onClick={() =>
-                chapter?.previous?.id &&
-                goToChapter(chapter.previous.id)
+              onClick={() => {
+                if (
+                  chapter?.previous
+                    ?.id
+                ) {
+                  setChapterId(
+                    chapter.previous.id
+                  );
+                }
+              }}
+              disabled={
+                !chapter?.previous
+                  ?.id
               }
-              disabled={!chapter?.previous?.id}
-              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-current/10 px-3 text-xs font-black disabled:opacity-35"
+              className={[
+                "inline-flex min-h-11 items-center justify-center gap-2 rounded-xl px-4 text-sm font-black disabled:opacity-40",
+                classes.soft,
+              ].join(" ")}
             >
               <ChevronLeft className="h-4 w-4" />
               Précédent
@@ -792,11 +1288,22 @@ export default function BibleReaderClient({
 
             <button
               type="button"
-              onClick={() =>
-                chapter?.next?.id && goToChapter(chapter.next.id)
+              onClick={() => {
+                if (
+                  chapter?.next?.id
+                ) {
+                  setChapterId(
+                    chapter.next.id
+                  );
+                }
+              }}
+              disabled={
+                !chapter?.next?.id
               }
-              disabled={!chapter?.next?.id}
-              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-current/10 px-3 text-xs font-black disabled:opacity-35"
+              className={[
+                "inline-flex min-h-11 items-center justify-center gap-2 rounded-xl px-4 text-sm font-black disabled:opacity-40",
+                classes.soft,
+              ].join(" ")}
             >
               Suivant
               <ChevronRight className="h-4 w-4" />
@@ -804,58 +1311,189 @@ export default function BibleReaderClient({
           </div>
         </div>
 
-        <div className="px-4 py-6 sm:px-8 sm:py-8">
-          {loadingChapter ? (
-            <div className="py-16 text-center">
-              <BookOpen className="mx-auto h-10 w-10 animate-pulse opacity-60" />
-              <p className="mt-4 font-bold opacity-70">
-                Chargement du chapitre…
-              </p>
-            </div>
-          ) : chapter ? (
-            <div
-              className="api-bible-content"
-              style={{ fontSize: `${fontScale}rem` }}
-              dangerouslySetInnerHTML={{ __html: chapter.content }}
-            />
-          ) : (
-            <div className="py-16 text-center opacity-70">
-              Sélectionnez une version, un livre et un chapitre.
-            </div>
-          )}
-        </div>
-
-        {(chapter?.copyright || selectedVersion?.copyright) && (
-          <footer className="border-t border-current/10 px-4 py-4 text-xs leading-6 opacity-70 sm:px-8">
-            {chapter?.copyright || selectedVersion?.copyright}
-          </footer>
-        )}
-      </article>
-
-      {bookmarks.length > 0 && (
-        <section className="mt-4 rounded-[1.5rem] border border-[#DCEAF5] bg-white p-4 shadow-sm sm:p-5">
-          <h3 className="font-black text-[#03357A]">
-            Lectures favorites sur cet appareil
-          </h3>
-
-          <div className="mt-3 flex flex-wrap gap-2">
-            {bookmarks.slice(0, 12).map((bookmark) => (
-              <button
-                key={`${bookmark.bibleId}-${bookmark.chapterId}`}
-                type="button"
-                onClick={() => {
-                  setSelectedBibleId(bookmark.bibleId);
-                  setSelectedChapterId(bookmark.chapterId);
-                  setSelectedBookId(chapterBookId(bookmark.chapterId));
-                }}
-                className="rounded-xl bg-[#EAF3FA] px-3 py-2 text-xs font-black text-[#03357A]"
-              >
-                {bookmark.reference}
-              </button>
-            ))}
+        {loadingChapter ? (
+          <div className="flex min-h-72 items-center justify-center gap-3 p-8 text-sm font-black text-[#03357A]">
+            <Loader2 className="h-5 w-5 animate-spin" />
+            Chargement du
+            chapitre...
           </div>
-        </section>
+        ) : chapter?.content ? (
+          <article
+            className={[
+              "bible-scripture-content min-h-72 p-5 sm:p-8",
+              classes.muted,
+            ].join(" ")}
+            dangerouslySetInnerHTML={{
+              __html:
+                chapter.content,
+            }}
+          />
+        ) : (
+          <div className="flex min-h-72 flex-col items-center justify-center p-8 text-center">
+            <BookOpen className="h-12 w-12 text-[#3F79B3]" />
+
+            <p className="mt-4 font-black text-[#03357A]">
+              Sélectionnez une
+              version, un livre et
+              un chapitre.
+            </p>
+          </div>
+        )}
+
+        {chapter?.copyright && (
+          <div className="border-t border-current/10 p-4 text-xs leading-5 text-[#64748B]">
+            {chapter.copyright}
+          </div>
+        )}
+      </section>
+
+      {searchOpen && (
+        <div className="fixed inset-0 z-[120] flex items-end bg-slate-950/60 p-0 sm:items-center sm:justify-center sm:p-4">
+          <section
+            className={[
+              "max-h-[88dvh] w-full overflow-hidden rounded-t-[2rem] border shadow-2xl sm:max-w-2xl sm:rounded-[2rem]",
+              classes.card,
+            ].join(" ")}
+          >
+            <div className="flex items-center justify-between border-b border-current/10 p-4">
+              <div>
+                <p className="text-xs font-black uppercase tracking-[0.18em] text-[#3F79B3]">
+                  Recherche
+                </p>
+
+                <h3 className="mt-1 text-xl font-black text-[#03357A]">
+                  Rechercher dans
+                  la Bible
+                </h3>
+              </div>
+
+              <button
+                type="button"
+                onClick={() =>
+                  setSearchOpen(
+                    false
+                  )
+                }
+                className={[
+                  "flex h-10 w-10 items-center justify-center rounded-xl",
+                  classes.soft,
+                ].join(" ")}
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            <form
+              onSubmit={runSearch}
+              className="grid gap-2 border-b border-current/10 p-4 sm:grid-cols-[1fr_auto]"
+            >
+              <input
+                value={
+                  searchQuery
+                }
+                onChange={(event) =>
+                  setSearchQuery(
+                    event.target.value
+                  )
+                }
+                placeholder="Mot, expression ou référence..."
+                className={[
+                  "min-h-12 rounded-2xl border px-4 text-base font-bold outline-none focus:border-[#03357A]",
+                  classes.field,
+                ].join(" ")}
+              />
+
+              <button
+                type="submit"
+                disabled={
+                  searching ||
+                  !bibleId
+                }
+                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-[#03357A] px-5 text-sm font-black text-white disabled:opacity-50"
+              >
+                {searching ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Search className="h-4 w-4" />
+                )}
+                Rechercher
+              </button>
+            </form>
+
+            <div className="max-h-[58dvh] space-y-2 overflow-y-auto p-4">
+              {searchResults.length ===
+              0 ? (
+                <div className="rounded-2xl bg-black/5 p-6 text-center text-sm font-semibold text-[#64748B]">
+                  Les résultats
+                  apparaîtront ici.
+                </div>
+              ) : (
+                searchResults.map(
+                  (result) => (
+                    <button
+                      key={
+                        result.id
+                      }
+                      type="button"
+                      onClick={() =>
+                        openSearchResult(
+                          result
+                        )
+                      }
+                      className={[
+                        "w-full rounded-2xl p-4 text-left",
+                        classes.soft,
+                      ].join(" ")}
+                    >
+                      <p className="text-sm font-black text-[#03357A]">
+                        {
+                          result.reference
+                        }
+                      </p>
+
+                      <p className="mt-2 line-clamp-3 text-sm leading-6">
+                        {
+                          result.text
+                        }
+                      </p>
+                    </button>
+                  )
+                )
+              )}
+            </div>
+          </section>
+        </div>
       )}
-    </section>
+    </div>
+  );
+}
+
+function ThemeButton({
+  active,
+  label,
+  icon: Icon,
+  onClick,
+}: {
+  active: boolean;
+  label: string;
+  icon: typeof Sun;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={[
+        "inline-flex min-h-10 items-center justify-center gap-1.5 rounded-xl px-3 text-xs font-black transition",
+        active
+          ? "bg-[#03357A] text-white"
+          : "text-slate-600",
+      ].join(" ")}
+    >
+      <Icon className="h-4 w-4" />
+      <span className="hidden sm:inline">
+        {label}
+      </span>
+    </button>
   );
 }

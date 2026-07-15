@@ -21,7 +21,10 @@ export default function BiblePage() {
         </Link>
       </div>
 
-      <BibleReaderClient />
+      <BibleReaderClient
+        churchSlug="mpangi-church"
+        churchName="Mpangi-Church"
+      />
     </main>
   );
 }
