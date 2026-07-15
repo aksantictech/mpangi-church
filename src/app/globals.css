@@ -24,3 +24,65 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+
+/* Phase 35T — lisibilité uniforme des formulaires */
+:where(
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+  textarea,
+  select
+) {
+  color: #0f172a;
+  font-weight: 600;
+  caret-color: #03357a;
+}
+
+:where(input, textarea)::placeholder {
+  color: #64748b;
+  opacity: 1;
+}
+
+:where(input, textarea, select):disabled {
+  color: #475569;
+  -webkit-text-fill-color: #475569;
+  opacity: 1;
+}
+
+select option {
+  color: #0f172a;
+  background: #ffffff;
+}
+
+.mpangi-form-control {
+  min-height: 3rem;
+  width: 100%;
+  border: 1px solid #b8ccdc;
+  border-radius: 1rem;
+  background: #ffffff;
+  padding: 0 1rem;
+  color: #0f172a;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  outline: none;
+  box-shadow: 0 1px 2px rgb(15 23 42 / 0.04);
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    background-color 160ms ease;
+}
+
+textarea.mpangi-form-control {
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+
+.mpangi-form-control:focus {
+  border-color: #03357a;
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgb(3 53 122 / 0.1);
+}
+
+.mpangi-form-control::placeholder {
+  color: #64748b;
+  opacity: 1;
+}
