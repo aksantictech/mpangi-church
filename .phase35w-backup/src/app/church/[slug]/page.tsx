@@ -21,14 +21,10 @@ import ChurchTeachingsBlock from "@/components/public/ChurchTeachingsBlock";
 import PublicBibleBlock from "@/components/public/bible/PublicBibleBlock";
 import PublicDonationSection from "@/components/public/PublicDonationSection";
 import PublicLiveStreamSection from "@/components/public/PublicLiveStreamSection";
-import PublicFeaturedUpdates from "@/components/public/PublicFeaturedUpdates";
 import PublicMobileBottomNav from "@/components/public/PublicMobileBottomNav";
 import PublicTestimoniesSection from "@/components/public/PublicTestimoniesSection";
 import { createClient } from "@/lib/supabase/server";
 import { buildChurchPublicUrl } from "@/lib/tenant/domain";
-
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
 
 type PublicChurchPageProps = {
   params: Promise<{
@@ -466,10 +462,6 @@ export default async function PublicChurchPage({
       </section>
 
       <PublicLiveStreamSection church={church as any} />
-      <PublicFeaturedUpdates
-        churchId={church.id}
-        slug={churchSlug}
-      />
 
       <section className="mx-auto max-w-6xl px-4 pt-7 md:px-6 md:pt-8">
         <ChurchTeachingsBlock churchId={church.id} slug={churchSlug} />

@@ -5,9 +5,11 @@ import {
   CheckCircle2,
   Loader2,
   RotateCcw,
+  Settings2,
   WifiOff,
 } from "lucide-react";
 import {
+  useCallback,
   useEffect,
   useState,
 } from "react";
@@ -16,11 +18,7 @@ function urlBase64ToUint8Array(
   base64String: string
 ) {
   const padding = "=".repeat(
-    (
-      4 -
-      (base64String.length %
-        4)
-    ) % 4
+    (4 - (base64String.length % 4)) % 4
   );
 
   const base64 =
@@ -28,21 +26,58 @@ function urlBase64ToUint8Array(
       .replace(/-/g, "+")
       .replace(/_/g, "/");
 
-  const rawData =
-    window.atob(base64);
+  const rawData = window.atob(base64);
 
   return Uint8Array.from(
     rawData,
-    (character) =>
-      character.charCodeAt(0)
+    (character) => character.charCodeAt(0)
   );
+}
+
+function getBrowserLabel() {
+  if (typeof navigator === "undefined") {
+    return "votre navigateur";
+  }
+
+  const userAgent = navigator.userAgent;
+
+  if (/SamsungBrowser/i.test(userAgent)) {
+    return "Samsung Internet";
+  }
+
+  if (/EdgA?|EdgiOS/i.test(userAgent)) {
+    return "Microsoft Edge";
+  }
+
+  if (/Firefox|FxiOS/i.test(userAgent)) {
+    return "Firefox";
+  }
+
+  if (/OPR|Opera/i.test(userAgent)) {
+    return "Opera";
+  }
+
+  if (
+    /CriOS|Chrome/i.test(userAgent) &&
+    !/Edg|OPR|SamsungBrowser/i.test(userAgent)
+  ) {
+    return "Google Chrome";
+  }
+
+  if (
+    /Safari/i.test(userAgent) &&
+    !/Chrome|CriOS|Android/i.test(userAgent)
+  ) {
+    return "Safari";
+  }
+
+  return "votre navigateur";
 }
 
 async function readPayload(
   response: Response
 ) {
-  const raw =
-    await response.text();
+  const raw = await response.text();
 
   if (!raw) return {};
 
@@ -51,7 +86,8 @@ async function readPayload(
   } catch {
     return {
       error:
-        raw.slice(0, 400),
+        raw.slice(0, 400) ||
+        `Erreur HTTP ${response.status}`,
     };
   }
 }
@@ -61,102 +97,110 @@ export default function NotificationPermissionCard({
 }: {
   churchSlug?: string;
 }) {
-  const [
-    supported,
-    setSupported,
-  ] = useState(true);
+  const [supported, setSupported] =
+    useState(true);
 
-  const [
-    permission,
-    setPermission,
-  ] =
-    useState<NotificationPermission>(
-      "default"
-    );
+  const [permission, setPermission] =
+    useState<NotificationPermission>("default");
 
-  const [
-    subscribed,
-    setSubscribed,
-  ] = useState(false);
+  const [subscribed, setSubscribed] =
+    useState(false);
 
-  const [
-    loading,
-    setLoading,
-  ] = useState(false);
+  const [loading, setLoading] =
+    useState(false);
 
-  const [
-    message,
-    setMessage,
-  ] = useState("");
+  const [message, setMessage] =
+    useState("");
 
-  useEffect(() => {
-    let active = true;
+  const [browserLabel, setBrowserLabel] =
+    useState("votre navigateur");
 
-    async function detect() {
+  const refreshPermissionState =
+    useCallback(async () => {
       const isSupported =
-        typeof window !==
-          "undefined" &&
-        "serviceWorker" in
-          navigator &&
-        "PushManager" in
-          window &&
-        "Notification" in
-          window;
+        typeof window !== "undefined" &&
+        "serviceWorker" in navigator &&
+        "PushManager" in window &&
+        "Notification" in window;
 
-      if (!active) return;
+      setSupported(isSupported);
+      setBrowserLabel(getBrowserLabel());
 
-      setSupported(
-        isSupported
-      );
+      if (!isSupported) {
+        setSubscribed(false);
+        return;
+      }
 
-      if (!isSupported) return;
+      const nextPermission =
+        Notification.permission;
 
-      setPermission(
-        Notification.permission
-      );
+      setPermission(nextPermission);
 
-      const registration =
-        await navigator.serviceWorker.getRegistration(
-          "/"
-        );
+      try {
+        const registration =
+          await navigator.serviceWorker.getRegistration(
+            "/"
+          );
 
-      const existing =
-        await registration?.pushManager.getSubscription();
+        const existing =
+          await registration?.pushManager.getSubscription();
 
-      if (active) {
         setSubscribed(
           Boolean(
             existing &&
-              Notification.permission ===
-                "granted"
+              nextPermission === "granted"
           )
         );
+      } catch {
+        setSubscribed(false);
+      }
+    }, []);
+
+  useEffect(() => {
+    refreshPermissionState();
+
+    function handleVisibilityChange() {
+      if (
+        document.visibilityState === "visible"
+      ) {
+        refreshPermissionState();
       }
     }
 
-    detect().catch(() => {
-      if (active) {
-        setSubscribed(false);
-      }
-    });
+    window.addEventListener(
+      "focus",
+      refreshPermissionState
+    );
+
+    document.addEventListener(
+      "visibilitychange",
+      handleVisibilityChange
+    );
 
     return () => {
-      active = false;
+      window.removeEventListener(
+        "focus",
+        refreshPermissionState
+      );
+
+      document.removeEventListener(
+        "visibilitychange",
+        handleVisibilityChange
+      );
     };
-  }, []);
+  }, [refreshPermissionState]);
 
   async function activateNotifications() {
-    try {
-      setLoading(true);
-      setMessage("");
+    setLoading(true);
+    setMessage("");
 
+    try {
       if (
-        Notification.permission ===
-        "denied"
+        Notification.permission === "denied"
       ) {
         setPermission("denied");
         setMessage(
-          "Les notifications ont déjà été bloquées dans les permissions du navigateur."
+          `Les notifications sont bloquées dans ${browserLabel}.`
         );
         return;
       }
@@ -177,12 +221,9 @@ export default function NotificationPermissionCard({
 
       setPermission(result);
 
-      if (
-        result !==
-        "granted"
-      ) {
+      if (result !== "granted") {
         setMessage(
-          "Notifications refusées par le navigateur."
+          `Autorisation non accordée dans ${browserLabel}.`
         );
         return;
       }
@@ -210,39 +251,33 @@ export default function NotificationPermissionCard({
       const subscription =
         existingSubscription ||
         (
-          await registration.pushManager.subscribe(
-            {
-              userVisibleOnly:
-                true,
-              applicationServerKey:
-                urlBase64ToUint8Array(
-                  vapidPublicKey
-                ),
-            }
-          )
+          await registration.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey:
+              urlBase64ToUint8Array(
+                vapidPublicKey
+              ),
+          })
         );
 
-      const response =
-        await fetch(
-          "/api/notifications/subscribe",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type":
-                "application/json",
-            },
-            body: JSON.stringify({
-              subscription:
-                subscription.toJSON(),
-              churchSlug,
-            }),
-          }
-        );
+      const response = await fetch(
+        "/api/notifications/subscribe",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type":
+              "application/json",
+          },
+          body: JSON.stringify({
+            subscription:
+              subscription.toJSON(),
+            churchSlug,
+          }),
+        }
+      );
 
       const payload =
-        await readPayload(
-          response
-        );
+        await readPayload(response);
 
       if (!response.ok) {
         setMessage(
@@ -271,12 +306,16 @@ export default function NotificationPermissionCard({
       <div className="rounded-3xl border border-orange-100 bg-orange-50 p-5 text-orange-800">
         <div className="flex items-start gap-3">
           <WifiOff className="h-6 w-6 shrink-0" />
+
           <div>
             <h3 className="font-black">
-              Notifications non supportées
+              Notifications non disponibles
             </h3>
+
             <p className="mt-1 text-sm">
-              Ce navigateur ne supporte pas les notifications Web Push.
+              Ce navigateur ou ce mode de navigation
+              ne supporte pas les notifications Web
+              Push.
             </p>
           </div>
         </div>
@@ -300,24 +339,34 @@ export default function NotificationPermissionCard({
           </h3>
 
           <p className="mt-1 text-sm leading-6 text-slate-600">
-            Recevez les publications et alertes de votre église.
+            Recevez les publications et alertes de
+            votre église.
           </p>
         </div>
       </div>
 
       {denied && (
-        <div className="mt-4 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-900">
-          <p className="font-black">
-            Autorisation bloquée par Chrome
-          </p>
+        <div className="mt-4 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-950">
+          <div className="flex items-center gap-2 font-black">
+            <Settings2 className="h-5 w-5" />
+            Autorisation bloquée dans {browserLabel}
+          </div>
 
           <p className="mt-2">
-            Touchez l’icône des réglages à gauche de l’adresse du site,
-            puis Permissions → Notifications → Autoriser.
+            Ouvrez les informations ou permissions
+            du site depuis l’icône proche de l’adresse.
+          </p>
+
+          <p className="mt-2 font-black">
+            Permissions du site → Notifications →
+            Autoriser
           </p>
 
           <p className="mt-2 text-xs font-semibold">
-            Rechargez ensuite la page et appuyez sur Vérifier.
+            Les intitulés peuvent varier. Vous pouvez
+            également passer par les paramètres du
+            navigateur, puis Sites / Permissions /
+            Notifications.
           </p>
         </div>
       )}
@@ -326,8 +375,7 @@ export default function NotificationPermissionCard({
         type="button"
         onClick={
           denied
-            ? () =>
-                window.location.reload()
+            ? refreshPermissionState
             : activateNotifications
         }
         disabled={
@@ -339,7 +387,7 @@ export default function NotificationPermissionCard({
           subscribed
             ? "bg-green-50 text-green-700"
             : denied
-              ? "bg-amber-100 text-amber-900"
+              ? "bg-amber-100 text-amber-950"
               : "bg-[#03357A] text-white",
         ].join(" ")}
       >
@@ -356,7 +404,7 @@ export default function NotificationPermissionCard({
         {subscribed
           ? "Notifications activées"
           : denied
-            ? "Vérifier après réactivation"
+            ? "Revérifier l’autorisation"
             : "Activer les notifications"}
       </button>
 
