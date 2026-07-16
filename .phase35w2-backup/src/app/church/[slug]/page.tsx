@@ -465,13 +465,13 @@ export default async function PublicChurchPage({
         </div>
       </section>
 
+      <PublicLiveStreamSection church={church as any} />
       <PublicFeaturedUpdates
         churchId={church.id}
         slug={churchSlug}
       />
 
-      <PublicLiveStreamSection church={church as any} />
-<section className="mx-auto max-w-6xl px-4 pt-7 md:px-6 md:pt-8">
+      <section className="mx-auto max-w-6xl px-4 pt-7 md:px-6 md:pt-8">
         <ChurchTeachingsBlock churchId={church.id} slug={churchSlug} />
       </section>
 

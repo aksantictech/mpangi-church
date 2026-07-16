@@ -6,7 +6,6 @@ import {
   ChevronDown,
   ChevronsLeft,
   ChevronsRight,
-  Radio,
   Search,
   Shield,
 } from "lucide-react";
@@ -172,30 +171,6 @@ export default function Sidebar() {
             </button>
           )}
         </div>
-
-        <Link
-          href="/live"
-          className={[
-            "mt-3 flex min-h-12 items-center rounded-2xl bg-red-600 text-white shadow-lg shadow-red-900/20 transition hover:bg-red-700",
-            collapsed
-              ? "justify-center px-3"
-              : "gap-3 px-4",
-          ].join(" ")}
-          title="Culte en direct"
-        >
-          <Radio className="h-5 w-5 shrink-0 animate-pulse" />
-
-          {!collapsed && (
-            <span className="min-w-0">
-              <span className="block truncate text-sm font-black">
-                Culte en direct
-              </span>
-              <span className="block truncate text-[11px] font-semibold text-red-100">
-                Regarder dans l’application
-              </span>
-            </span>
-          )}
-        </Link>
 
         {!collapsed && (
           <Link
