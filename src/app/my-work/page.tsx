@@ -1,7 +1,10 @@
+import Link from "next/link";
 import {
+  ArrowLeft,
   CalendarClock,
   CheckCircle2,
   ClipboardCheck,
+  LayoutGrid,
   PlayCircle,
 } from "lucide-react";
 import {
@@ -74,6 +77,24 @@ export default async function MyWorkPage({
   return (
     <main className="min-h-screen bg-[#F5F9FC] px-3 py-5 pb-24 sm:px-6 sm:py-8">
       <div className="mx-auto max-w-7xl">
+        <nav className="mb-4 flex flex-wrap gap-2">
+          <Link
+            href="/dashboard/role"
+            className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-white px-4 py-3 text-sm font-black text-[#03357A] shadow-sm ring-1 ring-[#DCEAF5]"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Retour au dashboard
+          </Link>
+
+          <Link
+            href="/modules"
+            className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-[#EAF3FA] px-4 py-3 text-sm font-black text-[#03357A]"
+          >
+            <LayoutGrid className="h-4 w-4" />
+            Ouvrir les modules
+          </Link>
+        </nav>
+
         <section className="rounded-[1.75rem] bg-gradient-to-br from-[#03357A] via-[#2563EB] to-[#8B5CF6] p-5 text-white sm:p-7">
           <ClipboardCheck className="h-8 w-8" />
 

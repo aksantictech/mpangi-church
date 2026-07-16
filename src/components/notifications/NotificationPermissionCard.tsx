@@ -1,10 +1,10 @@
 "use client";
 
 import {
-  Bell,
   BellRing,
   CheckCircle2,
   Loader2,
+  RotateCcw,
   WifiOff,
 } from "lucide-react";
 import {
@@ -31,23 +31,29 @@ function urlBase64ToUint8Array(
   const rawData =
     window.atob(base64);
 
-  const outputArray =
-    new Uint8Array(
-      rawData.length
-    );
+  return Uint8Array.from(
+    rawData,
+    (character) =>
+      character.charCodeAt(0)
+  );
+}
 
-  for (
-    let index = 0;
-    index < rawData.length;
-    index += 1
-  ) {
-    outputArray[index] =
-      rawData.charCodeAt(
-        index
-      );
+async function readPayload(
+  response: Response
+) {
+  const raw =
+    await response.text();
+
+  if (!raw) return {};
+
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return {
+      error:
+        raw.slice(0, 400),
+    };
   }
-
-  return outputArray;
 }
 
 export default function NotificationPermissionCard({
@@ -59,6 +65,14 @@ export default function NotificationPermissionCard({
     supported,
     setSupported,
   ] = useState(true);
+
+  const [
+    permission,
+    setPermission,
+  ] =
+    useState<NotificationPermission>(
+      "default"
+    );
 
   const [
     subscribed,
@@ -95,9 +109,11 @@ export default function NotificationPermissionCard({
         isSupported
       );
 
-      if (!isSupported) {
-        return;
-      }
+      if (!isSupported) return;
+
+      setPermission(
+        Notification.permission
+      );
 
       const registration =
         await navigator.serviceWorker.getRegistration(
@@ -120,9 +136,7 @@ export default function NotificationPermissionCard({
 
     detect().catch(() => {
       if (active) {
-        setSubscribed(
-          false
-        );
+        setSubscribed(false);
       }
     });
 
@@ -136,19 +150,32 @@ export default function NotificationPermissionCard({
       setLoading(true);
       setMessage("");
 
+      if (
+        Notification.permission ===
+        "denied"
+      ) {
+        setPermission("denied");
+        setMessage(
+          "Les notifications ont déjà été bloquées dans les permissions du navigateur."
+        );
+        return;
+      }
+
       const vapidPublicKey =
         process.env
           .NEXT_PUBLIC_VAPID_PUBLIC_KEY;
 
       if (!vapidPublicKey) {
         setMessage(
-          "Clé VAPID publique manquante."
+          "Clé VAPID publique manquante dans Vercel."
         );
         return;
       }
 
       const result =
         await Notification.requestPermission();
+
+      setPermission(result);
 
       if (
         result !==
@@ -174,6 +201,8 @@ export default function NotificationPermissionCard({
             }
           )
         );
+
+      await navigator.serviceWorker.ready;
 
       const existingSubscription =
         await registration.pushManager.getSubscription();
@@ -210,23 +239,27 @@ export default function NotificationPermissionCard({
           }
         );
 
-      if (!response.ok) {
-        const payload =
-          await response
-            .json()
-            .catch(() => ({}));
+      const payload =
+        await readPayload(
+          response
+        );
 
+      if (!response.ok) {
         setMessage(
           payload.error ||
             "Activation impossible."
         );
-
         return;
       }
 
       setSubscribed(true);
       setMessage(
         "Notifications activées sur cet appareil."
+      );
+    } catch (error: any) {
+      setMessage(
+        error?.message ||
+          "Activation impossible."
       );
     } finally {
       setLoading(false);
@@ -238,18 +271,12 @@ export default function NotificationPermissionCard({
       <div className="rounded-3xl border border-orange-100 bg-orange-50 p-5 text-orange-800">
         <div className="flex items-start gap-3">
           <WifiOff className="h-6 w-6 shrink-0" />
-
           <div>
             <h3 className="font-black">
-              Notifications non
-              supportées
+              Notifications non supportées
             </h3>
-
             <p className="mt-1 text-sm">
-              Ce navigateur ne
-              supporte pas les
-              notifications web
-              Push.
+              Ce navigateur ne supporte pas les notifications Web Push.
             </p>
           </div>
         </div>
@@ -257,71 +284,87 @@ export default function NotificationPermissionCard({
     );
   }
 
+  const denied =
+    permission === "denied";
+
   return (
-    <div className="rounded-3xl border border-[#DCEAF5] bg-white p-5 shadow-sm">
-      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-        <div className="flex items-start gap-3">
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#EAF3FA] text-[#03357A]">
-            {subscribed ? (
-              <BellRing className="h-6 w-6" />
-            ) : (
-              <Bell className="h-6 w-6" />
-            )}
-          </div>
-
-          <div>
-            <h3 className="font-black text-[#03357A]">
-              Notifications
-              internet
-            </h3>
-
-            <p className="mt-1 text-sm leading-6 text-slate-600">
-              Activez les
-              notifications pour
-              recevoir les nouvelles
-              publications,
-              enseignements et
-              communications
-              importantes.
-            </p>
-
-            {message && (
-              <p className="mt-2 text-sm font-bold text-[#03357A]">
-                {message}
-              </p>
-            )}
-          </div>
+    <section className="rounded-3xl border border-[#DCEAF5] bg-white p-5 shadow-sm">
+      <div className="flex items-start gap-3">
+        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#EAF3FA] text-[#03357A]">
+          <BellRing className="h-6 w-6" />
         </div>
 
-        <button
-          type="button"
-          onClick={
-            activateNotifications
-          }
-          disabled={
-            loading ||
-            subscribed
-          }
-          className={[
-            "inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl px-5 py-3 text-sm font-black transition",
-            subscribed
-              ? "bg-green-50 text-green-700"
-              : "bg-[#03357A] text-white hover:bg-[#022B63]",
-          ].join(" ")}
-        >
-          {loading ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
-          ) : subscribed ? (
-            <CheckCircle2 className="h-4 w-4" />
-          ) : (
-            <Bell className="h-4 w-4" />
-          )}
+        <div className="min-w-0">
+          <h3 className="font-black text-[#03357A]">
+            Notifications sur cet appareil
+          </h3>
 
-          {subscribed
-            ? "Activées"
-            : "Activer"}
-        </button>
+          <p className="mt-1 text-sm leading-6 text-slate-600">
+            Recevez les publications et alertes de votre église.
+          </p>
+        </div>
       </div>
-    </div>
+
+      {denied && (
+        <div className="mt-4 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-900">
+          <p className="font-black">
+            Autorisation bloquée par Chrome
+          </p>
+
+          <p className="mt-2">
+            Touchez l’icône des réglages à gauche de l’adresse du site,
+            puis Permissions → Notifications → Autoriser.
+          </p>
+
+          <p className="mt-2 text-xs font-semibold">
+            Rechargez ensuite la page et appuyez sur Vérifier.
+          </p>
+        </div>
+      )}
+
+      <button
+        type="button"
+        onClick={
+          denied
+            ? () =>
+                window.location.reload()
+            : activateNotifications
+        }
+        disabled={
+          loading ||
+          subscribed
+        }
+        className={[
+          "mt-4 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl px-5 py-3 text-sm font-black transition sm:w-auto",
+          subscribed
+            ? "bg-green-50 text-green-700"
+            : denied
+              ? "bg-amber-100 text-amber-900"
+              : "bg-[#03357A] text-white",
+        ].join(" ")}
+      >
+        {loading ? (
+          <Loader2 className="h-4 w-4 animate-spin" />
+        ) : subscribed ? (
+          <CheckCircle2 className="h-4 w-4" />
+        ) : denied ? (
+          <RotateCcw className="h-4 w-4" />
+        ) : (
+          <BellRing className="h-4 w-4" />
+        )}
+
+        {subscribed
+          ? "Notifications activées"
+          : denied
+            ? "Vérifier après réactivation"
+            : "Activer les notifications"}
+      </button>
+
+      {message && (
+        <p className="mt-3 text-sm font-semibold leading-6 text-slate-600">
+          {message}
+        </p>
+      )}
+    </section>
   );
 }

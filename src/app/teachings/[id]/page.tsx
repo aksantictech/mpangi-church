@@ -11,6 +11,10 @@ type TeachingDetailPageProps = {
   }>;
   searchParams?: Promise<{
     published?: string;
+    created?: string;
+    updated?: string;
+    error?: string;
+    notifyWarning?: string;
   }>;
 };
 
@@ -50,9 +54,26 @@ export default async function TeachingDetailPage({
           Retour aux enseignements
         </Link>
 
-        {query.published && (
+        {(query.created || query.updated || query.published) && (
           <div className="rounded-2xl bg-green-50 p-4 text-sm font-extrabold text-green-700">
-            Enseignement publié et notification envoyée.
+            {query.created
+              ? "Enseignement enregistré."
+              : query.updated
+                ? "Enseignement mis à jour."
+                : "Enseignement publié."}
+          </div>
+        )}
+
+        {query.notifyWarning && (
+          <div className="rounded-2xl bg-amber-50 p-4 text-sm font-bold leading-6 text-amber-800">
+            Publication réussie, mais notification non envoyée :{" "}
+            {query.notifyWarning}
+          </div>
+        )}
+
+        {query.error && (
+          <div className="rounded-2xl bg-red-50 p-4 text-sm font-bold leading-6 text-red-700">
+            {query.error}
           </div>
         )}
 

@@ -25,6 +25,50 @@ const textareaClass =
 const MAX_IMAGE_SIZE =
   4 * 1024 * 1024;
 
+
+async function readApiPayload(
+  response: Response
+) {
+  const raw =
+    await response.text();
+
+  if (!raw) return {};
+
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return {
+      error:
+        raw.slice(0, 500) ||
+        `Erreur HTTP ${response.status}`,
+    };
+  }
+}
+
+async function fetchWithTimeout(
+  input: RequestInfo | URL,
+  init: RequestInit,
+  timeoutMilliseconds: number
+) {
+  const controller =
+    new AbortController();
+
+  const timeout =
+    setTimeout(() => {
+      controller.abort();
+    }, timeoutMilliseconds);
+
+  try {
+    return await fetch(input, {
+      ...init,
+      signal:
+        controller.signal,
+    });
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
 export default function PublicationForm() {
   const router = useRouter();
 
@@ -102,21 +146,44 @@ export default function PublicationForm() {
       return;
     }
 
+    const notifyRequested =
+      form.get("notify") === "on";
+
+    /*
+     * L’enregistrement et l’envoi Push sont volontairement séparés.
+     * Une panne VAPID ne doit jamais annuler la publication.
+     */
+    if (notifyRequested) {
+      form.set(
+        "notify",
+        "false"
+      );
+
+      form.set(
+        "isPublished",
+        "on"
+      );
+    }
+
     setIsLoading(true);
     setMessage("");
     setError("");
 
     try {
-      const response = await fetch(
-        "/api/publications",
-        {
-          method: "POST",
-          body: form,
-        }
-      );
+      const response =
+        await fetchWithTimeout(
+          "/api/publications",
+          {
+            method: "POST",
+            body: form,
+          },
+          45000
+        );
 
       const payload =
-        await response.json();
+        await readApiPayload(
+          response
+        );
 
       if (!response.ok) {
         const detail = [
@@ -133,14 +200,71 @@ export default function PublicationForm() {
         );
       }
 
+      let successMessage =
+        "Publication enregistrée.";
+
+      if (
+        notifyRequested &&
+        payload.publicationId
+      ) {
+        try {
+          const notifyResponse =
+            await fetchWithTimeout(
+              "/api/publications",
+              {
+                method: "PATCH",
+                headers: {
+                  "Content-Type":
+                    "application/json",
+                },
+                body:
+                  JSON.stringify({
+                    publicationId:
+                      payload.publicationId,
+                    action: "notify",
+                  }),
+              },
+              20000
+            );
+
+          const notifyPayload =
+            await readApiPayload(
+              notifyResponse
+            );
+
+          if (!notifyResponse.ok) {
+            successMessage +=
+              ` Notification non envoyée : ${
+                notifyPayload.error ||
+                "erreur Push"
+              }.`;
+          } else {
+            successMessage =
+              notifyPayload.warning ||
+              `Publication enregistrée. Notifications envoyées : ${
+                notifyPayload.sentCount ||
+                0
+              }.`;
+          }
+        } catch (
+          notifyError: any
+        ) {
+          successMessage +=
+            ` Notification non envoyée : ${
+              notifyError?.name ===
+              "AbortError"
+                ? "délai dépassé"
+                : notifyError?.message ||
+                  "erreur réseau"
+            }.`;
+        }
+      }
+
       formElement.reset();
       clearImage();
 
       setMessage(
-        payload.warning ||
-          `Publication enregistrée. Notifications envoyées : ${
-            payload.sentCount || 0
-          }.`
+        successMessage
       );
 
       router.refresh();
@@ -148,8 +272,11 @@ export default function PublicationForm() {
       submitError: any
     ) {
       setError(
-        submitError?.message ||
-          "Une erreur a empêché la publication."
+        submitError?.name ===
+          "AbortError"
+          ? "Le serveur a mis trop de temps à répondre. La publication n’a pas été confirmée."
+          : submitError?.message ||
+            "Une erreur a empêché la publication."
       );
     } finally {
       setIsLoading(false);
