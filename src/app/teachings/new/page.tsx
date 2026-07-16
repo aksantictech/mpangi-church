@@ -41,8 +41,8 @@ export default async function NewTeachingPage({
         </section>
 
         {params.error && (
-          <div className="rounded-2xl bg-red-50 p-4 text-sm font-bold text-red-700">
-            Vérifiez le titre et le lien YouTube.
+          <div className="rounded-2xl bg-red-50 p-4 text-sm font-bold leading-6 text-red-700">
+            {params.error}
           </div>
         )}
 

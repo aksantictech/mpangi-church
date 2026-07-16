@@ -3,7 +3,9 @@
 import {
   BellRing,
   CheckCircle2,
+  ExternalLink,
   Loader2,
+  RotateCcw,
 } from "lucide-react";
 import {
   useEffect,
@@ -54,6 +56,24 @@ function urlBase64ToUint8Array(
   return outputArray;
 }
 
+async function readPayload(
+  response: Response
+) {
+  const raw =
+    await response.text();
+
+  if (!raw) return {};
+
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return {
+      error:
+        raw.slice(0, 400),
+    };
+  }
+}
+
 export default function NotificationSubscribeButton({
   churchId,
   label = "Activer les notifications",
@@ -63,6 +83,14 @@ export default function NotificationSubscribeButton({
     isSupported,
     setIsSupported,
   ] = useState(false);
+
+  const [
+    permission,
+    setPermission,
+  ] =
+    useState<NotificationPermission>(
+      "default"
+    );
 
   const [
     isSubscribed,
@@ -100,6 +128,10 @@ export default function NotificationSubscribeButton({
       );
 
       if (!supported) return;
+
+      setPermission(
+        Notification.permission
+      );
 
       try {
         const registration =
@@ -145,13 +177,24 @@ export default function NotificationSubscribeButton({
       return;
     }
 
+    if (
+      Notification.permission ===
+      "denied"
+    ) {
+      setPermission("denied");
+      setMessage(
+        "L’autorisation a déjà été bloquée dans Chrome. Réactivez-la dans les permissions du site, puis rechargez cette page."
+      );
+      return;
+    }
+
     const publicKey =
       process.env
         .NEXT_PUBLIC_VAPID_PUBLIC_KEY;
 
     if (!publicKey) {
       setMessage(
-        "La clé publique VAPID n’est pas configurée."
+        "La clé publique VAPID n’est pas configurée dans Vercel."
       );
       return;
     }
@@ -176,15 +219,19 @@ export default function NotificationSubscribeButton({
 
       await navigator.serviceWorker.ready;
 
-      const permission =
+      const nextPermission =
         await Notification.requestPermission();
 
+      setPermission(
+        nextPermission
+      );
+
       if (
-        permission !==
+        nextPermission !==
         "granted"
       ) {
         setMessage(
-          "Autorisation refusée. Réactivez les notifications dans les paramètres du site."
+          "Autorisation refusée. Utilisez les permissions du site dans Chrome pour choisir Autoriser."
         );
         return;
       }
@@ -224,7 +271,9 @@ export default function NotificationSubscribeButton({
         );
 
       const payload =
-        await response.json();
+        await readPayload(
+          response
+        );
 
       if (!response.ok) {
         throw new Error(
@@ -249,12 +298,23 @@ export default function NotificationSubscribeButton({
     }
   }
 
+  const denied =
+    permission === "denied";
+
   return (
     <div>
       <button
         type="button"
         onClick={
-          handleSubscribe
+          denied
+            ? () => {
+                setPermission(
+                  Notification.permission
+                );
+
+                window.location.reload();
+              }
+            : handleSubscribe
         }
         disabled={
           isLoading ||
@@ -266,7 +326,9 @@ export default function NotificationSubscribeButton({
             "inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl px-5 py-3 text-sm font-black shadow-sm transition",
             isSubscribed
               ? "bg-green-50 text-green-700"
-              : "bg-[#03357A] text-white hover:bg-[#022B63]",
+              : denied
+                ? "bg-amber-50 text-amber-800 ring-1 ring-amber-200"
+                : "bg-[#03357A] text-white hover:bg-[#022B63]",
           ].join(" ")
         }
       >
@@ -274,13 +336,17 @@ export default function NotificationSubscribeButton({
           <Loader2 className="h-4 w-4 animate-spin" />
         ) : isSubscribed ? (
           <CheckCircle2 className="h-4 w-4" />
+        ) : denied ? (
+          <RotateCcw className="h-4 w-4" />
         ) : (
           <BellRing className="h-4 w-4" />
         )}
 
         {isSubscribed
           ? "Notifications activées"
-          : label}
+          : denied
+            ? "Vérifier après réactivation"
+            : label}
       </button>
 
       {!isSupported && (
@@ -289,6 +355,31 @@ export default function NotificationSubscribeButton({
           supporte pas les
           notifications Push.
         </p>
+      )}
+
+      {denied && (
+        <div className="mt-3 max-w-xl rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-900">
+          <p className="font-black">
+            Réactivation nécessaire dans Chrome
+          </p>
+
+          <p className="mt-2">
+            Touchez l’icône des réglages à gauche de l’adresse du site,
+            puis Permissions → Notifications → Autoriser. Rechargez
+            ensuite cette page.
+          </p>
+
+          <p className="mt-2 text-xs font-semibold">
+            Autre chemin : Chrome → Paramètres → Paramètres des sites
+            → Notifications → recherchez ce sous-domaine → Autoriser.
+          </p>
+
+          <span className="mt-3 inline-flex items-center gap-2 text-xs font-black text-amber-800">
+            <ExternalLink className="h-4 w-4" />
+            Le navigateur interdit à l’application de modifier elle-même
+            une autorisation déjà refusée.
+          </span>
+        </div>
       )}
 
       {message && (

@@ -3,6 +3,10 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import { sendChurchNotification } from "@/lib/notifications/push";
 
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+export const maxDuration = 60;
+
 type PublicationAction =
   | "publish"
   | "unpublish"

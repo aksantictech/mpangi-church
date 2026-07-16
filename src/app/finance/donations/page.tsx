@@ -1,7 +1,9 @@
 import Link from "next/link";
 import {
+  ArrowLeft,
   CheckCircle2,
   Clock3,
+  LayoutDashboard,
   Settings,
   Wallet,
 } from "lucide-react";
@@ -12,7 +14,6 @@ import { createClient } from "@/lib/supabase/server";
 import {
   DONATION_STATUSES,
   formatDonationAmount,
-  getDonationChannelLabel,
   getDonationMethodLabel,
   getDonationPurposeLabel,
   getDonationStatusLabel,
@@ -106,6 +107,24 @@ export default async function FinanceDonationsPage({
   return (
     <main className="min-h-screen bg-[#F5F9FC] px-3 py-5 pb-24 sm:px-6 sm:py-8">
       <div className="mx-auto max-w-7xl">
+        <nav className="mb-4 flex flex-wrap gap-2">
+          <Link
+            href="/dashboard"
+            className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-white px-4 py-3 text-sm font-black text-[#03357A] shadow-sm ring-1 ring-[#DCEAF5]"
+          >
+            <LayoutDashboard className="h-4 w-4" />
+            Tableau de bord
+          </Link>
+
+          <Link
+            href="/finance"
+            className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-[#EAF3FA] px-4 py-3 text-sm font-black text-[#03357A]"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Retour aux finances
+          </Link>
+        </nav>
+
         <header className="rounded-[1.75rem] bg-gradient-to-br from-[#03357A] via-[#2563EB] to-[#8B5CF6] p-5 text-white sm:p-7">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div>

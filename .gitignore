@@ -68,3 +68,6 @@ payload/
 *.zip
 
 backups/
+
+.phase35v-backup/
+templates/
