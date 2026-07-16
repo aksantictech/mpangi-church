@@ -12,7 +12,7 @@ type PublicFeaturedUpdatesProps = {
   slug: string;
 };
 
-type PublicUpdate = {
+type FeaturedItem = {
   key: string;
   source: "publication" | "event";
   title: string;
@@ -20,33 +20,31 @@ type PublicUpdate = {
   category: string;
   imageUrl: string | null;
   date: string | null;
-  featured: boolean;
 };
 
-const PUBLICATION_CATEGORIES = new Set([
-  "announcement",
-  "annonce",
-  "news",
-  "actuality",
-  "actualite",
-  "actualité",
-  "event",
-  "evenement",
-  "événement",
-  "programme",
-  "program",
-  "communication",
+const TEACHING_TYPES = new Set([
+  "teaching",
+  "video",
+  "sermon",
+  "message",
 ]);
 
-function stringValue(value: unknown) {
-  if (value === null || value === undefined) {
+function stringValue(
+  value: unknown
+) {
+  if (
+    value === null ||
+    value === undefined
+  ) {
     return "";
   }
 
   return String(value).trim();
 }
 
-function booleanValue(value: unknown) {
+function booleanValue(
+  value: unknown
+) {
   return (
     value === true ||
     value === "true" ||
@@ -60,60 +58,60 @@ function firstValue(
   keys: string[]
 ) {
   for (const key of keys) {
-    const value = stringValue(row[key]);
+    const value =
+      stringValue(row[key]);
 
-    if (value) {
-      return value;
-    }
+    if (value) return value;
   }
 
   return "";
 }
 
-function normalizedCategory(
-  row: Record<string, any>
-) {
-  /*
-   * Important :
-   * category/type sont prioritaires sur publication_type.
-   * Certaines anciennes lignes ont publication_type="teaching"
-   * par défaut alors que category="announcement".
-   */
-  return firstValue(row, [
-    "category",
-    "type",
-    "publication_type",
-  ]).toLowerCase();
-}
-
-function isPublishedPublication(
+function publicPublication(
   row: Record<string, any>
 ) {
   const status =
     stringValue(row.status).toLowerCase();
 
-  return (
+  const visible =
     booleanValue(row.is_published) ||
     booleanValue(row.is_public) ||
     status === "published" ||
-    status === "active"
+    status === "active";
+
+  return (
+    visible &&
+    booleanValue(
+      row.is_featured ??
+        row.featured ??
+        row.show_on_homepage
+    )
   );
 }
 
-function isVisibleEvent(
+function publicEvent(
   row: Record<string, any>
 ) {
   const status =
     stringValue(row.status).toLowerCase();
 
-  const hiddenStatuses = new Set([
-    "draft",
-    "archived",
-    "cancelled",
-    "canceled",
-    "inactive",
-    "deleted",
-  ]);
+  const hiddenStatuses =
+    new Set([
+      "draft",
+      "archived",
+      "cancelled",
+      "canceled",
+      "inactive",
+      "deleted",
+    ]);
+
+  const featured =
+    booleanValue(
+      row.is_featured ??
+        row.featured ??
+        row.show_on_homepage ??
+        row.show_on_public_page
+    );
 
   const publicVisible =
     row.is_public === undefined ||
@@ -121,23 +119,15 @@ function isVisibleEvent(
     booleanValue(row.is_public);
 
   return (
+    featured &&
     publicVisible &&
     !hiddenStatuses.has(status)
   );
 }
 
-function isFeatured(
-  row: Record<string, any>
+function toDateValue(
+  value: string | null
 ) {
-  return booleanValue(
-    row.is_featured ??
-      row.featured ??
-      row.show_on_homepage ??
-      row.show_on_public_page
-  );
-}
-
-function dateValue(value: string | null) {
   if (!value) return 0;
 
   const timestamp =
@@ -148,12 +138,16 @@ function dateValue(value: string | null) {
     : 0;
 }
 
-function formatDate(value: string | null) {
+function formatDate(
+  value: string | null
+) {
   if (!value) return null;
 
   const date = new Date(value);
 
-  if (Number.isNaN(date.getTime())) {
+  if (
+    Number.isNaN(date.getTime())
+  ) {
     return null;
   }
 
@@ -168,26 +162,25 @@ function formatDate(value: string | null) {
 }
 
 function categoryLabel(
-  category: string,
-  source: PublicUpdate["source"]
+  value: string,
+  source: FeaturedItem["source"]
 ) {
-  const labels: Record<string, string> = {
-    announcement: "Annonce",
-    annonce: "Annonce",
-    news: "Actualité",
-    actuality: "Actualité",
-    actualite: "Actualité",
-    "actualité": "Actualité",
-    event: "Événement",
-    evenement: "Événement",
-    "événement": "Événement",
-    programme: "Programme",
-    program: "Programme",
-    communication: "Communication",
-  };
+  const normalized =
+    value.toLowerCase();
+
+  const labels:
+    Record<string, string> = {
+      announcement: "Annonce",
+      news: "Actualité",
+      actuality: "Actualité",
+      actualite: "Actualité",
+      event: "Événement",
+      programme: "Programme",
+      program: "Programme",
+    };
 
   return (
-    labels[category] ||
+    labels[normalized] ||
     (
       source === "event"
         ? "Événement"
@@ -200,15 +193,20 @@ async function loadEventRows(
   admin: ReturnType<typeof createAdminClient>,
   churchId: string
 ) {
-  for (const tableName of [
-    "events",
-    "church_events",
-  ]) {
-    const { data, error } = await admin
+  for (
+    const tableName of [
+      "events",
+      "church_events",
+    ]
+  ) {
+    const {
+      data,
+      error,
+    } = await admin
       .from(tableName)
       .select("*")
       .eq("church_id", churchId)
-      .limit(60);
+      .limit(40);
 
     if (!error && data) {
       return data;
@@ -221,7 +219,8 @@ async function loadEventRows(
 export default async function PublicFeaturedUpdates({
   churchId,
 }: PublicFeaturedUpdatesProps) {
-  const admin = createAdminClient();
+  const admin =
+    createAdminClient();
 
   const [
     publicationsResult,
@@ -231,10 +230,7 @@ export default async function PublicFeaturedUpdates({
       .from("church_publications")
       .select("*")
       .eq("church_id", churchId)
-      .order("created_at", {
-        ascending: false,
-      })
-      .limit(60),
+      .limit(40),
 
     loadEventRows(
       admin,
@@ -242,7 +238,7 @@ export default async function PublicFeaturedUpdates({
     ),
   ]);
 
-  const publications: PublicUpdate[] =
+  const publications =
     (
       publicationsResult.data ||
       []
@@ -251,135 +247,162 @@ export default async function PublicFeaturedUpdates({
         (
           row: Record<string, any>
         ) => {
-          const category =
-            normalizedCategory(row);
+          const type =
+            firstValue(
+              row,
+              [
+                "publication_type",
+                "type",
+                "category",
+              ]
+            ).toLowerCase();
 
           return (
-            isPublishedPublication(row) &&
-            PUBLICATION_CATEGORIES.has(
-              category
-            )
+            publicPublication(row) &&
+            !TEACHING_TYPES.has(type)
           );
         }
       )
       .map(
         (
           row: Record<string, any>
-        ) => {
-          const category =
-            normalizedCategory(row);
+        ): FeaturedItem => {
+          const type =
+            firstValue(
+              row,
+              [
+                "publication_type",
+                "type",
+                "category",
+              ]
+            );
 
           return {
             key:
               `publication-${row.id}`,
             source:
-              "publication" as const,
-
+              "publication",
             title:
-              firstValue(row, [
-                "title",
-                "name",
-              ]) ||
+              firstValue(
+                row,
+                [
+                  "title",
+                  "name",
+                ]
+              ) ||
               "Publication",
 
             description:
-              firstValue(row, [
-                "excerpt",
-                "description",
-                "summary",
-                "content",
-              ]) ||
+              firstValue(
+                row,
+                [
+                  "description",
+                  "excerpt",
+                  "summary",
+                  "content",
+                ]
+              ) ||
               null,
 
             category:
               categoryLabel(
-                category,
+                type,
                 "publication"
               ),
 
             imageUrl:
-              firstValue(row, [
-                "image_url",
-                "cover_image_url",
-                "thumbnail_url",
-              ]) ||
+              firstValue(
+                row,
+                [
+                  "cover_image_url",
+                  "image_url",
+                  "thumbnail_url",
+                ]
+              ) ||
               null,
 
             date:
-              firstValue(row, [
-                "published_at",
-                "event_date",
-                "start_date",
-                "starts_at",
-                "created_at",
-              ]) ||
+              firstValue(
+                row,
+                [
+                  "published_at",
+                  "event_date",
+                  "start_date",
+                  "starts_at",
+                  "created_at",
+                ]
+              ) ||
               null,
-
-            featured:
-              isFeatured(row),
           };
         }
       );
 
-  const events: PublicUpdate[] =
+  const events =
     (eventRows || [])
       .filter(
         (
           row: Record<string, any>
         ) =>
-          isVisibleEvent(row)
+          publicEvent(row)
       )
       .map(
         (
           row: Record<string, any>
-        ) => ({
+        ): FeaturedItem => ({
           key:
             `event-${row.id}`,
-
           source:
-            "event" as const,
-
+            "event",
           title:
-            firstValue(row, [
-              "title",
-              "name",
-              "event_title",
-            ]) ||
+            firstValue(
+              row,
+              [
+                "title",
+                "name",
+                "event_title",
+              ]
+            ) ||
             "Événement",
 
           description:
-            firstValue(row, [
-              "description",
-              "summary",
-              "details",
-              "notes",
-            ]) ||
+            firstValue(
+              row,
+              [
+                "description",
+                "summary",
+                "details",
+                "notes",
+              ]
+            ) ||
             null,
 
           category:
             "Événement",
 
           imageUrl:
-            firstValue(row, [
-              "image_url",
-              "cover_image_url",
-              "photo_url",
-            ]) ||
+            firstValue(
+              row,
+              [
+                "cover_image_url",
+                "image_url",
+                "photo_url",
+              ]
+            ) ||
             null,
 
           date:
-            firstValue(row, [
-              "starts_at",
-              "start_at",
-              "start_date",
-              "event_date",
-              "date",
-              "created_at",
-            ]) ||
+            firstValue(
+              row,
+              [
+                "starts_at",
+                "start_at",
+                "start_date",
+                "event_date",
+                "date",
+                "created_at",
+              ]
+            ) ||
             null,
-
-          featured:
-            isFeatured(row),
         })
       );
 
@@ -387,71 +410,20 @@ export default async function PublicFeaturedUpdates({
     ...publications,
     ...events,
   ]
-    .sort((first, second) => {
-      if (
-        first.featured !==
-        second.featured
-      ) {
-        return first.featured
-          ? -1
-          : 1;
-      }
+    .sort(
+      (first, second) =>
+        toDateValue(second.date) -
+        toDateValue(first.date)
+    )
+    .slice(0, 6);
 
-      return (
-        dateValue(second.date) -
-        dateValue(first.date)
-      );
-    })
-    .slice(0, 9);
-
-  /*
-   * Le bloc reste visible même sans contenu.
-   * Cela évite qu'une erreur de filtre donne l'impression
-   * que la fonctionnalité n'a pas été installée.
-   */
   if (items.length === 0) {
-    return (
-      <section
-        id="actualites"
-        className="scroll-mt-24 mx-auto max-w-6xl px-4 pt-8 md:px-6"
-      >
-        <div className="rounded-[2rem] border border-[#DCEAF5] bg-white p-5 shadow-sm sm:p-6">
-          <div className="flex items-center gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#EAF3FA] text-[#03357A]">
-              <Newspaper className="h-6 w-6" />
-            </div>
-
-            <div>
-              <p className="text-xs font-black uppercase tracking-[0.2em] text-[#2563EB]">
-                Vie de l’église
-              </p>
-
-              <h2 className="text-2xl font-black text-[#03357A]">
-                Actualités et événements
-              </h2>
-            </div>
-          </div>
-
-          <p className="mt-5 rounded-2xl bg-[#F8FBFD] p-4 text-sm font-semibold leading-7 text-slate-500">
-            Les annonces, actualités et événements
-            publiés apparaîtront ici automatiquement.
-          </p>
-        </div>
-      </section>
-    );
+    return null;
   }
 
-  const featured =
-    items.find(
-      (item) => item.featured
-    ) ||
-    items[0];
-
-  const secondary =
-    items.filter(
-      (item) =>
-        item.key !== featured.key
-    );
+  const featured = items[0];
+  const others =
+    items.slice(1);
 
   const FeaturedIcon =
     featured.source === "event"
@@ -459,10 +431,7 @@ export default async function PublicFeaturedUpdates({
       : Megaphone;
 
   return (
-    <section
-      id="actualites"
-      className="scroll-mt-24 mx-auto max-w-6xl px-4 pt-8 md:px-6"
-    >
+    <section className="mx-auto max-w-6xl px-4 pt-8 md:px-6">
       <div className="overflow-hidden rounded-[2rem] border border-[#DCEAF5] bg-white shadow-sm">
         <header className="flex flex-col gap-4 border-b border-[#DCEAF5] p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
           <div className="flex items-center gap-3">
@@ -472,7 +441,7 @@ export default async function PublicFeaturedUpdates({
 
             <div>
               <p className="text-xs font-black uppercase tracking-[0.2em] text-[#2563EB]">
-                Vie de l’église
+                À la une
               </p>
 
               <h2 className="text-2xl font-black text-[#03357A]">
@@ -483,7 +452,7 @@ export default async function PublicFeaturedUpdates({
 
           <span className="inline-flex w-fit items-center gap-2 rounded-full bg-violet-50 px-3 py-2 text-xs font-black text-violet-700">
             <Sparkles className="h-4 w-4" />
-            Mis à jour automatiquement
+            Contenus mis en vedette
           </span>
         </header>
 
@@ -502,12 +471,10 @@ export default async function PublicFeaturedUpdates({
 
             <div className="p-5 sm:p-6">
               <div className="flex flex-wrap gap-2">
-                {featured.featured && (
-                  <span className="inline-flex items-center gap-1 rounded-full bg-white px-3 py-1.5 text-xs font-black text-violet-700">
-                    <Star className="h-3.5 w-3.5" />
-                    En vedette
-                  </span>
-                )}
+                <span className="inline-flex items-center gap-1 rounded-full bg-white/15 px-3 py-1.5 text-xs font-black ring-1 ring-white/20">
+                  <Star className="h-3.5 w-3.5" />
+                  En vedette
+                </span>
 
                 <span className="rounded-full bg-white/15 px-3 py-1.5 text-xs font-black ring-1 ring-white/20">
                   {featured.category}
@@ -519,7 +486,7 @@ export default async function PublicFeaturedUpdates({
               </h3>
 
               {featured.description && (
-                <p className="mt-3 line-clamp-6 text-sm leading-7 text-blue-50">
+                <p className="mt-3 line-clamp-5 text-sm leading-7 text-blue-50">
                   {featured.description}
                 </p>
               )}
@@ -538,10 +505,11 @@ export default async function PublicFeaturedUpdates({
           </article>
 
           <div className="grid gap-3">
-            {secondary.map(
+            {others.map(
               (item) => {
                 const Icon =
-                  item.source === "event"
+                  item.source ===
+                  "event"
                     ? CalendarDays
                     : Megaphone;
 
@@ -564,15 +532,9 @@ export default async function PublicFeaturedUpdates({
                     </div>
 
                     <div className="min-w-0">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <p className="text-xs font-black uppercase tracking-wide text-[#2563EB]">
-                          {item.category}
-                        </p>
-
-                        {item.featured && (
-                          <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-500" />
-                        )}
-                      </div>
+                      <p className="text-xs font-black uppercase tracking-wide text-[#2563EB]">
+                        {item.category}
+                      </p>
 
                       <h3 className="mt-1 line-clamp-2 font-black text-[#03357A]">
                         {item.title}
