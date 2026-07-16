@@ -3,11 +3,12 @@
 import {
   BellRing,
   CheckCircle2,
-  ExternalLink,
   Loader2,
   RotateCcw,
+  Settings2,
 } from "lucide-react";
 import {
+  useCallback,
   useEffect,
   useState,
 } from "react";
@@ -22,11 +23,7 @@ function urlBase64ToUint8Array(
   base64String: string
 ) {
   const padding = "=".repeat(
-    (
-      4 -
-      (base64String.length %
-        4)
-    ) % 4
+    (4 - (base64String.length % 4)) % 4
   );
 
   const base64 =
@@ -34,33 +31,58 @@ function urlBase64ToUint8Array(
       .replace(/-/g, "+")
       .replace(/_/g, "/");
 
-  const rawData =
-    window.atob(base64);
+  const rawData = window.atob(base64);
 
-  const outputArray =
-    new Uint8Array(
-      rawData.length
-    );
+  return Uint8Array.from(
+    rawData,
+    (character) => character.charCodeAt(0)
+  );
+}
 
-  for (
-    let index = 0;
-    index < rawData.length;
-    index += 1
-  ) {
-    outputArray[index] =
-      rawData.charCodeAt(
-        index
-      );
+function getBrowserLabel() {
+  if (typeof navigator === "undefined") {
+    return "votre navigateur";
   }
 
-  return outputArray;
+  const userAgent = navigator.userAgent;
+
+  if (/SamsungBrowser/i.test(userAgent)) {
+    return "Samsung Internet";
+  }
+
+  if (/EdgA?|EdgiOS/i.test(userAgent)) {
+    return "Microsoft Edge";
+  }
+
+  if (/Firefox|FxiOS/i.test(userAgent)) {
+    return "Firefox";
+  }
+
+  if (/OPR|Opera/i.test(userAgent)) {
+    return "Opera";
+  }
+
+  if (
+    /CriOS|Chrome/i.test(userAgent) &&
+    !/Edg|OPR|SamsungBrowser/i.test(userAgent)
+  ) {
+    return "Google Chrome";
+  }
+
+  if (
+    /Safari/i.test(userAgent) &&
+    !/Chrome|CriOS|Android/i.test(userAgent)
+  ) {
+    return "Safari";
+  }
+
+  return "votre navigateur";
 }
 
 async function readPayload(
   response: Response
 ) {
-  const raw =
-    await response.text();
+  const raw = await response.text();
 
   if (!raw) return {};
 
@@ -69,7 +91,8 @@ async function readPayload(
   } catch {
     return {
       error:
-        raw.slice(0, 400),
+        raw.slice(0, 400) ||
+        `Erreur HTTP ${response.status}`,
     };
   }
 }
@@ -79,59 +102,44 @@ export default function NotificationSubscribeButton({
   label = "Activer les notifications",
   className,
 }: NotificationSubscribeButtonProps) {
-  const [
-    isSupported,
-    setIsSupported,
-  ] = useState(false);
+  const [isSupported, setIsSupported] =
+    useState(false);
 
-  const [
-    permission,
-    setPermission,
-  ] =
-    useState<NotificationPermission>(
-      "default"
-    );
+  const [permission, setPermission] =
+    useState<NotificationPermission>("default");
 
-  const [
-    isSubscribed,
-    setIsSubscribed,
-  ] = useState(false);
+  const [isSubscribed, setIsSubscribed] =
+    useState(false);
 
-  const [
-    isLoading,
-    setIsLoading,
-  ] = useState(false);
+  const [isLoading, setIsLoading] =
+    useState(false);
 
-  const [
-    message,
-    setMessage,
-  ] = useState("");
+  const [message, setMessage] =
+    useState("");
 
-  useEffect(() => {
-    let active = true;
+  const [browserLabel, setBrowserLabel] =
+    useState("votre navigateur");
 
-    async function detectStatus() {
+  const refreshPermissionState =
+    useCallback(async () => {
       const supported =
-        typeof window !==
-          "undefined" &&
-        "Notification" in
-          window &&
-        "serviceWorker" in
-          navigator &&
-        "PushManager" in
-          window;
+        typeof window !== "undefined" &&
+        "Notification" in window &&
+        "serviceWorker" in navigator &&
+        "PushManager" in window;
 
-      if (!active) return;
+      setIsSupported(supported);
+      setBrowserLabel(getBrowserLabel());
 
-      setIsSupported(
-        supported
-      );
+      if (!supported) {
+        setIsSubscribed(false);
+        return;
+      }
 
-      if (!supported) return;
+      const nextPermission =
+        Notification.permission;
 
-      setPermission(
-        Notification.permission
-      );
+      setPermission(nextPermission);
 
       try {
         const registration =
@@ -142,30 +150,50 @@ export default function NotificationSubscribeButton({
         const subscription =
           await registration?.pushManager.getSubscription();
 
-        if (active) {
-          setIsSubscribed(
-            Boolean(
-              subscription &&
-                Notification.permission ===
-                  "granted"
-            )
-          );
-        }
+        setIsSubscribed(
+          Boolean(
+            subscription &&
+              nextPermission === "granted"
+          )
+        );
       } catch {
-        if (active) {
-          setIsSubscribed(
-            false
-          );
-        }
+        setIsSubscribed(false);
+      }
+    }, []);
+
+  useEffect(() => {
+    refreshPermissionState();
+
+    function handleVisibilityChange() {
+      if (
+        document.visibilityState === "visible"
+      ) {
+        refreshPermissionState();
       }
     }
 
-    detectStatus();
+    window.addEventListener(
+      "focus",
+      refreshPermissionState
+    );
+
+    document.addEventListener(
+      "visibilitychange",
+      handleVisibilityChange
+    );
 
     return () => {
-      active = false;
+      window.removeEventListener(
+        "focus",
+        refreshPermissionState
+      );
+
+      document.removeEventListener(
+        "visibilitychange",
+        handleVisibilityChange
+      );
     };
-  }, []);
+  }, [refreshPermissionState]);
 
   async function handleSubscribe() {
     setMessage("");
@@ -177,20 +205,16 @@ export default function NotificationSubscribeButton({
       return;
     }
 
-    if (
-      Notification.permission ===
-      "denied"
-    ) {
+    if (Notification.permission === "denied") {
       setPermission("denied");
       setMessage(
-        "L’autorisation a déjà été bloquée dans Chrome. Réactivez-la dans les permissions du site, puis rechargez cette page."
+        `L’autorisation est bloquée dans ${browserLabel}. Modifiez les permissions du site, puis revenez sur cette page.`
       );
       return;
     }
 
     const publicKey =
-      process.env
-        .NEXT_PUBLIC_VAPID_PUBLIC_KEY;
+      process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
 
     if (!publicKey) {
       setMessage(
@@ -222,16 +246,11 @@ export default function NotificationSubscribeButton({
       const nextPermission =
         await Notification.requestPermission();
 
-      setPermission(
-        nextPermission
-      );
+      setPermission(nextPermission);
 
-      if (
-        nextPermission !==
-        "granted"
-      ) {
+      if (nextPermission !== "granted") {
         setMessage(
-          "Autorisation refusée. Utilisez les permissions du site dans Chrome pour choisir Autoriser."
+          `Autorisation non accordée dans ${browserLabel}. Utilisez les permissions du site pour sélectionner Autoriser.`
         );
         return;
       }
@@ -241,39 +260,30 @@ export default function NotificationSubscribeButton({
 
       if (!subscription) {
         subscription =
-          await registration.pushManager.subscribe(
-            {
-              userVisibleOnly:
-                true,
-              applicationServerKey:
-                urlBase64ToUint8Array(
-                  publicKey
-                ),
-            }
-          );
+          await registration.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey:
+              urlBase64ToUint8Array(publicKey),
+          });
       }
 
-      const response =
-        await fetch(
-          "/api/push/subscribe",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type":
-                "application/json",
-            },
-            body: JSON.stringify({
-              churchId,
-              subscription:
-                subscription.toJSON(),
-            }),
-          }
-        );
+      const response = await fetch(
+        "/api/push/subscribe",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            churchId,
+            subscription:
+              subscription.toJSON(),
+          }),
+        }
+      );
 
       const payload =
-        await readPayload(
-          response
-        );
+        await readPayload(response);
 
       if (!response.ok) {
         throw new Error(
@@ -286,9 +296,7 @@ export default function NotificationSubscribeButton({
       setMessage(
         "Notifications activées sur cet appareil."
       );
-    } catch (
-      subscribeError: any
-    ) {
+    } catch (subscribeError: any) {
       setMessage(
         subscribeError?.message ||
           "Impossible d’activer les notifications."
@@ -307,13 +315,7 @@ export default function NotificationSubscribeButton({
         type="button"
         onClick={
           denied
-            ? () => {
-                setPermission(
-                  Notification.permission
-                );
-
-                window.location.reload();
-              }
+            ? refreshPermissionState
             : handleSubscribe
         }
         disabled={
@@ -327,7 +329,7 @@ export default function NotificationSubscribeButton({
             isSubscribed
               ? "bg-green-50 text-green-700"
               : denied
-                ? "bg-amber-50 text-amber-800 ring-1 ring-amber-200"
+                ? "bg-amber-50 text-amber-900 ring-1 ring-amber-200"
                 : "bg-[#03357A] text-white hover:bg-[#022B63]",
           ].join(" ")
         }
@@ -345,40 +347,49 @@ export default function NotificationSubscribeButton({
         {isSubscribed
           ? "Notifications activées"
           : denied
-            ? "Vérifier après réactivation"
+            ? "Revérifier l’autorisation"
             : label}
       </button>
 
       {!isSupported && (
         <p className="mt-2 max-w-md text-xs font-semibold leading-5 text-amber-700">
-          Ce navigateur ne
-          supporte pas les
-          notifications Push.
+          Les notifications Push ne sont pas
+          disponibles dans ce navigateur ou ce mode
+          de navigation.
         </p>
       )}
 
       {denied && (
-        <div className="mt-3 max-w-xl rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-900">
-          <p className="font-black">
-            Réactivation nécessaire dans Chrome
-          </p>
+        <div className="mt-3 max-w-xl rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-950">
+          <div className="flex items-center gap-2 font-black">
+            <Settings2 className="h-5 w-5" />
+            Autorisation à réactiver dans {browserLabel}
+          </div>
 
           <p className="mt-2">
-            Touchez l’icône des réglages à gauche de l’adresse du site,
-            puis Permissions → Notifications → Autoriser. Rechargez
-            ensuite cette page.
+            Ouvrez les informations ou les permissions
+            du site depuis l’icône située près de
+            l’adresse, puis choisissez :
+          </p>
+
+          <p className="mt-2 font-black">
+            Permissions du site → Notifications →
+            Autoriser
           </p>
 
           <p className="mt-2 text-xs font-semibold">
-            Autre chemin : Chrome → Paramètres → Paramètres des sites
-            → Notifications → recherchez ce sous-domaine → Autoriser.
+            Les noms des menus peuvent varier selon
+            le navigateur. Vous pouvez aussi ouvrir
+            ses Paramètres → Sites / Permissions →
+            Notifications, puis rechercher ce
+            sous-domaine.
           </p>
 
-          <span className="mt-3 inline-flex items-center gap-2 text-xs font-black text-amber-800">
-            <ExternalLink className="h-4 w-4" />
-            Le navigateur interdit à l’application de modifier elle-même
-            une autorisation déjà refusée.
-          </span>
+          <p className="mt-3 text-xs font-semibold text-amber-800">
+            Une application web ne peut pas remplacer
+            automatiquement une décision déjà refusée
+            par le navigateur.
+          </p>
         </div>
       )}
 
