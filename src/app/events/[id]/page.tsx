@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
+import EventActions from "@/components/events/EventActions";
 import {
   ArrowLeft,
   CalendarDays,
@@ -46,7 +47,27 @@ function getStatusClass(status?: string | null) {
 
   return "bg-slate-100 text-slate-600";
 }
+function getStatusLabel(
+  status?: string | null
+) {
+  if (status === "active") {
+    return "Actif";
+  }
 
+  if (status === "completed") {
+    return "Terminé";
+  }
+
+  if (status === "cancelled") {
+    return "Annulé";
+  }
+
+  if (status === "draft") {
+    return "Brouillon";
+  }
+
+  return "Non défini";
+}
 export default async function EventDetailsPage({
   params,
 }: EventDetailsPageProps) {
@@ -160,6 +181,12 @@ export default async function EventDetailsPage({
                   <QrCode className="h-4 w-4" />
                   Présences
                 </Link>
+                <EventActions
+  eventId={event.id}
+  currentStatus={
+    event.status || "active"
+  }
+/>
               </div>
             </div>
           </div>
@@ -185,7 +212,7 @@ export default async function EventDetailsPage({
 
             <InfoCard
               label="Statut"
-              value={event.status || "active"}
+              value={getStatusLabel(event.status)}
               icon={Users}
               badgeClass={getStatusClass(event.status)}
             />

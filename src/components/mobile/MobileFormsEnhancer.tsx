@@ -31,94 +31,27 @@ function matchesFormRoute(pathname: string) {
   return FORM_ROUTES.some((pattern) => pattern.test(pathname));
 }
 
-function enhanceElement(element: Element) {
-  if (element instanceof HTMLFormElement) {
-    element.dataset.mobileEnhanced = "true";
-    element.classList.add("mobile-page-content-enhanced");
-  }
-
-  if (
-    element.matches(
-      '[class*="grid-cols-2"], [class*="grid-cols-3"], [class*="grid-cols-4"], [class*="grid-cols-5"], [class*="grid-cols-6"]'
-    )
-  ) {
-    element.classList.add("mobile-form-grid-enhanced");
-  }
-
-  if (
-    element.matches(
-      '[class*="justify-end"], [class*="justify-between"], [class*="items-end"]'
-    ) &&
-    element.querySelector("button, a")
-  ) {
-    element.classList.add("mobile-form-actions-enhanced");
-  }
-
-  if (
-    element.matches(
-      '[class*="rounded-2xl"], [class*="rounded-3xl"], [class*="rounded-["]'
-    ) &&
-    element.querySelector("input, select, textarea")
-  ) {
-    element.classList.add("mobile-form-card-enhanced");
-  }
-
-  if (element.matches("h1, h2, h3, p, label")) {
-    element.classList.add("mobile-break-text-enhanced");
-  }
-
-  if (element.matches("button, a[role='button']")) {
-    element.classList.add("mobile-form-button-enhanced");
-  }
-}
-
-function enhancePage(root: ParentNode = document) {
-  const selectors = [
-    "form",
-    "form *",
-    "main h1",
-    "main h2",
-    "main h3",
-    "main p",
-  ].join(",");
-
-  root.querySelectorAll(selectors).forEach(enhanceElement);
-}
 
 export default function MobileFormsEnhancer() {
   const pathname = usePathname() || "/";
 
   useEffect(() => {
-    document.body.dataset.mobileRoute = pathname;
+    const body = document.body;
 
-    const active = matchesFormRoute(pathname);
+    body.dataset.mobileRoute = pathname;
 
-    if (!active) {
-      delete document.body.dataset.mobileFormRoute;
-      return;
+    if (matchesFormRoute(pathname)) {
+      body.dataset.mobileFormRoute = "true";
+    } else {
+      delete body.dataset.mobileFormRoute;
     }
 
-    document.body.dataset.mobileFormRoute = "true";
-    enhancePage();
-
-    const observer = new MutationObserver((mutations) => {
-      for (const mutation of mutations) {
-        mutation.addedNodes.forEach((node) => {
-          if (!(node instanceof Element)) return;
-          enhanceElement(node);
-          enhancePage(node);
-        });
-      }
-    });
-
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true,
-    });
-
     return () => {
-      observer.disconnect();
-      delete document.body.dataset.mobileFormRoute;
+      if (body.dataset.mobileRoute === pathname) {
+        delete body.dataset.mobileRoute;
+      }
+
+      delete body.dataset.mobileFormRoute;
     };
   }, [pathname]);
 

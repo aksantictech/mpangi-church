@@ -2,7 +2,9 @@ import Link from "next/link";
 import {
   ArrowLeft,
   CheckCircle2,
+  CircleAlert,
   Clock3,
+  CreditCard,
   LayoutDashboard,
   Settings,
   Wallet,
@@ -23,7 +25,19 @@ type PageProps = {
   searchParams: Promise<{
     status?: string;
     error?: string;
+    updated?: string;
   }>;
+};
+
+type PaymentTransaction = {
+  id: string;
+  status: string;
+  provider: string;
+  payment_channel: string | null;
+  amount: number | string;
+  currency: string;
+  failure_message: string | null;
+  paid_at: string | null;
 };
 
 const ALLOWED_ROLES = new Set([
@@ -74,9 +88,7 @@ export default async function FinanceDonationsPage({
 
   if (
     query.status &&
-    DONATION_STATUSES.some(
-      (item) => item.value === query.status
-    )
+    DONATION_STATUSES.some((item) => item.value === query.status)
   ) {
     donationsQuery = donationsQuery.eq("status", query.status);
   }
@@ -84,24 +96,51 @@ export default async function FinanceDonationsPage({
   const { data: donations, error } = await donationsQuery;
 
   const rows = donations || [];
-  const confirmed = rows.filter(
-    (item) => item.status === "confirmed"
+
+  const transactionIds = rows
+    .map((item) => item.payment_transaction_id)
+    .filter(
+      (value): value is string => typeof value === "string" && value.length > 0,
+    );
+
+  let paymentTransactions: PaymentTransaction[] = [];
+  let paymentTransactionsError = "";
+
+  if (transactionIds.length > 0) {
+    const { data: transactionData, error: transactionError } = await admin
+      .from("church_payment_transactions")
+      .select(
+        "id, status, provider, payment_channel, amount, currency, failure_message, paid_at",
+      )
+      .eq("church_id", profile.church_id)
+      .in("id", transactionIds);
+
+    if (transactionError) {
+      paymentTransactionsError = transactionError.message;
+    } else {
+      paymentTransactions =
+        (transactionData as PaymentTransaction[] | null) || [];
+    }
+  }
+
+  const transactionById = new Map(
+    paymentTransactions.map((transaction) => [transaction.id, transaction]),
   );
+  const confirmed = rows.filter((item) => item.status === "confirmed");
   const pending = rows.filter(
     (item) =>
       item.status === "pending" ||
       item.status === "awaiting_payment" ||
-      item.status === "submitted"
+      item.status === "submitted",
   );
 
   const totalsByCurrency = confirmed.reduce(
     (acc: Record<string, number>, item) => {
       const currency = item.currency || "CDF";
-      acc[currency] =
-        (acc[currency] || 0) + Number(item.amount || 0);
+      acc[currency] = (acc[currency] || 0) + Number(item.amount || 0);
       return acc;
     },
-    {}
+    {},
   );
 
   return (
@@ -131,12 +170,10 @@ export default async function FinanceDonationsPage({
               <p className="text-xs font-black uppercase tracking-[0.22em] text-blue-100">
                 Volet finances
               </p>
-              <h1 className="mt-2 text-3xl font-black">
-                Dons reçus
-              </h1>
+              <h1 className="mt-2 text-3xl font-black">Dons reçus</h1>
               <p className="mt-3 text-sm leading-7 text-blue-50">
-                Suivez les intentions de dons et confirmez les
-                paiements réellement reçus.
+                Suivez les intentions de dons et confirmez les paiements
+                réellement reçus.
               </p>
             </div>
 
@@ -156,13 +193,26 @@ export default async function FinanceDonationsPage({
           </div>
         )}
 
+        {query.updated && (
+          <div className="mt-4 rounded-2xl bg-green-50 p-4 text-sm font-bold text-green-700">
+            Le don et son suivi de paiement ont été actualisés.
+          </div>
+        )}
+
         {error && (
           <div className="mt-4 rounded-2xl bg-red-50 p-4 text-sm font-bold text-red-700">
             {error.message}
           </div>
         )}
 
-        <section className="mt-5 grid gap-3 sm:grid-cols-3">
+        {paymentTransactionsError && (
+          <div className="mt-4 rounded-2xl bg-amber-50 p-4 text-sm font-bold text-amber-800">
+            Le suivi des transactions n’a pas pu être chargé :{" "}
+            {paymentTransactionsError}
+          </div>
+        )}
+
+        <section className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
           <Metric
             icon={Wallet}
             label="Intentions"
@@ -178,6 +228,11 @@ export default async function FinanceDonationsPage({
             label="Confirmés"
             value={String(confirmed.length)}
           />
+          <Metric
+            icon={CreditCard}
+            label="Transactions suivies"
+            value={String(paymentTransactions.length)}
+          />
         </section>
 
         {Object.keys(totalsByCurrency).length > 0 && (
@@ -186,16 +241,14 @@ export default async function FinanceDonationsPage({
               Total confirmé par devise
             </h2>
             <div className="mt-3 flex flex-wrap gap-2">
-              {Object.entries(totalsByCurrency).map(
-                ([currency, amount]) => (
-                  <span
-                    key={currency}
-                    className="rounded-full bg-green-50 px-4 py-2 text-sm font-black text-green-700"
-                  >
-                    {formatDonationAmount(amount, currency)}
-                  </span>
-                )
-              )}
+              {Object.entries(totalsByCurrency).map(([currency, amount]) => (
+                <span
+                  key={currency}
+                  className="rounded-full bg-green-50 px-4 py-2 text-sm font-black text-green-700"
+                >
+                  {formatDonationAmount(amount, currency)}
+                </span>
+              ))}
             </div>
           </section>
         )}
@@ -218,93 +271,157 @@ export default async function FinanceDonationsPage({
             </div>
           ) : (
             <div className="divide-y divide-[#DCEAF5]">
-              {rows.map((donation) => (
-                <article
-                  key={donation.id}
-                  className="grid gap-4 p-4 lg:grid-cols-[1fr_auto] lg:items-center sm:p-5"
-                >
-                  <div className="min-w-0">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span className="rounded-full bg-[#EAF3FA] px-3 py-1 text-xs font-black text-[#03357A]">
-                        {donation.reference}
-                      </span>
-                      <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-600">
-                        {getDonationStatusLabel(donation.status)}
-                      </span>
-                    </div>
+              {rows.map((donation) => {
+                const transaction = donation.payment_transaction_id
+                  ? transactionById.get(donation.payment_transaction_id)
+                  : null;
 
-                    <h2 className="mt-3 break-words text-xl font-black text-[#03357A]">
-                      {formatDonationAmount(
-                        donation.amount,
-                        donation.currency
-                      )}
-                    </h2>
-
-                    <div className="mt-2 flex flex-wrap gap-x-5 gap-y-2 text-sm text-slate-600">
-                      <span>
-                        {getDonationPurposeLabel(donation.purpose)}
-                      </span>
-                      <span>
-                        {getDonationMethodLabel(donation.method)}
-                      </span>
-                      <span>
-                        {donation.is_anonymous
-                          ? "Don anonyme"
-                          : donation.donor_name || "Donateur non renseigné"}
-                      </span>
-                      <span>
-                        {new Date(
-                          donation.created_at
-                        ).toLocaleString("fr-FR")}
-                      </span>
-                    </div>
-
-                    {donation.note && (
-                      <p className="mt-3 break-words text-sm leading-6 text-slate-500">
-                        {donation.note}
-                      </p>
-                    )}
-                  </div>
-
-                  <form
-                    action={updateDonationStatusAction}
-                    className="flex flex-col gap-2 sm:flex-row"
+                return (
+                  <article
+                    key={donation.id}
+                    className="grid gap-4 p-4 lg:grid-cols-[1fr_auto] lg:items-center sm:p-5"
                   >
-                    <input
-                      type="hidden"
-                      name="donation_id"
-                      value={donation.id}
-                    />
+                    <div className="min-w-0">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="rounded-full bg-[#EAF3FA] px-3 py-1 text-xs font-black text-[#03357A]">
+                          {donation.reference}
+                        </span>
+                        <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-600">
+                          {getDonationStatusLabel(donation.status)}
+                        </span>
+                        {transaction ? (
+                          <PaymentStatusBadge status={transaction.status} />
+                        ) : (
+                          <span className="rounded-full bg-slate-50 px-3 py-1 text-xs font-bold text-slate-500 ring-1 ring-slate-200">
+                            Suivi manuel
+                          </span>
+                        )}
+                      </div>
 
-                    <select
-                      name="status"
-                      defaultValue={donation.status}
-                      className="min-h-11 rounded-xl border border-[#DCEAF5] bg-[#F8FBFD] px-3 text-sm font-bold text-[#03357A]"
-                    >
-                      {DONATION_STATUSES.map((item) => (
-                        <option
-                          key={item.value}
-                          value={item.value}
-                        >
-                          {item.label}
-                        </option>
-                      ))}
-                    </select>
+                      <h2 className="mt-3 break-words text-xl font-black text-[#03357A]">
+                        {formatDonationAmount(
+                          donation.amount,
+                          donation.currency,
+                        )}
+                      </h2>
 
-                    <button
-                      type="submit"
-                      className="min-h-11 rounded-xl bg-[#03357A] px-4 text-sm font-black text-white"
+                      <div className="mt-2 flex flex-wrap gap-x-5 gap-y-2 text-sm text-slate-600">
+                        <span>{getDonationPurposeLabel(donation.purpose)}</span>
+                        <span>{getDonationMethodLabel(donation.method)}</span>
+                        <span>
+                          {donation.is_anonymous
+                            ? "Don anonyme"
+                            : donation.donor_name || "Donateur non renseigné"}
+                        </span>
+                        <span>
+                          {new Date(donation.created_at).toLocaleString(
+                            "fr-FR",
+                          )}
+                        </span>
+                      </div>
+
+                      {donation.note && (
+                        <p className="mt-3 break-words text-sm leading-6 text-slate-500">
+                          {donation.note}
+                        </p>
+                      )}
+
+                      <div className="mt-3 flex flex-wrap gap-2 text-xs font-bold text-slate-500">
+                        {transaction && (
+                          <>
+                            <span className="rounded-full bg-[#F2F7FB] px-3 py-1.5">
+                              Canal : {transaction.payment_channel || "manuel"}
+                            </span>
+                            <span className="rounded-full bg-[#F2F7FB] px-3 py-1.5">
+                              Prestataire : {transaction.provider}
+                            </span>
+                          </>
+                        )}
+
+                        <span className="rounded-full bg-[#F2F7FB] px-3 py-1.5">
+                          Tentatives :{" "}
+                          {Number(donation.payment_attempt_count || 0)}
+                        </span>
+                      </div>
+
+                      {(donation.last_payment_error ||
+                        transaction?.failure_message) && (
+                        <div className="mt-3 flex items-start gap-2 rounded-2xl bg-red-50 p-3 text-xs font-bold leading-5 text-red-700">
+                          <CircleAlert className="mt-0.5 h-4 w-4 shrink-0" />
+                          {donation.last_payment_error ||
+                            transaction?.failure_message}
+                        </div>
+                      )}
+                    </div>
+
+                    <form
+                      action={updateDonationStatusAction}
+                      className="flex flex-col gap-2 sm:flex-row"
                     >
-                      Mettre à jour
-                    </button>
-                  </form>
-                </article>
-              ))}
+                      <input
+                        type="hidden"
+                        name="donation_id"
+                        value={donation.id}
+                      />
+
+                      <select
+                        name="status"
+                        defaultValue={donation.status}
+                        className="min-h-11 rounded-xl border border-[#DCEAF5] bg-[#F8FBFD] px-3 text-sm font-bold text-[#03357A]"
+                      >
+                        {DONATION_STATUSES.map((item) => (
+                          <option key={item.value} value={item.value}>
+                            {item.label}
+                          </option>
+                        ))}
+                      </select>
+
+                      <button
+                        type="submit"
+                        className="min-h-11 rounded-xl bg-[#03357A] px-4 text-sm font-black text-white"
+                      >
+                        Mettre à jour
+                      </button>
+                    </form>
+                  </article>
+                );
+              })}
             </div>
           )}
         </section>
       </div>
     </main>
+  );
+}
+
+function PaymentStatusBadge({ status }: { status: string }) {
+  const labels: Record<string, string> = {
+    created: "Transaction créée",
+    pending: "Paiement en attente",
+    processing: "Traitement en cours",
+    succeeded: "Paiement réussi",
+    failed: "Paiement échoué",
+    cancelled: "Paiement annulé",
+    expired: "Paiement expiré",
+    refunded: "Remboursé",
+    partially_refunded: "Remboursement partiel",
+  };
+
+  const tone =
+    status === "succeeded"
+      ? "bg-green-50 text-green-700 ring-green-200"
+      : status === "failed" || status === "cancelled"
+        ? "bg-red-50 text-red-700 ring-red-200"
+        : status === "processing"
+          ? "bg-blue-50 text-blue-700 ring-blue-200"
+          : "bg-amber-50 text-amber-800 ring-amber-200";
+
+  return (
+    <span
+      className={`rounded-full px-3 py-1 text-xs font-black ring-1 ${tone}`}
+    >
+      {labels[status] || status}
+    </span>
   );
 }
 
@@ -320,23 +437,13 @@ function Metric({
   return (
     <div className="rounded-[1.5rem] border border-[#DCEAF5] bg-white p-4 shadow-sm">
       <Icon className="h-6 w-6 text-[#03357A]" />
-      <p className="mt-4 text-sm font-bold text-slate-500">
-        {label}
-      </p>
-      <p className="mt-1 text-3xl font-black text-[#03357A]">
-        {value}
-      </p>
+      <p className="mt-4 text-sm font-bold text-slate-500">{label}</p>
+      <p className="mt-1 text-3xl font-black text-[#03357A]">{value}</p>
     </div>
   );
 }
 
-function Filter({
-  href,
-  label,
-}: {
-  href: string;
-  label: string;
-}) {
+function Filter({ href, label }: { href: string; label: string }) {
   return (
     <Link
       href={href}

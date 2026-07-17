@@ -48,16 +48,32 @@ async function getProfile() {
 
   const {
     data: { user },
+    error: userError,
   } = await supabase.auth.getUser();
 
-  if (!user) return null;
+  if (userError || !user) {
+    return {
+      user: null,
+      profile: null,
+    };
+  }
 
   const admin = createAdminClient();
 
   const { data: profile } = await admin
     .from("profiles")
-    .select("id, full_name, email, role, church_id")
-    .eq("id", user.id)
+    .select(
+      `
+        id,
+        user_id,
+        full_name,
+        email,
+        role,
+        church_id,
+        status
+      `
+    )
+    .eq("user_id", user.id)
     .maybeSingle();
 
   return {
@@ -76,14 +92,31 @@ function todayIsoDate() {
 }
 
 export async function GET() {
-  const session = await getProfile();
+ const session = await getProfile();
 
-  if (!session?.profile) {
-    return NextResponse.json(
-      { error: "Utilisateur non connecté." },
-      { status: 401 }
-    );
-  }
+if (!session.user) {
+  return NextResponse.json(
+    { error: "Utilisateur non connecté." },
+    { status: 401 }
+  );
+}
+
+if (!session.profile) {
+  return NextResponse.json(
+    { error: "Profil utilisateur introuvable." },
+    { status: 403 }
+  );
+}
+
+if (
+  session.profile.status &&
+  session.profile.status !== "active"
+) {
+  return NextResponse.json(
+    { error: "Ce compte utilisateur est désactivé." },
+    { status: 403 }
+  );
+}
 
   const role = session.profile.role || "readonly";
   const churchId = session.profile.church_id;

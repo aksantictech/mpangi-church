@@ -123,9 +123,6 @@ export default function SuperAdminShell({
   const [moreOpen, setMoreOpen] = useState(false);
   const [logoutLoading, setLogoutLoading] = useState(false);
 
-  useEffect(() => {
-    setMoreOpen(false);
-  }, [pathname]);
 
   useEffect(() => {
     if (!moreOpen) return;
@@ -252,6 +249,7 @@ export default function SuperAdminShell({
                   <Link
                     key={item.href}
                     href={item.href}
+                     onClick={() => setMoreOpen(false)}
                     className="flex min-h-24 flex-col justify-between rounded-2xl border border-[#DCEAF5] bg-[#F8FBFD] p-4 text-[#03357A]"
                   >
                     <Icon className="h-6 w-6" />
@@ -264,6 +262,7 @@ export default function SuperAdminShell({
 
               <Link
                 href="/super-admin/profile"
+                 onClick={() => setMoreOpen(false)}
                 className="flex min-h-24 flex-col justify-between rounded-2xl border border-[#DCEAF5] bg-[#F8FBFD] p-4 text-[#03357A]"
               >
                 <UserRound className="h-6 w-6" />

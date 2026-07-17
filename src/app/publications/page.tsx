@@ -11,6 +11,7 @@ import PublicationActions from "@/components/publications/PublicationActions";
 import PublicationForm from "@/components/publications/PublicationForm";
 import { createClient } from "@/lib/supabase/server";
 
+
 function formatDate(
   value?: string | null
 ) {
@@ -279,15 +280,20 @@ export default async function PublicationsPage() {
                             </span>
 
                             {publication.status ===
-                            "published" ? (
-                              <span className="rounded-full bg-green-50 px-3 py-1 text-xs font-black text-green-700">
-                                Publié
-                              </span>
-                            ) : (
-                              <span className="rounded-full bg-orange-50 px-3 py-1 text-xs font-black text-orange-700">
-                                Brouillon
-                              </span>
-                            )}
+"published" ? (
+  <span className="rounded-full bg-green-50 px-3 py-1 text-xs font-black text-green-700">
+    Publié
+  </span>
+) : publication.status ===
+  "archived" ? (
+  <span className="rounded-full bg-slate-200 px-3 py-1 text-xs font-black text-slate-700">
+    Archivé
+  </span>
+) : (
+  <span className="rounded-full bg-orange-50 px-3 py-1 text-xs font-black text-orange-700">
+    Brouillon
+  </span>
+)}
 
                             {publication.is_featured &&
                               !publication.image_url && (
@@ -350,6 +356,10 @@ export default async function PublicationsPage() {
                           isFeatured={Boolean(
                             publication.is_featured
                           )}
+                           isArchived={
+    publication.status ===
+    "archived"
+  }
                         />
                       </div>
 

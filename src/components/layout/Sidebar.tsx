@@ -10,7 +10,12 @@ import {
   Search,
   Shield,
 } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import {
+  useEffect,
+  useMemo,
+  useState,
+  useSyncExternalStore,
+} from "react";
 import {
   findActiveMenuGroup,
   getGroupedVisibleMenuItems,
@@ -30,22 +35,102 @@ const SUPER_ADMIN_ITEMS = [
   { label: "Paramètres", href: "/super-admin/settings", icon: Shield },
 ];
 
+const SIDEBAR_COLLAPSED_KEY =
+  "mpangi-sidebar-collapsed";
+
+const SIDEBAR_COLLAPSED_EVENT =
+  "mpangi:sidebar-collapsed-change";
+
+function readSidebarCollapsed() {
+  if (typeof window === "undefined") {
+    return false;
+  }
+
+  try {
+    return (
+      window.localStorage.getItem(
+        SIDEBAR_COLLAPSED_KEY
+      ) === "1"
+    );
+  } catch {
+    return false;
+  }
+}
+
+function getServerSidebarCollapsed() {
+  return false;
+}
+
+function subscribeSidebarCollapsed(
+  onStoreChange: () => void
+) {
+  function handleStorage(event: StorageEvent) {
+    if (event.key === SIDEBAR_COLLAPSED_KEY) {
+      onStoreChange();
+    }
+  }
+
+  function handleLocalChange() {
+    onStoreChange();
+  }
+
+  window.addEventListener("storage", handleStorage);
+  window.addEventListener(
+    SIDEBAR_COLLAPSED_EVENT,
+    handleLocalChange
+  );
+
+  return () => {
+    window.removeEventListener(
+      "storage",
+      handleStorage
+    );
+    window.removeEventListener(
+      SIDEBAR_COLLAPSED_EVENT,
+      handleLocalChange
+    );
+  };
+}
 export default function Sidebar() {
   const pathname = usePathname();
-  const [collapsed, setCollapsed] = useState(false);
-  const [openKey, setOpenKey] = useState<string>("system");
+const collapsed = useSyncExternalStore(
+  subscribeSidebarCollapsed,
+  readSidebarCollapsed,
+  getServerSidebarCollapsed
+);
+
+const [
+  openKeyPreference,
+  setOpenKeyPreference,
+] = useState<{
+  pathname: string;
+  key: string;
+} | null>(null);
+
+function setCollapsed(nextCollapsed: boolean) {
+  try {
+    window.localStorage.setItem(
+      SIDEBAR_COLLAPSED_KEY,
+      nextCollapsed ? "1" : "0"
+    );
+  } finally {
+    window.dispatchEvent(
+      new Event(SIDEBAR_COLLAPSED_EVENT)
+    );
+  }
+}
+
+function setOpenKey(key: string) {
+  setOpenKeyPreference({
+    pathname,
+    key,
+  });
+}
   const [myModules, setMyModules] = useState<MyModulesResponse>({
     moduleCodes: ["dashboard"],
   });
 
-  useEffect(() => {
-    const saved = window.localStorage.getItem("mpangi-sidebar-collapsed");
-    setCollapsed(saved === "1");
-  }, []);
-
-  useEffect(() => {
-    window.localStorage.setItem("mpangi-sidebar-collapsed", collapsed ? "1" : "0");
-  }, [collapsed]);
+  
 
   useEffect(() => {
     let mounted = true;
@@ -76,10 +161,17 @@ export default function Sidebar() {
     return getGroupedVisibleMenuItems(myModules.moduleCodes || ["dashboard"]);
   }, [myModules.moduleCodes]);
 
-  useEffect(() => {
-    const activeGroup = findActiveMenuGroup(groups, pathname);
-    if (activeGroup) setOpenKey(activeGroup.key);
-  }, [groups, pathname]);
+const activeOpenKey = useMemo(
+  () =>
+    findActiveMenuGroup(groups, pathname)?.key ??
+    "system",
+  [groups, pathname]
+);
+
+const openKey =
+  openKeyPreference?.pathname === pathname
+    ? openKeyPreference.key
+    : activeOpenKey;
 
   if (isSuperAdmin) {
     return (

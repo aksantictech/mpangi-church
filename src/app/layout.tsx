@@ -78,8 +78,6 @@ export default function RootLayout({
         <DevServiceWorkerCleanup />
         <EmptyTablesEnhancer />
         <ResponsiveTablesEnhancer />
-        <ServiceWorkerRegister />
-        <PwaRegister />
         <PwaInstallProvider>{children}</PwaInstallProvider>
       </body>
     </html>

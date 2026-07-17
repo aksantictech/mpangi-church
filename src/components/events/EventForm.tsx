@@ -1,9 +1,18 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
-import { CalendarDays, Loader2, Save } from "lucide-react";
-import { createClient } from "@/lib/supabase/client";
+import {
+  useState,
+  type FormEvent,
+  type ReactNode,
+} from "react";
+import {
+  useRouter,
+} from "next/navigation";
+import {
+  CalendarDays,
+  Loader2,
+  Save,
+} from "lucide-react";
 
 type EventFormProps = {
   mode: "create" | "edit";
@@ -20,109 +29,169 @@ type EventFormProps = {
   };
 };
 
+type EventApiResponse = {
+  error?: string;
+  eventId?: string;
+};
+
 export default function EventForm({
   mode,
   churchId,
   initialEvent,
 }: EventFormProps) {
   const router = useRouter();
-  const supabase = useMemo(() => createClient(), []);
 
-  const [formData, setFormData] = useState({
-    title: initialEvent?.title || "",
-    description: initialEvent?.description || "",
-    event_date: initialEvent?.event_date || "",
-    start_time: initialEvent?.start_time || "",
-    end_time: initialEvent?.end_time || "",
-    location: initialEvent?.location || "",
-    status: initialEvent?.status || "active",
-  });
+  const [formData, setFormData] =
+    useState({
+      title:
+        initialEvent?.title || "",
+      description:
+        initialEvent?.description || "",
+      event_date:
+        initialEvent?.event_date || "",
+      start_time:
+        initialEvent?.start_time?.slice(
+          0,
+          5
+        ) || "",
+      end_time:
+        initialEvent?.end_time?.slice(
+          0,
+          5
+        ) || "",
+      location:
+        initialEvent?.location || "",
+      status:
+        initialEvent?.status ||
+        "active",
+    });
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] =
+    useState(false);
 
-  function updateField(field: keyof typeof formData, value: string) {
+  const [error, setError] =
+    useState("");
+
+  function updateField(
+    field: keyof typeof formData,
+    value: string
+  ) {
     setFormData((current) => ({
       ...current,
       [field]: value,
     }));
   }
 
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(
+    event: FormEvent<HTMLFormElement>
+  ) {
     event.preventDefault();
 
     if (!formData.title.trim()) {
-      alert("Le titre de l’événement est obligatoire.");
+      setError(
+        "Le titre de l’événement est obligatoire."
+      );
       return;
     }
 
     if (!formData.event_date) {
-      alert("La date de l’événement est obligatoire.");
+      setError(
+        "La date de l’événement est obligatoire."
+      );
+      return;
+    }
+
+    if (
+      formData.start_time &&
+      formData.end_time &&
+      formData.end_time <
+        formData.start_time
+    ) {
+      setError(
+        "L’heure de fin doit être postérieure à l’heure de début."
+      );
       return;
     }
 
     setIsLoading(true);
+    setError("");
 
-    if (mode === "create") {
-      const { data, error } = await supabase
-        .from("events")
-        .insert({
-          church_id: churchId,
-          title: formData.title.trim(),
-          description: formData.description.trim() || null,
-          event_date: formData.event_date,
-          start_time: formData.start_time || null,
-          end_time: formData.end_time || null,
-          location: formData.location.trim() || null,
-          status: formData.status,
-        })
-        .select("id")
-        .single();
+    try {
+      const response = await fetch(
+        "/api/events",
+        {
+          method:
+            mode === "create"
+              ? "POST"
+              : "PUT",
+          headers: {
+            "Content-Type":
+              "application/json",
+          },
+          body: JSON.stringify({
+            eventId:
+              initialEvent?.id || "",
+            churchId,
+            title:
+              formData.title,
+            description:
+              formData.description,
+            event_date:
+              formData.event_date,
+            start_time:
+              formData.start_time,
+            end_time:
+              formData.end_time,
+            location:
+              formData.location,
+            status:
+              formData.status,
+          }),
+        }
+      );
 
-      setIsLoading(false);
+      const payload =
+        (await response
+          .json()
+          .catch(() => ({}))) as
+          EventApiResponse;
 
-      if (error || !data) {
-        alert(error?.message || "Erreur lors de la création de l’événement.");
-        return;
+      if (
+        !response.ok ||
+        !payload.eventId
+      ) {
+        throw new Error(
+          payload.error ||
+            "Enregistrement impossible."
+        );
       }
 
-      router.push(`/events/${data.id}`);
+      router.push(
+        `/events/${payload.eventId}`
+      );
       router.refresh();
-      return;
-    }
-
-    if (!initialEvent?.id) {
+    } catch (caughtError: unknown) {
+      setError(
+        caughtError instanceof Error
+          ? caughtError.message
+          : "Enregistrement impossible."
+      );
+    } finally {
       setIsLoading(false);
-      alert("Événement introuvable.");
-      return;
     }
-
-    const { error } = await supabase
-      .from("events")
-      .update({
-        title: formData.title.trim(),
-        description: formData.description.trim() || null,
-        event_date: formData.event_date,
-        start_time: formData.start_time || null,
-        end_time: formData.end_time || null,
-        location: formData.location.trim() || null,
-        status: formData.status,
-      })
-      .eq("id", initialEvent.id)
-      .eq("church_id", churchId);
-
-    setIsLoading(false);
-
-    if (error) {
-      alert(error.message);
-      return;
-    }
-
-    router.push(`/events/${initialEvent.id}`);
-    router.refresh();
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-6"
+    >
+      {error && (
+        <div className="rounded-2xl border border-red-100 bg-red-50 p-4 text-sm font-bold text-red-700">
+          {error}
+        </div>
+      )}
+
       <section className="rounded-3xl border border-[#DCEAF5] bg-white p-6 shadow-sm">
         <div className="flex items-center gap-3">
           <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#EAF3FA] text-[#03357A]">
@@ -144,9 +213,15 @@ export default function EventForm({
           <Field label="Titre *">
             <input
               value={formData.title}
-              onChange={(event) => updateField("title", event.target.value)}
+              onChange={(event) =>
+                updateField(
+                  "title",
+                  event.target.value
+                )
+              }
               className="input"
               placeholder="Ex : Culte dominical"
+              maxLength={180}
               required
             />
           </Field>
@@ -154,9 +229,14 @@ export default function EventForm({
           <Field label="Date *">
             <input
               type="date"
-              value={formData.event_date}
+              value={
+                formData.event_date
+              }
               onChange={(event) =>
-                updateField("event_date", event.target.value)
+                updateField(
+                  "event_date",
+                  event.target.value
+                )
               }
               className="input"
               required
@@ -166,9 +246,14 @@ export default function EventForm({
           <Field label="Heure de début">
             <input
               type="time"
-              value={formData.start_time}
+              value={
+                formData.start_time
+              }
               onChange={(event) =>
-                updateField("start_time", event.target.value)
+                updateField(
+                  "start_time",
+                  event.target.value
+                )
               }
               className="input"
             />
@@ -178,7 +263,12 @@ export default function EventForm({
             <input
               type="time"
               value={formData.end_time}
-              onChange={(event) => updateField("end_time", event.target.value)}
+              onChange={(event) =>
+                updateField(
+                  "end_time",
+                  event.target.value
+                )
+              }
               className="input"
             />
           </Field>
@@ -186,32 +276,57 @@ export default function EventForm({
           <Field label="Lieu">
             <input
               value={formData.location}
-              onChange={(event) => updateField("location", event.target.value)}
+              onChange={(event) =>
+                updateField(
+                  "location",
+                  event.target.value
+                )
+              }
               className="input"
               placeholder="Ex : Temple principal"
+              maxLength={500}
             />
           </Field>
 
           <Field label="Statut">
             <select
               value={formData.status}
-              onChange={(event) => updateField("status", event.target.value)}
+              onChange={(event) =>
+                updateField(
+                  "status",
+                  event.target.value
+                )
+              }
               className="input"
             >
-              <option value="active">Actif</option>
-              <option value="draft">Brouillon</option>
-              <option value="completed">Terminé</option>
-              <option value="cancelled">Annulé</option>
+              <option value="active">
+                Actif
+              </option>
+              <option value="draft">
+                Brouillon
+              </option>
+              <option value="completed">
+                Terminé
+              </option>
+              <option value="cancelled">
+                Annulé
+              </option>
             </select>
           </Field>
 
           <div className="md:col-span-2">
             <Field label="Description">
               <textarea
-                value={formData.description}
-                onChange={(event) =>
-                  updateField("description", event.target.value)
+                value={
+                  formData.description
                 }
+                onChange={(event) =>
+                  updateField(
+                    "description",
+                    event.target.value
+                  )
+                }
+                maxLength={10000}
                 className="min-h-36 w-full rounded-2xl border border-[#DCEAF5] bg-white p-4 text-sm outline-none focus:border-[#03357A] focus:ring-4 focus:ring-[#03357A]/10"
                 placeholder="Détails, programme, instructions..."
               />
@@ -223,7 +338,9 @@ export default function EventForm({
       <div className="flex flex-wrap justify-end gap-3">
         <button
           type="button"
-          onClick={() => router.back()}
+          onClick={() =>
+            router.back()
+          }
           className="rounded-2xl border border-[#DCEAF5] bg-white px-5 py-3 text-sm font-bold text-[#03357A] hover:bg-[#EAF3FA]"
         >
           Annuler
@@ -263,7 +380,8 @@ export default function EventForm({
 
         .input:focus {
           border-color: #03357a;
-          box-shadow: 0 0 0 4px rgb(3 53 122 / 0.1);
+          box-shadow: 0 0 0 4px
+            rgb(3 53 122 / 0.1);
         }
       `}</style>
     </form>
@@ -275,7 +393,7 @@ function Field({
   children,
 }: {
   label: string;
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   return (
     <label className="block">

@@ -34,8 +34,9 @@ const FALLBACK_MODULES = [
 export default function MobileTopBar() {
   const pathname = usePathname();
   const router = useRouter();
-  const [open, setOpen] = useState(false);
-  const [openGroup, setOpenGroup] = useState("system");
+ const [open, setOpen] = useState(false);
+const [openGroupOverride, setOpenGroupOverride] =
+  useState<string | null>(null);
   const [logoutLoading, setLogoutLoading] = useState(false);
   const [myModules, setMyModules] = useState<MyModulesResponse>({
     moduleCodes: FALLBACK_MODULES,
@@ -77,15 +78,18 @@ export default function MobileTopBar() {
     [myModules.moduleCodes]
   );
 
-  useEffect(() => {
-    const activeGroup = findActiveMenuGroup(groups, pathname);
+const activeGroupKey = useMemo(
+  () =>
+    findActiveMenuGroup(groups, pathname)?.key ?? "system",
+  [groups, pathname]
+);
 
-    if (activeGroup) setOpenGroup(activeGroup.key);
-  }, [groups, pathname]);
+const openGroup = openGroupOverride ?? activeGroupKey;
 
-  useEffect(() => {
-    setOpen(false);
-  }, [pathname]);
+function closeForNavigation() {
+  setOpen(false);
+  setOpenGroupOverride(null);
+}
 
   useEffect(() => {
     function openMenu() {
@@ -145,7 +149,9 @@ export default function MobileTopBar() {
             <Menu className="h-5 w-5" />
           </button>
 
-          <Link href="/dashboard" className="min-w-0 flex-1">
+          <Link href="/dashboard" 
+          onClick={closeForNavigation}
+          className="min-w-0 flex-1">
             <p className="truncate text-[10px] font-black uppercase tracking-[0.18em] text-slate-400">
               Mpangi-church
             </p>
@@ -181,6 +187,7 @@ export default function MobileTopBar() {
               <div className="flex items-center justify-between gap-3">
                 <Link
                   href="/dashboard"
+                  onClick={closeForNavigation}
                   className="flex min-w-0 items-center gap-3"
                 >
                   <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#03357A] text-sm font-black text-white">
@@ -208,6 +215,7 @@ export default function MobileTopBar() {
 
               <Link
                 href="/modules"
+                onClick={closeForNavigation}
                 className="mt-4 flex min-h-11 items-center gap-3 rounded-2xl border border-[#DCEAF5] bg-[#F8FBFD] px-4 py-3 text-sm font-bold text-slate-600"
               >
                 <Search className="h-4 w-4" />
@@ -232,7 +240,7 @@ export default function MobileTopBar() {
                       <button
                         type="button"
                         onClick={() =>
-                          setOpenGroup(isOpen ? "" : group.key)
+                          setOpenGroupOverride(isOpen ? "" : group.key)
                         }
                         className={`flex w-full items-center justify-between gap-3 px-4 py-3 text-left ${
                           hasActiveItem || isOpen
@@ -274,6 +282,7 @@ export default function MobileTopBar() {
                               <Link
                                 key={`${group.key}-${item.href}`}
                                 href={item.href}
+                                onClick={closeForNavigation}
                                 className={`flex min-h-11 min-w-0 items-center gap-3 rounded-2xl px-3 py-3 text-sm font-extrabold ${
                                   active
                                     ? "bg-[#03357A] text-white"
@@ -299,6 +308,7 @@ export default function MobileTopBar() {
               <div className="grid grid-cols-2 gap-2">
                 <Link
                   href="/dashboard"
+                  onClick={closeForNavigation}
                   className="flex min-h-11 items-center justify-center gap-2 rounded-2xl bg-[#EAF3FA] px-3 text-sm font-extrabold text-[#03357A]"
                 >
                   <Home className="h-4 w-4" />
@@ -306,6 +316,7 @@ export default function MobileTopBar() {
                 </Link>
                 <Link
                   href="/settings"
+                  onClick={closeForNavigation}
                   className="flex min-h-11 items-center justify-center gap-2 rounded-2xl bg-[#EAF3FA] px-3 text-sm font-extrabold text-[#03357A]"
                 >
                   <Settings className="h-4 w-4" />

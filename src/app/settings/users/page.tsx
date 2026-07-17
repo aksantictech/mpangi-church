@@ -1,5 +1,8 @@
-import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import {
+  clearProfileModulePermissionAction,
+  saveProfileModulePermissionAction,
+} from "./actions";
 import Link from "next/link";
 import { UserPlus } from "lucide-react";
 import ChurchUserProfileActions from "@/components/settings/ChurchUserProfileActions";
@@ -36,9 +39,6 @@ const CATEGORY_LABELS: Record<string, string> = {
   patrimony: "Volet patrimoine",
 };
 
-function boolFromForm(value: FormDataEntryValue | null) {
-  return value === "on" || value === "true";
-}
 
 async function getCurrentAdminProfile() {
   const supabase = await createClient();
@@ -70,76 +70,6 @@ async function getCurrentAdminProfile() {
   return profile;
 }
 
-export async function saveProfileModulePermissionAction(formData: FormData) {
-  "use server";
-
-  const adminProfile = await getCurrentAdminProfile();
-  const admin = createAdminClient();
-
-  const profileId = String(formData.get("profile_id") || "");
-  const moduleCode = String(formData.get("module_code") || "");
-
-  if (!profileId || !moduleCode) {
-    redirect("/settings/users");
-  }
-
-  const { data: targetProfile } = await admin
-    .from("profiles")
-    .select("id, church_id")
-    .eq("id", profileId)
-    .eq("church_id", adminProfile.church_id)
-    .maybeSingle();
-
-  if (!targetProfile) {
-    redirect("/settings/users");
-  }
-
-  await admin.from("profile_module_permissions").upsert(
-    {
-      church_id: adminProfile.church_id,
-      profile_id: profileId,
-      module_code: moduleCode,
-      can_view: boolFromForm(formData.get("can_view")),
-      can_create: boolFromForm(formData.get("can_create")),
-      can_update: boolFromForm(formData.get("can_update")),
-      can_delete: boolFromForm(formData.get("can_delete")),
-      can_export: boolFromForm(formData.get("can_export")),
-      can_approve: boolFromForm(formData.get("can_approve")),
-      updated_by: adminProfile.id,
-      updated_at: new Date().toISOString(),
-    },
-    {
-      onConflict: "church_id,profile_id,module_code",
-    }
-  );
-
-  revalidatePath("/settings/users");
-  redirect(`/settings/users?profileId=${profileId}&saved=1`);
-}
-
-export async function clearProfileModulePermissionAction(formData: FormData) {
-  "use server";
-
-  const adminProfile = await getCurrentAdminProfile();
-  const admin = createAdminClient();
-
-  const profileId = String(formData.get("profile_id") || "");
-  const moduleCode = String(formData.get("module_code") || "");
-
-  if (!profileId || !moduleCode) {
-    redirect("/settings/users");
-  }
-
-  await admin
-    .from("profile_module_permissions")
-    .delete()
-    .eq("church_id", adminProfile.church_id)
-    .eq("profile_id", profileId)
-    .eq("module_code", moduleCode);
-
-  revalidatePath("/settings/users");
-  redirect(`/settings/users?profileId=${profileId}&saved=1`);
-}
 
 export default async function SettingsUsersPage({
   searchParams,

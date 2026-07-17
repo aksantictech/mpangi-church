@@ -5,6 +5,7 @@ export const DONATION_METHODS = [
     description:
       "M-Pesa, Airtel Money ou Orange Money.",
   },
+  
   {
     value: "card",
     label: "Carte bancaire",

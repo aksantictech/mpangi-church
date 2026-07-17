@@ -2,13 +2,23 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+
 import { requireChurchModuleAccess } from "@/lib/modules/moduleAccess";
 import { sendChurchNotification } from "@/lib/notifications/push";
+import { requireAnyActionPermission } from "@/lib/security/secureAction";
 import {
   extractYouTubeVideoId,
   getYouTubeThumbnailUrl,
 } from "@/lib/youtube";
-import { requireAnyActionPermission } from "@/lib/security/secureAction";
+
+type ModuleAccessContext = Awaited<
+  ReturnType<
+    typeof requireChurchModuleAccess
+  >
+>;
+
+type AdminClient =
+  ModuleAccessContext["admin"];
 
 function text(
   value: FormDataEntryValue | null
@@ -38,12 +48,9 @@ function normalizeStatus(
 function payloadFromForm(
   formData: FormData
 ) {
-  const youtubeUrl =
-    text(
-      formData.get(
-        "youtube_url"
-      )
-    );
+  const youtubeUrl = text(
+    formData.get("youtube_url")
+  );
 
   const videoId =
     extractYouTubeVideoId(
@@ -53,9 +60,7 @@ function payloadFromForm(
   const status =
     normalizeStatus(
       text(
-        formData.get(
-          "status"
-        )
+        formData.get("status")
       )
     );
 
@@ -63,10 +68,9 @@ function payloadFromForm(
     new Date().toISOString();
 
   return {
-    title:
-      text(
-        formData.get("title")
-      ),
+    title: text(
+      formData.get("title")
+    ),
 
     description:
       text(
@@ -117,7 +121,7 @@ function payloadFromForm(
 }
 
 async function getChurchSlug(
-  admin: any,
+  admin: AdminClient,
   churchId: string
 ) {
   const {
@@ -131,6 +135,14 @@ async function getChurchSlug(
   return church?.slug || "";
 }
 
+function getErrorMessage(
+  error: unknown
+) {
+  return error instanceof Error
+    ? error.message
+    : "La notification n’a pas pu être envoyée.";
+}
+
 async function notifyTeachingSafely({
   admin,
   churchId,
@@ -138,7 +150,7 @@ async function notifyTeachingSafely({
   teachingId,
   title,
 }: {
-  admin: any;
+  admin: AdminClient;
   churchId: string;
   profileId: string;
   teachingId: string;
@@ -170,11 +182,8 @@ async function notifyTeachingSafely({
       });
 
     return result.warning;
-  } catch (error: any) {
-    return (
-      error?.message ||
-      "La notification n’a pas pu être envoyée."
-    );
+  } catch (error: unknown) {
+    return getErrorMessage(error);
   }
 }
 
@@ -184,7 +193,7 @@ function encodedError(
   return encodeURIComponent(
     String(
       value ||
-      "Erreur inconnue"
+        "Erreur inconnue"
     )
   );
 }
@@ -206,9 +215,7 @@ export async function createTeachingAction(
     );
 
   const payload =
-    payloadFromForm(
-      formData
-    );
+    payloadFromForm(formData);
 
   if (
     !payload.title ||
@@ -255,7 +262,7 @@ export async function createTeachingAction(
     | null = null;
 
   if (
-    payload.status ===
+    data.status ===
     "published"
   ) {
     notifyWarning =
@@ -267,8 +274,7 @@ export async function createTeachingAction(
           profile.id,
         teachingId:
           data.id,
-        title:
-          payload.title,
+        title: data.title,
       });
   }
 
@@ -308,15 +314,12 @@ export async function updateTeachingAction(
       "teachings"
     );
 
-  const id =
-    text(
-      formData.get("id")
-    );
+  const id = text(
+    formData.get("id")
+  );
 
   const payload =
-    payloadFromForm(
-      formData
-    );
+    payloadFromForm(formData);
 
   if (!id) {
     redirect("/teachings");
@@ -333,6 +336,55 @@ export async function updateTeachingAction(
   }
 
   const {
+    data: existing,
+    error: existingError,
+  } = await admin
+    .from(
+      "church_teachings"
+    )
+    .select(
+      "id, status, published_at"
+    )
+    .eq(
+      "church_id",
+      profile.church_id
+    )
+    .eq("id", id)
+    .maybeSingle();
+
+  if (
+    existingError ||
+    !existing
+  ) {
+    redirect(
+      `/teachings/${id}/edit?error=${encodedError(
+        existingError?.message ||
+          "Enseignement introuvable."
+      )}`
+    );
+  }
+
+  const now =
+    new Date().toISOString();
+
+  const becamePublished =
+    existing.status !==
+      "published" &&
+    payload.status ===
+      "published";
+
+  const nextPublishedAt =
+    payload.status ===
+    "published"
+      ? existing.status ===
+          "published"
+        ? existing.published_at ||
+          now
+        : now
+      : existing.published_at;
+
+  const {
+    data: teaching,
     error,
   } = await admin
     .from(
@@ -340,23 +392,48 @@ export async function updateTeachingAction(
     )
     .update({
       ...payload,
+      published_at:
+        nextPublishedAt,
       updated_by:
         profile.id,
-      updated_at:
-        new Date().toISOString(),
+      updated_at: now,
     })
     .eq(
       "church_id",
       profile.church_id
     )
-    .eq("id", id);
+    .eq("id", id)
+    .select(
+      "id, title, status"
+    )
+    .maybeSingle();
 
-  if (error) {
+  if (error || !teaching) {
     redirect(
       `/teachings/${id}/edit?error=${encodedError(
-        error.message
+        error?.message ||
+          "Impossible de modifier l’enseignement."
       )}`
     );
+  }
+
+  let notifyWarning:
+    | string
+    | null = null;
+
+  if (becamePublished) {
+    notifyWarning =
+      await notifyTeachingSafely({
+        admin,
+        churchId:
+          profile.church_id,
+        profileId:
+          profile.id,
+        teachingId:
+          teaching.id,
+        title:
+          teaching.title,
+      });
   }
 
   revalidatePath(
@@ -367,8 +444,19 @@ export async function updateTeachingAction(
     `/teachings/${id}`
   );
 
+  revalidatePath(
+    "/church"
+  );
+
+  const warningQuery =
+    notifyWarning
+      ? `&notifyWarning=${encodedError(
+          notifyWarning
+        )}`
+      : "";
+
   redirect(
-    `/teachings/${id}?updated=1`
+    `/teachings/${id}?updated=1${warningQuery}`
   );
 }
 
@@ -388,13 +476,54 @@ export async function publishTeachingAction(
       "teachings"
     );
 
-  const id =
-    text(
-      formData.get("id")
-    );
+  const id = text(
+    formData.get("id")
+  );
 
   if (!id) {
     redirect("/teachings");
+  }
+
+  const {
+    data: existing,
+    error: existingError,
+  } = await admin
+    .from(
+      "church_teachings"
+    )
+    .select(
+      "id, title, status, published_at"
+    )
+    .eq(
+      "church_id",
+      profile.church_id
+    )
+    .eq("id", id)
+    .maybeSingle();
+
+  if (
+    existingError ||
+    !existing
+  ) {
+    redirect(
+      `/teachings/${id}?error=${encodedError(
+        existingError?.message ||
+          "Enseignement introuvable."
+      )}`
+    );
+  }
+
+  /*
+   * Une deuxième pression sur Publier ne doit
+   * pas envoyer une seconde notification.
+   */
+  if (
+    existing.status ===
+    "published"
+  ) {
+    redirect(
+      `/teachings/${id}?published=1&alreadyPublished=1`
+    );
   }
 
   const now =
@@ -408,8 +537,7 @@ export async function publishTeachingAction(
       "church_teachings"
     )
     .update({
-      status:
-        "published",
+      status: "published",
       published_at: now,
       updated_by:
         profile.id,
@@ -420,20 +548,30 @@ export async function publishTeachingAction(
       profile.church_id
     )
     .eq("id", id)
+    .neq(
+      "status",
+      "published"
+    )
     .select(
       "id, title, description"
     )
-    .single();
+    .maybeSingle();
 
-  if (
-    error ||
-    !teaching
-  ) {
+  if (error) {
     redirect(
       `/teachings/${id}?error=${encodedError(
-        error?.message ||
-          "Impossible de publier l’enseignement."
+        error.message
       )}`
+    );
+  }
+
+  /*
+   * Une autre requête a éventuellement publié
+   * l’enseignement entre la lecture et l’update.
+   */
+  if (!teaching) {
+    redirect(
+      `/teachings/${id}?published=1&alreadyPublished=1`
     );
   }
 
@@ -456,6 +594,10 @@ export async function publishTeachingAction(
 
   revalidatePath(
     `/teachings/${id}`
+  );
+
+  revalidatePath(
+    "/church"
   );
 
   const warningQuery =
@@ -486,24 +628,20 @@ export async function archiveTeachingAction(
       "teachings"
     );
 
-  const id =
-    text(
-      formData.get("id")
-    );
+  const id = text(
+    formData.get("id")
+  );
 
   if (!id) {
     redirect("/teachings");
   }
 
-  const {
-    error,
-  } = await admin
+  const { error } = await admin
     .from(
       "church_teachings"
     )
     .update({
-      status:
-        "archived",
+      status: "archived",
       updated_by:
         profile.id,
       updated_at:
@@ -525,6 +663,10 @@ export async function archiveTeachingAction(
 
   revalidatePath(
     "/teachings"
+  );
+
+  revalidatePath(
+    "/church"
   );
 
   redirect(
