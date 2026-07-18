@@ -1,0 +1,2117 @@
+﻿===== src/lib/security/permissionNavigation.ts =====
+import {
+  getCurrentRolePermissions,
+  getCurrentSecurityContext,
+} from "@/lib/security/permissionEngine";
+
+export type PermissionNavigationItem = {
+  code: string;
+  label: string;
+  href: string;
+  category:
+    | "principal"
+    | "spirituel"
+    | "administration"
+    | "finance"
+    | "patrimoine"
+    | "configuration";
+  aliases?: string[];
+};
+
+const NAVIGATION_ITEMS: PermissionNavigationItem[] = [
+  {
+    code: "role_dashboard",
+    label: "Dashboard personnalisÃ©",
+    href: "/dashboard/role",
+    category: "principal",
+  },
+  {
+    code: "my_work",
+    label: "Mon travail",
+    href: "/my-work",
+    category: "principal",
+  },
+  {
+    code: "members",
+    label: "Membres",
+    href: "/members",
+    category: "spirituel",
+  },
+  {
+    code: "attendance",
+    label: "PrÃ©sences",
+    href: "/attendance",
+    category: "spirituel",
+  },
+  {
+    code: "souls",
+    label: "Suivi des Ã¢mes",
+    href: "/souls",
+    category: "spirituel",
+  },
+  {
+    code: "departments",
+    label: "DÃ©partements",
+    href: "/departments",
+    category: "spirituel",
+  },
+  {
+    code: "events",
+    label: "Ã‰vÃ©nements",
+    href: "/events",
+    category: "spirituel",
+  },
+  {
+    code: "public_requests",
+    label: "Demandes publiques",
+    href: "/public-requests",
+    category: "spirituel",
+  },
+  {
+    code: "teachings",
+    label: "Enseignements",
+    href: "/teachings",
+    category: "spirituel",
+  },
+  {
+    code: "notifications",
+    label: "Notifications",
+    href: "/notifications",
+    category: "administration",
+  },
+  {
+    code: "correspondence",
+    label: "Courriers",
+    href: "/administration/correspondence",
+    category: "administration",
+  },
+  {
+    code: "inbox",
+    label: "BoÃ®te de rÃ©ception",
+    href: "/inbox",
+    category: "administration",
+    aliases: ["document_transmissions"],
+  },
+  {
+    code: "transmissions",
+    label: "Transmissions",
+    href: "/administration/transmissions",
+    category: "administration",
+    aliases: ["document_transmissions"],
+  },
+  {
+    code: "tasks",
+    label: "TÃ¢ches administratives",
+    href: "/administration/tasks",
+    category: "administration",
+    aliases: ["administrative_tasks"],
+  },
+  {
+    code: "minutes",
+    label: "ProcÃ¨s-verbaux",
+    href: "/administration/minutes",
+    category: "administration",
+    aliases: ["meetings_minutes"],
+  },
+  {
+    code: "finance_dashboard",
+    label: "Finances",
+    href: "/finance",
+    category: "finance",
+  },
+  {
+    code: "offerings",
+    label: "Offrandes",
+    href: "/finance/offerings",
+    category: "finance",
+  },
+  {
+    code: "expenses",
+    label: "DÃ©penses",
+    href: "/finance/expenses",
+    category: "finance",
+  },
+  {
+    code: "budgets",
+    label: "Budgets",
+    href: "/finance/budgets",
+    category: "finance",
+  },
+  {
+    code: "finance_reports",
+    label: "Rapports financiers",
+    href: "/finance/reports",
+    category: "finance",
+    aliases: ["financial_reports"],
+  },
+  {
+    code: "donations",
+    label: "Dons reÃ§us",
+    href: "/finance/donations",
+    category: "finance",
+  },
+  {
+    code: "patrimony",
+    label: "Patrimoine",
+    href: "/patrimony",
+    category: "patrimoine",
+    aliases: ["patrimony_dashboard"],
+  },
+  {
+    code: "assets",
+    label: "Biens",
+    href: "/patrimony/assets",
+    category: "patrimoine",
+  },
+  {
+    code: "maintenance",
+    label: "Maintenance",
+    href: "/patrimony/maintenance",
+    category: "patrimoine",
+    aliases: ["asset_maintenance"],
+  },
+  {
+    code: "movements",
+    label: "Mouvements",
+    href: "/patrimony/movements",
+    category: "patrimoine",
+    aliases: ["asset_movements"],
+  },
+  {
+    code: "extensions",
+    label: "Extensions",
+    href: "/extensions",
+    category: "spirituel",
+    aliases: [
+      "extension_activities",
+      "extension_reports",
+    ],
+  },
+  {
+    code: "users",
+    label: "Utilisateurs",
+    href: "/settings/users",
+    category: "configuration",
+  },
+  {
+    code: "security",
+    label: "RÃ´les et accÃ¨s",
+    href: "/settings/roles",
+    category: "configuration",
+  },
+  {
+    code: "security",
+    label: "Validation des rÃ´les",
+    href: "/settings/security-validation",
+    category: "configuration",
+  },
+  {
+    code: "security",
+    label: "Journal sÃ©curitÃ©",
+    href: "/settings/security-audit",
+    category: "configuration",
+  },
+];
+
+export async function getAllowedNavigationItems() {
+  const [context, permissions] = await Promise.all([
+    getCurrentSecurityContext(),
+    getCurrentRolePermissions(),
+  ]);
+
+  if (context.role === "super_admin") {
+    return {
+      context,
+      items: NAVIGATION_ITEMS,
+    };
+  }
+
+  const visibleCodes = new Set(
+    permissions
+      .filter(
+        (permission) =>
+          permission.is_enabled &&
+          permission.can_view
+      )
+      .map((permission) => permission.module_code)
+  );
+
+  const items = NAVIGATION_ITEMS.filter((item) => {
+    if (visibleCodes.has(item.code)) return true;
+
+    return (item.aliases || []).some((alias) =>
+      visibleCodes.has(alias)
+    );
+  });
+
+  return {
+    context,
+    items,
+  };
+}
+
+export function groupPermissionNavigation(
+  items: PermissionNavigationItem[]
+) {
+  return items.reduce(
+    (
+      groups: Record<
+        PermissionNavigationItem["category"],
+        PermissionNavigationItem[]
+      >,
+      item
+    ) => {
+      groups[item.category].push(item);
+      return groups;
+    },
+    {
+      principal: [],
+      spirituel: [],
+      administration: [],
+      finance: [],
+      patrimoine: [],
+      configuration: [],
+    }
+  );
+}
+
+===== src/lib/security/routePermissionMap.ts =====
+import type {
+  ModuleCode,
+} from "@/lib/security/roleCatalog";
+import type {
+  PermissionAction,
+} from "@/lib/security/permissionEngine";
+
+export type RoutePermissionRule = {
+  id: string;
+  pattern: RegExp;
+  modules: string[];
+  action: PermissionAction;
+  mode?: "any" | "all";
+  public?: boolean;
+};
+
+export const ROUTE_PERMISSION_RULES: RoutePermissionRule[] = [
+  {
+    id: "members",
+    pattern: /^\/members(?:\/|$)/,
+    modules: ["members"],
+    action: "view",
+  },
+  {
+    id: "attendance",
+    pattern: /^\/attendance(?:\/|$)/,
+    modules: ["attendance"],
+    action: "view",
+  },
+  {
+    id: "souls",
+    pattern: /^\/souls(?:\/|$)/,
+    modules: ["souls"],
+    action: "view",
+  },
+  {
+    id: "departments",
+    pattern: /^\/departments(?:\/|$)/,
+    modules: ["departments"],
+    action: "view",
+  },
+  {
+    id: "events",
+    pattern: /^\/events(?:\/|$)/,
+    modules: ["events"],
+    action: "view",
+  },
+  {
+    id: "public-requests",
+    pattern: /^\/public-requests(?:\/|$)/,
+    modules: ["public_requests"],
+    action: "view",
+  },
+  {
+    id: "teachings",
+    pattern: /^\/teachings(?:\/|$)/,
+    modules: ["teachings"],
+    action: "view",
+  },
+  {
+    id: "notifications",
+    pattern: /^\/notifications(?:\/|$)/,
+    modules: ["notifications"],
+    action: "view",
+  },
+  {
+    id: "finance-donations",
+    pattern: /^\/finance\/donations(?:\/|$)/,
+    modules: ["donations"],
+    action: "view",
+  },
+  {
+    id: "finance-offerings",
+    pattern: /^\/finance\/offerings(?:\/|$)/,
+    modules: ["offerings"],
+    action: "view",
+  },
+  {
+    id: "finance-expenses",
+    pattern: /^\/finance\/expenses(?:\/|$)/,
+    modules: ["expenses"],
+    action: "view",
+  },
+  {
+    id: "finance-budgets",
+    pattern: /^\/finance\/budgets(?:\/|$)/,
+    modules: ["budgets"],
+    action: "view",
+  },
+  {
+    id: "finance-reports",
+    pattern: /^\/finance\/reports(?:\/|$)/,
+    modules: ["finance_reports", "financial_reports"],
+    action: "view",
+    mode: "any",
+  },
+  {
+    id: "finance",
+    pattern: /^\/finance(?:\/|$)/,
+    modules: [
+      "finance_dashboard",
+      "offerings",
+      "expenses",
+      "budgets",
+      "finance_reports",
+      "financial_reports",
+      "donations",
+    ],
+    action: "view",
+    mode: "any",
+  },
+  {
+    id: "patrimony-assets",
+    pattern: /^\/patrimony\/assets(?:\/|$)/,
+    modules: ["assets"],
+    action: "view",
+  },
+  {
+    id: "patrimony-maintenance",
+    pattern: /^\/patrimony\/maintenance(?:\/|$)/,
+    modules: ["maintenance", "asset_maintenance"],
+    action: "view",
+    mode: "any",
+  },
+  {
+    id: "patrimony-movements",
+    pattern: /^\/patrimony\/movements(?:\/|$)/,
+    modules: ["movements", "asset_movements"],
+    action: "view",
+    mode: "any",
+  },
+  {
+    id: "patrimony",
+    pattern: /^\/patrimony(?:\/|$)/,
+    modules: [
+      "patrimony",
+      "patrimony_dashboard",
+      "assets",
+      "maintenance",
+      "asset_maintenance",
+      "movements",
+      "asset_movements",
+    ],
+    action: "view",
+    mode: "any",
+  },
+  {
+    id: "administration-correspondence",
+    pattern: /^\/administration\/correspondence(?:\/|$)/,
+    modules: ["correspondence"],
+    action: "view",
+  },
+  {
+    id: "administration-inbox",
+    pattern: /^\/administration\/inbox(?:\/|$)/,
+    modules: ["inbox", "document_transmissions"],
+    action: "view",
+    mode: "any",
+  },
+  {
+    id: "administration-transmissions",
+    pattern: /^\/administration\/transmissions(?:\/|$)/,
+    modules: ["transmissions", "document_transmissions"],
+    action: "view",
+    mode: "any",
+  },
+  {
+    id: "administration-tasks",
+    pattern: /^\/administration\/tasks(?:\/|$)/,
+    modules: ["tasks", "administrative_tasks"],
+    action: "view",
+    mode: "any",
+  },
+  {
+    id: "administration-minutes",
+    pattern: /^\/administration\/minutes(?:\/|$)/,
+    modules: ["minutes", "meetings_minutes"],
+    action: "view",
+    mode: "any",
+  },
+  {
+    id: "administration",
+    pattern: /^\/administration(?:\/|$)/,
+    modules: [
+      "correspondence",
+      "inbox",
+      "document_transmissions",
+      "transmissions",
+      "tasks",
+      "administrative_tasks",
+      "minutes",
+      "meetings_minutes",
+    ],
+    action: "view",
+    mode: "any",
+  },
+  {
+    id: "inbox",
+    pattern: /^\/inbox(?:\/|$)/,
+    modules: ["inbox", "document_transmissions"],
+    action: "view",
+    mode: "any",
+  },
+  {
+    id: "extensions",
+    pattern: /^\/extensions(?:\/|$)/,
+    modules: [
+      "extensions",
+      "extension_activities",
+      "extension_reports",
+    ],
+    action: "view",
+    mode: "any",
+  },
+  {
+    id: "settings-users",
+    pattern: /^\/settings\/users(?:\/|$)/,
+    modules: ["users"],
+    action: "view",
+  },
+  {
+    id: "settings-security-audit",
+    pattern: /^\/settings\/security-audit(?:\/|$)/,
+    modules: ["security"],
+    action: "view",
+  },
+  {
+    id: "settings-security-validation",
+    pattern: /^\/settings\/security-validation(?:\/|$)/,
+    modules: ["security"],
+    action: "view",
+  },
+  {
+    id: "settings-roles",
+    pattern: /^\/settings\/roles(?:\/|$)/,
+    modules: ["security"],
+    action: "view",
+  },
+  {
+    id: "role-dashboard",
+    pattern: /^\/dashboard\/role(?:\/|$)/,
+    modules: ["role_dashboard"],
+    action: "view",
+  },
+  {
+    id: "my-work",
+    pattern: /^\/my-work(?:\/|$)/,
+    modules: ["my_work"],
+    action: "view",
+  },
+];
+
+export function resolveRoutePermission(
+  pathname: string
+): RoutePermissionRule | null {
+  return (
+    ROUTE_PERMISSION_RULES.find((rule) =>
+      rule.pattern.test(pathname)
+    ) || null
+  );
+}
+
+export function inferMutationAction(
+  pathname: string
+): PermissionAction {
+  if (/\/new(?:\/|$)/.test(pathname)) return "create";
+  if (/\/edit(?:\/|$)/.test(pathname)) return "update";
+
+  return "view";
+}
+
+export function getPrimaryModuleCode(
+  pathname: string
+): ModuleCode | string | null {
+  const rule = resolveRoutePermission(pathname);
+
+  return rule?.modules[0] || null;
+}
+
+===== src/lib/security/roleCatalog.ts =====
+export const ROLE_CATALOG = [
+  {
+    code: "super_admin",
+    label: "Super administrateur",
+    description: "Gestion globale de toutes les Ã©glises.",
+  },
+  {
+    code: "church_admin",
+    label: "Administrateur Ã©glise",
+    description: "Administration gÃ©nÃ©rale de son Ã©glise.",
+  },
+  {
+    code: "admin_eglise",
+    label: "Administrateur Ã©glise",
+    description: "Alias historique du rÃ´le administrateur.",
+  },
+  {
+    code: "pasteur_t",
+    label: "Pasteur titulaire",
+    description: "Pilotage pastoral et validation.",
+  },
+  {
+    code: "pastor",
+    label: "Pasteur",
+    description: "Alias historique du rÃ´le pasteur.",
+  },
+  {
+    code: "pasteur_a",
+    label: "Pasteur assistant",
+    description: "Suivi pastoral et activitÃ©s confiÃ©es.",
+  },
+  {
+    code: "charge_afp",
+    label: "ChargÃ© AFP",
+    description: "Administration, finances et patrimoine.",
+  },
+  {
+    code: "responsable_d",
+    label: "Responsable de dÃ©partement",
+    description: "Gestion dâ€™un dÃ©partement et de ses activitÃ©s.",
+  },
+  {
+    code: "logisticien",
+    label: "Logisticien",
+    description: "Patrimoine, mouvements et maintenance.",
+  },
+  {
+    code: "secretaire",
+    label: "SecrÃ©taire",
+    description: "Courriers, transmissions et procÃ¨s-verbaux.",
+  },
+  {
+    code: "worker",
+    label: "Ouvrier",
+    description: "ExÃ©cution des tÃ¢ches et activitÃ©s attribuÃ©es.",
+  },
+  {
+    code: "readonly",
+    label: "Lecture seule",
+    description: "Consultation sans modification.",
+  },
+  {
+    code: "member",
+    label: "Membre",
+    description: "AccÃ¨s personnel limitÃ©.",
+  },
+] as const;
+
+export const MODULE_CATALOG = [
+  ["role_dashboard", "Dashboard personnalisÃ©", "/dashboard/role"],
+  ["my_work", "Mon travail", "/my-work"],
+  ["members", "Membres", "/members"],
+  ["attendance", "PrÃ©sences", "/attendance"],
+  ["souls", "Suivi des Ã¢mes", "/souls"],
+  ["departments", "DÃ©partements", "/departments"],
+  ["events", "Ã‰vÃ©nements", "/events"],
+  ["public_requests", "Demandes publiques", "/public-requests"],
+  ["publications", "Publications", "/publications"],
+  ["teachings", "Enseignements", "/teachings"],
+  ["notifications", "Notifications", "/notifications"],
+  ["correspondence", "Courriers", "/administration/correspondence"],
+  ["inbox", "BoÃ®te de rÃ©ception", "/inbox"],
+  ["transmissions", "Transmissions", "/administration/transmissions"],
+  ["tasks", "TÃ¢ches administratives", "/administration/tasks"],
+  ["minutes", "ProcÃ¨s-verbaux", "/administration/minutes"],
+  ["finance_dashboard", "Dashboard finances", "/finance"],
+  ["offerings", "Offrandes", "/finance/offerings"],
+  ["expenses", "DÃ©penses", "/finance/expenses"],
+  ["budgets", "Budgets", "/finance/budgets"],
+  ["finance_reports", "Rapports financiers", "/finance/reports"],
+  ["donations", "Dons reÃ§us", "/finance/donations"],
+  ["patrimony", "Dashboard patrimoine", "/patrimony"],
+  ["assets", "Biens", "/patrimony/assets"],
+  ["maintenance", "Maintenance", "/patrimony/maintenance"],
+  ["movements", "Mouvements", "/patrimony/movements"],
+  ["extensions", "Extensions", "/extensions"],
+  ["settings", "ParamÃ¨tres", "/settings"],
+  ["users", "Utilisateurs", "/settings/users"],
+  ["security", "RÃ´les et accÃ¨s", "/settings/roles"],
+] as const;
+
+export type RoleCode = (typeof ROLE_CATALOG)[number]["code"];
+export type ModuleCode = (typeof MODULE_CATALOG)[number][0];
+
+const ROLE_ALIASES: Record<string, RoleCode> = {
+  admin: "church_admin",
+  admin_eglise: "admin_eglise",
+  church_admin: "church_admin",
+  pastor_titulaire: "pasteur_t",
+  pasteur_titulaire: "pasteur_t",
+  pastor: "pastor",
+  pasteur: "pasteur_t",
+  pasteur_t: "pasteur_t",
+  pastor_assistant: "pasteur_a",
+  assistant_pastor: "pasteur_a",
+  pasteur_assistant: "pasteur_a",
+  pasteur_a: "pasteur_a",
+  charge_afp: "charge_afp",
+  responsable_d: "responsable_d",
+  department_leader: "responsable_d",
+  logisticien: "logisticien",
+  secretary: "secretaire",
+  secretaire: "secretaire",
+  worker: "worker",
+  church_worker: "worker",
+  readonly: "readonly",
+  viewer: "readonly",
+  member: "member",
+  super_admin: "super_admin",
+};
+
+export function normalizeRoleCode(value: unknown): RoleCode {
+  const normalized = String(value || "")
+    .trim()
+    .toLowerCase()
+    .replace(/[\s-]+/g, "_");
+
+  return ROLE_ALIASES[normalized] || "readonly";
+}
+
+export function getRoleLabel(value: unknown) {
+  const code = normalizeRoleCode(value);
+
+  return (
+    ROLE_CATALOG.find((role) => role.code === code)?.label ||
+    code
+  );
+}
+
+export function getModuleDefinition(moduleCode: string) {
+  const moduleDefinition = MODULE_CATALOG.find(
+    ([code]) => code === moduleCode,
+  );
+
+  if (!moduleDefinition) return null;
+
+  return {
+    code: moduleDefinition[0],
+    label: moduleDefinition[1],
+    href: moduleDefinition[2],
+  };
+}
+
+===== src/lib/modules/moduleCatalog.ts =====
+export type ModuleCategoryCode =
+  | "essentials"
+  | "community"
+  | "ministry"
+  | "communication"
+  | "administration"
+  | "finance"
+  | "resources"
+  | "platform";
+
+export type ModuleCategory = {
+  code: ModuleCategoryCode;
+  label: string;
+  description: string;
+  accent: string;
+  order: number;
+};
+
+export const MODULE_CATEGORIES: ModuleCategory[] = [
+  {
+    code: "essentials",
+    label: "Essentiels",
+    description: "Tableaux de bord et travail quotidien",
+    accent: "from-blue-700 to-blue-500",
+    order: 10,
+  },
+  {
+    code: "community",
+    label: "CommunautÃ©",
+    description: "Membres, prÃ©sences et accompagnement",
+    accent: "from-emerald-700 to-emerald-500",
+    order: 20,
+  },
+  {
+    code: "ministry",
+    label: "MinistÃ¨re",
+    description: "DÃ©partements, Ã©vÃ©nements et enseignements",
+    accent: "from-violet-700 to-violet-500",
+    order: 30,
+  },
+  {
+    code: "communication",
+    label: "Communication",
+    description: "Messages, publications et notifications",
+    accent: "from-cyan-700 to-cyan-500",
+    order: 40,
+  },
+  {
+    code: "administration",
+    label: "Administration",
+    description: "Documents, tÃ¢ches et transmissions",
+    accent: "from-slate-700 to-slate-500",
+    order: 50,
+  },
+  {
+    code: "finance",
+    label: "Finances",
+    description: "Offrandes, dÃ©penses, budgets et rapports",
+    accent: "from-amber-700 to-orange-500",
+    order: 60,
+  },
+  {
+    code: "resources",
+    label: "Ressources",
+    description: "Patrimoine, maintenance et extensions",
+    accent: "from-rose-700 to-pink-500",
+    order: 70,
+  },
+  {
+    code: "platform",
+    label: "Configuration",
+    description: "Utilisateurs, sÃ©curitÃ© et paramÃ¨tres",
+    accent: "from-indigo-700 to-indigo-500",
+    order: 80,
+  },
+];
+
+const CATEGORY_BY_CODE = new Map(
+  MODULE_CATEGORIES.map((category) => [category.code, category]),
+);
+
+const MODULE_CATEGORY: Record<string, ModuleCategoryCode> = {
+  role_dashboard: "essentials",
+  dashboard: "essentials",
+  my_work: "essentials",
+
+  members: "community",
+  attendance: "community",
+  souls: "community",
+  public_requests: "community",
+
+  departments: "ministry",
+  events: "ministry",
+  teachings: "ministry",
+  appointments: "ministry",
+  testimonies: "ministry",
+
+  publications: "communication",
+  notifications: "communication",
+  correspondence: "communication",
+  inbox: "communication",
+
+  transmissions: "administration",
+  tasks: "administration",
+  minutes: "administration",
+  administration: "administration",
+
+  finance_dashboard: "finance",
+  offerings: "finance",
+  expenses: "finance",
+  budgets: "finance",
+  finance_reports: "finance",
+  donations: "finance",
+
+  patrimony: "resources",
+  assets: "resources",
+  maintenance: "resources",
+  movements: "resources",
+  extensions: "resources",
+
+  users: "platform",
+  security: "platform",
+  settings: "platform",
+};
+
+const CATEGORY_ALIASES: Record<string, ModuleCategoryCode> = {
+  general: "essentials",
+  dashboard: "essentials",
+  church: "community",
+  people: "community",
+  pastoral: "ministry",
+  ministry: "ministry",
+  communications: "communication",
+  admin: "administration",
+  finances: "finance",
+  patrimony: "resources",
+  system: "platform",
+  configuration: "platform",
+};
+
+export function resolveModuleCategory(
+  moduleCode: string,
+  apiCategory?: string,
+) {
+  const normalizedApiCategory = String(apiCategory || "")
+    .trim()
+    .toLowerCase()
+    .replace(/[\s-]+/g, "_");
+
+  const categoryCode =
+    (CATEGORY_BY_CODE.has(normalizedApiCategory as ModuleCategoryCode)
+      ? (normalizedApiCategory as ModuleCategoryCode)
+      : CATEGORY_ALIASES[normalizedApiCategory]) ||
+    MODULE_CATEGORY[moduleCode] ||
+    "platform";
+
+  return CATEGORY_BY_CODE.get(categoryCode) || MODULE_CATEGORIES[0];
+}
+
+===== src/components/modules/ModuleLauncherClient.tsx =====
+"use client";
+
+import Link from "next/link";
+import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
+import type { LucideIcon } from "lucide-react";
+import {
+  Bell,
+  BookOpen,
+  Boxes,
+  BriefcaseBusiness,
+  Building2,
+  CalendarDays,
+  ChartNoAxesCombined,
+  CircleDollarSign,
+  ClipboardCheck,
+  Clock3,
+  FileText,
+  Grid3X3,
+  HandCoins,
+  HeartHandshake,
+  Landmark,
+  LayoutDashboard,
+  Network,
+  PackageSearch,
+  QrCode,
+  Search,
+  Settings,
+  ShieldCheck,
+  Star,
+  UsersRound,
+  Wallet,
+  Wrench,
+} from "lucide-react";
+
+import {
+  MODULE_CATEGORIES,
+  resolveModuleCategory,
+  type ModuleCategoryCode,
+} from "@/lib/modules/moduleCatalog";
+
+type NavigationItem = {
+  code: string;
+  label: string;
+  href: string;
+  category?: string;
+};
+
+type Payload = {
+  data?: {
+    items?: NavigationItem[];
+  };
+  error?: string;
+};
+
+type ModulePreferences = {
+  favorites: string[];
+  recent: string[];
+};
+
+type FilterCode = "all" | "favorites" | "recent" | ModuleCategoryCode;
+
+const ICONS: Record<string, LucideIcon> = {
+  role_dashboard: LayoutDashboard,
+  dashboard: LayoutDashboard,
+  my_work: BriefcaseBusiness,
+  members: UsersRound,
+  attendance: QrCode,
+  souls: HeartHandshake,
+  departments: Network,
+  events: CalendarDays,
+  appointments: CalendarDays,
+  testimonies: HeartHandshake,
+  public_requests: ClipboardCheck,
+  teachings: BookOpen,
+  publications: FileText,
+  notifications: Bell,
+  correspondence: FileText,
+  inbox: FileText,
+  transmissions: FileText,
+  tasks: ClipboardCheck,
+  minutes: FileText,
+  administration: Building2,
+  finance_dashboard: Wallet,
+  offerings: HandCoins,
+  expenses: CircleDollarSign,
+  budgets: ChartNoAxesCombined,
+  finance_reports: Landmark,
+  donations: HandCoins,
+  patrimony: Building2,
+  assets: PackageSearch,
+  maintenance: Wrench,
+  movements: Boxes,
+  extensions: Network,
+  users: UsersRound,
+  security: ShieldCheck,
+  settings: Settings,
+};
+
+const STORAGE_KEY = "mpangi-module-preferences-v1";
+const PREFERENCES_EVENT = "mpangi-module-preferences-change";
+const EMPTY_PREFERENCES = JSON.stringify({
+  favorites: [],
+  recent: [],
+} satisfies ModulePreferences);
+
+function getStorageSnapshot() {
+  if (typeof window === "undefined") return EMPTY_PREFERENCES;
+
+  return window.localStorage.getItem(STORAGE_KEY) || EMPTY_PREFERENCES;
+}
+
+function subscribeToPreferences(callback: () => void) {
+  function handleStorage(event: StorageEvent) {
+    if (!event.key || event.key === STORAGE_KEY) callback();
+  }
+
+  window.addEventListener("storage", handleStorage);
+  window.addEventListener(PREFERENCES_EVENT, callback);
+
+  return () => {
+    window.removeEventListener("storage", handleStorage);
+    window.removeEventListener(PREFERENCES_EVENT, callback);
+  };
+}
+
+function parsePreferences(snapshot: string): ModulePreferences {
+  try {
+    const value = JSON.parse(snapshot) as Partial<ModulePreferences>;
+
+    return {
+      favorites: Array.isArray(value.favorites)
+        ? value.favorites.filter(
+            (code): code is string => typeof code === "string",
+          )
+        : [],
+      recent: Array.isArray(value.recent)
+        ? value.recent.filter(
+            (code): code is string => typeof code === "string",
+          )
+        : [],
+    };
+  } catch {
+    return {
+      favorites: [],
+      recent: [],
+    };
+  }
+}
+
+function savePreferences(preferences: ModulePreferences) {
+  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(preferences));
+  window.dispatchEvent(new Event(PREFERENCES_EVENT));
+}
+
+function useModulePreferences() {
+  const snapshot = useSyncExternalStore(
+    subscribeToPreferences,
+    getStorageSnapshot,
+    () => EMPTY_PREFERENCES,
+  );
+
+  return useMemo(() => parsePreferences(snapshot), [snapshot]);
+}
+
+function getErrorMessage(error: unknown) {
+  return error instanceof Error
+    ? error.message
+    : "Impossible de charger les modules.";
+}
+
+export default function ModuleLauncherClient() {
+  const [items, setItems] = useState<NavigationItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [query, setQuery] = useState("");
+  const [activeFilter, setActiveFilter] = useState<FilterCode>("all");
+  const preferences = useModulePreferences();
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    async function loadNavigation() {
+      try {
+        const response = await fetch("/api/security/navigation", {
+          cache: "no-store",
+          credentials: "include",
+          signal: controller.signal,
+        });
+
+        const payload = (await response.json()) as Payload;
+
+        if (!response.ok) {
+          throw new Error(payload.error || "Navigation indisponible.");
+        }
+
+        if (!controller.signal.aborted) {
+          setItems(
+            Array.isArray(payload.data?.items) ? payload.data.items : [],
+          );
+          setError("");
+        }
+      } catch (loadError: unknown) {
+        if (!controller.signal.aborted) {
+          setError(getErrorMessage(loadError));
+        }
+      } finally {
+        if (!controller.signal.aborted) setLoading(false);
+      }
+    }
+
+    void loadNavigation();
+
+    return () => controller.abort();
+  }, []);
+
+  const enrichedItems = useMemo(
+    () =>
+      items.map((item) => ({
+        ...item,
+        categoryInfo: resolveModuleCategory(item.code, item.category),
+      })),
+    [items],
+  );
+
+  const categoryCounts = useMemo(() => {
+    const counts = new Map<ModuleCategoryCode, number>();
+
+    for (const item of enrichedItems) {
+      counts.set(
+        item.categoryInfo.code,
+        (counts.get(item.categoryInfo.code) || 0) + 1,
+      );
+    }
+
+    return counts;
+  }, [enrichedItems]);
+
+  const visibleCategories = useMemo(
+    () =>
+      MODULE_CATEGORIES.filter(
+        (category) => (categoryCounts.get(category.code) || 0) > 0,
+      ).sort((left, right) => left.order - right.order),
+    [categoryCounts],
+  );
+
+  const filtered = useMemo(() => {
+    const term = query.trim().toLocaleLowerCase("fr");
+    const recentPosition = new Map(
+      preferences.recent.map((code, index) => [code, index]),
+    );
+
+    const result = enrichedItems.filter((item) => {
+      const matchesSearch =
+        !term ||
+        `${item.label} ${item.code} ${item.categoryInfo.label}`
+          .toLocaleLowerCase("fr")
+          .includes(term);
+
+      if (!matchesSearch) return false;
+      if (activeFilter === "favorites") {
+        return preferences.favorites.includes(item.code);
+      }
+      if (activeFilter === "recent") {
+        return recentPosition.has(item.code);
+      }
+      if (activeFilter !== "all") {
+        return item.categoryInfo.code === activeFilter;
+      }
+
+      return true;
+    });
+
+    return result.sort((left, right) => {
+      if (activeFilter === "recent") {
+        return (
+          (recentPosition.get(left.code) ?? Number.MAX_SAFE_INTEGER) -
+          (recentPosition.get(right.code) ?? Number.MAX_SAFE_INTEGER)
+        );
+      }
+
+      const categoryDifference =
+        left.categoryInfo.order - right.categoryInfo.order;
+
+      if (categoryDifference !== 0) return categoryDifference;
+      return left.label.localeCompare(right.label, "fr");
+    });
+  }, [activeFilter, enrichedItems, preferences, query]);
+
+  function toggleFavorite(moduleCode: string) {
+    const isFavorite = preferences.favorites.includes(moduleCode);
+
+    savePreferences({
+      ...preferences,
+      favorites: isFavorite
+        ? preferences.favorites.filter((code) => code !== moduleCode)
+        : [moduleCode, ...preferences.favorites],
+    });
+  }
+
+  function rememberModule(moduleCode: string) {
+    savePreferences({
+      ...preferences,
+      recent: [
+        moduleCode,
+        ...preferences.recent.filter((code) => code !== moduleCode),
+      ].slice(0, 8),
+    });
+  }
+
+  const filters: Array<{
+    code: FilterCode;
+    label: string;
+    count: number;
+    icon?: LucideIcon;
+  }> = [
+    { code: "all", label: "Tous", count: items.length, icon: Grid3X3 },
+    {
+      code: "favorites",
+      label: "Favoris",
+      count: preferences.favorites.filter((code) =>
+        items.some((item) => item.code === code),
+      ).length,
+      icon: Star,
+    },
+    {
+      code: "recent",
+      label: "RÃ©cents",
+      count: preferences.recent.filter((code) =>
+        items.some((item) => item.code === code),
+      ).length,
+      icon: Clock3,
+    },
+    ...visibleCategories.map((category) => ({
+      code: category.code,
+      label: category.label,
+      count: categoryCounts.get(category.code) || 0,
+    })),
+  ];
+
+  return (
+    <section className="space-y-5">
+      <div className="rounded-[1.75rem] bg-gradient-to-br from-[#03357A] via-[#2563EB] to-[#8B5CF6] p-5 text-white shadow-lg shadow-blue-900/20 sm:p-7">
+        <Grid3X3 className="h-8 w-8" />
+        <p className="mt-4 text-xs font-black uppercase tracking-[0.22em] text-blue-100">
+          Lanceur dâ€™applications
+        </p>
+        <h1 className="mt-2 text-3xl font-black sm:text-4xl">Mes modules</h1>
+        <p className="mt-3 max-w-3xl text-sm leading-7 text-blue-50">
+          Retrouvez les fonctions autorisÃ©es pour votre rÃ´le, puis Ã©pinglez vos
+          outils prÃ©fÃ©rÃ©s.
+        </p>
+      </div>
+
+      <div className="space-y-3 rounded-3xl border border-[#DCEAF5] bg-white p-3 shadow-sm sm:p-4">
+        <label className="relative block">
+          <Search className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
+          <input
+            type="search"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder="Rechercher un module..."
+            className="min-h-12 w-full rounded-2xl border border-[#DCEAF5] bg-[#F8FBFD] pl-12 pr-4 text-base font-semibold outline-none focus:border-[#03357A] focus:ring-4 focus:ring-[#03357A]/10"
+          />
+        </label>
+
+        <div
+          className="flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          aria-label="Filtres des modules"
+        >
+          {filters.map((filter) => {
+            const FilterIcon = filter.icon;
+            const active = activeFilter === filter.code;
+
+            return (
+              <button
+                key={filter.code}
+                type="button"
+                onClick={() => setActiveFilter(filter.code)}
+                aria-pressed={active}
+                className={`inline-flex min-h-10 shrink-0 items-center gap-2 rounded-full px-4 text-xs font-black transition ${
+                  active
+                    ? "bg-[#03357A] text-white shadow-sm"
+                    : "bg-[#F2F7FB] text-[#03357A] hover:bg-[#E4EFF8]"
+                }`}
+              >
+                {FilterIcon && <FilterIcon className="h-4 w-4" />}
+                {filter.label}
+                <span
+                  className={`rounded-full px-2 py-0.5 text-[10px] ${
+                    active ? "bg-white/20" : "bg-white text-slate-500"
+                  }`}
+                >
+                  {filter.count}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {error && (
+        <div className="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm font-bold text-red-700">
+          {error}
+        </div>
+      )}
+
+      {loading ? (
+        <div
+          data-mpangi-module-grid
+          className="grid grid-cols-3 gap-3 sm:grid-cols-4 lg:grid-cols-6 xl:grid-cols-7"
+        >
+          {Array.from({ length: 12 }).map((_, index) => (
+            <div
+              key={index}
+              className="aspect-square animate-pulse rounded-3xl bg-white shadow-sm ring-1 ring-[#DCEAF5]"
+            />
+          ))}
+        </div>
+      ) : (
+        <div
+          data-mpangi-module-grid
+          className="grid grid-cols-3 gap-3 sm:grid-cols-4 lg:grid-cols-6 xl:grid-cols-7"
+        >
+          {filtered.map((item) => {
+            const Icon = ICONS[item.code] || Grid3X3;
+            const favorite = preferences.favorites.includes(item.code);
+
+            return (
+              <article
+                key={`${item.code}:${item.href}`}
+                className="group relative flex min-w-0 flex-col rounded-3xl bg-white p-2.5 text-center shadow-sm ring-1 ring-[#DCEAF5] transition hover:-translate-y-1 hover:shadow-lg sm:p-3"
+              >
+                <button
+                  type="button"
+                  onClick={() => toggleFavorite(item.code)}
+                  aria-label={
+                    favorite
+                      ? `Retirer ${item.label} des favoris`
+                      : `Ajouter ${item.label} aux favoris`
+                  }
+                  aria-pressed={favorite}
+                  className={`absolute right-1.5 top-1.5 z-10 flex h-8 w-8 items-center justify-center rounded-full shadow-sm ring-1 transition ${
+                    favorite
+                      ? "bg-amber-50 text-amber-600 ring-amber-200"
+                      : "bg-white/95 text-slate-400 ring-slate-200 hover:text-amber-600"
+                  }`}
+                >
+                  <Star
+                    className={`h-4 w-4 ${favorite ? "fill-current" : ""}`}
+                  />
+                </button>
+
+                <Link
+                  href={item.href}
+                  onClick={() => rememberModule(item.code)}
+                  className="flex min-w-0 flex-1 flex-col items-center"
+                >
+                  <span
+                    className={`flex aspect-square w-full max-w-[82px] items-center justify-center rounded-[1.35rem] bg-gradient-to-br ${item.categoryInfo.accent} text-white shadow-md`}
+                  >
+                    <Icon className="h-7 w-7 sm:h-8 sm:w-8" />
+                  </span>
+
+                  <span className="mt-2 line-clamp-2 min-h-[2.5rem] w-full break-words text-[11px] font-black leading-5 text-[#03357A] sm:text-xs">
+                    {item.label}
+                  </span>
+
+                  <span className="mt-1 hidden max-w-full truncate text-[10px] font-bold text-slate-400 sm:block">
+                    {item.categoryInfo.label}
+                  </span>
+                </Link>
+              </article>
+            );
+          })}
+        </div>
+      )}
+
+      {!loading && filtered.length === 0 && (
+        <div className="rounded-3xl border border-dashed border-[#DCEAF5] bg-white p-8 text-center">
+          <p className="font-black text-[#03357A]">Aucun module trouvÃ©</p>
+          <p className="mt-2 text-sm text-slate-500">
+            Modifiez la recherche ou sÃ©lectionnez une autre catÃ©gorie.
+          </p>
+        </div>
+      )}
+    </section>
+  );
+}
+
+===== src/components/layout/Sidebar.tsx =====
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import {
+  ChevronDown,
+  ChevronsLeft,
+  ChevronsRight,
+  Radio,
+  Search,
+  Shield,
+} from "lucide-react";
+import {
+  useEffect,
+  useMemo,
+  useState,
+  useSyncExternalStore,
+} from "react";
+import {
+  findActiveMenuGroup,
+  getGroupedVisibleMenuItems,
+  isActiveMenuItem,
+} from "@/lib/modules/moduleRegistry";
+
+type MyModulesResponse = {
+  role?: string;
+  churchId?: string | null;
+  moduleCodes?: string[];
+};
+
+const SUPER_ADMIN_ITEMS = [
+  { label: "Dashboard", href: "/super-admin/dashboard", icon: Shield },
+  { label: "Ã‰glises", href: "/super-admin/churches", icon: Shield },
+  { label: "Modules", href: "/super-admin/modules", icon: Shield },
+  { label: "ParamÃ¨tres", href: "/super-admin/settings", icon: Shield },
+];
+
+const SIDEBAR_COLLAPSED_KEY =
+  "mpangi-sidebar-collapsed";
+
+const SIDEBAR_COLLAPSED_EVENT =
+  "mpangi:sidebar-collapsed-change";
+
+function readSidebarCollapsed() {
+  if (typeof window === "undefined") {
+    return false;
+  }
+
+  try {
+    return (
+      window.localStorage.getItem(
+        SIDEBAR_COLLAPSED_KEY
+      ) === "1"
+    );
+  } catch {
+    return false;
+  }
+}
+
+function getServerSidebarCollapsed() {
+  return false;
+}
+
+function subscribeSidebarCollapsed(
+  onStoreChange: () => void
+) {
+  function handleStorage(event: StorageEvent) {
+    if (event.key === SIDEBAR_COLLAPSED_KEY) {
+      onStoreChange();
+    }
+  }
+
+  function handleLocalChange() {
+    onStoreChange();
+  }
+
+  window.addEventListener("storage", handleStorage);
+  window.addEventListener(
+    SIDEBAR_COLLAPSED_EVENT,
+    handleLocalChange
+  );
+
+  return () => {
+    window.removeEventListener(
+      "storage",
+      handleStorage
+    );
+    window.removeEventListener(
+      SIDEBAR_COLLAPSED_EVENT,
+      handleLocalChange
+    );
+  };
+}
+export default function Sidebar() {
+  const pathname = usePathname();
+const collapsed = useSyncExternalStore(
+  subscribeSidebarCollapsed,
+  readSidebarCollapsed,
+  getServerSidebarCollapsed
+);
+
+const [
+  openKeyPreference,
+  setOpenKeyPreference,
+] = useState<{
+  pathname: string;
+  key: string;
+} | null>(null);
+
+function setCollapsed(nextCollapsed: boolean) {
+  try {
+    window.localStorage.setItem(
+      SIDEBAR_COLLAPSED_KEY,
+      nextCollapsed ? "1" : "0"
+    );
+  } finally {
+    window.dispatchEvent(
+      new Event(SIDEBAR_COLLAPSED_EVENT)
+    );
+  }
+}
+
+function setOpenKey(key: string) {
+  setOpenKeyPreference({
+    pathname,
+    key,
+  });
+}
+  const [myModules, setMyModules] = useState<MyModulesResponse>({
+    moduleCodes: ["dashboard"],
+  });
+
+  
+
+  useEffect(() => {
+    let mounted = true;
+
+    fetch("/api/modules/my-modules", { cache: "no-store" })
+      .then((response) => response.json())
+      .then((payload) => {
+        if (!mounted) return;
+        setMyModules({
+          role: payload.role,
+          churchId: payload.churchId,
+          moduleCodes: payload.moduleCodes || ["dashboard"],
+        });
+      })
+      .catch(() => {
+        if (!mounted) return;
+        setMyModules({ moduleCodes: ["dashboard"] });
+      });
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const isSuperAdmin = pathname.startsWith("/super-admin");
+
+  const groups = useMemo(() => {
+    return getGroupedVisibleMenuItems(myModules.moduleCodes || ["dashboard"]);
+  }, [myModules.moduleCodes]);
+
+const activeOpenKey = useMemo(
+  () =>
+    findActiveMenuGroup(groups, pathname)?.key ??
+    "system",
+  [groups, pathname]
+);
+
+const openKey =
+  openKeyPreference?.pathname === pathname
+    ? openKeyPreference.key
+    : activeOpenKey;
+
+  if (isSuperAdmin) {
+    return (
+      <aside className="hidden h-dvh w-[280px] shrink-0 border-r border-[#DCEAF5] bg-white p-3 lg:sticky lg:top-0 lg:block">
+        <div className="rounded-[1.6rem] bg-[#03357A] p-5 text-white">
+          <p className="text-xs font-black uppercase tracking-[0.25em] text-blue-100">
+            Mpangi-church
+          </p>
+          <h2 className="mt-2 text-xl font-black">Super admin</h2>
+          <p className="mt-1 text-xs font-semibold text-blue-100">
+            Administration globale
+          </p>
+        </div>
+
+        <nav className="mt-4 space-y-1.5">
+          {SUPER_ADMIN_ITEMS.map((item) => {
+            const Icon = item.icon;
+            const active = isActiveMenuItem(pathname, item.href);
+
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-extrabold transition ${
+                  active
+                    ? "bg-[#03357A] text-white shadow-sm"
+                    : "text-slate-600 hover:bg-[#EAF3FA] hover:text-[#03357A]"
+                }`}
+              >
+                <Icon className="h-4 w-4" />
+                {item.label}
+              </Link>
+            );
+          })}
+        </nav>
+      </aside>
+    );
+  }
+
+  return (
+    <aside
+      className={`hidden h-dvh shrink-0 border-r border-[#DCEAF5] bg-white transition-all duration-300 lg:sticky lg:top-0 lg:block ${
+        collapsed ? "w-[86px]" : "w-[286px]"
+      }`}
+    >
+      <div className="flex h-full flex-col p-3">
+        <div
+          className={`rounded-[1.5rem] bg-[#03357A] text-white shadow-sm ${
+            collapsed ? "p-3" : "p-4"
+          }`}
+        >
+          <div className={`flex items-center ${collapsed ? "justify-center" : "justify-between gap-3"}`}>
+            <Link href="/dashboard" className="flex min-w-0 items-center gap-3">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-white/15 text-sm font-black">
+                MC
+              </span>
+
+              {!collapsed && (
+                <span className="min-w-0">
+                  <span className="block truncate text-xs font-black uppercase tracking-[0.22em] text-blue-100">
+                    Mpangi-church
+                  </span>
+                  <span className="mt-1 block truncate text-lg font-black">
+                    Espace Ã©glise
+                  </span>
+                </span>
+              )}
+            </Link>
+
+            {!collapsed && (
+              <button
+                type="button"
+                onClick={() => setCollapsed(true)}
+                className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/10 hover:bg-white/20"
+                aria-label="RÃ©duire le menu"
+              >
+                <ChevronsLeft className="h-4 w-4" />
+              </button>
+            )}
+          </div>
+
+          {collapsed && (
+            <button
+              type="button"
+              onClick={() => setCollapsed(false)}
+              className="mt-3 flex h-9 w-full items-center justify-center rounded-xl bg-white/10 hover:bg-white/20"
+              aria-label="Ouvrir le menu"
+            >
+              <ChevronsRight className="h-4 w-4" />
+            </button>
+          )}
+        </div>
+
+        <Link
+          href="/live"
+          className={[
+            "mt-3 flex min-h-12 items-center rounded-2xl bg-red-600 text-white shadow-lg shadow-red-900/20 transition hover:bg-red-700",
+            collapsed
+              ? "justify-center px-3"
+              : "gap-3 px-4",
+          ].join(" ")}
+          title="Culte en direct"
+        >
+          <Radio className="h-5 w-5 shrink-0 animate-pulse" />
+
+          {!collapsed && (
+            <span className="min-w-0">
+              <span className="block truncate text-sm font-black">
+                Culte en direct
+              </span>
+              <span className="block truncate text-[11px] font-semibold text-red-100">
+                Regarder dans lâ€™application
+              </span>
+            </span>
+          )}
+        </Link>
+
+        {!collapsed && (
+          <Link
+            href="/mobile-menu"
+            className="mt-3 flex items-center gap-3 rounded-2xl border border-[#DCEAF5] bg-[#F8FBFD] px-4 py-3 text-sm font-bold text-slate-500 transition hover:border-[#03357A]/30 hover:bg-[#EAF3FA] hover:text-[#03357A]"
+          >
+            <Search className="h-4 w-4" />
+            Rechercher un module
+          </Link>
+        )}
+
+        <nav className="mt-3 min-h-0 flex-1 overflow-y-auto pr-1">
+          <div className="space-y-1.5">
+            {groups.map((group) => {
+              const GroupIcon = group.icon;
+              const isOpen = openKey === group.key;
+              const hasActiveItem = group.items.some((item) =>
+                isActiveMenuItem(pathname, item.href)
+              );
+
+              if (collapsed) {
+                return (
+                  <button
+                    key={group.key}
+                    type="button"
+                    onClick={() => {
+                      setCollapsed(false);
+                      setOpenKey(group.key);
+                    }}
+                    className={`flex h-12 w-full items-center justify-center rounded-2xl transition ${
+                      hasActiveItem
+                        ? "bg-[#03357A] text-white"
+                        : "text-slate-500 hover:bg-[#EAF3FA] hover:text-[#03357A]"
+                    }`}
+                    title={group.title}
+                  >
+                    <GroupIcon className="h-5 w-5" />
+                  </button>
+                );
+              }
+
+              return (
+                <div key={group.key} className="rounded-2xl">
+                  <button
+                    type="button"
+                    onClick={() => setOpenKey(isOpen ? "" : group.key)}
+                    className={`flex w-full items-center justify-between gap-3 rounded-2xl px-3 py-2.5 text-left transition ${
+                      hasActiveItem || isOpen
+                        ? "bg-[#EAF3FA] text-[#03357A]"
+                        : "text-slate-600 hover:bg-[#F8FBFD] hover:text-[#03357A]"
+                    }`}
+                  >
+                    <span className="flex min-w-0 items-center gap-3">
+                      <span
+                        className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${
+                          hasActiveItem || isOpen ? "bg-white" : "bg-[#F8FBFD]"
+                        }`}
+                      >
+                        <GroupIcon className="h-4 w-4" />
+                      </span>
+
+                      <span className="min-w-0">
+                        <span className="block truncate text-sm font-black">
+                          {group.title}
+                        </span>
+                        <span className="block truncate text-[11px] font-semibold text-slate-500">
+                          {group.description}
+                        </span>
+                      </span>
+                    </span>
+
+                    <ChevronDown
+                      className={`h-4 w-4 shrink-0 transition ${isOpen ? "rotate-180" : ""}`}
+                    />
+                  </button>
+
+                  {isOpen && (
+                    <div className="mt-1.5 space-y-1 pl-3">
+                      {group.items.map((item) => {
+                        const ItemIcon = item.icon;
+                        const active = isActiveMenuItem(pathname, item.href);
+
+                        return (
+                          <Link
+                            key={`${group.key}-${item.href}`}
+                            href={item.href}
+                            className={`flex items-center gap-3 rounded-2xl px-3 py-2.5 text-sm font-bold transition ${
+                              active
+                                ? "bg-[#03357A] text-white shadow-sm"
+                                : "text-slate-600 hover:bg-[#F8FBFD] hover:text-[#03357A]"
+                            }`}
+                          >
+                            <ItemIcon className="h-4 w-4 shrink-0" />
+                            <span className="truncate">{item.label}</span>
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </nav>
+</div>
+    </aside>
+  );
+}
+
+===== src/components/layout/MobileTopBar.tsx =====
+"use client";
+
+import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
+import {
+  Bell,
+  ChevronDown,
+  Home,
+  LogOut,
+  Menu,
+  Search,
+  Settings,
+  X,
+} from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import {
+  findActiveMenuGroup,
+  getGroupedVisibleMenuItems,
+  isActiveMenuItem,
+} from "@/lib/modules/moduleRegistry";
+
+type MyModulesResponse = {
+  role?: string;
+  churchId?: string | null;
+  moduleCodes?: string[];
+};
+
+const FALLBACK_MODULES = [
+  "dashboard",
+  "settings",
+  "notifications",
+];
+
+export default function MobileTopBar() {
+  const pathname = usePathname();
+  const router = useRouter();
+ const [open, setOpen] = useState(false);
+const [openGroupOverride, setOpenGroupOverride] =
+  useState<string | null>(null);
+  const [logoutLoading, setLogoutLoading] = useState(false);
+  const [myModules, setMyModules] = useState<MyModulesResponse>({
+    moduleCodes: FALLBACK_MODULES,
+  });
+
+  useEffect(() => {
+    let mounted = true;
+
+    fetch("/api/modules/my-modules", {
+      cache: "no-store",
+    })
+      .then((response) => response.json())
+      .then((payload) => {
+        if (!mounted) return;
+
+        setMyModules({
+          role: payload.role,
+          churchId: payload.churchId,
+          moduleCodes:
+            payload.moduleCodes || FALLBACK_MODULES,
+        });
+      })
+      .catch(() => {
+        if (mounted) {
+          setMyModules({ moduleCodes: FALLBACK_MODULES });
+        }
+      });
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const groups = useMemo(
+    () =>
+      getGroupedVisibleMenuItems(
+        myModules.moduleCodes || FALLBACK_MODULES
+      ),
+    [myModules.moduleCodes]
+  );
+
+const activeGroupKey = useMemo(
+  () =>
+    findActiveMenuGroup(groups, pathname)?.key ?? "system",
+  [groups, pathname]
+);
+
+const openGroup = openGroupOverride ?? activeGroupKey;
+
+function closeForNavigation() {
+  setOpen(false);
+  setOpenGroupOverride(null);
+}
+
+  useEffect(() => {
+    function openMenu() {
+      setOpen(true);
+    }
+
+    window.addEventListener(
+      "mpangi:open-mobile-menu",
+      openMenu
+    );
+
+    return () =>
+      window.removeEventListener(
+        "mpangi:open-mobile-menu",
+        openMenu
+      );
+  }, []);
+
+  useEffect(() => {
+    if (!open) return;
+
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+    };
+  }, [open]);
+
+  async function handleLogout() {
+    try {
+      setLogoutLoading(true);
+      await fetch("/logout", {
+        method: "POST",
+        cache: "no-store",
+      });
+      router.replace("/login?logout=1");
+      router.refresh();
+    } finally {
+      setLogoutLoading(false);
+    }
+  }
+
+  return (
+    <>
+      <header
+        data-mpangi-church-mobile-topbar
+        className="sticky top-0 z-[60] border-b border-[#DCEAF5] bg-white/95 px-3 py-3 shadow-sm backdrop-blur lg:hidden"
+      >
+        <div className="flex items-center justify-between gap-3">
+          <button
+            type="button"
+            onClick={() => setOpen(true)}
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#EAF3FA] text-[#03357A]"
+            aria-label="Ouvrir le menu"
+          >
+            <Menu className="h-5 w-5" />
+          </button>
+
+          <Link href="/dashboard" 
+          onClick={closeForNavigation}
+          className="min-w-0 flex-1">
+            <p className="truncate text-[10px] font-black uppercase tracking-[0.18em] text-slate-400">
+              Mpangi-church
+            </p>
+            <p className="truncate text-base font-black text-[#03357A]">
+              Espace Ã©glise
+            </p>
+          </Link>
+
+          <Link
+            href="/notifications"
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-[#DCEAF5] bg-white text-[#03357A]"
+            aria-label="Notifications"
+          >
+            <Bell className="h-5 w-5" />
+          </Link>
+        </div>
+      </header>
+
+      {open && (
+        <div className="fixed inset-0 z-[100] lg:hidden">
+          <button
+            type="button"
+            aria-label="Fermer le menu"
+            onClick={() => setOpen(false)}
+            className="absolute inset-0 bg-slate-950/50"
+          />
+
+          <aside
+            data-mpangi-church-mobile-drawer
+            className="absolute inset-y-0 left-0 flex w-[88vw] max-w-[360px] flex-col overflow-hidden bg-white shadow-2xl"
+          >
+            <div className="shrink-0 border-b border-[#DCEAF5] p-4">
+              <div className="flex items-center justify-between gap-3">
+                <Link
+                  href="/dashboard"
+                  onClick={closeForNavigation}
+                  className="flex min-w-0 items-center gap-3"
+                >
+                  <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#03357A] text-sm font-black text-white">
+                    MC
+                  </span>
+                  <span className="min-w-0">
+                    <span className="block truncate text-xs font-black uppercase tracking-[0.18em] text-slate-400">
+                      Mpangi-church
+                    </span>
+                    <span className="block truncate text-lg font-black text-[#03357A]">
+                      Tous les modules
+                    </span>
+                  </span>
+                </Link>
+
+                <button
+                  type="button"
+                  onClick={() => setOpen(false)}
+                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-[#EAF3FA] text-[#03357A]"
+                  aria-label="Fermer"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+
+              <Link
+                href="/modules"
+                onClick={closeForNavigation}
+                className="mt-4 flex min-h-11 items-center gap-3 rounded-2xl border border-[#DCEAF5] bg-[#F8FBFD] px-4 py-3 text-sm font-bold text-slate-600"
+              >
+                <Search className="h-4 w-4" />
+                Lanceur dâ€™applications
+              </Link>
+            </div>
+
+            <nav className="min-h-0 flex-1 overflow-y-auto p-3">
+              <div className="space-y-2">
+                {groups.map((group) => {
+                  const GroupIcon = group.icon;
+                  const isOpen = openGroup === group.key;
+                  const hasActiveItem = group.items.some((item) =>
+                    isActiveMenuItem(pathname, item.href)
+                  );
+
+                  return (
+                    <section
+                      key={group.key}
+                      className="overflow-hidden rounded-3xl border border-[#DCEAF5] bg-white"
+                    >
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setOpenGroupOverride(isOpen ? "" : group.key)
+                        }
+                        className={`flex w-full items-center justify-between gap-3 px-4 py-3 text-left ${
+                          hasActiveItem || isOpen
+                            ? "bg-[#EAF3FA] text-[#03357A]"
+                            : "text-slate-600"
+                        }`}
+                      >
+                        <span className="flex min-w-0 items-center gap-3">
+                          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-white text-[#03357A]">
+                            <GroupIcon className="h-5 w-5" />
+                          </span>
+                          <span className="min-w-0">
+                            <span className="block truncate text-sm font-black">
+                              {group.title}
+                            </span>
+                            <span className="block truncate text-xs font-semibold text-slate-500">
+                              {group.description}
+                            </span>
+                          </span>
+                        </span>
+
+                        <ChevronDown
+                          className={`h-4 w-4 shrink-0 transition ${
+                            isOpen ? "rotate-180" : ""
+                          }`}
+                        />
+                      </button>
+
+                      {isOpen && (
+                        <div className="space-y-1 p-3 pt-1">
+                          {group.items.map((item) => {
+                            const ItemIcon = item.icon;
+                            const active = isActiveMenuItem(
+                              pathname,
+                              item.href
+                            );
+
+                            return (
+                              <Link
+                                key={`${group.key}-${item.href}`}
+                                href={item.href}
+                                onClick={closeForNavigation}
+                                className={`flex min-h-11 min-w-0 items-center gap-3 rounded-2xl px-3 py-3 text-sm font-extrabold ${
+                                  active
+                                    ? "bg-[#03357A] text-white"
+                                    : "text-slate-600 hover:bg-[#F8FBFD] hover:text-[#03357A]"
+                                }`}
+                              >
+                                <ItemIcon className="h-4 w-4 shrink-0" />
+                                <span className="truncate">
+                                  {item.label}
+                                </span>
+                              </Link>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </section>
+                  );
+                })}
+              </div>
+            </nav>
+
+            <div className="shrink-0 border-t border-[#DCEAF5] p-3 pb-[max(env(safe-area-inset-bottom),0.75rem)]">
+              <div className="grid grid-cols-2 gap-2">
+                <Link
+                  href="/dashboard"
+                  onClick={closeForNavigation}
+                  className="flex min-h-11 items-center justify-center gap-2 rounded-2xl bg-[#EAF3FA] px-3 text-sm font-extrabold text-[#03357A]"
+                >
+                  <Home className="h-4 w-4" />
+                  Accueil
+                </Link>
+                <Link
+                  href="/settings"
+                  onClick={closeForNavigation}
+                  className="flex min-h-11 items-center justify-center gap-2 rounded-2xl bg-[#EAF3FA] px-3 text-sm font-extrabold text-[#03357A]"
+                >
+                  <Settings className="h-4 w-4" />
+                  RÃ©glages
+                </Link>
+              </div>
+
+              <button
+                type="button"
+                onClick={handleLogout}
+                disabled={logoutLoading}
+                className="mt-2 flex min-h-11 w-full items-center justify-center gap-2 rounded-2xl bg-red-50 px-4 text-sm font-extrabold text-red-700 disabled:opacity-60"
+              >
+                <LogOut className="h-4 w-4" />
+                {logoutLoading
+                  ? "DÃ©connexion..."
+                  : "DÃ©connexion"}
+              </button>
+            </div>
+          </aside>
+        </div>
+      )}
+    </>
+  );
+}
+

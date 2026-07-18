@@ -1,56 +1,114 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Ban, KeyRound, RotateCcw, Save } from "lucide-react";
+import { USER_ROLE_OPTIONS } from "@/lib/users/userRoles";
+import {
+  Ban,
+  Eye,
+  KeyRound,
+  Pencil,
+  RotateCcw,
+  Save,
+} from "lucide-react";
 
 type SuperAdminUserActionsProps = {
   profileId: string;
   currentRole: string;
   currentStatus: string | null;
+  showNavigation?: boolean;
 };
 
-const roles = [
-  { value: "church_admin", label: "Admin église" },
-  { value: "pastor", label: "Pasteur" },
-  { value: "department_leader", label: "Responsable département" },
-  { value: "worker", label: "Ouvrier" },
-  { value: "member", label: "Membre" },
-];
+type ActionResponse = {
+  message?: string;
+};
+
+type RoleOption = {
+  value: string;
+  label: string;
+};
+
+const editableRoles: RoleOption[] =
+  USER_ROLE_OPTIONS
+    .map((option) => ({
+      value: String(option.value),
+      label: option.label,
+    }))
+    .filter(
+      (option) =>
+        option.value !== "super_admin"
+    );
 
 export default function SuperAdminUserActions({
   profileId,
   currentRole,
   currentStatus,
+  showNavigation = true,
 }: SuperAdminUserActionsProps) {
   const router = useRouter();
 
   const [role, setRole] = useState(currentRole);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] =
+    useState(false);
 
   const isInactive = currentStatus === "inactive";
 
-  async function callAction(payload: Record<string, unknown>) {
+  const roleOptions: RoleOption[] =
+  editableRoles.some(
+    (item) =>
+      item.value === currentRole
+  )
+    ? editableRoles
+    : [
+        {
+          value: currentRole,
+          label: currentRole,
+        },
+        ...editableRoles,
+      ];
+
+  async function callAction(
+    payload: Record<string, unknown>
+  ) {
     setIsLoading(true);
 
-    const response = await fetch(`/api/super-admin/church-users/${profileId}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
+    try {
+      const response = await fetch(
+        `/api/super-admin/church-users/${profileId}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        }
+      );
 
-    const result = await response.json();
+      const result =
+        (await response.json().catch(() => ({}))) as
+          ActionResponse;
 
-    setIsLoading(false);
+      if (!response.ok) {
+        window.alert(
+          result.message ||
+            "Erreur lors de l’action."
+        );
 
-    if (!response.ok) {
-      alert(result.message || "Erreur lors de l’action.");
-      return;
+        return false;
+      }
+
+      router.refresh();
+      return true;
+    } catch {
+      window.alert(
+        "Impossible de contacter le serveur."
+      );
+
+      return false;
+    } finally {
+      setIsLoading(false);
     }
-
-    router.refresh();
   }
 
   async function handleSaveRole() {
@@ -63,7 +121,9 @@ export default function SuperAdminUserActions({
   }
 
   async function handleToggleStatus() {
-    const nextStatus = isInactive ? "active" : "inactive";
+    const nextStatus = isInactive
+      ? "active"
+      : "inactive";
 
     const confirmed = window.confirm(
       isInactive
@@ -88,7 +148,9 @@ export default function SuperAdminUserActions({
     if (!password) return;
 
     if (password.length < 6) {
-      alert("Le mot de passe doit contenir au moins 6 caractères.");
+      window.alert(
+        "Le mot de passe doit contenir au moins 6 caractères."
+      );
       return;
     }
 
@@ -98,32 +160,73 @@ export default function SuperAdminUserActions({
 
     if (!confirmed) return;
 
-    await callAction({
+    const success = await callAction({
       action: "reset_password",
       password,
     });
 
-    alert(`Mot de passe réinitialisé : ${password}`);
+    if (success) {
+      window.alert(
+        `Mot de passe réinitialisé : ${password}`
+      );
+    }
   }
 
   if (currentRole === "super_admin") {
     return (
-      <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-500">
-        Protégé
-      </span>
+      <div className="flex flex-wrap items-center gap-2">
+        {showNavigation && (
+          <Link
+            href={`/super-admin/users/${profileId}`}
+            className="inline-flex h-10 items-center gap-2 rounded-2xl bg-[#EAF3FA] px-3 text-sm font-bold text-[#03357A]"
+          >
+            <Eye className="h-4 w-4" />
+            Voir
+          </Link>
+        )}
+
+        <span className="rounded-full bg-slate-100 px-3 py-2 text-xs font-bold text-slate-500">
+          Compte protégé
+        </span>
+      </div>
     );
   }
 
   return (
     <div className="flex flex-wrap items-center gap-2">
+      {showNavigation && (
+        <>
+          <Link
+            href={`/super-admin/users/${profileId}`}
+            className="inline-flex h-10 items-center gap-2 rounded-2xl bg-[#EAF3FA] px-3 text-sm font-bold text-[#03357A] hover:bg-blue-100"
+          >
+            <Eye className="h-4 w-4" />
+            Voir
+          </Link>
+
+          <Link
+            href={`/super-admin/users/${profileId}/edit`}
+            className="inline-flex h-10 items-center gap-2 rounded-2xl bg-violet-50 px-3 text-sm font-bold text-violet-700 hover:bg-violet-100"
+          >
+            <Pencil className="h-4 w-4" />
+            Modifier
+          </Link>
+        </>
+      )}
+
       <select
         value={role}
-        onChange={(event) => setRole(event.target.value)}
+        onChange={(event) =>
+          setRole(event.target.value)
+        }
         disabled={isLoading}
         className="h-10 rounded-2xl border border-[#DCEAF5] bg-white px-3 text-sm font-bold text-[#03357A] outline-none"
       >
-        {roles.map((item) => (
-          <option key={item.value} value={item.value}>
+      {roleOptions.map((item) => (
+          <option
+            key={item.value}
+            value={item.value}
+          >
             {item.label}
           </option>
         ))}
@@ -132,7 +235,9 @@ export default function SuperAdminUserActions({
       <button
         type="button"
         onClick={handleSaveRole}
-        disabled={isLoading || role === currentRole}
+        disabled={
+          isLoading || role === currentRole
+        }
         className="inline-flex h-10 items-center gap-2 rounded-2xl bg-[#EAF3FA] px-3 text-sm font-bold text-[#03357A] disabled:opacity-50"
       >
         <Save className="h-4 w-4" />
@@ -154,7 +259,10 @@ export default function SuperAdminUserActions({
         ) : (
           <Ban className="h-4 w-4" />
         )}
-        {isInactive ? "Réactiver" : "Désactiver"}
+
+        {isInactive
+          ? "Réactiver"
+          : "Désactiver"}
       </button>
 
       <button

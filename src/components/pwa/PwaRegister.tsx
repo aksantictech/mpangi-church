@@ -1,19 +1,9 @@
 "use client";
 
-import { useEffect } from "react";
-
+/**
+ * Ancien composant conservé temporairement pour compatibilité.
+ * L’enregistrement officiel est géré par TenantPwaBootstrap.
+ */
 export default function PwaRegister() {
-  useEffect(() => {
-    if (!("serviceWorker" in navigator)) return;
-
-    navigator.serviceWorker
-      .register("/sw.js", {
-        scope: "/",
-      })
-      .catch(() => {
-        // On garde silencieux pour ne pas bloquer l'app.
-      });
-  }, []);
-
   return null;
 }

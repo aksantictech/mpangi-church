@@ -26,9 +26,12 @@ export async function createSuperAdminUserAction(formData: FormData) {
       churchId: readString(formData, "church_id") || null,
       updateExisting: true,
     });
-  } catch (error: any) {
-    errorMessage = error?.message || "Création impossible.";
-  }
+ } catch (error: unknown) {
+  errorMessage =
+    error instanceof Error
+      ? error.message
+      : "Création impossible.";
+}
 
   if (errorMessage) {
     redirect(
@@ -36,5 +39,5 @@ export async function createSuperAdminUserAction(formData: FormData) {
     );
   }
 
-  redirect("/super-admin/settings?createdUser=1");
+  redirect("/super-admin/users?created=1");
 }

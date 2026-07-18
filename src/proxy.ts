@@ -6,6 +6,7 @@ import {
   slugFromSubdomain,
 } from "@/lib/tenant/domain";
 
+
 const PUBLIC_PREFIXES = [
   "/",
   "/login",
@@ -41,6 +42,7 @@ const PRIVATE_CHURCH_PREFIXES = [
   "/inbox",
   "/settings",
   "/notifications",
+   "/reports",
   "/profile",
 ];
 
@@ -69,6 +71,19 @@ function getHost(request: NextRequest) {
     .split(":")[0]
     .trim()
     .toLowerCase();
+}
+
+function isLocalDevelopmentHost(hostname: string) {
+  const host = hostname.trim().toLowerCase();
+
+  return (
+    process.env.NODE_ENV === "development" &&
+    (
+      host === "localhost" ||
+      host === "127.0.0.1" ||
+      host === "0.0.0.0"
+    )
+  );
 }
 
 function isPublicAsset(pathname: string) {
@@ -341,7 +356,8 @@ export async function proxy(request: NextRequest) {
   const host = getHost(request);
   const primaryDomain = isPrimaryHostname(host);
   const subdomain = getTenantSubdomainFromHost(host);
-
+const localDevelopment =
+  isLocalDevelopmentHost(host);
   const response = NextResponse.next({ request });
 
   if (isPublicAsset(pathname)) return response;
@@ -391,7 +407,11 @@ export async function proxy(request: NextRequest) {
     }
   }
 
-  if (primaryDomain && isChurchPrivateRoute(pathname)) {
+  if (
+  !localDevelopment &&
+  primaryDomain &&
+  isChurchPrivateRoute(pathname)
+) {
     return redirectTo(request, "/main-domain-required", {
       reason: "tenant_domain_required",
       next: pathname,

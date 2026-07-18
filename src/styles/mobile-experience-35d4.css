@@ -204,3 +204,173 @@ body[data-mobile-experience] .mpangi-mobile-notification-card h3 {
     padding-inline: 0.625rem;
   }
 }
+/* Phase 35X — Styles sans mutation des éléments React */
+
+body[data-mobile-experience] main
+  :where(h1, h2, h3, p, span) {
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+
+body[data-mobile-experience] header {
+  width: 100%;
+  max-width: 100%;
+}
+
+body[data-mobile-experience] header img {
+  max-height: 3rem;
+  object-fit: contain;
+}
+
+body[data-mobile-experience] main
+  :where(
+    [class*="grid-cols-3"],
+    [class*="grid-cols-4"],
+    [class*="grid-cols-5"],
+    [class*="grid-cols-6"]
+  ):has(
+    article,
+    [class*="rounded"],
+    [class*="shadow"]
+  ) {
+  display: grid !important;
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(min(100%, 220px), 1fr)
+  ) !important;
+  gap: 0.85rem !important;
+}
+
+body[data-mobile-experience] main
+  :where(
+    [class*="justify-end"],
+    [class*="justify-between"]
+  ):has(a, button) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+body[data-mobile-experience] main
+  :where(
+    nav:not([class*="fixed"]):not(
+      [aria-label="Navigation mobile"]
+    ),
+    [role="tablist"],
+    [class*="overflow-x-auto"]
+  ):has(a, button) {
+  display: flex;
+  max-width: 100%;
+  gap: 0.55rem;
+  overflow-x: auto;
+  padding-bottom: 0.35rem;
+  overscroll-behavior-inline: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+body[data-mobile-experience] main
+  :where(
+    nav:not([class*="fixed"]),
+    [role="tablist"],
+    [class*="overflow-x-auto"]
+  ):has(a, button) > * {
+  flex: 0 0 auto;
+}
+
+body[data-mobile-experience="scanner"] main
+  :where(
+    video,
+    canvas,
+    [id*="reader"],
+    [class*="scanner"]
+  ) {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+body[data-mobile-experience="scanner"] main
+  :where(video, canvas) {
+  height: auto !important;
+  border-radius: 1rem;
+}
+
+body[data-mobile-experience="notifications"] main
+  :where(
+    article,
+    [class*="rounded-2xl"],
+    [class*="rounded-3xl"]
+  ) {
+  min-width: 0;
+  max-width: 100%;
+}
+
+@media (max-width: 767px) {
+  body[data-mobile-experience] main
+    :where(
+      [class*="bg-gradient"],
+      [class*="from-[#"],
+      [class*="from-blue"]
+    ):has(h1, h2) {
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+    border-radius: 1.35rem !important;
+    padding: 1.1rem !important;
+  }
+
+  body[data-mobile-experience] main
+    :where(
+      [class*="bg-gradient"],
+      [class*="from-[#"],
+      [class*="from-blue"]
+    ):has(h1, h2) :where(h1, h2) {
+    max-width: 100%;
+    font-size: clamp(1.75rem, 8vw, 2.45rem) !important;
+    line-height: 1.08 !important;
+  }
+
+  body[data-mobile-experience] main
+    :where(
+      [class*="grid-cols-3"],
+      [class*="grid-cols-4"],
+      [class*="grid-cols-5"],
+      [class*="grid-cols-6"]
+    ):has(
+      article,
+      [class*="rounded"],
+      [class*="shadow"]
+    ) {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  body[data-mobile-experience] main
+    :where(
+      [class*="justify-end"],
+      [class*="justify-between"]
+    ):has(a, button) {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    width: 100%;
+  }
+
+  body[data-mobile-experience] main
+    :where(
+      [class*="justify-end"],
+      [class*="justify-between"]
+    ):has(a, button) > * {
+    width: 100% !important;
+    min-height: 2.8rem;
+    justify-content: center;
+  }
+
+  body[data-mobile-experience] header[class*="sticky"] {
+    z-index: 50;
+    overflow: visible;
+    background: color-mix(
+      in srgb,
+      white 96%,
+      transparent
+    );
+    backdrop-filter: blur(16px);
+  }
+}

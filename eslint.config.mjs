@@ -5,13 +5,40 @@ import nextTs from "eslint-config-next/typescript";
 const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
-  // Override default ignores of eslint-config-next.
+
+  {
+    name: "mpangi-church/stabilisation",
+    rules: {
+      "@typescript-eslint/no-explicit-any": "warn",
+      "react-hooks/set-state-in-effect": "warn",
+    },
+  },
+
+  {
+    name: "mpangi-church/commonjs-scripts",
+    files: [
+      "scripts/**/*.js",
+      "check-*.js",
+      "patch-*.js",
+    ],
+    rules: {
+      // Les scripts techniques Node.js utilisent volontairement CommonJS.
+      "@typescript-eslint/no-require-imports": "off",
+    },
+  },
+
   globalIgnores([
-    // Default ignores of eslint-config-next:
     ".next/**",
     "out/**",
     "build/**",
+    "coverage/**",
     "next-env.d.ts",
+    "**/*.bak",
+    "**/*.backup.*",
+    "**/*.deprecated.*",
+    "patches/**",
+    "templates/**",
+    ".phase*-backup/**",
   ]),
 ]);
 

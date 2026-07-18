@@ -2,49 +2,82 @@
 
 import { useEffect } from "react";
 
-async function cleanupLocalDevCaches() {
-  if (process.env.NODE_ENV !== "development") return;
-  if (typeof window === "undefined") return;
+const DEV_RELOAD_KEY = "mpangi-dev-pwa-cleanup-reload";
 
-  const host = window.location.hostname;
-  const isLocalhost = host === "localhost" || host === "127.0.0.1";
-
-  if (!isLocalhost) return;
-
-  try {
-    if ("serviceWorker" in navigator) {
-      const registrations = await navigator.serviceWorker.getRegistrations();
-
-      await Promise.all(
-        registrations.map((registration) => registration.unregister())
-      );
-    }
-
-    if ("caches" in window) {
-      const keys = await caches.keys();
-
-      await Promise.all(keys.map((key) => caches.delete(key)));
-    }
-
-    sessionStorage.setItem("mpangi-dev-cache-cleaned", "true");
-  } catch {
-    // Nettoyage best-effort uniquement en développement local.
-  }
+function isLocalhost() {
+  return (
+    window.location.hostname === "localhost" ||
+    window.location.hostname === "127.0.0.1" ||
+    window.location.hostname === "0.0.0.0"
+  );
 }
 
 export default function DevServiceWorkerCleanup() {
   useEffect(() => {
-    if (process.env.NODE_ENV !== "development") return;
+    if (
+      process.env.NODE_ENV !== "development" ||
+      !isLocalhost()
+    ) {
+      return;
+    }
 
-    cleanupLocalDevCaches();
+    let cancelled = false;
 
-    const timers = [
-      window.setTimeout(cleanupLocalDevCaches, 800),
-      window.setTimeout(cleanupLocalDevCaches, 2500),
-      window.setTimeout(cleanupLocalDevCaches, 5000),
-    ];
+    async function cleanup() {
+      try {
+        const hadController =
+          "serviceWorker" in navigator &&
+          Boolean(navigator.serviceWorker.controller);
 
-    return () => timers.forEach((timer) => window.clearTimeout(timer));
+        const registrations =
+          "serviceWorker" in navigator
+            ? await navigator.serviceWorker.getRegistrations()
+            : [];
+
+        await Promise.all(
+          registrations.map((registration) =>
+            registration.unregister()
+          )
+        );
+
+        const cacheKeys =
+          "caches" in window ? await caches.keys() : [];
+
+        await Promise.all(
+          cacheKeys.map((cacheKey) =>
+            caches.delete(cacheKey)
+          )
+        );
+
+        if (cancelled) return;
+
+        const cleanupWasNecessary =
+          hadController ||
+          registrations.length > 0 ||
+          cacheKeys.length > 0;
+
+        if (
+          cleanupWasNecessary &&
+          sessionStorage.getItem(DEV_RELOAD_KEY) !== "1"
+        ) {
+          sessionStorage.setItem(DEV_RELOAD_KEY, "1");
+          window.location.reload();
+          return;
+        }
+
+        if (!cleanupWasNecessary) {
+          sessionStorage.removeItem(DEV_RELOAD_KEY);
+        }
+      } catch {
+        // Le nettoyage local ne doit pas bloquer l’application.
+      }
+    }
+
+    void cleanup();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   return null;

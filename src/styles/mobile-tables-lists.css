@@ -236,3 +236,116 @@ body[data-mobile-list-route="true"] .mobile-summary-grid-enhanced {
     padding-inline: 0.8rem !important;
   }
 }
+
+/* Phase 35X — Listes sans MutationObserver */
+
+body[data-mobile-list-route="true"] main
+  :where(h1, h2, h3, p, td, span) {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+
+body[data-mobile-list-route="true"] main
+  :where(div, section):has(> table) {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 1rem;
+}
+
+body[data-mobile-list-route="true"] main table {
+  min-width: 760px;
+}
+
+body[data-mobile-list-route="true"] main
+  :where(
+    [class*="grid-cols-3"],
+    [class*="grid-cols-4"],
+    [class*="grid-cols-5"],
+    [class*="grid-cols-6"]
+  ):has(
+    article,
+    [class*="rounded"],
+    [class*="shadow"]
+  ) {
+  display: grid !important;
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(min(100%, 220px), 1fr)
+  ) !important;
+  gap: 0.85rem !important;
+}
+
+body[data-mobile-list-route="true"] main
+  :where(
+    [class*="justify-end"],
+    [class*="justify-between"]
+  ):has(a, button, form) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+body[data-mobile-list-route="true"] main
+  :where(
+    nav:not([class*="fixed"]):not(
+      [aria-label="Navigation mobile"]
+    ),
+    [role="tablist"],
+    [class*="overflow-x-auto"]
+  ):has(a, button) {
+  display: flex;
+  gap: 0.5rem;
+  max-width: 100%;
+  overflow-x: auto;
+  padding-bottom: 0.35rem;
+}
+
+body[data-mobile-list-route="true"] main
+  :where(
+    article,
+    [class*="rounded-2xl"],
+    [class*="rounded-3xl"]
+  ):has(h2, h3) {
+  max-width: 100%;
+  overflow: hidden;
+}
+
+@media (max-width: 767px) {
+  body[data-mobile-list-route="true"] main
+    :where(
+      [class*="grid-cols-3"],
+      [class*="grid-cols-4"],
+      [class*="grid-cols-5"],
+      [class*="grid-cols-6"]
+    ):has(
+      article,
+      [class*="rounded"],
+      [class*="shadow"]
+    ) {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  body[data-mobile-list-route="true"] main
+    :where(
+      [class*="justify-end"],
+      [class*="justify-between"]
+    ):has(a, button, form) {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    width: 100%;
+  }
+
+  body[data-mobile-list-route="true"] main
+    :where(
+      [class*="justify-end"],
+      [class*="justify-between"]
+    ):has(a, button, form) > * {
+    width: 100% !important;
+    min-height: 2.75rem;
+    justify-content: center;
+  }
+}

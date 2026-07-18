@@ -2,7 +2,6 @@ import {
   ArrowLeftRight,
   BarChart3,
   Bell,
-  BookOpen,
   CalendarDays,
   ClipboardList,
   FileText,
@@ -45,6 +44,7 @@ export type ModuleMenuItem = {
   icon: LucideIcon;
   category: ModuleCategory;
   alwaysVisible?: boolean;
+  permissionCodes?: string[];
 };
 
 export type ModuleMenuGroup = {
@@ -106,6 +106,23 @@ export const MODULE_MENU_ITEMS: ModuleMenuItem[] = [
     icon: LayoutDashboard,
     category: "system",
     alwaysVisible: true,
+  },
+     {
+    code: "reports",
+    label: "Centre de rapports",
+    href: "/reports",
+    icon: BarChart3,
+    category: "system",
+    permissionCodes: [
+      "attendance",
+      "finance_reports",
+      "financial_reports",
+      "extension_reports",
+      "extension_activities",
+      "extensions",
+      "donations",
+      "offerings",
+    ],
   },
   {
     code: "notifications",
@@ -343,43 +360,105 @@ export const CATEGORY_ORDER: ModuleCategory[] = [
   "patrimony",
 ];
 
-export function getGroupedVisibleMenuItems(moduleCodes: string[]) {
+export function getGroupedVisibleMenuItems(
+  moduleCodes: string[]
+): ModuleMenuGroup[] {
   const visibleCodes = new Set(moduleCodes);
 
   const visibleItems = MODULE_MENU_ITEMS.filter(
-    (item) => item.alwaysVisible || visibleCodes.has(item.code)
+    (item) => {
+      if (item.alwaysVisible) {
+        return true;
+      }
+
+      if (visibleCodes.has(item.code)) {
+        return true;
+      }
+
+      return (
+        item.permissionCodes?.some((code) =>
+          visibleCodes.has(code)
+        ) ?? false
+      );
+    }
   );
 
-  return CATEGORY_ORDER.map((category) => ({
-    key: category,
-    title: MODULE_CATEGORY_META[category].title,
-    shortTitle: MODULE_CATEGORY_META[category].shortTitle,
-    description: MODULE_CATEGORY_META[category].description,
-    icon: MODULE_CATEGORY_META[category].icon,
-    items: visibleItems.filter((item) => item.category === category),
-  })).filter((group) => group.items.length > 0);
+  return CATEGORY_ORDER.map(
+    (category): ModuleMenuGroup => ({
+      key: category,
+      title:
+        MODULE_CATEGORY_META[category].title,
+      shortTitle:
+        MODULE_CATEGORY_META[category].shortTitle,
+      description:
+        MODULE_CATEGORY_META[category].description,
+      icon:
+        MODULE_CATEGORY_META[category].icon,
+      items: visibleItems.filter(
+        (item) =>
+          item.category === category
+      ),
+    })
+  ).filter(
+    (group) => group.items.length > 0
+  );
 }
 
 export function findActiveMenuGroup(
   groups: ModuleMenuGroup[],
   pathname: string
 ): ModuleMenuGroup | null {
-  const sortedGroups = groups.map((group) => ({
-    ...group,
-    items: [...group.items].sort((a, b) => b.href.length - a.href.length),
-  }));
+  const normalizedPathname =
+    pathname || "/";
 
-  return (
-    sortedGroups.find((group) =>
-      group.items.some((item) => {
-        if (item.href === "/dashboard") return pathname === item.href;
-        return pathname === item.href || pathname.startsWith(`${item.href}/`);
-      })
-    ) ?? null
-  );
+  const matchingGroups = groups
+    .map((group) => ({
+      group,
+      matchingItem: group.items
+        .filter((item) =>
+          isActiveMenuItem(
+            normalizedPathname,
+            item.href
+          )
+        )
+        .sort(
+          (first, second) =>
+            second.href.length -
+            first.href.length
+        )[0],
+    }))
+    .filter(
+      (
+        entry
+      ): entry is {
+        group: ModuleMenuGroup;
+        matchingItem: ModuleMenuItem;
+      } => Boolean(entry.matchingItem)
+    )
+    .sort(
+      (first, second) =>
+        second.matchingItem.href.length -
+        first.matchingItem.href.length
+    );
+
+  return matchingGroups[0]?.group ?? null;
 }
 
-export function isActiveMenuItem(pathname: string, href: string) {
-  if (href === "/dashboard") return pathname === href;
-  return pathname === href || pathname.startsWith(`${href}/`);
+export function isActiveMenuItem(
+  pathname: string,
+  href: string
+) {
+  const normalizedPathname =
+    pathname || "/";
+
+  if (href === "/dashboard") {
+    return normalizedPathname === href;
+  }
+
+  return (
+    normalizedPathname === href ||
+    normalizedPathname.startsWith(
+      `${href}/`
+    )
+  );
 }

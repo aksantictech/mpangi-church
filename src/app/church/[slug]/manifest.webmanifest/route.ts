@@ -1,7 +1,14 @@
-import { NextResponse } from "next/server";
-import { createAdminClient } from "@/lib/supabase/admin";
+import {
+  NextResponse,
+} from "next/server";
 
-export const dynamic = "force-dynamic";
+import { createAdminClient } from "@/lib/supabase/admin";
+import {
+  getTenantSubdomainFromHost,
+} from "@/lib/tenant/domain";
+
+export const dynamic =
+  "force-dynamic";
 
 type ManifestRouteParams = {
   params: Promise<{
@@ -9,74 +16,375 @@ type ManifestRouteParams = {
   }>;
 };
 
-function shortName(name: string, slug: string) {
-  const cleanName = String(name || "").trim();
+type ChurchManifestRow = {
+  id: string;
+  name: string | null;
+  public_name: string | null;
+  pwa_name: string | null;
+  pwa_short_name: string | null;
+  public_slogan: string | null;
+  slug: string | null;
+  subdomain: string | null;
+  status: string | null;
+  public_enabled: boolean | null;
+  theme_color: string | null;
+  background_color: string | null;
+  updated_at: string | null;
+  customization_updated_at:
+    | string
+    | null;
+};
 
-  if (slug === "maison-misericorde-cmp") return "MDM";
-  if (slug === "iccrdc") return "ICC RDC";
-  if (/maison.*mis[eé]ricorde/i.test(cleanName)) return "MDM";
-  if (/impact.*centre.*chr[eé]tien.*rdc/i.test(cleanName)) return "ICC RDC";
-  if (/impact.*centre.*chr[eé]tien/i.test(cleanName)) return "ICC";
+function cleanText(
+  value: string | null | undefined,
+  fallback = ""
+) {
+  const text = String(
+    value || ""
+  ).trim();
 
-  if (!cleanName) return "Église";
-
-  return cleanName.length > 12 ? cleanName.slice(0, 12) : cleanName;
+  return text || fallback;
 }
 
-export async function GET(request: Request, { params }: ManifestRouteParams) {
-  const { slug } = await params;
-  const admin = createAdminClient();
+function safeColor(
+  value: string | null | undefined,
+  fallback: string
+) {
+  const color =
+    cleanText(value);
 
-  const { data: church } = await admin
+  return /^#[0-9A-Fa-f]{6}$/.test(
+    color
+  )
+    ? color.toUpperCase()
+    : fallback;
+}
+
+function getShortName(
+  church: ChurchManifestRow,
+  appName: string,
+  slug: string
+) {
+  const configured =
+    cleanText(
+      church.pwa_short_name
+    );
+
+  if (configured) {
+    return configured.slice(
+      0,
+      28
+    );
+  }
+
+  if (
+    slug ===
+    "maison-misericorde-cmp"
+  ) {
+    return "MDM";
+  }
+
+  if (slug === "iccrdc") {
+    return "ICC RDC";
+  }
+
+  if (
+    /maison.*mis[eé]ricorde/i.test(
+      appName
+    )
+  ) {
+    return "MDM";
+  }
+
+  if (
+    /impact.*centre.*chr[eé]tien.*rdc/i.test(
+      appName
+    )
+  ) {
+    return "ICC RDC";
+  }
+
+  if (
+    /impact.*centre.*chr[eé]tien/i.test(
+      appName
+    )
+  ) {
+    return "ICC";
+  }
+
+  return (
+    appName.slice(0, 28) ||
+    "Église"
+  );
+}
+
+function getManifestPaths(
+  request: Request,
+  slug: string
+) {
+  const requestUrl =
+    new URL(request.url);
+
+  const hostname =
+    requestUrl.hostname
+      .trim()
+      .toLowerCase();
+
+  const tenantSubdomain =
+    getTenantSubdomainFromHost(
+      hostname
+    );
+
+  const isTenantDomain =
+    Boolean(tenantSubdomain);
+
+  if (isTenantDomain) {
+    return {
+      startUrl: "/",
+      scope: "/",
+    };
+  }
+
+  const churchPath =
+    `/church/${slug}`;
+
+  return {
+    startUrl: churchPath,
+    scope: `${churchPath}/`,
+  };
+}
+
+export async function GET(
+  request: Request,
+  { params }: ManifestRouteParams
+) {
+  const { slug: rawSlug } =
+    await params;
+
+  const slug =
+    cleanText(rawSlug);
+
+  if (!slug) {
+    return NextResponse.json(
+      {
+        error:
+          "Église introuvable.",
+      },
+      {
+        status: 404,
+      }
+    );
+  }
+
+  const admin =
+    createAdminClient();
+
+  const {
+    data,
+    error,
+  } = await admin
     .from("churches")
-    .select("name, public_name, slug, theme_color, background_color, updated_at")
+    .select(
+      `
+      id,
+      name,
+      public_name,
+      pwa_name,
+      pwa_short_name,
+      public_slogan,
+      slug,
+      subdomain,
+      status,
+      public_enabled,
+      theme_color,
+      background_color,
+      updated_at,
+      customization_updated_at
+    `
+    )
     .eq("slug", slug)
     .maybeSingle();
 
+  const church =
+    data as
+      | ChurchManifestRow
+      | null;
+
+  if (
+    error ||
+    !church ||
+    church.status !== "active" ||
+    church.public_enabled === false
+  ) {
+    return NextResponse.json(
+      {
+        error:
+          "Manifest de l’église introuvable.",
+      },
+      {
+        status: 404,
+        headers: {
+          "Cache-Control":
+            "no-store, max-age=0",
+        },
+      }
+    );
+  }
+
+  const finalSlug =
+    cleanText(
+      church.slug,
+      slug
+    );
+
   const publicName =
-    church?.public_name?.trim() ||
-    church?.name?.trim() ||
+    cleanText(
+      church.public_name
+    ) ||
+    cleanText(church.name) ||
     "Mpangi-church";
 
-  const origin = new URL(request.url).origin;
-  const version = church?.updated_at
-    ? encodeURIComponent(church.updated_at)
-    : String(Date.now());
+  const appName =
+    cleanText(
+      church.pwa_name
+    ) ||
+    publicName;
 
-  const iconUrl = `${origin}/api/pwa/icon?slug=${encodeURIComponent(
-    slug
-  )}&v=${version}`;
+  const appShortName =
+    getShortName(
+      church,
+      appName,
+      finalSlug
+    );
+
+  const description =
+    cleanText(
+      church.public_slogan
+    ) ||
+    `Application officielle de ${publicName}`;
+
+  const themeColor =
+    safeColor(
+      church.theme_color,
+      "#03357A"
+    );
+
+  const backgroundColor =
+    safeColor(
+      church.background_color,
+      "#F5F9FC"
+    );
+
+  const versionSource =
+    church.customization_updated_at ||
+    church.updated_at ||
+    "1";
+
+  const version =
+    encodeURIComponent(
+      versionSource
+    );
+
+  const origin =
+    new URL(request.url).origin;
+
+  const encodedSlug =
+    encodeURIComponent(
+      finalSlug
+    );
+
+  const iconUrl =
+    `${origin}/api/pwa/icon?slug=${encodedSlug}&v=${version}`;
+
+  const {
+    startUrl,
+    scope,
+  } = getManifestPaths(
+    request,
+    finalSlug
+  );
 
   const manifest = {
-    name: publicName,
-    short_name: shortName(publicName, slug),
-    description: `Application officielle ${publicName}`,
-    start_url: `/church/${slug}`,
-    scope: `/church/${slug}`,
-    display: "standalone",
-    orientation: "portrait",
-    background_color: church?.background_color || "#F5F9FC",
-    theme_color: church?.theme_color || "#03357A",
+    id:
+      `/church/${finalSlug}`,
+
+    name: appName,
+
+    short_name:
+      appShortName,
+
+    description,
+
+    start_url:
+      startUrl,
+
+    scope,
+
+    display:
+      "standalone",
+
+    display_override: [
+      "window-controls-overlay",
+      "standalone",
+      "minimal-ui",
+    ],
+
+    orientation:
+      "portrait-primary",
+
+    background_color:
+      backgroundColor,
+
+    theme_color:
+      themeColor,
+
+    categories: [
+      "productivity",
+      "lifestyle",
+      "social",
+    ],
+
     icons: [
       {
         src: iconUrl,
         sizes: "192x192",
         type: "image/png",
-        purpose: "any maskable",
+        purpose: "any",
+      },
+      {
+        src: iconUrl,
+        sizes: "192x192",
+        type: "image/png",
+        purpose: "maskable",
       },
       {
         src: iconUrl,
         sizes: "512x512",
         type: "image/png",
-        purpose: "any maskable",
+        purpose: "any",
+      },
+      {
+        src: iconUrl,
+        sizes: "512x512",
+        type: "image/png",
+        purpose: "maskable",
       },
     ],
   };
 
-  return NextResponse.json(manifest, {
-    headers: {
-      "Content-Type": "application/manifest+json",
-      "Cache-Control": "no-store, max-age=0",
-    },
-  });
+  return NextResponse.json(
+    manifest,
+    {
+      headers: {
+        "Content-Type":
+          "application/manifest+json; charset=utf-8",
+
+        "Cache-Control":
+          "no-store, max-age=0",
+
+        Vary:
+          "Host",
+      },
+    }
+  );
 }

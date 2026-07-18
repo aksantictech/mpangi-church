@@ -4,6 +4,7 @@ import { ArrowLeft, Globe } from "lucide-react";
 import AppShell from "@/components/layout/AppShell";
 import PublicPageSettingsForm from "@/components/settings/PublicPageSettingsForm";
 import { createClient } from "@/lib/supabase/server";
+import AdvancedCustomizationForm from "@/components/settings/AdvancedCustomizationForm";
 
 export default async function PublicPageSettingsPage() {
   const supabase = await createClient();
@@ -70,6 +71,26 @@ export default async function PublicPageSettingsPage() {
       donation_bank_account_number,
       donation_bank_iban,
       donation_bank_swift,
+            logo_url,
+      cover_image_url,
+      theme_color,
+      secondary_color,
+      accent_color,
+      background_color,
+      surface_color,
+      text_color,
+      pwa_name,
+      pwa_short_name,
+      public_slogan,
+      public_layout,
+      public_hero_style,
+      dashboard_welcome_message,
+      show_pastor,
+      show_programs,
+      show_publications,
+      show_teachings,
+      show_donations,
+      customization_updated_at,
       donation_bank_details
     `
     )
@@ -113,8 +134,8 @@ export default async function PublicPageSettingsPage() {
             </div>
           </div>
         </section>
-
-        <PublicPageSettingsForm church={church as any} />
+<AdvancedCustomizationForm church={church} />
+        <PublicPageSettingsForm church={church} />
       </div>
     </AppShell>
   );

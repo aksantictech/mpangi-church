@@ -79,6 +79,7 @@ export const MODULE_CATALOG = [
   ["teachings", "Enseignements", "/teachings"],
   ["notifications", "Notifications", "/notifications"],
   ["correspondence", "Courriers", "/administration/correspondence"],
+  ["reports", "Centre de rapports", "/reports"],
   ["inbox", "Boîte de réception", "/inbox"],
   ["transmissions", "Transmissions", "/administration/transmissions"],
   ["tasks", "Tâches administratives", "/administration/tasks"],
@@ -148,15 +149,15 @@ export function getRoleLabel(value: unknown) {
 }
 
 export function getModuleDefinition(moduleCode: string) {
-  const module = MODULE_CATALOG.find(
-    ([code]) => code === moduleCode
+  const moduleDefinition = MODULE_CATALOG.find(
+    ([code]) => code === moduleCode,
   );
 
-  if (!module) return null;
+  if (!moduleDefinition) return null;
 
   return {
-    code: module[0],
-    label: module[1],
-    href: module[2],
+    code: moduleDefinition[0],
+    label: moduleDefinition[1],
+    href: moduleDefinition[2],
   };
 }

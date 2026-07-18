@@ -44,7 +44,7 @@ export default async function NewSuperAdminUserPage({
     <SuperAdminShell>
       <div className="mx-auto max-w-5xl space-y-6">
         <Link
-          href="/super-admin/settings"
+          href="/super-admin/users"
           className="inline-flex items-center gap-2 text-sm font-bold text-[#2563EB]"
         >
           <ArrowLeft className="h-4 w-4" />
@@ -155,7 +155,7 @@ export default async function NewSuperAdminUserPage({
                 className="min-h-12 w-full rounded-2xl border border-[#DCEAF5] bg-[#F8FBFD] px-4 text-sm font-bold outline-none focus:border-[#03357A]"
               >
                 <option value="">Aucune église</option>
-                {churches.map((church: any) => (
+                {churches.map((church) => (
                   <option key={church.id} value={church.id}>
                     {church.name} /{church.slug}
                     {church.status ? ` — ${church.status}` : ""}

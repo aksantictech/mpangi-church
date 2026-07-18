@@ -2,40 +2,23 @@
 
 import { useEffect } from "react";
 
-function isLocalhost() {
-  return (
-    window.location.hostname === "localhost" ||
-    window.location.hostname === "127.0.0.1"
-  );
-}
-
-async function cleanupLocalPwa() {
-  try {
-    if ("serviceWorker" in navigator) {
-      const registrations = await navigator.serviceWorker.getRegistrations();
-      await Promise.all(
-        registrations.map((registration) => registration.unregister())
-      );
-    }
-
-    if ("caches" in window) {
-      const keys = await caches.keys();
-      await Promise.all(keys.map((key) => caches.delete(key)));
-    }
-  } catch {
-    // Nettoyage local best-effort.
+declare global {
+  interface Window {
+    __mpangiPwaRegistrationStarted?: boolean;
   }
 }
 
 export default function TenantPwaBootstrap() {
   useEffect(() => {
-    const manifestHref = `/api/pwa/manifest?host=${encodeURIComponent(
-      window.location.host
-    )}`;
+    const manifestHref =
+      `/api/pwa/manifest?host=${encodeURIComponent(
+        window.location.host
+      )}`;
 
-    let manifest = document.querySelector<HTMLLinkElement>(
-      'link[rel="manifest"]'
-    );
+    let manifest =
+      document.querySelector<HTMLLinkElement>(
+        'link[rel="manifest"]'
+      );
 
     if (!manifest) {
       manifest = document.createElement("link");
@@ -45,31 +28,57 @@ export default function TenantPwaBootstrap() {
 
     manifest.href = manifestHref;
 
-    if (process.env.NODE_ENV === "development" && isLocalhost()) {
-      cleanupLocalPwa();
+    // Aucun service worker pendant le développement local.
+    if (process.env.NODE_ENV !== "production") {
       return;
     }
 
     if (
-      process.env.NODE_ENV === "production" &&
-      "serviceWorker" in navigator &&
-      window.location.protocol === "https:"
+      !("serviceWorker" in navigator) ||
+      window.location.protocol !== "https:"
     ) {
-      const register = () => {
-        navigator.serviceWorker
-          .register("/sw.js", {
-            scope: "/",
-            updateViaCache: "none",
-          })
-          .catch(() => {
-            // Le SW ne doit jamais casser l'interface.
-          });
-      };
-
-      window.addEventListener("load", register);
-
-      return () => window.removeEventListener("load", register);
+      return;
     }
+
+    if (window.__mpangiPwaRegistrationStarted) {
+      return;
+    }
+
+    window.__mpangiPwaRegistrationStarted = true;
+
+    async function registerServiceWorker() {
+      try {
+        const existingRegistration =
+          await navigator.serviceWorker.getRegistration("/");
+
+        if (existingRegistration) {
+          await existingRegistration.update();
+          return;
+        }
+
+        await navigator.serviceWorker.register("/sw.js", {
+          scope: "/",
+          updateViaCache: "none",
+        });
+      } catch {
+        window.__mpangiPwaRegistrationStarted = false;
+      }
+    }
+
+    if (document.readyState === "complete") {
+      void registerServiceWorker();
+      return;
+    }
+
+    const handleLoad = () => {
+      void registerServiceWorker();
+    };
+
+    window.addEventListener("load", handleLoad);
+
+    return () => {
+      window.removeEventListener("load", handleLoad);
+    };
   }, []);
 
   return null;

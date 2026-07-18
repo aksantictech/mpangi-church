@@ -115,3 +115,65 @@ code {
     border-radius: 1.25rem !important;
   }
 }
+
+/* Phase 35X — Formulaires sans mutation du DOM */
+
+body[data-mobile-form-route="true"] form
+  :where(h1, h2, h3, p, label) {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+
+body[data-mobile-form-route="true"] form
+  :where(
+    [class*="justify-end"],
+    [class*="justify-between"],
+    [class*="items-end"]
+  ):has(button, a) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+body[data-mobile-form-route="true"] form
+  :where(
+    [class*="rounded-2xl"],
+    [class*="rounded-3xl"],
+    [class*="rounded-["]
+  ):has(input, select, textarea) {
+  min-width: 0;
+  max-width: 100%;
+}
+
+@media (max-width: 767px) {
+  body[data-mobile-form-route="true"] form
+    :where(
+      [class*="justify-end"],
+      [class*="justify-between"],
+      [class*="items-end"]
+    ):has(button, a) {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    width: 100%;
+  }
+
+  body[data-mobile-form-route="true"] form
+    :where(
+      [class*="justify-end"],
+      [class*="justify-between"],
+      [class*="items-end"]
+    ):has(button, a) > * {
+    width: 100% !important;
+  }
+
+  body[data-mobile-form-route="true"] form
+    :where(
+      [class*="rounded-2xl"],
+      [class*="rounded-3xl"],
+      [class*="rounded-["]
+    ):has(input, select, textarea) {
+    border-radius: 1.25rem !important;
+  }
+}
