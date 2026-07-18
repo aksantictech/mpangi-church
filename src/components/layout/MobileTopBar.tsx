@@ -1,7 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import {
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import {
   Bell,
   ChevronDown,
@@ -12,17 +16,26 @@ import {
   Settings,
   X,
 } from "lucide-react";
-import { usePathname, useRouter } from "next/navigation";
+import {
+  usePathname,
+  useRouter,
+} from "next/navigation";
+
 import {
   findActiveMenuGroup,
   getGroupedVisibleMenuItems,
   isActiveMenuItem,
 } from "@/lib/modules/moduleRegistry";
+import type { ChurchBranding } from "@/lib/tenant/churchBranding";
 
 type MyModulesResponse = {
   role?: string;
   churchId?: string | null;
   moduleCodes?: string[];
+};
+
+type MobileTopBarProps = {
+  branding: ChurchBranding;
 };
 
 const FALLBACK_MODULES = [
@@ -31,38 +44,74 @@ const FALLBACK_MODULES = [
   "notifications",
 ];
 
-export default function MobileTopBar() {
-  const pathname = usePathname();
+export default function MobileTopBar({
+  branding,
+}: MobileTopBarProps) {
+  const pathname =
+    usePathname() || "/";
+
   const router = useRouter();
- const [open, setOpen] = useState(false);
-const [openGroupOverride, setOpenGroupOverride] =
-  useState<string | null>(null);
-  const [logoutLoading, setLogoutLoading] = useState(false);
-  const [myModules, setMyModules] = useState<MyModulesResponse>({
-    moduleCodes: FALLBACK_MODULES,
+
+  const [open, setOpen] =
+    useState(false);
+
+  const [
+    openGroupOverride,
+    setOpenGroupOverride,
+  ] = useState<string | null>(null);
+
+  const [
+    logoutLoading,
+    setLogoutLoading,
+  ] = useState(false);
+
+  const [
+    myModules,
+    setMyModules,
+  ] = useState<MyModulesResponse>({
+    moduleCodes:
+      FALLBACK_MODULES,
   });
 
   useEffect(() => {
     let mounted = true;
 
-    fetch("/api/modules/my-modules", {
-      cache: "no-store",
-    })
-      .then((response) => response.json())
-      .then((payload) => {
+    fetch(
+      "/api/modules/my-modules",
+      {
+        cache: "no-store",
+        credentials: "include",
+      }
+    )
+      .then(async (response) => {
+        const payload =
+          (await response.json()) as
+            MyModulesResponse;
+
+        if (!response.ok) {
+          throw new Error(
+            "Modules indisponibles."
+          );
+        }
+
         if (!mounted) return;
 
         setMyModules({
           role: payload.role,
-          churchId: payload.churchId,
+          churchId:
+            payload.churchId,
           moduleCodes:
-            payload.moduleCodes || FALLBACK_MODULES,
+            payload.moduleCodes ||
+            FALLBACK_MODULES,
         });
       })
       .catch(() => {
-        if (mounted) {
-          setMyModules({ moduleCodes: FALLBACK_MODULES });
-        }
+        if (!mounted) return;
+
+        setMyModules({
+          moduleCodes:
+            FALLBACK_MODULES,
+        });
       });
 
     return () => {
@@ -73,23 +122,30 @@ const [openGroupOverride, setOpenGroupOverride] =
   const groups = useMemo(
     () =>
       getGroupedVisibleMenuItems(
-        myModules.moduleCodes || FALLBACK_MODULES
+        myModules.moduleCodes ||
+          FALLBACK_MODULES
       ),
     [myModules.moduleCodes]
   );
 
-const activeGroupKey = useMemo(
-  () =>
-    findActiveMenuGroup(groups, pathname)?.key ?? "system",
-  [groups, pathname]
-);
+  const activeGroupKey =
+    useMemo(
+      () =>
+        findActiveMenuGroup(
+          groups,
+          pathname
+        )?.key ?? "system",
+      [groups, pathname]
+    );
 
-const openGroup = openGroupOverride ?? activeGroupKey;
+  const openGroup =
+    openGroupOverride ??
+    activeGroupKey;
 
-function closeForNavigation() {
-  setOpen(false);
-  setOpenGroupOverride(null);
-}
+  function closeForNavigation() {
+    setOpen(false);
+    setOpenGroupOverride(null);
+  }
 
   useEffect(() => {
     function openMenu() {
@@ -101,32 +157,42 @@ function closeForNavigation() {
       openMenu
     );
 
-    return () =>
+    return () => {
       window.removeEventListener(
         "mpangi:open-mobile-menu",
         openMenu
       );
+    };
   }, []);
 
   useEffect(() => {
     if (!open) return;
 
-    const originalOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
+    const originalOverflow =
+      document.body.style.overflow;
+
+    document.body.style.overflow =
+      "hidden";
 
     return () => {
-      document.body.style.overflow = originalOverflow;
+      document.body.style.overflow =
+        originalOverflow;
     };
   }, [open]);
 
   async function handleLogout() {
     try {
       setLogoutLoading(true);
+
       await fetch("/logout", {
         method: "POST",
         cache: "no-store",
       });
-      router.replace("/login?logout=1");
+
+      router.replace(
+        "/login?logout=1"
+      );
+
       router.refresh();
     } finally {
       setLogoutLoading(false);
@@ -137,32 +203,58 @@ function closeForNavigation() {
     <>
       <header
         data-mpangi-church-mobile-topbar
-        className="sticky top-0 z-[60] border-b border-[#DCEAF5] bg-white/95 px-3 py-3 shadow-sm backdrop-blur lg:hidden"
+        className="sticky top-0 z-[60] border-b border-[#DCEAF5] bg-[var(--church-surface)]/95 px-3 py-3 shadow-sm backdrop-blur lg:hidden"
       >
         <div className="flex items-center justify-between gap-3">
           <button
             type="button"
-            onClick={() => setOpen(true)}
-            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#EAF3FA] text-[#03357A]"
+            onClick={() =>
+              setOpen(true)
+            }
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#EAF3FA] text-[var(--church-primary)]"
             aria-label="Ouvrir le menu"
           >
             <Menu className="h-5 w-5" />
           </button>
 
-          <Link href="/dashboard" 
-          onClick={closeForNavigation}
-          className="min-w-0 flex-1">
-            <p className="truncate text-[10px] font-black uppercase tracking-[0.18em] text-slate-400">
-              Mpangi-church
-            </p>
-            <p className="truncate text-base font-black text-[#03357A]">
-              Espace église
-            </p>
+          <Link
+            href="/dashboard"
+            onClick={
+              closeForNavigation
+            }
+            className="flex min-w-0 flex-1 items-center gap-3"
+          >
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-[var(--church-primary)] text-xs font-black text-white">
+              {branding.logoUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={
+                    branding.logoUrl
+                  }
+                  alt={`Logo ${branding.name}`}
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                branding.shortName
+              )}
+            </span>
+
+            <span className="min-w-0">
+              <span className="block truncate text-[10px] font-black uppercase tracking-[0.18em] text-slate-400">
+                {
+                  branding.shortName
+                }
+              </span>
+
+              <span className="block truncate text-base font-black text-[var(--church-primary)]">
+                {branding.name}
+              </span>
+            </span>
           </Link>
 
           <Link
             href="/notifications"
-            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-[#DCEAF5] bg-white text-[#03357A]"
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-[#DCEAF5] bg-white text-[var(--church-primary)]"
             aria-label="Notifications"
           >
             <Bell className="h-5 w-5" />
@@ -175,38 +267,59 @@ function closeForNavigation() {
           <button
             type="button"
             aria-label="Fermer le menu"
-            onClick={() => setOpen(false)}
+            onClick={() =>
+              setOpen(false)
+            }
             className="absolute inset-0 bg-slate-950/50"
           />
 
           <aside
             data-mpangi-church-mobile-drawer
-            className="absolute inset-y-0 left-0 flex w-[88vw] max-w-[360px] flex-col overflow-hidden bg-white shadow-2xl"
+            className="absolute inset-y-0 left-0 flex w-[88vw] max-w-[360px] flex-col overflow-hidden bg-[var(--church-surface)] shadow-2xl"
           >
             <div className="shrink-0 border-b border-[#DCEAF5] p-4">
               <div className="flex items-center justify-between gap-3">
                 <Link
                   href="/dashboard"
-                  onClick={closeForNavigation}
+                  onClick={
+                    closeForNavigation
+                  }
                   className="flex min-w-0 items-center gap-3"
                 >
-                  <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#03357A] text-sm font-black text-white">
-                    MC
+                  <span className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br from-[var(--church-primary)] to-[var(--church-secondary)] text-sm font-black text-white">
+                    {branding.logoUrl ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={
+                          branding.logoUrl
+                        }
+                        alt={`Logo ${branding.name}`}
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      branding.shortName
+                    )}
                   </span>
+
                   <span className="min-w-0">
                     <span className="block truncate text-xs font-black uppercase tracking-[0.18em] text-slate-400">
-                      Mpangi-church
+                      {
+                        branding.shortName
+                      }
                     </span>
-                    <span className="block truncate text-lg font-black text-[#03357A]">
-                      Tous les modules
+
+                    <span className="block truncate text-lg font-black text-[var(--church-primary)]">
+                      {branding.name}
                     </span>
                   </span>
                 </Link>
 
                 <button
                   type="button"
-                  onClick={() => setOpen(false)}
-                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-[#EAF3FA] text-[#03357A]"
+                  onClick={() =>
+                    setOpen(false)
+                  }
+                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-[#EAF3FA] text-[var(--church-primary)]"
                   aria-label="Fermer"
                 >
                   <X className="h-5 w-5" />
@@ -215,7 +328,9 @@ function closeForNavigation() {
 
               <Link
                 href="/modules"
-                onClick={closeForNavigation}
+                onClick={
+                  closeForNavigation
+                }
                 className="mt-4 flex min-h-11 items-center gap-3 rounded-2xl border border-[#DCEAF5] bg-[#F8FBFD] px-4 py-3 text-sm font-bold text-slate-600"
               >
                 <Search className="h-4 w-4" />
@@ -225,82 +340,126 @@ function closeForNavigation() {
 
             <nav className="min-h-0 flex-1 overflow-y-auto p-3">
               <div className="space-y-2">
-                {groups.map((group) => {
-                  const GroupIcon = group.icon;
-                  const isOpen = openGroup === group.key;
-                  const hasActiveItem = group.items.some((item) =>
-                    isActiveMenuItem(pathname, item.href)
-                  );
+                {groups.map(
+                  (group) => {
+                    const GroupIcon =
+                      group.icon;
 
-                  return (
-                    <section
-                      key={group.key}
-                      className="overflow-hidden rounded-3xl border border-[#DCEAF5] bg-white"
-                    >
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setOpenGroupOverride(isOpen ? "" : group.key)
+                    const isOpen =
+                      openGroup ===
+                      group.key;
+
+                    const hasActiveItem =
+                      group.items.some(
+                        (item) =>
+                          isActiveMenuItem(
+                            pathname,
+                            item.href
+                          )
+                      );
+
+                    return (
+                      <section
+                        key={
+                          group.key
                         }
-                        className={`flex w-full items-center justify-between gap-3 px-4 py-3 text-left ${
-                          hasActiveItem || isOpen
-                            ? "bg-[#EAF3FA] text-[#03357A]"
-                            : "text-slate-600"
-                        }`}
+                        className="overflow-hidden rounded-3xl border border-[#DCEAF5] bg-white"
                       >
-                        <span className="flex min-w-0 items-center gap-3">
-                          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-white text-[#03357A]">
-                            <GroupIcon className="h-5 w-5" />
-                          </span>
-                          <span className="min-w-0">
-                            <span className="block truncate text-sm font-black">
-                              {group.title}
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setOpenGroupOverride(
+                              isOpen
+                                ? ""
+                                : group.key
+                            )
+                          }
+                          className={[
+                            "flex w-full items-center justify-between gap-3 px-4 py-3 text-left",
+                            hasActiveItem ||
+                            isOpen
+                              ? "bg-[#EAF3FA] text-[var(--church-primary)]"
+                              : "text-slate-600",
+                          ].join(" ")}
+                        >
+                          <span className="flex min-w-0 items-center gap-3">
+                            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-white text-[var(--church-primary)]">
+                              <GroupIcon className="h-5 w-5" />
                             </span>
-                            <span className="block truncate text-xs font-semibold text-slate-500">
-                              {group.description}
+
+                            <span className="min-w-0">
+                              <span className="block truncate text-sm font-black">
+                                {
+                                  group.title
+                                }
+                              </span>
+
+                              <span className="block truncate text-xs font-semibold text-slate-500">
+                                {
+                                  group.description
+                                }
+                              </span>
                             </span>
                           </span>
-                        </span>
 
-                        <ChevronDown
-                          className={`h-4 w-4 shrink-0 transition ${
-                            isOpen ? "rotate-180" : ""
-                          }`}
-                        />
-                      </button>
+                          <ChevronDown
+                            className={[
+                              "h-4 w-4 shrink-0 transition",
+                              isOpen
+                                ? "rotate-180"
+                                : "",
+                            ].join(" ")}
+                          />
+                        </button>
 
-                      {isOpen && (
-                        <div className="space-y-1 p-3 pt-1">
-                          {group.items.map((item) => {
-                            const ItemIcon = item.icon;
-                            const active = isActiveMenuItem(
-                              pathname,
-                              item.href
-                            );
+                        {isOpen && (
+                          <div className="space-y-1 p-3 pt-1">
+                            {group.items.map(
+                              (item) => {
+                                const ItemIcon =
+                                  item.icon;
 
-                            return (
-                              <Link
-                                key={`${group.key}-${item.href}`}
-                                href={item.href}
-                                onClick={closeForNavigation}
-                                className={`flex min-h-11 min-w-0 items-center gap-3 rounded-2xl px-3 py-3 text-sm font-extrabold ${
-                                  active
-                                    ? "bg-[#03357A] text-white"
-                                    : "text-slate-600 hover:bg-[#F8FBFD] hover:text-[#03357A]"
-                                }`}
-                              >
-                                <ItemIcon className="h-4 w-4 shrink-0" />
-                                <span className="truncate">
-                                  {item.label}
-                                </span>
-                              </Link>
-                            );
-                          })}
-                        </div>
-                      )}
-                    </section>
-                  );
-                })}
+                                const active =
+                                  isActiveMenuItem(
+                                    pathname,
+                                    item.href
+                                  );
+
+                                return (
+                                  <Link
+                                    key={`${group.key}-${item.href}`}
+                                    href={
+                                      item.href
+                                    }
+                                    onClick={
+                                      closeForNavigation
+                                    }
+                                    className={[
+                                      "flex min-h-11 min-w-0 items-center gap-3 rounded-2xl px-3 py-3 text-sm font-extrabold",
+                                      active
+                                        ? "bg-[var(--church-primary)] text-white"
+                                        : "text-slate-600 hover:bg-[#F8FBFD] hover:text-[var(--church-primary)]",
+                                    ].join(
+                                      " "
+                                    )}
+                                  >
+                                    <ItemIcon className="h-4 w-4 shrink-0" />
+
+                                    <span className="truncate">
+                                      {
+                                        item.label
+                                      }
+                                    </span>
+                                  </Link>
+                                );
+                              }
+                            )}
+                          </div>
+                        )}
+                      </section>
+                    );
+                  }
+                )}
               </div>
             </nav>
 
@@ -308,16 +467,21 @@ function closeForNavigation() {
               <div className="grid grid-cols-2 gap-2">
                 <Link
                   href="/dashboard"
-                  onClick={closeForNavigation}
-                  className="flex min-h-11 items-center justify-center gap-2 rounded-2xl bg-[#EAF3FA] px-3 text-sm font-extrabold text-[#03357A]"
+                  onClick={
+                    closeForNavigation
+                  }
+                  className="flex min-h-11 items-center justify-center gap-2 rounded-2xl bg-[#EAF3FA] px-3 text-sm font-extrabold text-[var(--church-primary)]"
                 >
                   <Home className="h-4 w-4" />
                   Accueil
                 </Link>
+
                 <Link
                   href="/settings"
-                  onClick={closeForNavigation}
-                  className="flex min-h-11 items-center justify-center gap-2 rounded-2xl bg-[#EAF3FA] px-3 text-sm font-extrabold text-[#03357A]"
+                  onClick={
+                    closeForNavigation
+                  }
+                  className="flex min-h-11 items-center justify-center gap-2 rounded-2xl bg-[#EAF3FA] px-3 text-sm font-extrabold text-[var(--church-primary)]"
                 >
                   <Settings className="h-4 w-4" />
                   Réglages
@@ -326,11 +490,16 @@ function closeForNavigation() {
 
               <button
                 type="button"
-                onClick={handleLogout}
-                disabled={logoutLoading}
+                onClick={
+                  handleLogout
+                }
+                disabled={
+                  logoutLoading
+                }
                 className="mt-2 flex min-h-11 w-full items-center justify-center gap-2 rounded-2xl bg-red-50 px-4 text-sm font-extrabold text-red-700 disabled:opacity-60"
               >
                 <LogOut className="h-4 w-4" />
+
                 {logoutLoading
                   ? "Déconnexion..."
                   : "Déconnexion"}

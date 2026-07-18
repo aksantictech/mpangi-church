@@ -42,6 +42,7 @@ const PRIVATE_CHURCH_PREFIXES = [
   "/inbox",
   "/settings",
   "/notifications",
+   "/reports",
   "/profile",
 ];
 

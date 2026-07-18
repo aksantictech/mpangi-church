@@ -1,0 +1,1853 @@
+﻿
+Path                                                                                                                                    LineNumber Line                                                  
+----                                                                                                                                    ---------- ----                                                  
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\middleware.ts.deprecated                                        44   /\.(?:svg|png|jpg|jpeg|gif|webp|ico|css|js|map|tx...
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\middleware.ts.deprecated                                        69     pathname.startsWith("/manifest") ||               
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\middleware.ts.deprecated                                       191     "/((?!_next/static|_next/image|favicon.ico|.*\\...
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\middleware.ts.phase35e2.bak                                     44   /\.(?:svg|png|jpg|jpeg|gif|webp|ico|css|js|map|tx...
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\middleware.ts.phase35e2.bak                                     69     pathname.startsWith("/manifest") ||               
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\middleware.ts.phase35e2.bak                                    191     "/((?!_next/static|_next/image|favicon.ico|.*\\...
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\proxy.ts                                                        62   /\.(?:svg|png|jpg|jpeg|gif|webp|ico|css|js|map|tx...
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\proxy.ts                                                        96     pathname.startsWith("/manifest") ||               
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\proxy.ts                                                       442     "/((?!_next/static|_next/image|favicon.ico|.*\\...
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\globals.css                                                  8 @theme inline {                                       
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\layout.tsx                                                  44   manifest: "/manifest.webmanifest",                  
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\layout.tsx                                                  57   themeColor: "#03357A",                              
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\layout.tsx.phase35e2c.bak                                   43   manifest: "/manifest.webmanifest",                  
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\layout.tsx.phase35e2c.bak                                   56   themeColor: "#03357A",                              
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\manifest.ts                                                  7 export default async function manifest(): Promise<M...
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\manifest.ts                                                 28     theme_color: tenant.themeColor,                   
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\page.tsx                                                    32   logo_url: string | null;                            
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\page.tsx                                                    44       .select("id, name, slug, subdomain, logo_url,...
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\page.tsx                                                   107   if (church.logo_url) {                              
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\page.tsx                                                   110         src={church.logo_url}                         
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\api\notifications\broadcast\route.ts.phase35e2c.bak        172       .select("id, name, public_name, pwa_name, log...
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\api\notifications\broadcast\route.ts.phase35e2c.bak        214       icon: church.logo_url || "/images/mpangi-logo...
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\api\public\church-donations\route.ts                       208         public_name,                                  
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\api\pwa\icon\route.ts                                       55     typeof church?.logo_url === "string" ? church.l...
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\api\pwa\icon\[size]\route.ts                                 7   data: { logo_url: string | null } | null;           
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\api\pwa\icon\[size]\route.ts                                31         .select("logo_url")                           
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\api\pwa\icon\[size]\route.ts                                37         .select("logo_url")                           
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\api\pwa\icon\[size]\route.ts                                43         .select("logo_url")                           
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\api\pwa\icon\[size]\route.ts                                49         .select("logo_url")                           
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\api\pwa\icon\[size]\route.ts                                58       if (!error && data?.logo_url) {                 
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\api\pwa\icon\[size]\route.ts                                59         return String(data.logo_url);                 
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\api\pwa\manifest\route.ts                                   10   logo_url: string | null;                            
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\api\pwa\manifest\route.ts                                   47         .select("id, name, slug, logo_url")           
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\api\pwa\manifest\route.ts                                   53         .select("id, name, slug, logo_url")           
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\api\pwa\manifest\route.ts                                   59         .select("id, name, slug, logo_url")           
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\api\pwa\manifest\route.ts                                   65         .select("id, name, slug, logo_url")           
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\api\pwa\manifest\route.ts                                   97   const manifest = {                                  
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\api\pwa\manifest\route.ts                                  109     theme_color: "#03357A",                           
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\api\pwa\manifest\route.ts                                  127   return NextResponse.json(manifest, {                
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\api\pwa\manifest\route.ts                                  129       "Content-Type": "application/manifest+json; c...
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\api\pwa\tenant\route.ts                                     24       themeColor: tenant.themeColor,                  
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\api\settings\live-stream\route.ts                          108       .select("id, slug, name, public_name")          
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\api\settings\live-stream\route.ts.phase35e2c.bak           105       .select("id, slug, name, public_name")          
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\church\[slug]\page.tsx                                      41   public_name?: string | null;                        
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\church\[slug]\page.tsx                                      47   public_name: string | null;                         
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\church\[slug]\page.tsx                                      52   logo_url: string | null;                            
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\church\[slug]\page.tsx                                      97   const publicName = church.public_name?.trim();      
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\church\[slug]\page.tsx                                     152     .select("name, public_name, public_message, log...
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\church\[slug]\page.tsx                                     159       manifest: `/church/${slug}/manifest.webmanife...
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\church\[slug]\page.tsx                                     170     manifest: `/church/${slug}/manifest.webmanifest`, 
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\church\[slug]\page.tsx                                     190       public_name,                                    
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\church\[slug]\page.tsx                                     194       logo_url,                                       
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\church\[slug]\page.tsx                                     251     church.logo_url || "/images/churches/maison-mis...
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\church\[slug]\bible\page.tsx                                33     .select("id, name, public_name, slug, status, p...
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\church\[slug]\bible\page.tsx                                47     church.public_name?.trim() || church.name?.trim...
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\church\[slug]\don\page.tsx                                  72         public_name,                                  
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\church\[slug]\don\page.tsx                                  76         logo_url,                                     
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\church\[slug]\don\page.tsx                                 127     church.public_name?.trim() ||                     
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\church\[slug]\don\page.tsx                                 181               {church.logo_url ? (                    
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\church\[slug]\don\page.tsx                                 184                     src={church.logo_url}             
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\church\[slug]\don\success\page.tsx                          49         public_name                                   
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\church\[slug]\don\success\page.tsx                          67     churchData?.public_name ||                        
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\church\[slug]\icon.png\route.ts                             34     .select("logo_url")                               
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\church\[slug]\icon.png\route.ts                             38   const logoUrl = church?.logo_url || "";             
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\church\[slug]\install\page.tsx                              21   public_name: string | null;                         
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\church\[slug]\install\page.tsx                              22   pwa_name?: string | null;                           
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\church\[slug]\install\page.tsx                              24   const pwaName = church.pwa_name?.trim();            
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\church\[slug]\install\page.tsx                              28   const publicName = church.public_name?.trim();      
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\church\[slug]\install\page.tsx                              46     manifest: `/church/${slug}/manifest.webmanifest`, 
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\church\[slug]\install\page.tsx                              63     .select("name, public_name, pwa_name, slug, sta...
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\church\[slug]\live\page.tsx                                126       public_name,                                    
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\church\[slug]\live\page.tsx                                151     church.public_name?.trim() ||                     
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\church\[slug]\manifest.webmanifest\route.ts                  6 type ManifestRouteParams = {                          
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\church\[slug]\manifest.webmanifest\route.ts                 26 export async function GET(request: Request, { param...
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\church\[slug]\manifest.webmanifest\route.ts                 32     .select("name, public_name, slug, theme_color, ...
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\church\[slug]\manifest.webmanifest\route.ts                 37     church?.public_name?.trim() ||                    
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\church\[slug]\manifest.webmanifest\route.ts                 50   const manifest = {                                  
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\church\[slug]\manifest.webmanifest\route.ts                 59     theme_color: church?.theme_color || "#03357A",    
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\church\[slug]\manifest.webmanifest\route.ts                 76   return NextResponse.json(manifest, {                
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\church\[slug]\manifest.webmanifest\route.ts                 78       "Content-Type": "application/manifest+json",    
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\church\[slug]\member-registration\page.tsx                  35       public_name,                                    
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\church\[slug]\notifications\page.tsx                        44         "id, name, public_name, slug, status, publi...
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\church\[slug]\notifications\page.tsx                        59     church.public_name?.trim() ||                     
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\dashboard\page.tsx                                         100       churches(id, name, slug, logo_url)              
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\dashboard\page.tsx                                         126     logo_url: string | null;                          
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\finance\manifest.ts                                          7 export default async function manifest(): Promise<M...
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\finance\manifest.ts                                         28     theme_color: tenant.themeColor,                   
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\install\page.tsx                                            72               description="Le manifeste utilise le ...
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\login\page.tsx                                              28   public_name: string | null;                         
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\login\page.tsx                                              29   pwa_name: string | null;                            
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\login\page.tsx                                              32   logo_url: string | null;                            
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\login\page.tsx                                              37   public_name?: string | null;                        
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\login\page.tsx                                              38   pwa_name?: string | null;                           
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\login\page.tsx                                              40   const pwaName = church.pwa_name?.trim();            
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\login\page.tsx                                              44   const publicName = church.public_name?.trim();      
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\login\page.tsx                                             120           "id, name, public_name, pwa_name, slug, s...
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\login\page.tsx                                             205           "id, name, public_name, pwa_name, slug, s...
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\login\page.tsx                                             315               {churchInfo?.logo_url ? (               
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\login\page.tsx                                             319                     src={churchInfo.logo_url}         
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\manifest.json\route.ts                                       7 async function buildManifest() {                      
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\manifest.json\route.ts                                      28     theme_color: tenant.themeColor,                   
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\manifest.json\route.ts                                      47   return NextResponse.json(await buildManifest(), {   
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\manifest.json\route.ts                                      49       "Content-Type": "application/manifest+json",    
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\members\[id]\card\page.tsx                                  16   return church.public_name || church.pwa_name || c...
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\members\[id]\card\page.tsx                                  78     .select("id, name, public_name, pwa_name, slug,...
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\members\[id]\card\page.tsx                                 177             logoUrl: church.logo_url,                 
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\settings\public-page\page.tsx                               47       public_name,                                    
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\settings\system-check\page.tsx                              27   public_name?: string | null;                        
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\settings\system-check\page.tsx                              28   pwa_name?: string | null;                           
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\settings\system-check\page.tsx                              30   const pwaName = church.pwa_name?.trim();            
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\settings\system-check\page.tsx                              33   const publicName = church.public_name?.trim();      
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\settings\system-check\page.tsx                             145       public_name,                                    
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\settings\system-check\page.tsx                             146       pwa_name,                                       
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\settings\system-check\page.tsx                             159       logo_url,                                       
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\settings\system-check\page.tsx                             348         church.pwa_name || church.pwa_short_name      
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\super-admin\churches\page.tsx                               43         "id, name, slug, subdomain, logo_url, addre...
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\super-admin\churches\page.tsx                              191                           {church.logo_url ? (        
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\super-admin\churches\page.tsx                              194                               src={church.logo_url}   
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\super-admin\churches\[id]\page.tsx                          49       logo_url,                                       
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\super-admin\churches\[id]\page.tsx                         163                   {church.logo_url ? (                
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\super-admin\churches\[id]\page.tsx                         166                       src={church.logo_url}           
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\app\super-admin\churches\[id]\edit\page.tsx                     29       logo_url,                                       
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\components\bible\BibleReaderClient.tsx                          83 type ReaderTheme =                                    
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\components\bible\BibleReaderClient.tsx                         186 function themeClasses(                                
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\components\bible\BibleReaderClient.tsx                         187   theme: ReaderTheme                                  
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\components\bible\BibleReaderClient.tsx                         189   if (theme === "dark") {                             
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\components\bible\BibleReaderClient.tsx                         204   if (theme === "sepia") {                            
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\components\bible\BibleReaderClient.tsx                         303     theme,                                            
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\components\bible\BibleReaderClient.tsx                         304     setTheme,                                         
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\components\bible\BibleReaderClient.tsx                         306     useState<ReaderTheme>(                            
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\components\bible\BibleReaderClient.tsx                         368     themeClasses(theme);                              
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\components\bible\BibleReaderClient.tsx                         396           saved.theme                                 
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\components\bible\BibleReaderClient.tsx                         399         setTheme(                                     
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\components\bible\BibleReaderClient.tsx                         400           saved.theme                                 
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\components\bible\BibleReaderClient.tsx                         416         theme,                                        
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\components\bible\BibleReaderClient.tsx                         424     theme,                                            
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\components\bible\BibleReaderClient.tsx                         910       data-bible-theme={theme}                        
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\components\bible\BibleReaderClient.tsx                        1200             <ThemeButton                              
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\components\bible\BibleReaderClient.tsx                        1202                 theme === "light"                     
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\components\bible\BibleReaderClient.tsx                        1207                 setTheme("light")                     
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\components\bible\BibleReaderClient.tsx                        1211             <ThemeButton                              
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\components\bible\BibleReaderClient.tsx                        1213                 theme === "sepia"                     
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\components\bible\BibleReaderClient.tsx                        1218                 setTheme("sepia")                     
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\components\bible\BibleReaderClient.tsx                        1222             <ThemeButton                              
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\components\bible\BibleReaderClient.tsx                        1224                 theme === "dark"                      
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\components\bible\BibleReaderClient.tsx                        1229                 setTheme("dark")                      
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\components\bible\BibleReaderClient.tsx                        1471 function ThemeButton({                                
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\components\brand\AppLogo.tsx                                     2 import { BRAND } from "@/lib/constants/theme";        
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\components\layout\AdminChurchHomeLink.tsx                       33     .select("name, public_name, pwa_name, slug")      
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\components\public\PublicFeaturedUpdates.tsx                    303                 "cover_image_url",                    
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\components\public\PublicFeaturedUpdates.tsx                    365               "cover_image_url",                      
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\components\public\PublicFormLayout.tsx                           7   public_name?: string | null;                        
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\components\public\PublicFormLayout.tsx                          20   const publicName = church?.public_name?.trim();     
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\components\pwa\TenantPwaBootstrap.tsx                           13     const manifestHref =                              
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\components\pwa\TenantPwaBootstrap.tsx                           14       `/api/pwa/manifest?host=${encodeURIComponent(   
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\components\pwa\TenantPwaBootstrap.tsx                           18     let manifest =                                    
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\components\pwa\TenantPwaBootstrap.tsx                           20         'link[rel="manifest"]'                        
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\components\pwa\TenantPwaBootstrap.tsx                           23     if (!manifest) {                                  
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\components\pwa\TenantPwaBootstrap.tsx                           24       manifest = document.createElement("link");      
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\components\pwa\TenantPwaBootstrap.tsx                           25       manifest.rel = "manifest";                      
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\components\pwa\TenantPwaBootstrap.tsx                           26       document.head.appendChild(manifest);            
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\components\pwa\TenantPwaBootstrap.tsx                           29     manifest.href = manifestHref;                     
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\components\settings\PublicPageSettingsForm.tsx                  21     public_name: string | null;                       
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\components\settings\PublicPageSettingsForm.tsx                  66     public_name: church.public_name || "",            
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\components\settings\PublicPageSettingsForm.tsx                 110         public_name: formData.public_name.trim() ||...
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\components\settings\PublicPageSettingsForm.tsx                 164               value={formData.public_name}            
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\components\settings\PublicPageSettingsForm.tsx                 166                 updateField("public_name", event.ta...
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\components\super-admin\ChurchForm.tsx                           81       _logo_url: logoUrl.trim(),                      
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\components\super-admin\ChurchForm.tsx                           82       _cover_image_url: coverImageUrl.trim(),         
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\components\super-admin\SuperAdminChurchForm.tsx                 19   logo_url?: string | null;                           
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\components\super-admin\SuperAdminChurchForm.tsx                193       let logoUrl = initialChurch?.logo_url ?? null;  
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\components\super-admin\SuperAdminChurchForm.tsx                213         logo_url: logoUrl,                            
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\components\super-admin\SuperAdminChurchForm.tsx                373               existingUrl={initialChurch?.logo_url ...
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\lib\church\public-name.ts                                        3   public_name?: string | null;                        
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\lib\church\public-name.ts                                        4   pwa_name?: string | null;                           
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\lib\church\public-name.ts                                        8   const pwaName = church.pwa_name?.trim();            
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\lib\church\public-name.ts                                       14   const publicName = church.public_name?.trim();      
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\lib\onboarding\onboarding.ts                                   101         .select("id, name, slug, status, city, coun...
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\lib\tenant\pwa.ts                                               75     field(church, "public_name") ||                   
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\lib\tenant\pwa.ts                                               86     logoUrl: field(church, "logo_url"),               
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\lib\tenant\pwa.ts                                               87     themeColor: field(church, "theme_color", "#0335...
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\styles\production-stabilization.css                            151 [data-bible-theme="dark"] .bible-scripture-content,   
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\styles\production-stabilization.css                            152 [data-bible-theme="dark"] .bible-scripture-content * {
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\styles\production-stabilization.css                            156 [data-bible-theme="dark"] .bible-scripture-content .v,
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\styles\production-stabilization.css                            157 [data-bible-theme="dark"] .bible-scripture-content ...
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\styles\production-stabilization.css                            158 [data-bible-theme="dark"] .bible-scripture-content ...
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\types\church.ts                                                  7   logo_url?: string | null;                           
+C:\Users\TiteNGUANGUNSAY\Desktop\PRIVATE\Mes Appli\eglis_site\mpangi-church\src\types\church.ts                                                  8   cover_image_url?: string | null;                    
+
+
+
+===== src/lib/tenant/pwa.ts =====
+
+import { createAdminClient } from "@/lib/supabase/admin";
+import {
+  getTenantSubdomainFromHost,
+  slugFromSubdomain,
+} from "@/lib/tenant/domain";
+
+function normalizeHost(host: string) {
+  return host.split(":")[0].trim().toLowerCase();
+}
+
+export function getSlugFromHost(host: string) {
+  const subdomain = getTenantSubdomainFromHost(host);
+
+  return subdomain ? slugFromSubdomain(subdomain) : "";
+}
+
+function field(row: any, key: string, fallback = "") {
+  const value = row?.[key];
+
+  return typeof value === "string"
+    ? value.trim() || fallback
+    : fallback;
+}
+
+function getShortName(name: string, slug: string) {
+  if (slug === "maison-misericorde-cmp") return "MDM";
+  if (slug === "iccrdc") return "ICC RDC";
+  if (/maison.*mis[eÃ©]ricorde/i.test(name)) return "MDM";
+  if (/impact.*centre.*chr[eÃ©]tien.*rdc/i.test(name)) {
+    return "ICC RDC";
+  }
+  if (/impact.*centre.*chr[eÃ©]tien/i.test(name)) return "ICC";
+
+  return name.length > 12
+    ? name.slice(0, 12)
+    : name || "Ã‰glise";
+}
+
+export async function resolveTenantPwaData(host: string) {
+  const cleanHost = normalizeHost(host);
+  const subdomain = getTenantSubdomainFromHost(cleanHost);
+  const fallbackSlug = subdomain
+    ? slugFromSubdomain(subdomain)
+    : "";
+  const admin = createAdminClient();
+
+  let church: any = null;
+
+  if (subdomain) {
+    const { data } = await admin
+      .from("churches")
+      .select("*")
+      .eq("subdomain", subdomain)
+      .maybeSingle();
+
+    church = data ?? null;
+  }
+
+  if (!church && fallbackSlug) {
+    const { data } = await admin
+      .from("churches")
+      .select("*")
+      .eq("slug", fallbackSlug)
+      .maybeSingle();
+
+    church = data ?? null;
+  }
+
+  const finalSlug = field(
+    church,
+    "slug",
+    fallbackSlug || "mpangi-church"
+  );
+  const appName =
+    field(church, "public_name") ||
+    field(church, "name") ||
+    "Mpangi-church";
+
+  return {
+    host: cleanHost,
+    subdomain,
+    slug: finalSlug,
+    church,
+    appName,
+    shortName: getShortName(appName, finalSlug),
+    logoUrl: field(church, "logo_url"),
+    themeColor: field(church, "theme_color", "#03357A"),
+    backgroundColor: field(
+      church,
+      "background_color",
+      "#F5F9FC"
+    ),
+    version:
+      field(church, "updated_at") || String(Date.now()),
+  };
+}
+
+===== src/app/api/pwa/manifest/route.ts =====
+
+import { NextRequest, NextResponse } from "next/server";
+import { createAdminClient } from "@/lib/supabase/admin";
+
+export const dynamic = "force-dynamic";
+
+type ChurchIdentity = {
+  id: string;
+  name: string;
+  slug: string;
+  logo_url: string | null;
+};
+
+type ChurchQueryResult = {
+  data: ChurchIdentity | null;
+  error: unknown;
+};
+
+function cleanHost(value: string) {
+  return value.split(":")[0].trim().toLowerCase();
+}
+
+function getSubdomain(host: string) {
+  if (
+    host === "localhost" ||
+    host === "127.0.0.1" ||
+    host === "mpangi-church.app" ||
+    host === "www.mpangi-church.app"
+  ) {
+    return "";
+  }
+
+  if (host.endsWith(".mpangi-church.app")) {
+    return host.replace(".mpangi-church.app", "");
+  }
+
+  return "";
+}
+
+async function findChurch(host: string): Promise<ChurchIdentity | null> {
+  const admin = createAdminClient();
+  const subdomain = getSubdomain(host);
+
+  const attempts: Array<() => Promise<ChurchQueryResult>> = [
+    async () =>
+      await admin
+        .from("churches")
+        .select("id, name, slug, logo_url")
+        .eq("custom_domain", host)
+        .maybeSingle(),
+    async () =>
+      await admin
+        .from("churches")
+        .select("id, name, slug, logo_url")
+        .eq("domain", host)
+        .maybeSingle(),
+    async () =>
+      await admin
+        .from("churches")
+        .select("id, name, slug, logo_url")
+        .eq("subdomain", subdomain)
+        .maybeSingle(),
+    async () =>
+      await admin
+        .from("churches")
+        .select("id, name, slug, logo_url")
+        .eq("slug", subdomain)
+        .maybeSingle(),
+  ];
+
+  for (const attempt of attempts) {
+    try {
+      const { data, error } = await attempt();
+
+      if (!error && data) {
+        return data;
+      }
+    } catch {
+      // Colonne absente ou requÃªte non applicable.
+    }
+  }
+
+  return null;
+}
+
+export async function GET(request: NextRequest) {
+  const requestedHost =
+    request.nextUrl.searchParams.get("host") ||
+    request.headers.get("host") ||
+    "mpangi-church.app";
+
+  const host = cleanHost(requestedHost);
+  const church = await findChurch(host);
+
+  const name = church?.name || "Mpangi-church";
+  const shortName = church?.name || "Mpangi";
+
+  const manifest = {
+    id: church ? `/${church.slug}` : "/",
+    name,
+    short_name: shortName.slice(0, 28),
+    description: church
+      ? `Application officielle de ${church.name}`
+      : "Plateforme multi-Ã©glises Mpangi-church",
+    start_url: church ? "/dashboard" : "/",
+    scope: "/",
+    display: "standalone",
+    orientation: "portrait-primary",
+    background_color: "#F5F9FC",
+    theme_color: "#03357A",
+    categories: ["productivity", "lifestyle"],
+    icons: [
+      {
+        src: "/api/pwa/icon/192",
+        sizes: "192x192",
+        type: "image/png",
+        purpose: "any maskable",
+      },
+      {
+        src: "/api/pwa/icon/512",
+        sizes: "512x512",
+        type: "image/png",
+        purpose: "any maskable",
+      },
+    ],
+  };
+
+  return NextResponse.json(manifest, {
+    headers: {
+      "Content-Type": "application/manifest+json; charset=utf-8",
+      "Cache-Control": "no-store, max-age=0",
+    },
+  });
+}
+
+===== src/app/api/pwa/icon/route.ts =====
+
+import { NextResponse } from "next/server";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { getSlugFromHost } from "@/lib/tenant/pwa";
+
+export const dynamic = "force-dynamic";
+
+async function fetchImage(url: string) {
+  const response = await fetch(url, { cache: "no-store" });
+
+  if (!response.ok) return null;
+
+  return {
+    buffer: await response.arrayBuffer(),
+    contentType: response.headers.get("content-type") || "image/png",
+  };
+}
+
+async function fallbackIcon(request: Request) {
+  const fallback = await fetchImage(
+    new URL("/icons/icon-512x512.png", request.url).toString()
+  );
+
+  if (!fallback) {
+    return NextResponse.json({ error: "IcÃ´ne introuvable." }, { status: 404 });
+  }
+
+  return new NextResponse(fallback.buffer, {
+    headers: {
+      "Content-Type": fallback.contentType,
+      "Cache-Control": "no-store, max-age=0",
+    },
+  });
+}
+
+export async function GET(request: Request) {
+  const url = new URL(request.url);
+  const host =
+    request.headers.get("x-forwarded-host") ||
+    request.headers.get("host") ||
+    "";
+
+  const slug = url.searchParams.get("slug") || getSlugFromHost(host);
+
+  if (!slug) return fallbackIcon(request);
+
+  const admin = createAdminClient();
+
+  const { data: church } = await admin
+    .from("churches")
+    .select("*")
+    .eq("slug", slug)
+    .maybeSingle();
+
+  const logoUrl =
+    typeof church?.logo_url === "string" ? church.logo_url.trim() : "";
+
+  if (!logoUrl) return fallbackIcon(request);
+
+  const image = await fetchImage(logoUrl);
+
+  if (!image) return fallbackIcon(request);
+
+  return new NextResponse(image.buffer, {
+    headers: {
+      "Content-Type": image.contentType,
+      "Cache-Control": "no-store, max-age=0",
+    },
+  });
+}
+
+===== src/app/settings/public-page/page.tsx =====
+
+import Link from "next/link";
+import { redirect } from "next/navigation";
+import { ArrowLeft, Globe } from "lucide-react";
+import AppShell from "@/components/layout/AppShell";
+import PublicPageSettingsForm from "@/components/settings/PublicPageSettingsForm";
+import { createClient } from "@/lib/supabase/server";
+
+export default async function PublicPageSettingsPage() {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/login");
+  }
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("id, role, church_id, status")
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  if (!profile) {
+    redirect("/login");
+  }
+
+  if (profile.status && profile.status !== "active") {
+    redirect("/login");
+  }
+
+  if (profile.role === "super_admin") {
+    redirect("/super-admin/dashboard");
+  }
+
+  if (!profile.church_id) {
+    redirect("/login");
+  }
+
+  const { data: church } = await supabase
+    .from("churches")
+    .select(
+      `
+      id,
+      name,
+      public_name,
+      pastor_name,
+      pastor_title,
+      phone,
+      whatsapp,
+      email,
+      address,
+      city,
+      country,
+      public_hero_title,
+      public_message,
+      service_times,
+      youtube_channel_url,
+      latest_video_url,
+      news_title,
+      news_description,
+      donation_enabled,
+      donation_message,
+      donation_mobile_money,
+      donation_mobile_money_name,
+      donation_card_url,
+      donation_bank_name,
+      donation_bank_account_name,
+      donation_bank_account_number,
+      donation_bank_iban,
+      donation_bank_swift,
+      donation_bank_details
+    `
+    )
+    .eq("id", profile.church_id)
+    .maybeSingle();
+
+  if (!church) {
+    redirect("/settings");
+  }
+
+  return (
+    <AppShell>
+      <div className="space-y-6">
+        <Link
+          href="/settings"
+          className="inline-flex items-center gap-2 text-sm font-bold text-[#2563EB]"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Retour aux paramÃ¨tres
+        </Link>
+
+        <section className="rounded-3xl bg-gradient-to-br from-[#03357A] via-[#2563EB] to-[#8B5CF6] p-6 text-white shadow-lg shadow-blue-900/20">
+          <div className="flex items-center gap-4">
+            <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-white/15">
+              <Globe className="h-8 w-8" />
+            </div>
+
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.25em] text-blue-100">
+                Page publique
+              </p>
+
+              <h1 className="mt-2 text-3xl font-extrabold">
+                Configuration de la page publique
+              </h1>
+
+              <p className="mt-2 text-sm text-blue-50">
+                Modifiez les informations visibles par les visiteurs de votre
+                Ã©glise.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <PublicPageSettingsForm church={church as any} />
+      </div>
+    </AppShell>
+  );
+}
+
+===== src/app/super-admin/churches/[id]/page.tsx =====
+
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import {
+  ArrowLeft,
+  CalendarCheck,
+  Church,
+  ExternalLink,
+  HeartHandshake,
+  MapPin,
+  Pencil,
+  Phone,
+  UserPlus,
+  Users,
+} from "lucide-react";
+import SuperAdminShell from "@/components/layout/SuperAdminShell";
+import MetricCard from "@/components/dashboard/MetricCard";
+import SuperAdminUserActions from "@/components/super-admin/SuperAdminUserActions";
+import { createClient } from "@/lib/supabase/server";
+
+type ChurchDetailsPageProps = {
+  params: Promise<{
+    id: string;
+  }>;
+};
+
+function getStatusClass(status: string) {
+  if (status === "active") return "bg-green-50 text-green-700";
+  if (status === "archived") return "bg-slate-100 text-slate-600";
+  if (status === "inactive") return "bg-orange-50 text-orange-700";
+  if (status === "suspended") return "bg-red-50 text-red-700";
+
+  return "bg-slate-100 text-slate-600";
+}
+
+export default async function ChurchDetailsPage({
+  params,
+}: ChurchDetailsPageProps) {
+  const { id } = await params;
+
+  const supabase = await createClient();
+
+  const { data: church } = await supabase
+    .from("churches")
+    .select(
+      `
+      id,
+      name,
+      slug,
+      logo_url,
+      address,
+      city,
+      country,
+      phone,
+      whatsapp,
+      email,
+      service_times,
+      status,
+      created_at
+    `
+    )
+    .eq("id", id)
+    .maybeSingle();
+
+  if (!church) {
+    notFound();
+  }
+
+  const [
+    { count: membersCount },
+    { count: eventsCount },
+    { count: attendancesCount },
+    { count: followupsCount },
+    { data: churchUsers },
+  ] = await Promise.all([
+    supabase
+      .from("members")
+      .select("*", { count: "exact", head: true })
+      .eq("church_id", church.id),
+
+    supabase
+      .from("events")
+      .select("*", { count: "exact", head: true })
+      .eq("church_id", church.id),
+
+    supabase
+      .from("attendances")
+      .select("*", { count: "exact", head: true })
+      .eq("church_id", church.id),
+
+    supabase
+      .from("soul_followups")
+      .select("*", { count: "exact", head: true })
+      .eq("church_id", church.id),
+
+    supabase
+      .from("profiles")
+      .select("id, full_name, email, avatar_url, role, status, created_at")
+      .eq("church_id", church.id)
+      .order("created_at", { ascending: false }),
+  ]);
+
+  const location = [church.address, church.city, church.country]
+    .filter(Boolean)
+    .join(", ");
+
+  return (
+    <SuperAdminShell>
+      <div className="space-y-6 pb-24 md:pb-0">
+        <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+          <div>
+            <Link
+              href="/super-admin/churches"
+              className="inline-flex items-center gap-2 text-sm font-bold text-[#2563EB]"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Retour aux Ã©glises
+            </Link>
+
+            <h1 className="mt-3 text-2xl sm:text-3xl font-extrabold text-[#03357A]">
+              {church.name}
+            </h1>
+
+            <p className="mt-1 text-sm text-slate-500">
+              DÃ©tails, utilisateurs et aperÃ§u de lâ€™espace Ã©glise.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap gap-2">
+            <Link
+              href={`/super-admin/churches/${church.id}/edit`}
+              className="inline-flex items-center justify-center gap-2 rounded-2xl border border-[#DCEAF5] bg-white px-4 py-3 sm:px-5 text-sm font-bold text-[#03357A] hover:bg-[#EAF3FA]"
+            >
+              <Pencil className="h-4 w-4" />
+              Modifier
+            </Link>
+
+            <Link
+              href={`/super-admin/churches/${church.id}/users/new`}
+              className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-4 py-3 sm:px-5 text-sm font-bold text-[#03357A] shadow-sm hover:bg-[#EAF3FA]"
+            >
+              <UserPlus className="h-4 w-4" />
+              CrÃ©er un compte
+            </Link>
+
+            <Link
+              href={`/church/${church.slug}`}
+              target="_blank"
+              className="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#03357A] to-[#2563EB] px-4 py-3 sm:px-5 text-sm font-bold text-white shadow-lg shadow-blue-900/20"
+            >
+              Page publique
+              <ExternalLink className="h-4 w-4" />
+            </Link>
+          </div>
+        </div>
+
+        <section className="overflow-hidden rounded-3xl border border-[#DCEAF5] bg-white shadow-sm">
+          <div className="relative h-64 bg-gradient-to-br from-[#03357A] via-[#3F79B3] to-[#8B5CF6]">
+            <div className="absolute inset-0 bg-gradient-to-t from-[#03357A]/80 to-transparent" />
+
+            <div className="absolute bottom-6 left-6 right-6 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+              <div className="flex items-center gap-4">
+                <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-3xl border border-white/50 bg-white text-[#03357A] shadow-sm">
+                  {church.logo_url ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={church.logo_url}
+                      alt={`Logo ${church.name}`}
+                      className="h-full w-full object-contain p-2"
+                    />
+                  ) : (
+                    <Church className="h-10 w-10" />
+                  )}
+                </div>
+
+                <div>
+                  <h2 className="text-2xl sm:text-3xl font-extrabold text-white">
+                    {church.name}
+                  </h2>
+
+                  <p className="mt-1 text-sm text-blue-100">
+                    /church/{church.slug}
+                  </p>
+                </div>
+              </div>
+
+              <span
+                className={`w-fit rounded-full px-4 py-2 text-sm font-bold ${getStatusClass(
+                  church.status
+                )}`}
+              >
+                {church.status}
+              </span>
+            </div>
+          </div>
+
+          <div className="grid gap-4 p-5 sm:p-6 md:grid-cols-2 xl:grid-cols-4">
+            <div className="rounded-2xl bg-[#F8FBFD] p-4">
+              <MapPin className="h-5 w-5 text-[#3F79B3]" />
+
+              <p className="mt-2 text-xs font-bold uppercase tracking-wide text-slate-400">
+                Adresse
+              </p>
+
+              <p className="mt-1 text-sm font-semibold text-slate-700">
+                {location || "Non renseignÃ©e"}
+              </p>
+            </div>
+
+            <div className="rounded-2xl bg-[#F8FBFD] p-4">
+              <Phone className="h-5 w-5 text-[#3F79B3]" />
+
+              <p className="mt-2 text-xs font-bold uppercase tracking-wide text-slate-400">
+                TÃ©lÃ©phone
+              </p>
+
+              <p className="mt-1 text-sm font-semibold text-slate-700">
+                {church.phone || church.whatsapp || "Non renseignÃ©"}
+              </p>
+            </div>
+
+            <div className="rounded-2xl bg-[#F8FBFD] p-4">
+              <p className="text-xs font-bold uppercase tracking-wide text-slate-400">
+                Email
+              </p>
+
+              <p className="mt-1 break-all text-sm font-semibold text-slate-700">
+                {church.email || "Non renseignÃ©"}
+              </p>
+            </div>
+
+            <div className="rounded-2xl bg-[#F8FBFD] p-4">
+              <p className="text-xs font-bold uppercase tracking-wide text-slate-400">
+                CrÃ©Ã©e le
+              </p>
+
+              <p className="mt-1 text-sm font-semibold text-slate-700">
+                {church.created_at
+                  ? new Intl.DateTimeFormat("fr-FR", {
+                      day: "2-digit",
+                      month: "short",
+                      year: "numeric",
+                    }).format(new Date(church.created_at))
+                  : "-"}
+              </p>
+            </div>
+
+            <div className="rounded-2xl bg-[#F8FBFD] p-4 md:col-span-2 xl:col-span-4">
+              <p className="text-xs font-bold uppercase tracking-wide text-slate-400">
+                Horaires / Programmes
+              </p>
+
+              <p className="mt-1 whitespace-pre-line text-sm font-semibold text-slate-700">
+                {church.service_times || "Non renseignÃ©s"}
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          <MetricCard
+            title="Membres"
+            value={membersCount ?? 0}
+            description="Inscrits dans cette Ã©glise"
+            icon={Users}
+            accent="blue"
+          />
+
+          <MetricCard
+            title="Ã‰vÃ©nements"
+            value={eventsCount ?? 0}
+            description="Cultes et rÃ©unions"
+            icon={Church}
+            accent="blue"
+          />
+
+          <MetricCard
+            title="PrÃ©sences"
+            value={attendancesCount ?? 0}
+            description="Pointages enregistrÃ©s"
+            icon={CalendarCheck}
+            accent="green"
+          />
+
+          <MetricCard
+            title="Ã‚mes suivies"
+            value={followupsCount ?? 0}
+            description="Suivi pastoral"
+            icon={HeartHandshake}
+            accent="purple"
+          />
+        </section>
+
+        <section className="rounded-3xl border border-[#DCEAF5] bg-white p-5 sm:p-6 shadow-sm">
+          <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+            <div>
+              <h2 className="text-xl font-extrabold text-[#03357A]">
+                Utilisateurs de cette Ã©glise
+              </h2>
+
+              <p className="mt-1 text-sm text-slate-500">
+                GÃ©rez les comptes liÃ©s Ã  cette Ã©glise : rÃ´le, statut et mot de
+                passe.
+              </p>
+            </div>
+
+            <Link
+              href={`/super-admin/churches/${church.id}/users/new`}
+              className="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#03357A] to-[#2563EB] px-4 py-3 sm:px-5 text-sm font-bold text-white shadow-lg shadow-blue-900/20"
+            >
+              <UserPlus className="h-4 w-4" />
+              CrÃ©er un compte
+            </Link>
+          </div>
+
+          <div className="mt-6 overflow-x-auto rounded-2xl border border-[#DCEAF5]">
+            <table className="w-full min-w-[850px] text-left text-sm">
+              <thead className="bg-[#EAF3FA] text-[#03357A]">
+                <tr>
+                  <th className="px-4 py-3">Utilisateur</th>
+                  <th className="px-4 py-3">RÃ´le</th>
+                  <th className="px-4 py-3">Statut</th>
+                  <th className="px-4 py-3">Actions</th>
+                </tr>
+              </thead>
+
+              <tbody className="divide-y divide-[#DCEAF5] bg-white">
+                {churchUsers?.length === 0 && (
+                  <tr>
+                    <td
+                      colSpan={4}
+                      className="px-4 py-10 text-center text-slate-500"
+                    >
+                      Aucun utilisateur liÃ© Ã  cette Ã©glise.
+                    </td>
+                  </tr>
+                )}
+
+                {churchUsers?.map((user: any) => (
+                  <tr key={user.id} className="hover:bg-[#F8FBFD]">
+                    <td className="px-4 py-4">
+                      <div className="flex items-center gap-3">
+                        <div className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-full bg-[#EAF3FA] font-bold text-[#03357A]">
+                          {user.avatar_url ? (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img
+                              src={user.avatar_url}
+                              alt={user.full_name || "Utilisateur"}
+                              className="h-full w-full object-cover"
+                            />
+                          ) : (
+                            (user.full_name || "U").charAt(0).toUpperCase()
+                          )}
+                        </div>
+
+                        <div>
+                          <p className="font-bold text-slate-800">
+                            {user.full_name || "Nom non renseignÃ©"}
+                          </p>
+
+                          <p className="text-xs text-slate-500">
+                            {user.email || "Email non renseignÃ©"}
+                          </p>
+                        </div>
+                      </div>
+                    </td>
+
+                    <td className="px-4 py-4">
+                      <span className="rounded-full bg-[#EAF3FA] px-3 py-1 text-xs font-bold text-[#03357A]">
+                        {user.role}
+                      </span>
+                    </td>
+
+                    <td className="px-4 py-4">
+                      <span
+                        className={`rounded-full px-3 py-1 text-xs font-bold ${
+                          user.status === "inactive"
+                            ? "bg-red-50 text-red-700"
+                            : "bg-green-50 text-green-700"
+                        }`}
+                      >
+                        {user.status || "active"}
+                      </span>
+                    </td>
+
+                    <td className="px-4 py-4">
+                      <SuperAdminUserActions
+                        profileId={user.id}
+                        currentRole={user.role}
+                        currentStatus={user.status || "active"}
+                      />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section className="rounded-3xl border border-[#DCEAF5] bg-white p-5 sm:p-6 shadow-sm">
+          <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+            <div>
+              <h2 className="text-xl font-extrabold text-[#03357A]">
+                Prochaines actions
+              </h2>
+
+              <p className="mt-1 text-sm text-slate-500">
+                Configurez cette Ã©glise et crÃ©ez son compte dâ€™accÃ¨s.
+              </p>
+            </div>
+
+            <Link
+              href={`/super-admin/churches/${church.id}/users/new`}
+              className="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#03357A] to-[#2563EB] px-4 py-3 sm:px-5 text-sm font-bold text-white shadow-lg shadow-blue-900/20"
+            >
+              <UserPlus className="h-4 w-4" />
+              CrÃ©er lâ€™admin principal
+            </Link>
+          </div>
+
+          <div className="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            <ActionBox
+              title="CrÃ©er lâ€™admin principal"
+              description="Associer un utilisateur Ã  cette Ã©glise avec le rÃ´le administrateur."
+            />
+
+            <ActionBox
+              title="Ajouter les premiers membres"
+              description="Importer ou saisir les membres de cette communautÃ©."
+            />
+
+            <ActionBox
+              title="Tester la page publique"
+              description="VÃ©rifier les boutons priÃ¨re, rendez-vous, rejoindre et tÃ©moignage."
+            />
+          </div>
+        </section>
+      </div>
+    </SuperAdminShell>
+  );
+}
+
+function ActionBox({
+  title,
+  description,
+}: {
+  title: string;
+  description: string;
+}) {
+  return (
+    <div className="rounded-2xl border border-[#DCEAF5] p-5">
+      <h3 className="font-bold text-[#03357A]">{title}</h3>
+
+      <p className="mt-2 text-sm leading-6 text-slate-500">{description}</p>
+    </div>
+  );
+}
+
+===== src/app/super-admin/churches/[id]/edit/page.tsx =====
+
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { ArrowLeft, Church } from "lucide-react";
+import SuperAdminShell from "@/components/layout/SuperAdminShell";
+import SuperAdminChurchForm from "@/components/super-admin/SuperAdminChurchForm";
+import { createClient } from "@/lib/supabase/server";
+
+type EditSuperAdminChurchPageProps = {
+  params: Promise<{
+    id: string;
+  }>;
+};
+
+export default async function EditSuperAdminChurchPage({
+  params,
+}: EditSuperAdminChurchPageProps) {
+  const { id } = await params;
+
+  const supabase = await createClient();
+
+  const { data: church } = await supabase
+    .from("churches")
+    .select(
+      `
+      id,
+      name,
+      slug,
+      status,
+      logo_url,
+      pastor_photo_url,
+      pastor_name,
+      pastor_title,
+      address,
+      city,
+      country,
+      phone,
+      whatsapp,
+      email,
+      public_hero_title,
+      public_message,
+      service_times,
+      public_enabled,
+      login_enabled,
+      youtube_channel_url,
+      latest_video_url,
+      news_title,
+      news_description
+    `
+    )
+    .eq("id", id)
+    .maybeSingle();
+
+  if (!church) {
+    notFound();
+  }
+
+  return (
+    <SuperAdminShell>
+      <div className="space-y-6">
+        <Link
+          href={`/super-admin/churches/${church.id}`}
+          className="inline-flex items-center gap-2 text-sm font-bold text-[#2563EB]"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Retour Ã  lâ€™Ã©glise
+        </Link>
+
+        <section className="rounded-3xl bg-gradient-to-br from-[#03357A] via-[#2563EB] to-[#8B5CF6] p-6 text-white shadow-lg shadow-blue-900/20">
+          <div className="flex items-center gap-4">
+            <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-white/15">
+              <Church className="h-8 w-8" />
+            </div>
+
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.25em] text-blue-100">
+                Super Admin
+              </p>
+
+              <h1 className="mt-2 text-3xl font-extrabold">
+                Modifier lâ€™Ã©glise
+              </h1>
+
+              <p className="mt-2 text-sm leading-7 text-blue-50">
+                Modifiez les informations publiques, les contacts, le logo et la
+                photo du pasteur.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section className="rounded-[2rem] border border-[#DCEAF5] bg-white p-5 shadow-sm md:p-6">
+          <SuperAdminChurchForm initialChurch={church} />
+        </section>
+      </div>
+    </SuperAdminShell>
+  );
+}
+
+===== src/app/church/[slug]/page.tsx =====
+
+import React from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import type { Metadata } from "next";
+import type { LucideIcon } from "lucide-react";
+import {
+  CalendarDays,
+  HeartHandshake,
+  LockKeyhole,
+  Mail,
+  MapPin,
+  MessageCircle,
+  Phone,
+  PlayCircle,
+  Sparkles,
+  UserPlus,
+} from "lucide-react";
+
+import ChurchTeachingsBlock from "@/components/public/ChurchTeachingsBlock";
+import PublicBibleBlock from "@/components/public/bible/PublicBibleBlock";
+import PublicDonationSection from "@/components/public/PublicDonationSection";
+import PublicLiveStreamSection from "@/components/public/PublicLiveStreamSection";
+import PublicFeaturedUpdates from "@/components/public/PublicFeaturedUpdates";
+import PublicMobileBottomNav from "@/components/public/PublicMobileBottomNav";
+import PublicTestimoniesSection from "@/components/public/PublicTestimoniesSection";
+import { createClient } from "@/lib/supabase/server";
+import { buildChurchPublicUrl } from "@/lib/tenant/domain";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
+type PublicChurchPageProps = {
+  params: Promise<{
+    slug: string;
+  }>;
+};
+
+type PublicChurchNameInput = {
+  name?: string | null;
+  public_name?: string | null;
+};
+
+type PublicChurch = {
+  id: string;
+  name: string | null;
+  public_name: string | null;
+  slug: string | null;
+  subdomain: string | null;
+  status: string | null;
+
+  logo_url: string | null;
+  pastor_photo_url: string | null;
+  pastor_name: string | null;
+  pastor_title: string | null;
+
+  address: string | null;
+  city: string | null;
+  country: string | null;
+  phone: string | null;
+  whatsapp: string | null;
+  email: string | null;
+
+  public_hero_title: string | null;
+  public_message: string | null;
+  service_times: string | null;
+  public_enabled: boolean | null;
+  login_enabled: boolean | null;
+
+  youtube_channel_url: string | null;
+  latest_video_url: string | null;
+  news_title: string | null;
+  news_description: string | null;
+
+  donation_enabled: boolean | null;
+  donation_message: string | null;
+  donation_mobile_money: string | null;
+  donation_mobile_money_name: string | null;
+  donation_card_url: string | null;
+  donation_bank_name: string | null;
+  donation_bank_account_name: string | null;
+  donation_bank_account_number: string | null;
+  donation_bank_iban: string | null;
+  donation_bank_swift: string | null;
+  donation_bank_details: string | null;
+
+  live_stream_enabled: boolean | null;
+  live_stream_url: string | null;
+  live_stream_title: string | null;
+  live_stream_description: string | null;
+  live_stream_platform: string | null;
+  live_stream_started_at: string | null;
+  live_stream_notified_at: string | null;
+};
+
+function getPublicChurchName(church: PublicChurchNameInput) {
+  const publicName = church.public_name?.trim();
+
+  if (publicName) {
+    return publicName;
+  }
+
+  const name = church.name?.trim();
+
+  if (!name) {
+    return "Ã‰glise";
+  }
+
+  return name.replace(/\s*[,|-]?\s*extension.*$/i, "").trim();
+}
+
+function formatPhoneForWhatsapp(phone: string | null) {
+  if (!phone) return null;
+
+  const cleaned = phone.replace(/[^\d]/g, "");
+
+  if (!cleaned) return null;
+
+  return `https://wa.me/${cleaned}`;
+}
+
+function getYoutubeEmbedUrl(url: string | null) {
+  if (!url) return null;
+
+  if (url.includes("youtube.com/embed/")) {
+    return url;
+  }
+
+  const watchMatch = url.match(/[?&]v=([^&]+)/);
+
+  if (watchMatch?.[1]) {
+    return `https://www.youtube.com/embed/${watchMatch[1]}`;
+  }
+
+  const shortMatch = url.match(/youtu\.be\/([^?&]+)/);
+
+  if (shortMatch?.[1]) {
+    return `https://www.youtube.com/embed/${shortMatch[1]}`;
+  }
+
+  return null;
+}
+
+export async function generateMetadata({
+  params,
+}: PublicChurchPageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const supabase = await createClient();
+
+  const { data: church } = await supabase
+    .from("churches")
+    .select("name, public_name, public_message, logo_url")
+    .eq("slug", slug)
+    .maybeSingle();
+
+  if (!church) {
+    return {
+      title: "Ã‰glise | Mpangi-church",
+      manifest: `/church/${slug}/manifest.webmanifest`,
+    };
+  }
+
+  const churchPublicName = getPublicChurchName(church);
+
+  return {
+    title: `${churchPublicName} | Mpangi-church`,
+    description:
+      church.public_message ||
+      `Page officielle de ${churchPublicName} sur Mpangi-church.`,
+    manifest: `/church/${slug}/manifest.webmanifest`,
+    icons: {
+      icon: `/church/${slug}/icon.png`,
+      apple: `/church/${slug}/icon.png`,
+    },
+  };
+}
+
+export default async function PublicChurchPage({
+  params,
+}: PublicChurchPageProps) {
+  const { slug } = await params;
+  const supabase = await createClient();
+
+  const { data: churchRaw, error } = await supabase
+    .from("churches")
+    .select(
+      `
+      id,
+      name,
+      public_name,
+      slug,
+      subdomain,
+      status,
+      logo_url,
+      pastor_photo_url,
+      pastor_name,
+      pastor_title,
+      address,
+      city,
+      country,
+      phone,
+      whatsapp,
+      email,
+      public_hero_title,
+      public_message,
+      service_times,
+      public_enabled,
+      login_enabled,
+      youtube_channel_url,
+      latest_video_url,
+      news_title,
+      news_description,
+      donation_enabled,
+      donation_message,
+      donation_mobile_money,
+      donation_mobile_money_name,
+      donation_card_url,
+      donation_bank_name,
+      donation_bank_account_name,
+      donation_bank_account_number,
+      donation_bank_iban,
+      donation_bank_swift,
+      donation_bank_details,
+      live_stream_enabled,
+      live_stream_url,
+      live_stream_title,
+      live_stream_description,
+      live_stream_platform,
+      live_stream_started_at,
+      live_stream_notified_at
+    `
+    )
+    .eq("slug", slug)
+    .maybeSingle();
+
+  if (
+    error ||
+    !churchRaw ||
+    churchRaw.status !== "active" ||
+    !churchRaw.public_enabled
+  ) {
+    notFound();
+  }
+
+  const church = churchRaw as PublicChurch;
+  const churchSlug = church.slug?.trim() || slug;
+  const churchPublicName = getPublicChurchName(church);
+  const whatsappUrl = formatPhoneForWhatsapp(church.whatsapp || church.phone);
+
+  const logoSrc =
+    church.logo_url || "/images/churches/maison-misericorde-logo.png";
+
+  const pastorPhotoSrc =
+    church.pastor_photo_url ||
+    "/images/churches/maison-misericorde-pasteur.png";
+
+  const youtubeEmbedUrl = getYoutubeEmbedUrl(church.latest_video_url);
+
+  const welcomeTitle =
+    church.public_hero_title?.trim() || `Bienvenue Ã  ${churchPublicName}`;
+
+  return (
+    <main data-mpangi-public-page className="min-h-screen overflow-x-hidden bg-[#F5F9FC] pb-24 text-[#0F172A] lg:pb-0">
+      <style>
+        {`
+          @keyframes mmFloat {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-6px) scale(1.015); }
+          }
+
+          @keyframes mmPulseRing {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(255,255,255,0.25); }
+            50% { box-shadow: 0 0 0 14px rgba(255,255,255,0); }
+          }
+
+          .mm-float {
+            animation: mmFloat 7s ease-in-out infinite;
+          }
+
+          .mm-float-reverse {
+            animation: mmFloat 8s ease-in-out infinite reverse;
+          }
+
+          .mm-pulse-ring {
+            animation: mmPulseRing 4.2s ease-in-out infinite;
+          }
+
+          @media (prefers-reduced-motion: reduce) {
+            .mm-float,
+            .mm-float-reverse,
+            .mm-pulse-ring {
+              animation: none !important;
+            }
+          }
+        `}
+      </style>
+
+      <section className="relative overflow-hidden bg-gradient-to-br from-[#03357A] via-[#2563EB] to-[#8B5CF6] px-4 py-5 text-white md:px-6 md:py-7">
+        <div className="absolute -right-24 -top-24 h-80 w-80 rounded-full bg-white/10 blur-3xl" />
+        <div className="absolute -bottom-32 -left-24 h-96 w-96 rounded-full bg-white/10 blur-3xl" />
+
+        <div className="relative mx-auto max-w-6xl">
+          <header className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex min-w-0 items-center gap-3 md:gap-4">
+              <div className="mm-float relative flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-white p-2.5 shadow-2xl md:h-20 md:w-20 md:rounded-[1.6rem]">
+                <Image
+                  src={logoSrc}
+                  alt={`Logo ${churchPublicName}`}
+                  width={80}
+                  height={80}
+                  className="h-full w-full object-contain"
+                  priority
+                />
+              </div>
+
+              <div className="min-w-0">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-blue-100 md:text-sm">
+                  Page publique
+                </p>
+
+                <h1 className="break-words text-xl font-extrabold leading-tight md:text-3xl">
+                  {churchPublicName}
+                </h1>
+              </div>
+            </div>
+
+            {church.login_enabled && (
+              <Link
+                href={buildChurchPublicUrl(church, "/login")}
+                className="inline-flex w-fit shrink-0 items-center gap-2 rounded-2xl bg-white/15 px-4 py-2.5 text-sm font-bold ring-1 ring-white/20 hover:bg-white/20"
+              >
+                <LockKeyhole className="h-4 w-4" />
+                Espace Ã©glise
+              </Link>
+            )}
+          </header>
+
+          <div className="grid gap-5 pb-4 pt-5 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">
+            <div className="min-w-0">
+              <p className="inline-flex rounded-full bg-white/15 px-3 py-2 text-xs font-bold ring-1 ring-white/20 md:px-4 md:text-sm">
+                Bienvenue dans notre communautÃ©
+              </p>
+
+              <h2 className="mt-3 max-w-3xl break-words text-3xl font-black leading-tight md:text-5xl">
+                {welcomeTitle}
+              </h2>
+
+              <p className="mt-4 max-w-3xl break-words text-sm leading-7 text-blue-50 md:text-lg md:leading-8">
+                {church.public_message ||
+                  "Bienvenue sur la page publique de notre Ã©glise."}
+              </p>
+
+              <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                <HeroButton
+                  href={buildChurchPublicUrl(church, "/prayer")}
+                  icon={HeartHandshake}
+                  label="Demander une priÃ¨re"
+                  variant="white"
+                />
+
+                <HeroButton
+                  href={buildChurchPublicUrl(church, "/appointment")}
+                  icon={CalendarDays}
+                  label="Demander un rendez-vous"
+                  variant="glass"
+                />
+
+                <a
+                  href="#don"
+                  className="inline-flex min-h-12 items-center justify-center rounded-2xl bg-[#03357A] px-4 py-3 text-center text-sm font-extrabold text-white shadow-lg shadow-blue-900/20 hover:bg-[#022B63]"
+                >
+                  Faire un don
+                </a>
+
+                <HeroButton
+                  href={buildChurchPublicUrl(church, "/join")}
+                  icon={UserPlus}
+                  label="Rejoindre lâ€™Ã©glise"
+                  variant="glass"
+                />
+
+                <HeroButton
+                  href={buildChurchPublicUrl(church, "/testimony")}
+                  icon={Sparkles}
+                  label="Partager un tÃ©moignage"
+                  variant="glass"
+                />
+
+                <HeroButton
+                  href="/install"
+                  icon={Sparkles}
+                  label="Installer lâ€™application"
+                  variant="glass"
+                />
+              </div>
+
+              <div className="mt-5 rounded-3xl bg-white/10 p-4 ring-1 ring-white/20 md:p-5">
+                <p className="text-xs font-bold uppercase tracking-[0.18em] text-blue-100 md:text-sm">
+                  Parcours dâ€™accompagnement
+                </p>
+
+                <div className="mt-4 grid gap-3 md:grid-cols-3">
+                  <StepBox number="01" label="Votre demande est reÃ§ue" />
+                  <StepBox
+                    number="02"
+                    label="Lâ€™Ã©quipe pastorale vous contacte"
+                  />
+                  <StepBox
+                    number="03"
+                    label="Un suivi spirituel est organisÃ©"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="rounded-3xl border border-white/20 bg-white/10 p-3 shadow-2xl backdrop-blur md:p-4">
+              <div className="rounded-3xl bg-white p-4 text-[#0F172A] md:p-5">
+                <div className="flex flex-col items-center text-center">
+                  <div className="mm-float-reverse mm-pulse-ring relative h-32 w-32 overflow-hidden rounded-full border-6 border-[#EAF3FA] bg-[#F8FBFD] shadow-2xl md:h-44 md:w-44 md:border-8">
+                    <Image
+                      src={pastorPhotoSrc}
+                      alt={church.pastor_name || "Pasteur responsable"}
+                      fill
+                      sizes="(max-width: 768px) 128px, 176px"
+                      className="object-cover"
+                      priority
+                    />
+                  </div>
+
+                  <h3 className="mt-4 break-words text-lg font-extrabold text-[#03357A] md:text-xl">
+                    {church.pastor_name || "Pasteur responsable"}
+                  </h3>
+
+                  <p className="mt-1 break-words text-sm font-semibold text-slate-500">
+                    {church.pastor_title || "Responsable de lâ€™Ã©glise"}
+                  </p>
+                </div>
+
+                <div className="mt-5 space-y-3 md:mt-6 md:space-y-4">
+                  <Info
+                    icon={MapPin}
+                    label="Adresse"
+                    value={
+                      [church.address, church.city, church.country]
+                        .filter(Boolean)
+                        .join(", ") || "Ã€ complÃ©ter"
+                    }
+                  />
+
+                  <Info
+                    icon={Phone}
+                    label="TÃ©lÃ©phone"
+                    value={church.phone || "Ã€ complÃ©ter"}
+                  />
+
+                  <Info
+                    icon={Mail}
+                    label="Email"
+                    value={church.email || "Ã€ complÃ©ter"}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <PublicFeaturedUpdates
+        churchId={church.id}
+        slug={churchSlug}
+      />
+
+      <PublicLiveStreamSection church={church as any} />
+<section className="mx-auto max-w-6xl px-4 pt-7 md:px-6 md:pt-8">
+        <ChurchTeachingsBlock churchId={church.id} slug={churchSlug} />
+      </section>
+
+      <section
+        id="bible"
+        className="scroll-mt-24 mx-auto max-w-6xl px-4 pt-7 md:px-6 md:pt-8"
+      >
+        <PublicBibleBlock slug={churchSlug} />
+      </section>
+
+      <section className="mx-auto max-w-6xl px-4 py-7 md:px-6 md:py-8">
+        <div className="grid gap-5 lg:grid-cols-[0.85fr_1.15fr] lg:gap-6">
+          <div className="min-w-0 rounded-3xl border border-[#DCEAF5] bg-white p-4 shadow-sm md:p-6">
+            <h3 className="text-xl font-extrabold text-[#03357A]">
+              Programmes
+            </h3>
+
+            <p className="mt-4 whitespace-pre-line break-words rounded-2xl bg-[#F8FBFD] p-4 text-sm leading-7 text-slate-600 md:mt-5 md:p-5">
+              {church.service_times || "Les programmes seront bientÃ´t publiÃ©s."}
+            </p>
+
+            <div className="mt-5 rounded-3xl bg-[#EAF3FA] p-4 md:mt-6 md:p-5">
+              <h4 className="font-extrabold text-[#03357A]">
+                Contact rapide
+              </h4>
+
+              <div className="mt-4 flex flex-wrap gap-3">
+                {church.phone && (
+                  <a
+                    href={`tel:${church.phone}`}
+                    className="inline-flex min-h-11 items-center gap-2 rounded-2xl bg-white px-4 py-3 text-sm font-bold text-[#03357A] shadow-sm hover:bg-[#F8FBFD]"
+                  >
+                    <Phone className="h-4 w-4" />
+                    Appeler
+                  </a>
+                )}
+
+                {whatsappUrl && (
+                  <a
+                    href={whatsappUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex min-h-11 items-center gap-2 rounded-2xl bg-white px-4 py-3 text-sm font-bold text-[#03357A] shadow-sm hover:bg-[#F8FBFD]"
+                  >
+                    <MessageCircle className="h-4 w-4" />
+                    WhatsApp
+                  </a>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <div className="min-w-0 rounded-3xl border border-[#DCEAF5] bg-white p-4 shadow-sm md:p-6">
+            <div className="flex min-w-0 items-center gap-3">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#EAF3FA] text-[#03357A] md:h-12 md:w-12">
+                <PlayCircle className="h-6 w-6" />
+              </div>
+
+              <div className="min-w-0">
+                <p className="break-words text-xs font-bold uppercase tracking-[0.16em] text-[#2563EB] md:text-sm md:tracking-[0.2em]">
+                  ActualitÃ©s & enseignements
+                </p>
+
+                <h3 className="break-words text-lg font-extrabold text-[#03357A] md:text-xl">
+                  {church.news_title || "ActualitÃ©s et enseignements"}
+                </h3>
+              </div>
+            </div>
+
+            <p className="mt-4 break-words text-sm leading-7 text-slate-600">
+              {church.news_description ||
+                "Retrouvez bientÃ´t les enseignements, cultes et moments forts de lâ€™Ã©glise."}
+            </p>
+
+            <div className="mt-5 overflow-hidden rounded-3xl border border-[#DCEAF5] bg-[#F8FBFD]">
+              {youtubeEmbedUrl ? (
+                <iframe
+                  src={youtubeEmbedUrl}
+                  title="VidÃ©o YouTube"
+                  className="aspect-video w-full"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                />
+              ) : (
+                <div className="flex aspect-video flex-col items-center justify-center p-6 text-center md:p-8">
+                  <PlayCircle className="h-12 w-12 text-[#3F79B3] md:h-14 md:w-14" />
+
+                  <p className="mt-4 text-sm font-semibold text-slate-600">
+                    Aucune vidÃ©o YouTube configurÃ©e pour le moment.
+                  </p>
+
+                  {church.youtube_channel_url && (
+                    <a
+                      href={church.youtube_channel_url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="mt-5 inline-flex rounded-2xl bg-[#03357A] px-5 py-3 text-sm font-bold text-white hover:bg-[#022B63]"
+                    >
+                      Ouvrir la chaÃ®ne YouTube
+                    </a>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div id="don" className="scroll-mt-24">
+        <PublicDonationSection
+          church={{
+            ...church,
+            name: churchPublicName,
+          }}
+        />
+      </div>
+
+      <PublicTestimoniesSection churchId={church.id} />
+
+      <footer className="border-t border-[#DCEAF5] bg-white px-4 py-6 text-center text-sm leading-6 text-slate-500 md:px-6">
+        PropulsÃ© par{" "}
+        <span className="font-bold text-[#03357A]">Mpangi-church</span> â€”
+        AKSANTIC Technology
+      </footer>
+
+      <PublicMobileBottomNav slug={churchSlug} />
+    </main>
+  );
+}
+
+function StepBox({ number, label }: { number: string; label: string }) {
+  return (
+    <div className="rounded-2xl bg-white/10 p-4">
+      <p className="text-2xl font-black">{number}</p>
+      <p className="mt-1 break-words text-sm font-bold">{label}</p>
+    </div>
+  );
+}
+
+function HeroButton({
+  href,
+  icon: Icon,
+  label,
+  variant,
+}: {
+  href: string;
+  icon: LucideIcon;
+  label: string;
+  variant: "white" | "glass";
+}) {
+  const className =
+    variant === "white"
+      ? "bg-white text-[#03357A] shadow-lg shadow-blue-950/20 hover:bg-[#EAF3FA]"
+      : "bg-white/15 text-white ring-1 ring-white/25 hover:bg-white/20";
+
+  return (
+    <Link
+      href={href}
+      className={`inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl px-4 py-3 text-center text-sm font-extrabold ${className}`}
+    >
+      <Icon className="h-5 w-5 shrink-0" />
+      <span className="break-words">{label}</span>
+    </Link>
+  );
+}
+
+function Info({
+  icon: Icon,
+  label,
+  value,
+}: {
+  icon: LucideIcon;
+  label: string;
+  value: string;
+}) {
+  return (
+    <div className="flex min-w-0 gap-3 rounded-2xl bg-[#F8FBFD] p-3 md:p-4">
+      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#EAF3FA] text-[#03357A]">
+        <Icon className="h-5 w-5" />
+      </div>
+
+      <div className="min-w-0">
+        <p className="text-xs font-bold uppercase tracking-wide text-slate-400">
+          {label}
+        </p>
+
+        <p className="mt-1 break-words font-semibold text-slate-700">
+          {value || "-"}
+        </p>
+      </div>
+    </div>
+  );
+}

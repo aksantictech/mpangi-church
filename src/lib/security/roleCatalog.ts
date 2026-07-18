@@ -79,6 +79,7 @@ export const MODULE_CATALOG = [
   ["teachings", "Enseignements", "/teachings"],
   ["notifications", "Notifications", "/notifications"],
   ["correspondence", "Courriers", "/administration/correspondence"],
+  ["reports", "Centre de rapports", "/reports"],
   ["inbox", "Boîte de réception", "/inbox"],
   ["transmissions", "Transmissions", "/administration/transmissions"],
   ["tasks", "Tâches administratives", "/administration/tasks"],
