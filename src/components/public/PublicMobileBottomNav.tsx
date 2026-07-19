@@ -8,39 +8,59 @@ import {
   Gift,
   HeartHandshake,
   Home,
+  Radio,
 } from "lucide-react";
 import {
-  useEffect,
   useMemo,
-  useState,
+  useSyncExternalStore,
 } from "react";
+
 import {
   buildChurchPublicUrl,
   getTenantSubdomainFromHost,
 } from "@/lib/tenant/domain";
 
+type PublicMobileBottomNavProps = {
+  slug: string;
+  hasLive?: boolean;
+};
+
+function subscribeTenantMode() {
+  return () => {};
+}
+
+function getTenantModeSnapshot() {
+  if (
+    typeof window ===
+    "undefined"
+  ) {
+    return false;
+  }
+
+  return Boolean(
+    getTenantSubdomainFromHost(
+      window.location.hostname
+    )
+  );
+}
+
+function getTenantModeServerSnapshot() {
+  return false;
+}
+
 export default function PublicMobileBottomNav({
   slug,
-}: {
-  slug: string;
-}) {
+  hasLive = false,
+}: PublicMobileBottomNavProps) {
   const pathname =
-    usePathname();
+    usePathname() || "/";
 
-  const [
-    tenantMode,
-    setTenantMode,
-  ] = useState(false);
-
-  useEffect(() => {
-    setTenantMode(
-      Boolean(
-        getTenantSubdomainFromHost(
-          window.location.hostname
-        )
-      )
+  const tenantMode =
+    useSyncExternalStore(
+      subscribeTenantMode,
+      getTenantModeSnapshot,
+      getTenantModeServerSnapshot
     );
-  }, []);
 
   const items = useMemo(() => {
     function href(path: string) {
@@ -52,37 +72,61 @@ export default function PublicMobileBottomNav({
           );
     }
 
-    return [
+    const standardItems = [
       {
         label: "Accueil",
         href: href("/"),
         icon: Home,
+        isLive: false,
       },
       {
         label: "Prière",
         href: href("/prayer"),
-        icon:
-          HeartHandshake,
+        icon: HeartHandshake,
+        isLive: false,
       },
       {
         label: "Bible",
         href: href("/bible"),
         icon: BookOpen,
+        isLive: false,
       },
       {
         label: "Don",
         href: href("/don"),
         icon: Gift,
+        isLive: false,
       },
+    ];
+
+    if (hasLive) {
+      return [
+        ...standardItems,
+        {
+          label: "Direct",
+          href: href("/live"),
+          icon: Radio,
+          isLive: true,
+        },
+      ];
+    }
+
+    return [
+      ...standardItems,
       {
         label: "Notif",
         href: href(
           "/public-notifications"
         ),
         icon: Bell,
+        isLive: false,
       },
     ];
-  }, [slug, tenantMode]);
+  }, [
+    hasLive,
+    slug,
+    tenantMode,
+  ]);
 
   function cleanPath(
     value: string
@@ -134,14 +178,32 @@ export default function PublicMobileBottomNav({
                 ? "page"
                 : undefined
             }
+            aria-label={
+              item.isLive
+                ? "Regarder le culte en direct"
+                : item.label
+            }
             className={[
-              "flex min-h-14 min-w-0 flex-col items-center justify-center gap-1 rounded-xl px-0.5 text-center text-[10px] font-black leading-tight",
-              active
-                ? "bg-[#EAF3FA] text-[#03357A]"
-                : "text-slate-500",
+              "relative flex min-h-14 min-w-0 flex-col items-center justify-center gap-1 rounded-xl px-0.5 text-center text-[10px] font-black leading-tight transition",
+              item.isLive
+                ? "bg-red-600 text-white shadow-lg shadow-red-900/25 hover:bg-red-700"
+                : active
+                  ? "bg-[#EAF3FA] text-[#03357A]"
+                  : "text-slate-500",
             ].join(" ")}
           >
-            <Icon className="h-5 w-5 shrink-0" />
+            {item.isLive && (
+              <span className="absolute right-2 top-1.5 h-2.5 w-2.5 animate-ping rounded-full bg-white/80" />
+            )}
+
+            <Icon
+              className={[
+                "h-5 w-5 shrink-0",
+                item.isLive
+                  ? "animate-pulse"
+                  : "",
+              ].join(" ")}
+            />
 
             <span className="block max-w-full overflow-hidden text-ellipsis whitespace-nowrap">
               {item.label}

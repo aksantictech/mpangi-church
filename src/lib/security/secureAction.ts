@@ -1,59 +1,13 @@
-import type {
-  PermissionAction,
-} from "@/lib/security/permissionEngine";
 import {
   requireAnyModulePermission,
 } from "@/lib/security/routeGuard";
-import {
-  withSecurityAudit,
-  type SecurityAuditSeverity,
-} from "@/lib/security/securityAudit";
-
-type MutationPermissionAction =
-  Exclude<
-    PermissionAction,
-    "view"
-  >;
-
-export type SecureActionAuditOptions = {
-  auditAction?: string;
-  resourceType?: string;
-  resourceId?: string | null;
-  churchId?: string | null;
-  severity?: SecurityAuditSeverity;
-  metadata?: Record<string, unknown>;
-};
-
-function normalizeModuleCodes(
-  moduleCodes: string[]
-) {
-  return Array.from(
-    new Set(
-      moduleCodes
-        .map((code) =>
-          String(code || "")
-            .trim()
-        )
-        .filter(Boolean)
-    )
-  );
-}
-
-function buildAuditAction(
-  moduleCodes: string[],
-  action: MutationPermissionAction
-) {
-  const moduleName =
-    moduleCodes.length === 1
-      ? moduleCodes[0]
-      : "multiple_modules";
-
-  return `${moduleName}.${action}`;
-}
+import type {
+  PermissionAction,
+} from "@/lib/security/permissionEngine";
 
 export async function requireActionPermission(
   moduleCode: string,
-  action: MutationPermissionAction
+  action: Exclude<PermissionAction, "view">
 ) {
   return requireAnyModulePermission(
     [moduleCode],
@@ -63,23 +17,10 @@ export async function requireActionPermission(
 
 export async function requireAnyActionPermission(
   moduleCodes: string[],
-  action: MutationPermissionAction
+  action: Exclude<PermissionAction, "view">
 ) {
-  const normalizedCodes =
-    normalizeModuleCodes(
-      moduleCodes
-    );
-
-  if (
-    normalizedCodes.length === 0
-  ) {
-    throw new Error(
-      "Aucun module de sécurité n’a été fourni."
-    );
-  }
-
   return requireAnyModulePermission(
-    normalizedCodes,
+    moduleCodes,
     action
   );
 }
@@ -89,80 +30,15 @@ export function secureServerAction<
   TResult,
 >(
   moduleCodes: string[],
-  action: MutationPermissionAction,
-  handler: (
-    ...args: TArgs
-  ) => Promise<TResult>,
-  auditOptions: SecureActionAuditOptions = {}
+  action: Exclude<PermissionAction, "view">,
+  handler: (...args: TArgs) => Promise<TResult>
 ) {
-  const normalizedCodes =
-    normalizeModuleCodes(
-      moduleCodes
+  return async (...args: TArgs): Promise<TResult> => {
+    await requireAnyActionPermission(
+      moduleCodes,
+      action
     );
 
-  if (
-    normalizedCodes.length === 0
-  ) {
-    throw new Error(
-      "secureServerAction exige au moins un module."
-    );
-  }
-
-  return async (
-    ...args: TArgs
-  ): Promise<TResult> => {
-    const context =
-      await requireAnyActionPermission(
-        normalizedCodes,
-        action
-      );
-
-    const auditAction =
-      auditOptions.auditAction ||
-      buildAuditAction(
-        normalizedCodes,
-        action
-      );
-
-    return withSecurityAudit(
-      {
-        action: auditAction,
-
-        resourceType:
-          auditOptions.resourceType ||
-          "module",
-
-        resourceId:
-          auditOptions.resourceId ||
-          null,
-
-        churchId:
-          auditOptions.churchId !==
-          undefined
-            ? auditOptions.churchId
-            : context.churchId,
-
-        actorUserId:
-          context.userId,
-
-        actorEmail:
-          context.email,
-
-        actorRole:
-          context.role,
-
-        metadata: {
-          modules:
-            normalizedCodes,
-
-          permissionAction:
-            action,
-
-          ...(auditOptions.metadata ||
-            {}),
-        },
-      },
-      () => handler(...args)
-    );
+    return handler(...args);
   };
 }

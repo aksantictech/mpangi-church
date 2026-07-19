@@ -128,7 +128,7 @@ function getPublicChurchName(
   const name = church.name?.trim();
 
   if (!name) {
-    return "Église";
+    return "Eglise";
   }
 
   return name
@@ -232,7 +232,7 @@ export async function generateMetadata({
   if (!church) {
     return {
       title:
-        "Église | Mpangi-church",
+        "Eglise | Mpangi-church",
       manifest:
         `/church/${slug}/manifest.webmanifest`,
     };
@@ -444,6 +444,14 @@ export default async function PublicChurchPage({
     church.show_donations !== false &&
     church.donation_enabled !== false;
 
+  const hasLive =
+    Boolean(
+      church.live_stream_enabled
+    ) &&
+    Boolean(
+      church.live_stream_url?.trim()
+    );
+
   const tenantStyle = {
     backgroundColor,
     color: textColor,
@@ -620,7 +628,7 @@ export default async function PublicChurchPage({
                 className="inline-flex w-fit shrink-0 items-center gap-2 rounded-2xl bg-white/15 px-4 py-2.5 text-sm font-bold ring-1 ring-white/20 hover:bg-white/20"
               >
                 <LockKeyhole className="h-4 w-4" />
-                Espace église
+                Espace Eglise
               </Link>
             )}
           </header>
@@ -645,7 +653,7 @@ export default async function PublicChurchPage({
 
               <p className="mt-4 max-w-3xl break-words text-sm leading-7 text-white/90 md:text-lg md:leading-8">
                 {church.public_message ||
-                  "Bienvenue sur la page publique de notre église."}
+                  "Bienvenue sur la page publique de notre Eglise."}
               </p>
 
               <div className="mt-5 grid gap-3 sm:grid-cols-2">
@@ -690,7 +698,7 @@ export default async function PublicChurchPage({
                     "/join"
                   )}
                   icon={UserPlus}
-                  label="Rejoindre l’église"
+                  label="Rejoindre l'église"
                   variant="glass"
                   primaryColor={
                     themeColor
@@ -713,7 +721,7 @@ export default async function PublicChurchPage({
                 <HeroButton
                   href="/install"
                   icon={Sparkles}
-                  label="Installer l’application"
+                  label="Installer l'application"
                   variant="glass"
                   primaryColor={
                     themeColor
@@ -792,7 +800,7 @@ export default async function PublicChurchPage({
 
                     <p className="mt-1 break-words text-sm font-semibold opacity-65">
                       {church.pastor_title ||
-                        "Responsable de l’église"}
+                        "Responsable de l'église"}
                     </p>
                   </div>
 
@@ -985,7 +993,7 @@ export default async function PublicChurchPage({
 
                 <p className="mt-4 break-words text-sm leading-7 opacity-75">
                   {church.news_description ||
-                    "Retrouvez bientôt les enseignements, cultes et moments forts de l’église."}
+                    "Retrouvez bientôt les enseignements, cultes et moments forts de l'église."}
                 </p>
 
                 <div
@@ -1083,6 +1091,7 @@ export default async function PublicChurchPage({
 
       <PublicMobileBottomNav
         slug={churchSlug}
+        hasLive={hasLive}
       />
     </main>
   );

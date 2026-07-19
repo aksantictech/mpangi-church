@@ -24,22 +24,6 @@ const NAVIGATION_ITEMS: PermissionNavigationItem[] = [
     href: "/dashboard/role",
     category: "principal",
   },
-    {
-    code: "reports",
-    label: "Centre de rapports",
-    href: "/reports",
-    category: "principal",
-    aliases: [
-      "attendance",
-      "finance_reports",
-      "financial_reports",
-      "extension_reports",
-      "extension_activities",
-      "extensions",
-      "donations",
-      "offerings",
-    ],
-  },
   {
     code: "my_work",
     label: "Mon travail",

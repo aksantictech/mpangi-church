@@ -17,6 +17,7 @@ type LivePageProps = {
   }>;
 };
 
+
 export const dynamic =
   "force-dynamic";
 
@@ -271,8 +272,9 @@ export default async function PublicLivePage({
       </section>
 
       <PublicMobileBottomNav
-        slug={slug}
-      />
+  slug={slug}
+  hasLive={hasLive}
+/>
     </main>
   );
 }

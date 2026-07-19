@@ -19,6 +19,7 @@ type PublicLiveStreamSectionProps = {
   };
 };
 
+
 export default function PublicLiveStreamSection({
   church,
 }: PublicLiveStreamSectionProps) {

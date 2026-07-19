@@ -1,186 +1,79 @@
+import { createAdminClient } from "@/lib/supabase/admin";
 import {
   getTenantSubdomainFromHost,
   slugFromSubdomain,
 } from "@/lib/tenant/domain";
-import { createAdminClient } from "@/lib/supabase/admin";
-
-type ChurchPwaRow = {
-  id: string;
-  name: string | null;
-  public_name: string | null;
-  pwa_name: string | null;
-  pwa_short_name: string | null;
-  public_slogan: string | null;
-  slug: string | null;
-  subdomain: string | null;
-  logo_url: string | null;
-  theme_color: string | null;
-  background_color: string | null;
-  updated_at: string | null;
-};
 
 function normalizeHost(host: string) {
-  return String(host || "")
-    .split(":")[0]
-    .trim()
-    .toLowerCase();
+  return host.split(":")[0].trim().toLowerCase();
 }
 
-function cleanText(
-  value: string | null | undefined,
-  fallback = ""
-) {
-  const text = String(
-    value || ""
-  ).trim();
+export function getSlugFromHost(host: string) {
+  const subdomain = getTenantSubdomainFromHost(host);
 
-  return text || fallback;
+  return subdomain ? slugFromSubdomain(subdomain) : "";
 }
 
-function safeColor(
-  value: string | null | undefined,
-  fallback: string
-) {
-  const color = cleanText(value);
+function field(row: any, key: string, fallback = "") {
+  const value = row?.[key];
 
-  return /^#[0-9A-Fa-f]{6}$/.test(
-    color
-  )
-    ? color.toUpperCase()
+  return typeof value === "string"
+    ? value.trim() || fallback
     : fallback;
 }
 
-export function getSlugFromHost(
-  host: string
-) {
-  const subdomain =
-    getTenantSubdomainFromHost(
-      normalizeHost(host)
-    );
-
-  return subdomain
-    ? slugFromSubdomain(subdomain)
-    : "";
-}
-
-function getShortName(
-  church: ChurchPwaRow | null,
-  appName: string,
-  slug: string
-) {
-  const configuredName = cleanText(
-    church?.pwa_short_name
-  );
-
-  if (configuredName) {
-    return configuredName.slice(0, 28);
-  }
-
-  if (
-    slug ===
-    "maison-misericorde-cmp"
-  ) {
-    return "MDM";
-  }
-
-  if (slug === "iccrdc") {
+function getShortName(name: string, slug: string) {
+  if (slug === "maison-misericorde-cmp") return "MDM";
+  if (slug === "iccrdc") return "ICC RDC";
+  if (/maison.*mis[eé]ricorde/i.test(name)) return "MDM";
+  if (/impact.*centre.*chr[eé]tien.*rdc/i.test(name)) {
     return "ICC RDC";
   }
+  if (/impact.*centre.*chr[eé]tien/i.test(name)) return "ICC";
 
-  return (
-    appName.slice(0, 28) ||
-    "Mpangi"
-  );
+  return name.length > 12
+    ? name.slice(0, 12)
+    : name || "Église";
 }
 
-export async function resolveTenantPwaData(
-  host: string
-) {
-  const cleanHost =
-    normalizeHost(host);
-
-  const subdomain =
-    getTenantSubdomainFromHost(
-      cleanHost
-    );
-
+export async function resolveTenantPwaData(host: string) {
+  const cleanHost = normalizeHost(host);
+  const subdomain = getTenantSubdomainFromHost(cleanHost);
   const fallbackSlug = subdomain
     ? slugFromSubdomain(subdomain)
     : "";
+  const admin = createAdminClient();
 
-  const admin =
-    createAdminClient();
-
-  let church:
-    | ChurchPwaRow
-    | null = null;
+  let church: any = null;
 
   if (subdomain) {
     const { data } = await admin
       .from("churches")
-      .select(
-        `
-        id,
-        name,
-        public_name,
-        pwa_name,
-        pwa_short_name,
-        public_slogan,
-        slug,
-        subdomain,
-        logo_url,
-        theme_color,
-        background_color,
-        updated_at
-      `
-      )
+      .select("*")
       .eq("subdomain", subdomain)
       .maybeSingle();
 
-    church =
-      (data as ChurchPwaRow | null) ||
-      null;
+    church = data ?? null;
   }
 
   if (!church && fallbackSlug) {
     const { data } = await admin
       .from("churches")
-      .select(
-        `
-        id,
-        name,
-        public_name,
-        pwa_name,
-        pwa_short_name,
-        public_slogan,
-        slug,
-        subdomain,
-        logo_url,
-        theme_color,
-        background_color,
-        updated_at
-      `
-      )
+      .select("*")
       .eq("slug", fallbackSlug)
       .maybeSingle();
 
-    church =
-      (data as ChurchPwaRow | null) ||
-      null;
+    church = data ?? null;
   }
 
-  const finalSlug = cleanText(
-    church?.slug,
-    fallbackSlug ||
-      "mpangi-church"
+  const finalSlug = field(
+    church,
+    "slug",
+    fallbackSlug || "mpangi-church"
   );
-
   const appName =
-    cleanText(church?.pwa_name) ||
-    cleanText(
-      church?.public_name
-    ) ||
-    cleanText(church?.name) ||
+    field(church, "public_name") ||
+    field(church, "name") ||
     "Mpangi-church";
 
   return {
@@ -189,32 +82,15 @@ export async function resolveTenantPwaData(
     slug: finalSlug,
     church,
     appName,
-    shortName: getShortName(
+    shortName: getShortName(appName, finalSlug),
+    logoUrl: field(church, "logo_url"),
+    themeColor: field(church, "theme_color", "#03357A"),
+    backgroundColor: field(
       church,
-      appName,
-      finalSlug
-    ),
-    description:
-      cleanText(
-        church?.public_slogan
-      ) ||
-      (church
-        ? `Application officielle de ${appName}`
-        : "Plateforme multi-églises Mpangi-church"),
-    logoUrl: cleanText(
-      church?.logo_url
-    ),
-    themeColor: safeColor(
-      church?.theme_color,
-      "#03357A"
-    ),
-    backgroundColor: safeColor(
-      church?.background_color,
+      "background_color",
       "#F5F9FC"
     ),
     version:
-      cleanText(
-        church?.updated_at
-      ) || "1",
+      field(church, "updated_at") || String(Date.now()),
   };
 }

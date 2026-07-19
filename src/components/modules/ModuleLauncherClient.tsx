@@ -6,7 +6,6 @@ import type { LucideIcon } from "lucide-react";
 import {
   Bell,
   BookOpen,
-  BarChart3,
   Boxes,
   BriefcaseBusiness,
   Building2,
@@ -88,7 +87,6 @@ const ICONS: Record<string, LucideIcon> = {
   finance_reports: Landmark,
   donations: HandCoins,
   patrimony: Building2,
-  reports: BarChart3,
   assets: PackageSearch,
   maintenance: Wrench,
   movements: Boxes,

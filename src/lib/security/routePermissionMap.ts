@@ -15,22 +15,6 @@ export type RoutePermissionRule = {
 };
 
 export const ROUTE_PERMISSION_RULES: RoutePermissionRule[] = [
-    {
-    id: "reports",
-    pattern: /^\/reports(?:\/|$)/,
-    modules: [
-      "attendance",
-      "finance_reports",
-      "financial_reports",
-      "extension_reports",
-      "extension_activities",
-      "extensions",
-      "donations",
-      "offerings",
-    ],
-    action: "view",
-    mode: "any",
-  },
   {
     id: "members",
     pattern: /^\/members(?:\/|$)/,

@@ -1,11 +1,11 @@
 import Link from "next/link";
-import type {
-  LucideIcon,
-} from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import {
   Bell,
   Gift,
   Palette,
+  QrCode,
+  Radio,
   Settings,
   ShieldAlert,
   ShieldCheck,
@@ -32,13 +32,28 @@ type SettingsCard = {
 
 const cards: SettingsCard[] = [
   {
-    title:
-      "Page publique et apparence",
+    title: "Page publique et apparence",
     description:
       "Personnaliser les couleurs, la PWA, les contenus et les sections visibles.",
     href: "/settings/public-page",
     icon: Palette,
     tone: "blue",
+  },
+  {
+    title: "Lien d’inscription et QR",
+    description:
+      "Générer un lien et un QR Code permettant aux ouvriers et membres de remplir eux-mêmes leurs informations.",
+    href: "/settings/member-registration",
+    icon: QrCode,
+    tone: "green",
+  },
+  {
+    title: "Publier un culte en direct",
+    description:
+      "Configurer un direct YouTube ou Facebook, l’afficher publiquement et notifier les abonnés.",
+    href: "/settings/live-stream",
+    icon: Radio,
+    tone: "red",
   },
   {
     title: "Utilisateurs & rôles",
@@ -57,8 +72,7 @@ const cards: SettingsCard[] = [
     tone: "violet",
   },
   {
-    title:
-      "Configuration des dons",
+    title: "Configuration des dons",
     description:
       "Configurer les moyens de paiement, devises et informations publiques.",
     href: "/settings/donations",
@@ -83,10 +97,7 @@ const cards: SettingsCard[] = [
   },
 ];
 
-const toneClasses: Record<
-  SettingsTone,
-  string
-> = {
+const toneClasses: Record<SettingsTone, string> = {
   blue:
     "bg-blue-50 text-blue-700 group-hover:bg-blue-700",
   violet:
@@ -119,10 +130,10 @@ export default function SettingsPage() {
               </h1>
 
               <p className="mt-2 max-w-3xl text-sm leading-7 text-blue-50">
-                Gérez les utilisateurs, les dons, les
+                Gérez les inscriptions, les directs,
+                les utilisateurs, les dons, les
                 notifications, l’apparence et la
-                sécurité sans surcharger le menu
-                principal.
+                sécurité de votre espace église.
               </p>
             </div>
           </div>
@@ -174,10 +185,9 @@ export default function SettingsPage() {
                 Chaque utilisateur voit uniquement les
                 modules autorisés selon son rôle ou ses
                 permissions personnalisées. Les pages
-                sensibles restent protégées côté
-                serveur et les opérations importantes
-                sont enregistrées dans le journal
-                d’audit.
+                sensibles restent protégées côté serveur
+                et les opérations importantes sont
+                enregistrées dans le journal d’audit.
               </p>
 
               <Link

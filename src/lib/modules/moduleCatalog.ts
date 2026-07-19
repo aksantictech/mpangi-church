@@ -94,7 +94,6 @@ const MODULE_CATEGORY: Record<string, ModuleCategoryCode> = {
   teachings: "ministry",
   appointments: "ministry",
   testimonies: "ministry",
-  reports: "essentials",
 
   publications: "communication",
   notifications: "communication",
