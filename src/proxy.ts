@@ -50,12 +50,14 @@ const TENANT_PUBLIC_PATHS = new Set([
   "/",
   "/prayer",
   "/appointment",
+  "/account-request",
   "/join",
   "/testimony",
   "/bible",
   "/don",
   "/public-notifications",
   "/public-teachings",
+  "/live",
 ]);
 
 const PUBLIC_FILE_REGEX =

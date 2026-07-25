@@ -708,6 +708,19 @@ export default async function PublicChurchPage({
                 <HeroButton
                   href={buildChurchPublicUrl(
                     church,
+                    "/account-request"
+                  )}
+                  icon={UserPlus}
+                  label="Demander mon compte membre"
+                  variant="glass"
+                  primaryColor={
+                    themeColor
+                  }
+                />
+
+                <HeroButton
+                  href={buildChurchPublicUrl(
+                    church,
                     "/testimony"
                   )}
                   icon={Sparkles}

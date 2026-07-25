@@ -2,6 +2,7 @@ import Link from "next/link";
 import {
   Building2,
   Boxes,
+  History,
   Settings,
   ShieldCheck,
   UserPlus,
@@ -35,6 +36,12 @@ const cards = [
     href: "/super-admin/modules",
     icon: Boxes,
   },
+  {
+    title: "Journal d’audit",
+    description: "Consulter toutes les activités, filtrer par église et exporter les rapports.",
+    href: "/super-admin/settings/audit-logs",
+    icon: History,
+  },
 ];
 
 export default async function SuperAdminSettingsPage() {
@@ -63,7 +70,7 @@ export default async function SuperAdminSettingsPage() {
           </div>
         </section>
 
-        <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {cards.map((card) => {
             const Icon = card.icon;
 

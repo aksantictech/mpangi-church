@@ -150,20 +150,6 @@ export default async function ReportsPage() {
       label:
         "Dons et paiements",
     },
-    {
-      title:
-        "Audit de sécurité",
-      description:
-        "Analysez les accès refusés, erreurs, alertes et opérations sensibles enregistrées.",
-      href:
-        "/settings/security-audit",
-      icon: ShieldCheck,
-      tone: "cyan",
-      available:
-        canViewSecurity,
-      label:
-        "Sécurité",
-    },
   ];
 
   const availableCards =

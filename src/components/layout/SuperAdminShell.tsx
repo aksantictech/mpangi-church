@@ -138,6 +138,11 @@ export default function SuperAdminShell({
   async function handleLogout() {
     try {
       setLogoutLoading(true);
+      await fetch("/api/audit/auth", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ event: "logout" }),
+      }).catch(() => undefined);
       await fetch("/logout", {
         method: "POST",
         cache: "no-store",

@@ -7,7 +7,6 @@ import {
   QrCode,
   Radio,
   Settings,
-  ShieldAlert,
   ShieldCheck,
   UserPlus,
   UsersRound,
@@ -88,12 +87,12 @@ const cards: SettingsCard[] = [
     tone: "amber",
   },
   {
-    title: "Sécurité et audit",
+    title: "Demandes de comptes membres",
     description:
-      "Consulter les accès refusés, erreurs et actions sensibles de l’église.",
-    href: "/settings/security-audit",
-    icon: ShieldAlert,
-    tone: "red",
+      "Valider ou refuser les demandes rattachées à un numéro membre ou un QR existant.",
+    href: "/settings/member-account-requests",
+    icon: UserPlus,
+    tone: "amber",
   },
 ];
 
@@ -187,15 +186,16 @@ export default function SettingsPage() {
                 permissions personnalisées. Les pages
                 sensibles restent protégées côté serveur
                 et les opérations importantes sont
-                enregistrées dans le journal d’audit.
+                enregistrées dans le journal d’audit global,
+                réservé au Super Admin.
               </p>
 
               <Link
-                href="/settings/security-audit"
+                href="/settings/member-account-requests"
                 className="mt-4 inline-flex min-h-11 items-center justify-center gap-2 rounded-2xl bg-[#03357A] px-4 text-sm font-black text-white transition hover:bg-[#022B63]"
               >
-                <ShieldAlert className="h-4 w-4" />
-                Ouvrir le journal de sécurité
+                <UserPlus className="h-4 w-4" />
+                Gérer les demandes de comptes
               </Link>
             </div>
           </div>

@@ -205,9 +205,9 @@ const NAVIGATION_ITEMS: PermissionNavigationItem[] = [
     category: "configuration",
   },
   {
-    code: "security",
-    label: "Journal sécurité",
-    href: "/settings/security-audit",
+    code: "users",
+    label: "Demandes de comptes",
+    href: "/settings/member-account-requests",
     category: "configuration",
   },
 ];

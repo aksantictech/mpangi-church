@@ -12,6 +12,7 @@ const SUBDOMAIN_TO_SLUG: Record<string, string> = {
 };
 
 const LOCAL_PUBLIC_CHURCH_PATHS = [
+  "/account-request",
   "/appointment",
   "/bible",
   "/don",

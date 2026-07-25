@@ -146,6 +146,16 @@ export default function LoginPage() {
     });
 
     if (error || !data.user) {
+      await fetch("/api/audit/auth", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          event: "login.failed",
+          email: email.trim(),
+          churchId: churchInfo?.id || null,
+          reason: error?.message || "invalid_credentials",
+        }),
+      }).catch(() => undefined);
       setErrorMessage(error?.message || "Identifiants incorrects.");
       setIsLoading(false);
       return;
@@ -158,6 +168,11 @@ export default function LoginPage() {
       .maybeSingle();
 
     if (profileError || !profile) {
+      await fetch("/api/audit/auth", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ event: "login.failed", email: email.trim(), churchId: churchInfo?.id || null, reason: "profile_missing" }),
+      }).catch(() => undefined);
       await supabase.auth.signOut();
 
       setErrorMessage("Profil utilisateur introuvable.");
@@ -166,6 +181,11 @@ export default function LoginPage() {
     }
 
     if (profile.status && profile.status !== "active") {
+      await fetch("/api/audit/auth", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ event: "login.failed", email: email.trim(), churchId: profile.church_id, reason: "inactive_profile" }),
+      }).catch(() => undefined);
       await supabase.auth.signOut();
 
       setErrorMessage("Ce compte est désactivé. Contactez l’administrateur.");
@@ -178,6 +198,11 @@ export default function LoginPage() {
       profile.role !== "super_admin" &&
       profile.church_id !== churchInfo.id
     ) {
+      await fetch("/api/audit/auth", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ event: "login.failed", email: email.trim(), churchId: churchInfo.id, reason: "wrong_church" }),
+      }).catch(() => undefined);
       await supabase.auth.signOut();
 
       setErrorMessage(
@@ -188,6 +213,12 @@ export default function LoginPage() {
     }
 
     const dashboardPath = getDashboardPathByRole(profile.role);
+
+    await fetch("/api/audit/auth", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ event: "login.success", churchId: profile.church_id }),
+    }).catch(() => undefined);
 
     if (profile.role === "super_admin") {
       window.location.assign(

@@ -219,9 +219,9 @@ export const ROUTE_PERMISSION_RULES: RoutePermissionRule[] = [
     action: "view",
   },
   {
-    id: "settings-security-audit",
-    pattern: /^\/settings\/security-audit(?:\/|$)/,
-    modules: ["security"],
+    id: "settings-member-account-requests",
+    pattern: /^\/settings\/member-account-requests(?:\/|$)/,
+    modules: ["users"],
     action: "view",
   },
   {

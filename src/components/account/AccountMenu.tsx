@@ -158,6 +158,11 @@ export default function AccountMenu() {
 
     const loginPath = getLoginPath(finalChurchSlug);
 
+    await fetch("/api/audit/auth", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ event: "logout" }),
+    }).catch(() => undefined);
     await supabase.auth.signOut();
 
     router.replace(loginPath);
