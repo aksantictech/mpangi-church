@@ -31,40 +31,45 @@ function getEmbedUrl(
 
   if (!url) return null;
 
-  if (
-    url.includes(
-      "youtube.com/embed/"
-    )
-  ) {
-    return url;
-  }
-
-  const watchMatch =
-    url.match(
-      /[?&]v=([^&]+)/
+  try {
+    const parsed = new URL(
+      /^https?:\/\//i.test(url) ? url : `https://${url}`
     );
+    const host = parsed.hostname.replace(/^www\./, "").toLowerCase();
 
-  if (watchMatch?.[1]) {
-    return `https://www.youtube.com/embed/${watchMatch[1]}?autoplay=1&rel=0`;
-  }
+    if (host === "youtube.com" || host === "m.youtube.com") {
+      const embedMatch = parsed.pathname.match(/^\/embed\/([^/]+)/);
+      const liveMatch = parsed.pathname.match(/^\/live\/([^/]+)/);
+      const shortsMatch = parsed.pathname.match(/^\/shorts\/([^/]+)/);
+      const videoId =
+        embedMatch?.[1] ||
+        liveMatch?.[1] ||
+        shortsMatch?.[1] ||
+        parsed.searchParams.get("v");
 
-  const shortMatch =
-    url.match(
-      /youtu\.be\/([^?&/]+)/
-    );
+      if (videoId && /^[A-Za-z0-9_-]{6,}$/.test(videoId)) {
+        return `https://www.youtube-nocookie.com/embed/${videoId}?rel=0`;
+      }
+    }
 
-  if (shortMatch?.[1]) {
-    return `https://www.youtube.com/embed/${shortMatch[1]}?autoplay=1&rel=0`;
-  }
+    if (host === "youtu.be") {
+      const videoId = parsed.pathname.split("/").filter(Boolean)[0];
+      if (videoId && /^[A-Za-z0-9_-]{6,}$/.test(videoId)) {
+        return `https://www.youtube-nocookie.com/embed/${videoId}?rel=0`;
+      }
+    }
 
-  if (
-    url.includes(
-      "facebook.com"
-    )
-  ) {
-    return `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(
-      url
-    )}&show_text=false&autoplay=true`;
+    if (
+      host === "facebook.com" ||
+      host === "m.facebook.com" ||
+      host === "fb.watch"
+    ) {
+      return `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(
+        parsed.toString()
+      )}&show_text=false&autoplay=false`;
+    }
+  } catch {
+    return null;
   }
 
   return null;
@@ -213,8 +218,9 @@ export default async function PublicLivePage({
                   "Culte en direct"
                 }
                 className="aspect-video w-full"
-                allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+                allow="autoplay; encrypted-media; picture-in-picture"
                 allowFullScreen
+                referrerPolicy="strict-origin-when-cross-origin"
               />
             ) : (
               <div className="flex aspect-video flex-col items-center justify-center p-6 text-center">

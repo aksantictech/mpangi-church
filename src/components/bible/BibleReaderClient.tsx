@@ -20,6 +20,7 @@ import {
   useMemo,
   useState,
 } from "react";
+import BibleAudioPlayer from "@/components/bible/BibleAudioPlayer";
 
 type BibleVersion = {
   id: string;
@@ -1310,6 +1311,20 @@ export default function BibleReaderClient({
             </button>
           </div>
         </div>
+
+        {chapter?.content && (
+          <div className="border-b border-current/10 p-4 sm:p-5">
+            <BibleAudioPlayer
+              html={chapter.content}
+              reference={chapter.reference || "Chapitre biblique"}
+              onFinished={() => {
+                if (chapter.next?.id) {
+                  setChapterId(chapter.next.id);
+                }
+              }}
+            />
+          </div>
+        )}
 
         {loadingChapter ? (
           <div className="flex min-h-72 items-center justify-center gap-3 p-8 text-sm font-black text-[#03357A]">
