@@ -1,19 +1,16 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  Bell,
   BookOpen,
   Gift,
   HeartHandshake,
   Home,
   Radio,
+  UserPlus,
 } from "lucide-react";
-import {
-  useMemo,
-  useSyncExternalStore,
-} from "react";
+import { useMemo, useSyncExternalStore } from "react";
 
 import {
   buildChurchPublicUrl,
@@ -30,17 +27,10 @@ function subscribeTenantMode() {
 }
 
 function getTenantModeSnapshot() {
-  if (
-    typeof window ===
-    "undefined"
-  ) {
-    return false;
-  }
+  if (typeof window === "undefined") return false;
 
   return Boolean(
-    getTenantSubdomainFromHost(
-      window.location.hostname
-    )
+    getTenantSubdomainFromHost(window.location.hostname)
   );
 }
 
@@ -52,85 +42,57 @@ export default function PublicMobileBottomNav({
   slug,
   hasLive = false,
 }: PublicMobileBottomNavProps) {
-  const pathname =
-    usePathname() || "/";
+  const pathname = usePathname() || "/";
 
-  const tenantMode =
-    useSyncExternalStore(
-      subscribeTenantMode,
-      getTenantModeSnapshot,
-      getTenantModeServerSnapshot
-    );
+  const tenantMode = useSyncExternalStore(
+    subscribeTenantMode,
+    getTenantModeSnapshot,
+    getTenantModeServerSnapshot
+  );
 
   const items = useMemo(() => {
-    function href(path: string) {
-      return tenantMode
+    const href = (path: string) =>
+      tenantMode
         ? path
-        : buildChurchPublicUrl(
-            { slug },
-            path
-          );
-    }
+        : buildChurchPublicUrl({ slug }, path);
 
-    const standardItems = [
+    return [
       {
         label: "Accueil",
         href: href("/"),
         icon: Home,
-        isLive: false,
       },
       {
         label: "Prière",
         href: href("/prayer"),
         icon: HeartHandshake,
-        isLive: false,
       },
       {
         label: "Bible",
         href: href("/bible"),
         icon: BookOpen,
-        isLive: false,
       },
       {
         label: "Don",
         href: href("/don"),
         icon: Gift,
-        isLive: false,
       },
+      hasLive
+        ? {
+            label: "Direct",
+            href: href("/live"),
+            icon: Radio,
+            live: true,
+          }
+        : {
+            label: "Rejoindre",
+            href: href("/join"),
+            icon: UserPlus,
+          },
     ];
+  }, [hasLive, slug, tenantMode]);
 
-    if (hasLive) {
-      return [
-        ...standardItems,
-        {
-          label: "Direct",
-          href: href("/live"),
-          icon: Radio,
-          isLive: true,
-        },
-      ];
-    }
-
-    return [
-      ...standardItems,
-      {
-        label: "Notif",
-        href: href(
-          "/public-notifications"
-        ),
-        icon: Bell,
-        isLive: false,
-      },
-    ];
-  }, [
-    hasLive,
-    slug,
-    tenantMode,
-  ]);
-
-  function cleanPath(
-    value: string
-  ) {
+  function cleanPath(value: string) {
     try {
       return new URL(
         value,
@@ -142,75 +104,67 @@ export default function PublicMobileBottomNav({
   }
 
   return (
-    <div
+    <nav
       data-mpangi-public-bottom-nav
       role="navigation"
       aria-label="Navigation publique mobile"
-      className="fixed inset-x-0 bottom-0 z-[85] grid grid-cols-5 gap-1 border-t border-[#DCEAF5] bg-white/95 px-1 pt-2 shadow-[0_-10px_30px_rgba(15,23,42,0.08)] backdrop-blur-xl lg:hidden"
-      style={{
-        gridTemplateColumns:
-          "repeat(5, minmax(0, 1fr))",
-        paddingBottom:
-          "max(env(safe-area-inset-bottom), 0.45rem)",
-      }}
+      className="fixed inset-x-0 bottom-0 z-[85] px-3 pb-[max(env(safe-area-inset-bottom),0.65rem)] lg:hidden"
     >
-      {items.map((item) => {
-        const Icon = item.icon;
+      <div className="mx-auto flex max-w-md items-end gap-1.5 rounded-[1.75rem] border border-slate-200/80 bg-white/95 p-2 shadow-[0_-8px_35px_rgba(15,23,42,0.16)] backdrop-blur-xl">
+        {items.map((item) => {
+          const Icon = item.icon;
+          const itemPath = cleanPath(item.href);
 
-        const itemPath =
-          cleanPath(item.href);
+          const active =
+            pathname === itemPath ||
+            (
+              itemPath !== "/" &&
+              pathname.startsWith(`${itemPath}/`)
+            );
 
-        const active =
-          pathname === itemPath ||
-          (
-            itemPath !== "/" &&
-            pathname.startsWith(
-              `${itemPath}/`
-            )
-          );
-
-        return (
-          <Link
-            key={`${item.label}-${item.href}`}
-            href={item.href}
-            aria-current={
-              active
-                ? "page"
-                : undefined
-            }
-            aria-label={
-              item.isLive
-                ? "Regarder le culte en direct"
-                : item.label
-            }
-            className={[
-              "relative flex min-h-14 min-w-0 flex-col items-center justify-center gap-1 rounded-xl px-0.5 text-center text-[10px] font-black leading-tight transition",
-              item.isLive
-                ? "bg-red-600 text-white shadow-lg shadow-red-900/25 hover:bg-red-700"
-                : active
-                  ? "bg-[#EAF3FA] text-[#03357A]"
-                  : "text-slate-500",
-            ].join(" ")}
-          >
-            {item.isLive && (
-              <span className="absolute right-2 top-1.5 h-2.5 w-2.5 animate-ping rounded-full bg-white/80" />
-            )}
-
-            <Icon
+          return (
+            <Link
+              key={`${item.label}-${item.href}`}
+              href={item.href}
+              aria-current={
+                active ? "page" : undefined
+              }
+              aria-label={
+                item.live
+                  ? "Regarder le culte en direct"
+                  : item.label
+              }
               className={[
-                "h-5 w-5 shrink-0",
-                item.isLive
-                  ? "animate-pulse"
-                  : "",
+                "relative flex min-h-14 min-w-0 flex-1",
+                "flex-col items-center justify-center",
+                "gap-1 rounded-2xl px-1",
+                "text-center text-[10px] font-black",
+                "transition-all",
+                item.live
+                  ? "bg-red-600 text-white shadow-lg shadow-red-900/25"
+                  : active
+                    ? "bg-[#EAF3FA] text-[#03357A]"
+                    : "text-slate-500 hover:bg-slate-50",
               ].join(" ")}
-            />
+            >
+              {item.live && (
+                <span className="absolute right-2 top-1.5 h-2.5 w-2.5 animate-ping rounded-full bg-white/80" />
+              )}
 
-            <span className="block max-w-full overflow-hidden text-ellipsis whitespace-nowrap">
-              {item.label}
-            </span>
-          </Link>
-        );
-      })}
-    </div>
+              <Icon
+                className={[
+                  "h-5 w-5",
+                  item.live ? "animate-pulse" : "",
+                ].join(" ")}
+              />
+
+              <span className="truncate">
+                {item.label}
+              </span>
+            </Link>
+          );
+        })}
+      </div>
+    </nav>
   );
 }
