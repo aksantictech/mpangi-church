@@ -12,21 +12,35 @@ function run(label, command, args) {
   console.log(`▶ ${label}`);
   console.log(`$ ${command} ${args.join(" ")}`);
 
-  const executable =
-    process.platform === "win32" && command === "npm"
-      ? "npm.cmd"
-      : command;
+  let result;
 
-  const result = spawnSync(executable, args, {
-    cwd: ROOT,
-    shell: false,
-    encoding: "utf8",
-  });
+  if (process.platform === "win32" && command === "npm") {
+    result = spawnSync(
+      process.env.ComSpec || "cmd.exe",
+      ["/d", "/s", "/c", "npm.cmd", ...args],
+      {
+        cwd: ROOT,
+        shell: false,
+        encoding: "utf8",
+      }
+    );
+  } else {
+    result = spawnSync(command, args, {
+      cwd: ROOT,
+      shell: false,
+      encoding: "utf8",
+    });
+  }
 
   const durationMs = Date.now() - startedAt;
 
-  if (result.stdout) process.stdout.write(result.stdout);
-  if (result.stderr) process.stderr.write(result.stderr);
+  if (result.stdout) {
+    process.stdout.write(result.stdout);
+  }
+
+  if (result.stderr) {
+    process.stderr.write(result.stderr);
+  }
 
   return {
     label,
@@ -38,6 +52,7 @@ function run(label, command, args) {
     stderr: result.stderr || "",
   };
 }
+
 function fileExists(relativePath) {
   return fs.existsSync(path.join(ROOT, relativePath));
 }

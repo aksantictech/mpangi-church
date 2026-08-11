@@ -1103,9 +1103,9 @@ export default async function PublicChurchPage({
       </footer>
 
       <PublicMobileBottomNav
-        slug={churchSlug}
-        hasLive={hasLive}
-      />
+  slug={churchSlug}
+/>
+
     </main>
   );
 }

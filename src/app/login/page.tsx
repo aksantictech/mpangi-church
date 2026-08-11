@@ -56,7 +56,7 @@ export default function LoginPage() {
   const router = useRouter();
   const supabase = useMemo(() => createClient(), []);
 
-  const [churchSlug, setChurchSlug] = useState("");
+
   const [churchInfo, setChurchInfo] = useState<ChurchContext | null>(null);
 
   const [showPassword, setShowPassword] = useState(false);
@@ -106,8 +106,6 @@ export default function LoginPage() {
       }
 
       if (!isMounted) return;
-
-      setChurchSlug(slug);
 
       if (!slug) {
         setChurchInfo(null);
@@ -211,7 +209,42 @@ export default function LoginPage() {
       setIsLoading(false);
       return;
     }
+// Un utilisateur rattaché à une église
+// ne doit pas utiliser le login global.
+if (
+  profile.role !== "super_admin" &&
+  profile.church_id &&
+  !churchInfo
+) {
+  const { data: profileChurch } =
+    await supabase
+      .from("churches")
+      .select(
+        "id, name, public_name, pwa_name, slug, subdomain, logo_url"
+      )
+      .eq("id", profile.church_id)
+      .maybeSingle();
 
+  await supabase.auth.signOut();
+
+  if (profileChurch?.slug) {
+    window.location.replace(
+      buildChurchPublicUrl(
+        profileChurch,
+        "/login?redirected=church"
+      )
+    );
+
+    return;
+  }
+
+  setErrorMessage(
+    "Ce compte est rattaché à une église. Veuillez utiliser l’espace de connexion de votre église."
+  );
+
+  setIsLoading(false);
+  return;
+}
     const dashboardPath = getDashboardPathByRole(profile.role);
 
     await fetch("/api/audit/auth", {

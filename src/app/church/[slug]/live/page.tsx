@@ -277,9 +277,8 @@ export default async function PublicLivePage({
         )}
       </section>
 
-      <PublicMobileBottomNav
+  <PublicMobileBottomNav
   slug={slug}
-  hasLive={hasLive}
 />
     </main>
   );

@@ -24,29 +24,70 @@ export async function GET() {
   const admin = createAdminClient();
 
   const { data: profile } = await admin
-    .from("profiles")
-    .select("id, full_name, email, phone, avatar_url, role, status, church_id")
-    .eq("id", user.id)
+  .from("profiles")
+  .select(
+    "id, full_name, email, phone, avatar_url, role, status, church_id"
+  )
+  .eq("user_id", user.id)
+  .maybeSingle();
+
+    let church: {
+  id: string;
+  slug: string | null;
+  subdomain: string | null;
+  name: string | null;
+  public_name: string | null;
+  pwa_name: string | null;
+} | null = null;
+
+if (profile?.church_id) {
+  const { data: churchData } = await admin
+    .from("churches")
+    .select(
+      "id, slug, subdomain, name, public_name, pwa_name"
+    )
+    .eq("id", profile.church_id)
     .maybeSingle();
 
+  church = churchData || null;
+}
+
   return NextResponse.json({
-    user: {
-      id: user.id,
-      email: user.email,
-    },
-    profile: {
-      id: profile?.id || user.id,
-      full_name:
-        profile?.full_name ||
-        user.user_metadata?.full_name ||
-        user.email?.split("@")[0] ||
-        "Utilisateur",
-      email: profile?.email || user.email || "",
-      phone: profile?.phone || "",
-      avatar_url: profile?.avatar_url || user.user_metadata?.avatar_url || "",
-      role: profile?.role || "super_admin",
-      status: profile?.status || "active",
-      church_id: profile?.church_id || null,
-    },
-  });
+  user: {
+    id: user.id,
+    email: user.email,
+  },
+
+  profile: {
+    id: profile?.id || user.id,
+    full_name:
+      profile?.full_name ||
+      user.user_metadata?.full_name ||
+      user.email?.split("@")[0] ||
+      "Utilisateur",
+
+    email:
+      profile?.email ||
+      user.email ||
+      "",
+
+    phone:
+      profile?.phone || "",
+
+    avatar_url:
+      profile?.avatar_url ||
+      user.user_metadata?.avatar_url ||
+      "",
+
+    role:
+  profile?.role || null,
+
+    status:
+      profile?.status || "active",
+
+    church_id:
+      profile?.church_id || null,
+  },
+  church,
+});
 }

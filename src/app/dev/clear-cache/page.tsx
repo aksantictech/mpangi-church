@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { CheckCircle2, RefreshCw, Trash2 } from "lucide-react";
+import { notFound } from "next/navigation";
 
 export default function DevClearCachePage() {
   const [message, setMessage] = useState("");

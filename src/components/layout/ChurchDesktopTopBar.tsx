@@ -2,6 +2,9 @@
 
 import Link from "next/link";
 import {
+  buildChurchPublicUrl,
+} from "@/lib/tenant/domain";
+import {
   useEffect,
   useMemo,
   useRef,
@@ -17,8 +20,6 @@ import {
   UserRound,
   UsersRound,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
-
 import type { ChurchBranding } from "@/lib/tenant/churchBranding";
 
 type Profile = {
@@ -96,7 +97,6 @@ function normalizeRole(
 export default function ChurchDesktopTopBar({
   branding,
 }: ChurchDesktopTopBarProps) {
-  const router = useRouter();
 
   const dropdownRef =
     useRef<HTMLDivElement | null>(
@@ -191,24 +191,61 @@ export default function ChurchDesktopTopBar({
     displayEmail
   );
 
-  async function handleLogout() {
+ async function handleLogout() {
+  try {
+    setLogoutLoading(true);
+
+    let loginTarget =
+      "/login?logout=1";
+
     try {
-      setLogoutLoading(true);
-
-      await fetch("/logout", {
-        method: "POST",
-        cache: "no-store",
-      });
-
-      router.replace(
-        "/login?logout=1"
+      const response = await fetch(
+        "/api/account/me",
+        {
+          cache: "no-store",
+          credentials: "include",
+        }
       );
 
-      router.refresh();
-    } finally {
-      setLogoutLoading(false);
+      if (response.ok) {
+        const payload =
+          await response.json();
+
+        if (
+          payload.profile?.role !==
+            "super_admin" &&
+          payload.church?.slug
+        ) {
+          loginTarget =
+            buildChurchPublicUrl(
+              {
+                slug:
+                  payload.church.slug,
+                subdomain:
+                  payload.church
+                    .subdomain,
+              },
+              "/login?logout=1"
+            );
+        }
+      }
+    } catch {
+      // Fallback sécurisé.
     }
+
+    await fetch("/logout", {
+      method: "POST",
+      cache: "no-store",
+      credentials: "include",
+    });
+
+    window.location.replace(
+      loginTarget
+    );
+  } finally {
+    setLogoutLoading(false);
   }
+}
 
   return (
     <header className="sticky top-0 z-40 hidden border-b border-[#DCEAF5] bg-[var(--church-surface)]/95 px-6 py-3 backdrop-blur lg:block">

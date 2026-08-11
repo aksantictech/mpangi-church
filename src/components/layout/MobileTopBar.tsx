@@ -1,6 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import {
+  buildChurchPublicUrl,
+} from "@/lib/tenant/domain";
 import { useEffect, useMemo, useState } from "react";
 import {
   Bell,
@@ -12,7 +15,8 @@ import {
   Settings,
   X,
 } from "lucide-react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
+
 import {
   findActiveMenuGroup,
   getGroupedVisibleMenuItems,
@@ -42,7 +46,6 @@ export default function MobileTopBar({
 }: MobileTopBarProps = {}) {
   void branding;
   const pathname = usePathname();
-  const router = useRouter();
  const [open, setOpen] = useState(false);
 const [openGroupOverride, setOpenGroupOverride] =
   useState<string | null>(null);
@@ -128,19 +131,62 @@ function closeForNavigation() {
     };
   }, [open]);
 
-  async function handleLogout() {
+ async function handleLogout() {
+  try {
+    setLogoutLoading(true);
+
+    // IMPORTANT :
+    // récupérer le tenant AVANT de supprimer la session.
+    let loginTarget = "/login?logout=1";
+
     try {
-      setLogoutLoading(true);
-      await fetch("/logout", {
-        method: "POST",
-        cache: "no-store",
-      });
-      router.replace("/login?logout=1");
-      router.refresh();
-    } finally {
-      setLogoutLoading(false);
+      const response = await fetch(
+        "/api/account/me",
+        {
+          cache: "no-store",
+          credentials: "include",
+        }
+      );
+
+      if (response.ok) {
+        const payload =
+          await response.json();
+
+        if (
+          payload.profile?.role !==
+            "super_admin" &&
+          payload.church?.slug
+        ) {
+          loginTarget =
+            buildChurchPublicUrl(
+              {
+                slug:
+                  payload.church.slug,
+                subdomain:
+                  payload.church
+                    .subdomain,
+              },
+              "/login?logout=1"
+            );
+        }
+      }
+    } catch {
+      // Fallback vers le login global.
     }
+
+    await fetch("/logout", {
+      method: "POST",
+      cache: "no-store",
+      credentials: "include",
+    });
+
+    window.location.replace(
+      loginTarget
+    );
+  } finally {
+    setLogoutLoading(false);
   }
+}
 
   return (
     <>

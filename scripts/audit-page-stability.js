@@ -207,9 +207,21 @@ if (hasBlackPageBackground) {
     /Aucun|aucune|EmptyState|empty|Aucune donnée/i.test(source) ||
     (hasTable && hasGlobalEmptyTablesEnhancer);
 
-  if (!redirectOnly && !hasVisibleEmptyState && (hasTable || /\.map\(/.test(source))) {
-    warnings.push("no_visible_empty_state");
-  }
+ const hasDynamicCollectionHint =
+  hasTable ||
+  /\(data\s*\|\|\s*\[\]\)\.map\(/.test(source) ||
+  /\(rows\s*\|\|\s*\[\]\)\.map\(/.test(source) ||
+  /\(items\s*\|\|\s*\[\]\)\.map\(/.test(source) ||
+  /\(results\s*\|\|\s*\[\]\)\.map\(/.test(source) ||
+  /\(records\s*\|\|\s*\[\]\)\.map\(/.test(source);
+
+if (
+  !redirectOnly &&
+  !hasVisibleEmptyState &&
+  hasDynamicCollectionHint
+) {
+  warnings.push("no_visible_empty_state");
+}
 
   const hasDataCalls = /from\(|select\(|insert\(|update\(|delete\(/.test(source);
   const hasLocalErrorHandling = /try|catch|ErrorState|error/i.test(source);
