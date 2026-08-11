@@ -1,4 +1,4 @@
-name: Mpangi-Church encrypted backup
+﻿name: Mpangi-Church encrypted backup
 
 on:
   workflow_dispatch:
@@ -26,8 +26,13 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
           cache: npm
+
+      - name: Verify Node runtime
+        run: |
+          node --version
+          node -e "console.log('WebSocket:', typeof WebSocket)"
 
       - name: Install dependencies
         run: npm ci
@@ -53,7 +58,6 @@ jobs:
           set -euo pipefail
           DAY="$(date -u +%d)"
           DOW="$(date -u +%u)"
-
           if [ "$DAY" = "01" ]; then
             echo "name=monthly" >> "$GITHUB_OUTPUT"
             echo "days=90" >> "$GITHUB_OUTPUT"
@@ -70,52 +74,26 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-
           TIMESTAMP="$(date -u +%Y-%m-%d_%H-%M-%S)"
           BACKUP_DIR="$RUNNER_TEMP/mpangi-church/$TIMESTAMP"
           DB_DIR="$BACKUP_DIR/database"
           STORAGE_DIR="$BACKUP_DIR/storage"
-
           mkdir -p "$DB_DIR" "$STORAGE_DIR"
 
-          supabase db dump \
-            --db-url "$SUPABASE_DB_URL" \
-            -f "$DB_DIR/roles.sql" \
-            --role-only
+          supabase db dump --db-url "$SUPABASE_DB_URL" -f "$DB_DIR/roles.sql" --role-only
+          supabase db dump --db-url "$SUPABASE_DB_URL" -f "$DB_DIR/schema.sql"
+          supabase db dump --db-url "$SUPABASE_DB_URL" -f "$DB_DIR/data.sql" --data-only --use-copy -x "storage.buckets_vectors" -x "storage.vector_indexes"
 
-          supabase db dump \
-            --db-url "$SUPABASE_DB_URL" \
-            -f "$DB_DIR/schema.sql"
-
-          supabase db dump \
-            --db-url "$SUPABASE_DB_URL" \
-            -f "$DB_DIR/data.sql" \
-            --data-only \
-            --use-copy \
-            -x "storage.buckets_vectors" \
-            -x "storage.vector_indexes"
-
-          node scripts/backup/backup-storage.js \
-            --output "$STORAGE_DIR"
-
-          node scripts/backup/create-manifest.js \
-            --backup-dir "$BACKUP_DIR"
-
-          node scripts/backup/verify-backup.js \
-            --backup-dir "$BACKUP_DIR"
+          node scripts/backup/backup-storage.js --output "$STORAGE_DIR"
+          node scripts/backup/create-manifest.js --backup-dir "$BACKUP_DIR"
+          node scripts/backup/verify-backup.js --backup-dir "$BACKUP_DIR"
 
           ARCHIVE="$RUNNER_TEMP/mpangi-church-${{ steps.tier.outputs.name }}-$TIMESTAMP.tar.gz"
           ENCRYPTED="$ARCHIVE.enc"
-
           tar -czf "$ARCHIVE" -C "$BACKUP_DIR" .
 
-          openssl enc \
-            -aes-256-cbc \
-            -salt \
-            -pbkdf2 \
-            -iter 100000 \
-            -in "$ARCHIVE" \
-            -out "$ENCRYPTED" \
+          openssl enc -aes-256-cbc -salt -pbkdf2 -iter 100000 \
+            -in "$ARCHIVE" -out "$ENCRYPTED" \
             -pass env:BACKUP_ARCHIVE_PASSWORD
 
           sha256sum "$ENCRYPTED" > "$ENCRYPTED.sha256"
@@ -135,3 +113,8 @@ jobs:
           retention-days: ${{ steps.tier.outputs.days }}
           if-no-files-found: error
           compression-level: 0
+
+
+
+
+
