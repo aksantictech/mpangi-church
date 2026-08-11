@@ -1,4 +1,5 @@
 import Link from "next/link";
+import AppShell from "@/components/layout/AppShell";
 import {
   ArrowRight,
   CheckSquare2,
@@ -14,6 +15,7 @@ export default async function RoleDashboardPage() {
   const data = await getRoleDashboardData();
 
   return (
+  <AppShell>
     <main className="min-h-screen bg-[#F5F9FC] px-3 py-5 pb-24 sm:px-6 sm:py-8">
       <div className="mx-auto max-w-7xl">
         <section className="rounded-[1.75rem] bg-gradient-to-br from-[#03357A] via-[#2563EB] to-[#8B5CF6] p-5 text-white shadow-xl shadow-blue-900/15 sm:p-7">
@@ -123,8 +125,9 @@ export default async function RoleDashboardPage() {
           )}
         </section>
       </div>
-    </main>
-  );
+       </main>
+  </AppShell>
+);
 }
 
 function Metric({

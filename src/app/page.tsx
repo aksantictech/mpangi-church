@@ -24,6 +24,7 @@ import {
 import { createAdminClient } from "@/lib/supabase/admin";
 import { buildChurchPublicUrl } from "@/lib/tenant/domain";
 import CommercialContactForm from "@/components/public/CommercialContactForm";
+import PublicCommercialBottomNav from "@/components/public/PublicCommercialBottomNav";
 
 export const dynamic = "force-dynamic";
 
@@ -136,7 +137,7 @@ export default async function PublicHomePage() {
   );
 
   return (
-    <main id="top" data-mpangi-global-home className="min-h-screen overflow-hidden bg-[#F5F9FC] pb-20 text-[#0F172A] lg:pb-0">
+    <main id="top" data-mpangi-global-home className="min-h-screen overflow-hidden bg-[#F5F9FC] pb-24 text-[#0F172A] lg:pb-0">
       <style
         dangerouslySetInnerHTML={{
           __html: `
@@ -570,23 +571,7 @@ export default async function PublicHomePage() {
         <div className="border-t border-[#DCEAF5] px-4 py-5 text-center text-xs font-semibold text-slate-500">© 2026 Mpangi-Church — Une solution AKSANTIC Technology. Tous droits réservés.</div>
       </footer>
 
-      <nav aria-label="Navigation commerciale mobile" className="fixed inset-x-0 bottom-0 z-[90] grid grid-cols-5 border-t border-[#DCEAF5] bg-white/95 px-1 pt-1.5 shadow-[0_-10px_30px_rgba(15,23,42,0.10)] backdrop-blur-xl lg:hidden" style={{ paddingBottom: "max(env(safe-area-inset-bottom), 0.35rem)" }}>
-        {[
-          ["Accueil", "#top", LayoutDashboard],
-          ["Modules", "#modules", Network],
-          ["Forfaits", "/pricing", Wallet],
-          ["Démo / devis", "#demo", Presentation],
-          ["Contact", "#contact", MessageCircle],
-        ].map(([label, href, Icon]) => {
-          const NavIcon = Icon as typeof LayoutDashboard;
-          return (
-            <a key={String(label)} href={String(href)} className="flex min-h-14 min-w-0 flex-col items-center justify-center gap-1 rounded-xl px-1 text-center text-[10px] font-black text-[#03357A] hover:bg-[#EAF3FA]">
-              <NavIcon className="h-5 w-5" />
-              <span className="truncate">{String(label)}</span>
-            </a>
-          );
-        })}
-      </nav>
+      <PublicCommercialBottomNav />
     </main>
   );
 }

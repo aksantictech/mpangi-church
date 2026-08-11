@@ -1,4 +1,5 @@
 import Link from "next/link";
+import AppShell from "@/components/layout/AppShell";
 import {
   ArrowLeft,
   Banknote,
@@ -133,6 +134,7 @@ export default async function DonationSettingsPage({
       : "CDF, USD, EUR";
 
   return (
+  <AppShell>
     <main className="min-h-screen bg-[#F5F9FC] px-3 py-5 pb-24 sm:px-6 sm:py-8">
       <div className="mx-auto max-w-5xl">
         <Link
@@ -486,8 +488,9 @@ export default async function DonationSettingsPage({
           </button>
         </form>
       </div>
-    </main>
-  );
+   </main>
+  </AppShell>
+);
 }
 
 function Card({

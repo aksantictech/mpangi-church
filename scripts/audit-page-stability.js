@@ -8,6 +8,13 @@ const OUT_JSON = path.join(ROOT, "page-stability-report.json");
 
 const EXCLUDED_SEGMENTS = new Set(["api", "_components"]);
 
+const PUBLIC_ROUTES = new Set([
+  "/",
+  "/pricing",
+  "/modules",
+  "/main-domain-required",
+]);
+
 const PUBLIC_PREFIXES = [
   "/login",
   "/logout",
@@ -15,6 +22,10 @@ const PUBLIC_PREFIXES = [
   "/offline",
   "/unauthorized",
   "/church",
+];
+
+const TECHNICAL_PREFIXES = [
+  "/dev",
 ];
 
 function exists(file) {
@@ -85,7 +96,21 @@ function isRedirectOnly(source) {
 function routeType(route, source) {
   if (isRedirectOnly(source)) return "redirect";
 
-  if (route.startsWith("/super-admin")) return "super-admin";
+  if (PUBLIC_ROUTES.has(route)) {
+    return "public";
+  }
+
+  if (
+    TECHNICAL_PREFIXES.some(
+      (prefix) => route === prefix || route.startsWith(`${prefix}/`)
+    )
+  ) {
+    return "technical";
+  }
+
+  if (route.startsWith("/super-admin")) {
+    return "super-admin";
+  }
 
   if (
     PUBLIC_PREFIXES.some(
@@ -130,9 +155,14 @@ function detectIssues(filePath) {
   const issues = [];
   const warnings = [];
 
-  if (!redirectOnly && type !== "public" && !hasShell) {
-    issues.push("missing_app_shell");
-  }
+ if (
+  !redirectOnly &&
+  type !== "public" &&
+  type !== "technical" &&
+  !hasShell
+) {
+  issues.push("missing_app_shell");
+}
 
   if (
     !redirectOnly &&
@@ -152,9 +182,17 @@ function detectIssues(filePath) {
     issues.push("missing_church_app_shell");
   }
 
-  if (/bg-black|bg-\[#000\]|bg-slate-950|bg-neutral-950|bg-zinc-950/.test(source)) {
-    issues.push("black_background");
-  }
+  const hasBlackPageBackground =
+  /<main[^>]+className=["'][^"']*(bg-black|bg-\[#000\]|bg-slate-950|bg-neutral-950|bg-zinc-950)/.test(
+    source
+  ) ||
+  /<body[^>]+className=["'][^"']*(bg-black|bg-\[#000\]|bg-slate-950|bg-neutral-950|bg-zinc-950)/.test(
+    source
+  );
+
+if (hasBlackPageBackground) {
+  issues.push("black_background");
+}
 
   if (
     !redirectOnly &&

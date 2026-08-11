@@ -1,4 +1,5 @@
 import Link from "next/link";
+import AppShell from "@/components/layout/AppShell";
 import {
   ArrowLeft,
   CalendarClock,
@@ -37,13 +38,15 @@ export default async function MyWorkPage({
   const query = await searchParams;
   const context = await getCurrentSecurityContext();
 
-  if (!context.churchId) {
-    return (
-      <main className="p-8 text-center">
+ if (!context.churchId) {
+  return (
+    <AppShell>
+      <main className="min-h-screen bg-[#F5F9FC] p-8 text-center">
         Aucune église n’est associée à ce compte.
       </main>
-    );
-  }
+    </AppShell>
+  );
+}
 
   const admin = createAdminClient();
 
@@ -75,6 +78,7 @@ export default async function MyWorkPage({
   );
 
   return (
+  <AppShell>
     <main className="min-h-screen bg-[#F5F9FC] px-3 py-5 pb-24 sm:px-6 sm:py-8">
       <div className="mx-auto max-w-7xl">
         <nav className="mb-4 flex flex-wrap gap-2">
@@ -286,8 +290,9 @@ export default async function MyWorkPage({
           )}
         </section>
       </div>
-    </main>
-  );
+        </main>
+  </AppShell>
+);
 }
 
 function Metric({

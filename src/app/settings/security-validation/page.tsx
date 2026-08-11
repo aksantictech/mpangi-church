@@ -1,4 +1,5 @@
 import Link from "next/link";
+import AppShell from "@/components/layout/AppShell";
 import {
   AlertTriangle,
   ArrowLeft,
@@ -33,6 +34,7 @@ export default async function SecurityValidationPage() {
   }
 
   return (
+  <AppShell>
     <main className="min-h-screen bg-[#F5F9FC] px-3 py-5 pb-24 sm:px-6 sm:py-8">
       <div className="mx-auto max-w-7xl">
         <Link
@@ -180,8 +182,9 @@ export default async function SecurityValidationPage() {
           ))}
         </section>
       </div>
-    </main>
-  );
+     </main>
+  </AppShell>
+);
 }
 
 function Metric({

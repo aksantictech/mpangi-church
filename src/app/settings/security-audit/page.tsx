@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { ArrowLeft, ShieldCheck } from "lucide-react";
+
+import AppShell from "@/components/layout/AppShell";
 import { redirect } from "next/navigation";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getCurrentSecurityContext } from "@/lib/security/permissionEngine";
@@ -40,7 +42,8 @@ export default async function SecurityAuditPage({ searchParams }: PageProps) {
   const { data, error } = await query;
   const rows = data || [];
 
-  return (
+ return (
+  <AppShell>
     <main className="min-h-screen bg-[#F5F9FC] px-3 py-5 pb-24 sm:px-6 sm:py-8">
       <div className="mx-auto max-w-7xl">
         <Link
@@ -124,6 +127,7 @@ export default async function SecurityAuditPage({ searchParams }: PageProps) {
           )}
         </section>
       </div>
-    </main>
-  );
+     </main>
+  </AppShell>
+);
 }

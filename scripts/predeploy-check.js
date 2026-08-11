@@ -12,9 +12,14 @@ function run(label, command, args) {
   console.log(`▶ ${label}`);
   console.log(`$ ${command} ${args.join(" ")}`);
 
-  const result = spawnSync(command, args, {
+  const executable =
+    process.platform === "win32" && command === "npm"
+      ? "npm.cmd"
+      : command;
+
+  const result = spawnSync(executable, args, {
     cwd: ROOT,
-    shell: true,
+    shell: false,
     encoding: "utf8",
   });
 
@@ -33,7 +38,6 @@ function run(label, command, args) {
     stderr: result.stderr || "",
   };
 }
-
 function fileExists(relativePath) {
   return fs.existsSync(path.join(ROOT, relativePath));
 }
