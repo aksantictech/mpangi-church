@@ -58,6 +58,7 @@ const TENANT_PUBLIC_PATHS = new Set([
   "/public-notifications",
   "/public-teachings",
   "/live",
+  "/member-registration",
 ]);
 
 const PUBLIC_FILE_REGEX =
@@ -383,7 +384,10 @@ const localDevelopment =
     );
 
     if (canonicalPath) {
-      return redirectTo(request, canonicalPath);
+      const canonicalUrl = request.nextUrl.clone();
+      canonicalUrl.pathname = canonicalPath;
+
+      return NextResponse.redirect(canonicalUrl);
     }
 
     if (
