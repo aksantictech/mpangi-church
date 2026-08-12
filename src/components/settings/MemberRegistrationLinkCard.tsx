@@ -14,10 +14,12 @@ import {
   ShieldCheck,
   ShieldOff,
 } from "lucide-react";
+import { buildChurchPublicUrl } from "@/lib/tenant/domain";
 
 type MemberRegistrationLinkCardProps = {
   church: {
     slug: string | null;
+    subdomain: string | null;
     member_form_enabled: boolean | null;
     member_form_token: string | null;
   };
@@ -42,9 +44,14 @@ export default function MemberRegistrationLinkCard({
     }
 
     setRegistrationUrl(
-      `${window.location.origin}/church/${church.slug}/member-registration?token=${church.member_form_token}`
+      buildChurchPublicUrl(
+        { slug: church.slug, subdomain: church.subdomain },
+        `/member-registration?token=${encodeURIComponent(
+          church.member_form_token
+        )}`
+      )
     );
-  }, [church.slug, church.member_form_token]);
+  }, [church.slug, church.subdomain, church.member_form_token]);
 
   async function copyLink() {
     if (!registrationUrl) return;

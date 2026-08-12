@@ -53,32 +53,6 @@ export default function ChurchModulesManager({
     }, {});
   }, [modules]);
 
-  async function loadModules() {
-    setLoading(true);
-    setErrorMessage("");
-
-    try {
-      const response = await fetch(
-        `/api/super-admin/church-modules?churchId=${encodeURIComponent(
-          churchId
-        )}`,
-        { cache: "no-store" }
-      );
-
-      const payload = await response.json();
-
-      if (!response.ok) {
-        throw new Error(payload.error || "Chargement impossible.");
-      }
-
-      setModules(payload.modules || []);
-    } catch (error: any) {
-      setErrorMessage(error.message || "Erreur de chargement.");
-    } finally {
-      setLoading(false);
-    }
-  }
-
   async function runAction(action: string, extra?: Record<string, unknown>) {
     setBusyAction(action);
     setErrorMessage("");
@@ -103,15 +77,48 @@ export default function ChurchModulesManager({
       }
 
       setModules(payload.modules || []);
-    } catch (error: any) {
-      setErrorMessage(error.message || "Erreur.");
+    } catch (error: unknown) {
+      setErrorMessage(error instanceof Error ? error.message : "Erreur.");
     } finally {
       setBusyAction("");
     }
   }
 
   useEffect(() => {
-    loadModules();
+    const controller = new AbortController();
+
+    async function loadModules() {
+      setLoading(true);
+      setErrorMessage("");
+
+      try {
+        const response = await fetch(
+          `/api/super-admin/church-modules?churchId=${encodeURIComponent(
+            churchId
+          )}`,
+          { cache: "no-store", signal: controller.signal }
+        );
+
+        const payload = await response.json();
+
+        if (!response.ok) {
+          throw new Error(payload.error || "Chargement impossible.");
+        }
+
+        setModules(payload.modules || []);
+      } catch (error: unknown) {
+        if (controller.signal.aborted) return;
+        setErrorMessage(
+          error instanceof Error ? error.message : "Erreur de chargement."
+        );
+      } finally {
+        if (!controller.signal.aborted) setLoading(false);
+      }
+    }
+
+    void loadModules();
+
+    return () => controller.abort();
   }, [churchId]);
 
   return (

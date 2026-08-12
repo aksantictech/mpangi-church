@@ -94,31 +94,41 @@ export default function RoleDashboardPanel() {
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
 
-  async function loadDashboard() {
-    setLoading(true);
-    setErrorMessage("");
-
-    try {
-      const response = await fetch("/api/dashboard/role", {
-        cache: "no-store",
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Chargement impossible.");
-      }
-
-      setPayload(data);
-    } catch (error: any) {
-      setErrorMessage(error.message || "Erreur de chargement.");
-    } finally {
-      setLoading(false);
-    }
-  }
-
   useEffect(() => {
-    loadDashboard();
+    const controller = new AbortController();
+
+    async function fetchDashboard() {
+      try {
+        const response = await fetch("/api/dashboard/role", {
+          cache: "no-store",
+          signal: controller.signal,
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || "Chargement impossible.");
+        }
+
+        setPayload(data);
+      } catch (error: unknown) {
+        if (error instanceof DOMException && error.name === "AbortError") {
+          return;
+        }
+
+        setErrorMessage(
+          error instanceof Error ? error.message : "Erreur de chargement."
+        );
+      } finally {
+        if (!controller.signal.aborted) {
+          setLoading(false);
+        }
+      }
+    }
+
+    void fetchDashboard();
+
+    return () => controller.abort();
   }, []);
 
   const visibleCards = useMemo(() => payload?.config.cards ?? [], [payload]);

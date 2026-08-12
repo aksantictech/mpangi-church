@@ -45,6 +45,7 @@ export default async function MemberRegistrationSettingsPage() {
       id,
       name,
       slug,
+      subdomain,
       member_form_enabled,
       member_form_token
     `
