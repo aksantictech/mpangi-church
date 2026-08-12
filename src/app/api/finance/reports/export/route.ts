@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
-import { requireAnyActionPermission } from "@/lib/security/secureAction";
 import { requireAnyModulePermission } from "@/lib/security/routeGuard";
 function txt(value: unknown) {
   return value === null || value === undefined ? "" : String(value).trim();

@@ -3,8 +3,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
 import { requireAnyActionPermission } from "@/lib/security/secureAction";
-import { requireAnyModulePermission } from "@/lib/security/routeGuard";
-type MemberAction = "activate" | "deactivate" | "archive" | "delete";
+type MemberAction = "activate" | "deactivate" | "approve" | "reject" | "archive" | "delete";
 
 type RequestBody = {
   memberId?: string;
@@ -77,7 +76,6 @@ async function getCurrentProfile() {
 }
 
 export async function POST(request: Request) {
-  await requireAnyActionPermission(["members"], "create");
   try {
     const body = (await request.json()) as RequestBody;
 
@@ -91,12 +89,20 @@ export async function POST(request: Request) {
       );
     }
 
-    if (!["activate", "deactivate", "archive", "delete"].includes(action)) {
+    if (!["activate", "deactivate", "approve", "reject", "archive", "delete"].includes(action)) {
       return NextResponse.json(
         { error: "Type d’action invalide." },
         { status: 400 }
       );
     }
+
+    const permissionAction =
+      action === "delete" || action === "archive"
+        ? "delete"
+        : action === "approve" || action === "reject"
+          ? "approve"
+          : "update";
+    await requireAnyActionPermission(["members"], permissionAction);
 
     const { profile, error, status } = await getCurrentProfile();
 
@@ -142,6 +148,39 @@ export async function POST(request: Request) {
       return NextResponse.json({
         success: true,
         message: "Membre réactivé avec succès.",
+      });
+    }
+
+    if (action === "approve" || action === "reject") {
+      if (member.status !== "en_attente") {
+        return NextResponse.json(
+          { error: "Cette inscription n’est plus en attente." },
+          { status: 409 }
+        );
+      }
+
+      const approved = action === "approve";
+      const { error: updateError } = await admin
+        .from("members")
+        .update({
+          status: approved ? "actif" : "refuse",
+          qr_enabled: approved,
+          reviewed_at: new Date().toISOString(),
+          reviewed_by: profile.id,
+        })
+        .eq("id", memberId)
+        .eq("church_id", profile.church_id)
+        .eq("status", "en_attente");
+
+      if (updateError) {
+        return NextResponse.json({ error: updateError.message }, { status: 400 });
+      }
+
+      return NextResponse.json({
+        success: true,
+        message: approved
+          ? "Inscription approuvée et carte membre activée."
+          : "Inscription refusée.",
       });
     }
 

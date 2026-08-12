@@ -1,6 +1,12 @@
-import { randomUUID } from "crypto";
+import { createHash, randomUUID } from "crypto";
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+
+const MAX_REQUEST_BYTES = 7 * 1024 * 1024;
+const MAX_PHOTO_BYTES = 5 * 1024 * 1024;
+const MAX_ARRAY_ITEMS = 25;
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function getString(value: unknown) {
   if (value === null || value === undefined) return "";
@@ -22,7 +28,18 @@ function getStringArray(value: unknown) {
     return [];
   }
 
-  return value.map((item) => String(item).trim()).filter(Boolean);
+  return [...new Set(value.map((item) => String(item).trim()))]
+    .filter((item) => UUID_PATTERN.test(item))
+    .slice(0, MAX_ARRAY_ITEMS);
+}
+
+function isExpired(value: unknown) {
+  const expiresAt = getString(value);
+  return Boolean(expiresAt && Date.parse(expiresAt) <= Date.now());
+}
+
+function exceeds(value: string, maxLength: number) {
+  return value.length > maxLength;
 }
 
 function getBase64Payload(value: unknown) {
@@ -60,7 +77,21 @@ function getSafeFileExtension(fileType: string, fileName: string) {
 
 export async function POST(request: Request) {
   try {
+    const contentLength = Number(request.headers.get("content-length") || 0);
+    if (contentLength > MAX_REQUEST_BYTES) {
+      return NextResponse.json({ error: "La demande est trop volumineuse." }, { status: 413 });
+    }
+
     const body = await request.json();
+
+    if (getString(body.website)) {
+      return NextResponse.json({ error: "Demande invalide." }, { status: 400 });
+    }
+
+    const startedAt = Number(body.startedAt);
+    if (!Number.isFinite(startedAt) || Date.now() - startedAt < 2500) {
+      return NextResponse.json({ error: "Veuillez vérifier le formulaire avant de l’envoyer." }, { status: 429 });
+    }
 
     const churchSlug = getString(body.churchSlug);
     const token = getString(body.token);
@@ -103,6 +134,18 @@ export async function POST(request: Request) {
       );
     }
 
+    if (
+      exceeds(firstName, 80) || exceeds(middleName, 80) || exceeds(lastName, 80) ||
+      exceeds(phone, 40) || exceeds(email, 160) || exceeds(address, 300) ||
+      exceeds(occupation, 120) || exceeds(emergencyContact, 120) || exceeds(notes, 1500)
+    ) {
+      return NextResponse.json({ error: "Un ou plusieurs champs sont trop longs." }, { status: 400 });
+    }
+
+    if (email && !EMAIL_PATTERN.test(email)) {
+      return NextResponse.json({ error: "L’adresse email n’est pas valide." }, { status: 400 });
+    }
+
     const admin = createAdminClient();
 
     const { data: church, error: churchError } = await admin
@@ -114,7 +157,8 @@ export async function POST(request: Request) {
         status,
         public_enabled,
         member_form_enabled,
-        member_form_token
+        member_form_token,
+        member_form_token_expires_at
       `
       )
       .eq("slug", churchSlug)
@@ -131,11 +175,28 @@ export async function POST(request: Request) {
       church.status !== "active" ||
       !church.public_enabled ||
       !church.member_form_enabled ||
-      church.member_form_token !== token
+      church.member_form_token !== token ||
+      isExpired(church.member_form_token_expires_at)
     ) {
       return NextResponse.json(
         { error: "Ce lien d’inscription n’est pas actif." },
         { status: 403 }
+      );
+    }
+
+    const forwardedFor = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+    const fingerprint = createHash("sha256")
+      .update(`${church.id}:${forwardedFor}:${request.headers.get("user-agent") || "unknown"}`)
+      .digest("hex");
+    const { data: rateLimitAllowed, error: rateLimitError } = await admin.rpc(
+      "check_public_member_registration_rate_limit",
+      { p_church_id: church.id, p_fingerprint: fingerprint }
+    );
+
+    if (!rateLimitError && rateLimitAllowed === false) {
+      return NextResponse.json(
+        { error: "Trop de tentatives. Veuillez réessayer dans quelques minutes." },
+        { status: 429 }
       );
     }
 
@@ -160,54 +221,15 @@ export async function POST(request: Request) {
       }
     }
 
-    const duplicateChecks: string[] = [];
-
-    if (phone) {
-      duplicateChecks.push(`phone.eq.${phone}`);
-    }
-
-    if (email) {
-      duplicateChecks.push(`email.eq.${email}`);
-    }
-
-    if (duplicateChecks.length > 0) {
-      const { data: existingMembers } = await admin
-        .from("members")
-        .select("id, first_name, last_name, phone, email")
-        .eq("church_id", church.id)
-        .or(duplicateChecks.join(","))
-        .limit(1);
-
-      const existingMember = existingMembers?.[0];
-
-      if (existingMember) {
-        if (phone && existingMember.phone === phone) {
-          return NextResponse.json(
-            {
-              error:
-                "Un membre avec ce numéro de téléphone existe déjà dans cette église.",
-            },
-            { status: 409 }
-          );
-        }
-
-        if (email && existingMember.email === email) {
-          return NextResponse.json(
-            {
-              error:
-                "Un membre avec cette adresse email existe déjà dans cette église.",
-            },
-            { status: 409 }
-          );
-        }
-
-        return NextResponse.json(
-          {
-            error: "Ce membre semble déjà exister dans cette église.",
-          },
-          { status: 409 }
-        );
-      }
+    for (const [column, value, message] of [
+      ["phone", phone, "Un membre avec ce numéro de téléphone existe déjà dans cette église."],
+      ["email", email.toLowerCase(), "Un membre avec cette adresse email existe déjà dans cette église."],
+    ] as const) {
+      if (!value) continue;
+      const { data: existingMember } = await admin
+        .from("members").select("id").eq("church_id", church.id)
+        .ilike(column, value).limit(1).maybeSingle();
+      if (existingMember) return NextResponse.json({ error: message }, { status: 409 });
     }
 
     let photoUrl: string | null = null;
@@ -216,9 +238,16 @@ export async function POST(request: Request) {
       const payload = getBase64Payload(photoBase64);
 
       if (payload) {
+        if (!["image/jpeg", "image/png", "image/webp"].includes(photoType)) {
+          return NextResponse.json({ error: "Format photo non accepté." }, { status: 400 });
+        }
         const extension = getSafeFileExtension(photoType, photoName);
         const filePath = `${church.id}/public-${Date.now()}-${randomUUID()}.${extension}`;
         const fileBuffer = Buffer.from(payload.base64, "base64");
+
+        if (fileBuffer.byteLength > MAX_PHOTO_BYTES) {
+          return NextResponse.json({ error: "La photo ne doit pas dépasser 5 MB." }, { status: 413 });
+        }
 
         const { error: uploadError } = await admin.storage
           .from("member-photos")
@@ -265,13 +294,14 @@ export async function POST(request: Request) {
         email: email || null,
         address: address || null,
         photo_url: photoUrl,
-        status: "actif",
+        status: "en_attente",
+        registration_source: "public_form",
         notes: finalNotes,
         qr_token: qrToken,
-        qr_enabled: true,
+        qr_enabled: false,
         qr_generated_at: now,
       })
-      .select("id, first_name, last_name, qr_token")
+      .select("id, first_name, last_name")
       .single();
 
     if (memberError || !member) {
@@ -325,17 +355,14 @@ export async function POST(request: Request) {
       }
     }
 
-    const origin = new URL(request.url).origin;
-
     return NextResponse.json({
       success: true,
       message: "Formulaire envoyé avec succès.",
+      pendingApproval: true,
       member: {
         id: member.id,
         firstName: member.first_name,
         lastName: member.last_name,
-        qrToken: member.qr_token,
-        qrValue: `${origin}/church/${church.slug}/member-card/${member.qr_token}`,
       },
     });
   } catch {

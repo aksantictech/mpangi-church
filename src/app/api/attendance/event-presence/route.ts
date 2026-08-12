@@ -3,7 +3,6 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
 import { requireAnyActionPermission } from "@/lib/security/secureAction";
-import { requireAnyModulePermission } from "@/lib/security/routeGuard";
 type AttendanceActionBody = {
   eventId?: string;
   memberId?: string;

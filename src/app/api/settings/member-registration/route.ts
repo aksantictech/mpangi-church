@@ -3,7 +3,6 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
 import { requireAnyActionPermission } from "@/lib/security/secureAction";
-import { requireAnyModulePermission } from "@/lib/security/routeGuard";
 type RequestBody = {
   action?: "toggle" | "regenerate";
   enabled?: boolean;
@@ -79,10 +78,13 @@ export async function POST(request: Request) {
     }
 
     if (body.action === "regenerate") {
+      const expiresAt = new Date();
+      expiresAt.setDate(expiresAt.getDate() + 90);
       const { error } = await admin
         .from("churches")
         .update({
           member_form_token: crypto.randomUUID(),
+          member_form_token_expires_at: expiresAt.toISOString(),
           member_form_enabled: true,
         })
         .eq("id", profile.church_id);
