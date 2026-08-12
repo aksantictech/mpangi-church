@@ -3,7 +3,6 @@ import { CHURCH_DOCUMENTS_BUCKET } from "@/lib/storage/churchDocuments";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
-import { requireAnyActionPermission } from "@/lib/security/secureAction";
 import { requireAnyModulePermission } from "@/lib/security/routeGuard";
 function getString(value: unknown) {
   return value === null || value === undefined ? "" : String(value).trim();

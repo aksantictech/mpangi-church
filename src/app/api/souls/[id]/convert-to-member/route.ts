@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 
 import { requireAnyActionPermission } from "@/lib/security/secureAction";
-import { requireAnyModulePermission } from "@/lib/security/routeGuard";
 type RouteProps = {
   params: Promise<{
     id: string;

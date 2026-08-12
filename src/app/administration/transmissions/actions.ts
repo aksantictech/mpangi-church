@@ -6,7 +6,6 @@ import { requireChurchModuleAccess } from "@/lib/modules/moduleAccess";
 import { uploadChurchDocument } from "@/lib/storage/churchDocuments";
 
 import { requireAnyActionPermission } from "@/lib/security/secureAction";
-import { requireAnyModulePermission } from "@/lib/security/routeGuard";
 function getString(value: FormDataEntryValue | null) {
   if (value === null || value === undefined) return "";
   return String(value).trim();

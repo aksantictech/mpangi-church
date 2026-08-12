@@ -3,7 +3,6 @@ import { redirect } from "next/navigation";
 import MemberRowActions from "@/components/members/MemberRowActions";
 import {
   CalendarDays,
-  Eye,
   Phone,
   Plus,
   Search,
@@ -30,6 +29,8 @@ function getStatusClass(status?: string | null) {
   if (status === "actif") return "bg-green-50 text-green-700";
   if (status === "inactif") return "bg-red-50 text-red-700";
   if (status === "suspendu") return "bg-orange-50 text-orange-700";
+  if (status === "en_attente") return "bg-amber-50 text-amber-700";
+  if (status === "refuse") return "bg-slate-100 text-slate-600";
 
   return "bg-slate-100 text-slate-600";
 }
@@ -79,6 +80,7 @@ export default async function MembersPage() {
     { count: totalMembersCount },
     { count: activeMembersCount },
     { count: inactiveMembersCount },
+    { count: pendingMembersCount },
     { data: members, error },
   ] = await Promise.all([
     supabase
@@ -97,6 +99,12 @@ export default async function MembersPage() {
       .select("*", { count: "exact", head: true })
       .eq("church_id", churchId)
       .eq("status", "inactif"),
+
+    supabase
+      .from("members")
+      .select("*", { count: "exact", head: true })
+      .eq("church_id", churchId)
+      .eq("status", "en_attente"),
 
     supabase
       .from("members")
@@ -151,7 +159,18 @@ export default async function MembersPage() {
 
         <MemberImportBox churchId={churchId} profileId={profile.id} />
 
-        <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        {(pendingMembersCount ?? 0) > 0 && (
+          <section className="rounded-3xl border border-amber-200 bg-amber-50 p-5 text-amber-900 shadow-sm">
+            <p className="font-extrabold">
+              {pendingMembersCount} inscription(s) publique(s) à vérifier
+            </p>
+            <p className="mt-1 text-sm">
+              Ouvrez le menu d’action du membre pour approuver ou refuser sa demande. Aucun QR Code n’est actif avant votre validation.
+            </p>
+          </section>
+        )}
+
+        <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           <MetricCard
             title="Total membres"
             value={totalMembersCount ?? 0}
@@ -172,6 +191,14 @@ export default async function MembersPage() {
             title="Membres inactifs"
             value={inactiveMembersCount ?? 0}
             description="À suivre"
+            icon={CalendarDays}
+            accent="purple"
+          />
+
+          <MetricCard
+            title="À valider"
+            value={pendingMembersCount ?? 0}
+            description="Inscriptions publiques"
             icon={CalendarDays}
             accent="purple"
           />

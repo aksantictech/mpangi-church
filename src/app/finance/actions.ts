@@ -6,7 +6,6 @@ import { requireChurchModuleAccess } from "@/lib/modules/moduleAccess";
 import { uploadChurchDocument } from "@/lib/storage/churchDocuments";
 
 import { requireAnyActionPermission } from "@/lib/security/secureAction";
-import { requireAnyModulePermission } from "@/lib/security/routeGuard";
 function txt(value: FormDataEntryValue | null) {
   return value === null || value === undefined ? "" : String(value).trim();
 }

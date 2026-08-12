@@ -73,6 +73,7 @@ export default function PublicMemberRegistrationForm({
 
   const [photoPreview, setPhotoPreview] = useState("");
   const [photoFile, setPhotoFile] = useState<File | null>(null);
+  const [startedAt] = useState(() => Date.now());
 
   const hasDepartments = departments.length > 0;
   const hasTrainingPrograms = trainingPrograms.length > 0;
@@ -138,6 +139,8 @@ export default function PublicMemberRegistrationForm({
         body: JSON.stringify({
           churchSlug,
           token,
+          startedAt,
+          website: form.get("website"),
 
           firstName: form.get("firstName"),
           middleName: form.get("middleName"),
@@ -172,6 +175,16 @@ export default function PublicMemberRegistrationForm({
 
       if (!response.ok) {
         setErrorMessage(payload.error || "Erreur pendant l’envoi.");
+        return;
+      }
+
+      if (payload.pendingApproval) {
+        setSuccessMessage(
+          "Votre fiche a été envoyée. L’administration de l’église doit maintenant la valider avant l’activation de votre carte membre."
+        );
+        formElement.reset();
+        setPhotoFile(null);
+        setPhotoPreview("");
         return;
       }
 
@@ -228,6 +241,10 @@ export default function PublicMemberRegistrationForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="hidden" aria-hidden="true">
+        <label htmlFor="registration-website">Site internet</label>
+        <input id="registration-website" name="website" tabIndex={-1} autoComplete="off" />
+      </div>
       {successMessage && (
         <div className="flex items-start gap-3 rounded-2xl border border-green-200 bg-green-50 p-4 text-sm font-semibold text-green-700">
           <CheckCircle2 className="mt-0.5 h-5 w-5" />

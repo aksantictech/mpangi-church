@@ -5,12 +5,14 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import {
   Archive,
+  CheckCircle2,
   Eye,
   Loader2,
   MoreVertical,
   Power,
   RotateCcw,
   Trash2,
+  XCircle,
 } from "lucide-react";
 
 type MemberRowActionsProps = {
@@ -32,10 +34,11 @@ export default function MemberRowActions({
   const [isLoading, setIsLoading] = useState(false);
 
   const isInactive = status === "inactif";
+  const isPending = status === "en_attente";
   const isArchived = Boolean(archivedAt);
 
   async function runAction(
-    action: "activate" | "deactivate" | "archive" | "delete"
+    action: "activate" | "deactivate" | "approve" | "reject" | "archive" | "delete"
   ) {
     let confirmed = true;
 
@@ -54,6 +57,12 @@ export default function MemberRowActions({
     if (action === "delete") {
       confirmed = window.confirm(
         `Supprimer définitivement ${memberName} ? Cette action est irréversible.`
+      );
+    }
+
+    if (action === "reject") {
+      confirmed = window.confirm(
+        `Refuser l’inscription de ${memberName} ? Sa carte membre restera désactivée.`
       );
     }
 
@@ -109,7 +118,20 @@ export default function MemberRowActions({
 
       {isOpen && (
         <div className="absolute right-0 top-12 z-40 w-64 overflow-hidden rounded-3xl border border-[#DCEAF5] bg-white p-2 shadow-xl">
-          {isInactive || isArchived ? (
+          {isPending && (
+            <>
+              <button type="button" onClick={() => runAction("approve")} disabled={isLoading} className="flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm font-bold text-green-700 hover:bg-green-50 disabled:opacity-60">
+                <CheckCircle2 className="h-5 w-5" />
+                Approuver l’inscription
+              </button>
+              <button type="button" onClick={() => runAction("reject")} disabled={isLoading} className="flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm font-bold text-red-700 hover:bg-red-50 disabled:opacity-60">
+                <XCircle className="h-5 w-5" />
+                Refuser l’inscription
+              </button>
+            </>
+          )}
+
+          {!isPending && (isInactive || isArchived ? (
             <button
               type="button"
               onClick={() => runAction("activate")}
@@ -129,7 +151,7 @@ export default function MemberRowActions({
               <Power className="h-5 w-5" />
               Désactiver
             </button>
-          )}
+          ))}
 
           {!isArchived && (
             <button
