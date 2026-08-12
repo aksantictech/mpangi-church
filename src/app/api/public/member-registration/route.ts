@@ -301,7 +301,7 @@ export async function POST(request: Request) {
         qr_enabled: false,
         qr_generated_at: now,
       })
-      .select("id, first_name, last_name")
+      .select("id, first_name, last_name, qr_token")
       .single();
 
     if (memberError || !member) {
@@ -355,6 +355,8 @@ export async function POST(request: Request) {
       }
     }
 
+    const origin = new URL(request.url).origin;
+
     return NextResponse.json({
       success: true,
       message: "Formulaire envoyé avec succès.",
@@ -363,6 +365,8 @@ export async function POST(request: Request) {
         id: member.id,
         firstName: member.first_name,
         lastName: member.last_name,
+        qrToken: member.qr_token,
+        qrValue: `${origin}/church/${church.slug}/member-card/${member.qr_token}`,
       },
     });
   } catch {

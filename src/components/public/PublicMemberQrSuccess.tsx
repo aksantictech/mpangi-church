@@ -30,10 +30,14 @@ export default function PublicMemberQrSuccess({
     window.print();
   }
 
-  function downloadQr(format: "png" | "jpg") {
-    const canvas = document.getElementById(
+  function getQrCanvas() {
+    return document.getElementById(
       "member-personal-qr-code"
     ) as HTMLCanvasElement | null;
+  }
+
+  function downloadQr(format: "png" | "jpg") {
+    const canvas = getQrCanvas();
 
     if (!canvas) return;
 
@@ -63,6 +67,26 @@ export default function PublicMemberQrSuccess({
     document.body.removeChild(link);
   }
 
+  async function downloadPdf() {
+    const canvas = getQrCanvas();
+    if (!canvas) return;
+
+    const { jsPDF } = await import("jspdf");
+    const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+    const safeName = getSafeFileName(memberName) || "membre";
+
+    pdf.setTextColor(3, 53, 122);
+    pdf.setFontSize(18);
+    pdf.text(churchName, 105, 28, { align: "center" });
+    pdf.setFontSize(15);
+    pdf.text(memberName, 105, 40, { align: "center" });
+    pdf.addImage(canvas.toDataURL("image/png"), "PNG", 45, 52, 120, 120);
+    pdf.setFontSize(10);
+    pdf.setTextColor(100, 116, 139);
+    pdf.text("QR Code provisoire — actif après validation par l’église", 105, 185, { align: "center" });
+    pdf.save(`qr-code-${safeName}.pdf`);
+  }
+
   return (
     <div className="mx-auto max-w-2xl rounded-[2rem] border border-[#DCEAF5] bg-white p-6 text-center shadow-sm">
       <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-3xl bg-green-50 text-green-700">
@@ -74,9 +98,9 @@ export default function PublicMemberQrSuccess({
       </h1>
 
       <p className="mt-3 text-sm leading-7 text-slate-600">
-        Votre inscription a été enregistrée. Voici votre QR Code personnel à
-        conserver dans votre téléphone. Il servira pour les présences aux
-        cultes, formations, réunions et événements.
+        Votre inscription a été enregistrée. Conservez ce QR Code personnel :
+        il est provisoire et deviendra automatiquement actif dès que
+        l’administration de l’église aura validé votre fiche.
       </p>
 
       <div className="mt-6 rounded-[2rem] border border-[#DCEAF5] bg-[#F8FBFD] p-5">
@@ -102,7 +126,8 @@ export default function PublicMemberQrSuccess({
         </div>
 
         <p className="mt-4 text-xs leading-6 text-slate-500">
-          Ce QR Code est personnel. Ne le partagez pas avec une autre personne.
+          Ce QR Code est personnel. Avant validation, le scanner le refusera.
+          Après validation, ce même QR fonctionnera sans téléchargement supplémentaire.
         </p>
       </div>
 
@@ -118,11 +143,11 @@ export default function PublicMemberQrSuccess({
 
         <button
           type="button"
-          onClick={() => downloadQr("jpg")}
+          onClick={downloadPdf}
           className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-5 py-3 text-sm font-extrabold text-[#03357A] shadow-sm ring-1 ring-[#DCEAF5] hover:bg-[#F8FBFD]"
         >
           <Download className="h-4 w-4" />
-          Télécharger en JPG
+          Télécharger en PDF
         </button>
 
         <button

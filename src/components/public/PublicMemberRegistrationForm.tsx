@@ -179,9 +179,18 @@ export default function PublicMemberRegistrationForm({
       }
 
       if (payload.pendingApproval) {
-        setSuccessMessage(
-          "Votre fiche a été envoyée. L’administration de l’église doit maintenant la valider avant l’activation de votre carte membre."
-        );
+        const memberName = [
+          payload.member?.firstName,
+          payload.member?.lastName,
+        ].filter(Boolean).join(" ") || "Membre inscrit";
+        const qrValue = payload.member?.qrValue || "";
+
+        if (!qrValue) {
+          setErrorMessage("Votre fiche est enregistrée, mais le QR Code n’a pas pu être affiché.");
+          return;
+        }
+
+        setRegistrationSuccess({ memberName, qrValue });
         formElement.reset();
         setPhotoFile(null);
         setPhotoPreview("");

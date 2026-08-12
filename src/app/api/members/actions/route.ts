@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
-import { requireAnyActionPermission } from "@/lib/security/secureAction";
+import { canAccessAnyModule } from "@/lib/security/routeGuard";
 type MemberAction = "activate" | "deactivate" | "approve" | "reject" | "archive" | "delete";
 
 type RequestBody = {
@@ -96,18 +96,25 @@ export async function POST(request: Request) {
       );
     }
 
-    const permissionAction =
-      action === "delete" || action === "archive"
-        ? "delete"
-        : action === "approve" || action === "reject"
-          ? "approve"
-          : "update";
-    await requireAnyActionPermission(["members"], permissionAction);
-
     const { profile, error, status } = await getCurrentProfile();
 
     if (!profile) {
       return NextResponse.json({ error }, { status });
+    }
+
+    const allowed =
+      action === "delete" || action === "archive"
+        ? await canAccessAnyModule(["members"], "delete")
+        : action === "approve" || action === "reject"
+          ? (await canAccessAnyModule(["members"], "approve")) ||
+            (await canAccessAnyModule(["members"], "update"))
+          : await canAccessAnyModule(["members"], "update");
+
+    if (!allowed) {
+      return NextResponse.json(
+        { error: "Vous n’avez pas la permission d’effectuer cette action." },
+        { status: 403 }
+      );
     }
 
     const admin = createAdminClient();
