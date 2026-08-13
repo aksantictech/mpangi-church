@@ -1,14 +1,14 @@
 import Link from "next/link";
-import { Activity, ArrowLeft, CalendarCheck, Star, Users } from "lucide-react";
+import { Activity, ArrowLeft, CalendarCheck, Eye, Pencil, Send, Star, Trash2, Users } from "lucide-react";
 import AppShell from "@/components/layout/AppShell";
 import MetricCard from "@/components/dashboard/MetricCard";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getCurrentSecurityContext } from "@/lib/security/permissionEngine";
-import { saveDepartmentReportAction } from "./actions";
+import { deleteDepartmentReportAction, saveDepartmentReportAction } from "./actions";
 
 export const dynamic = "force-dynamic";
 
-type Props = { searchParams?: Promise<{ department?: string; month?: string; saved?: string; error?: string }> };
+type Props = { searchParams?: Promise<{ department?: string; month?: string; report?: string; status?: string; filterMonth?: string; received?: string; saved?: string; deleted?: string; error?: string }> };
 const field = "min-h-32 w-full rounded-2xl border border-[#DCEAF5] bg-white px-4 py-3 text-sm text-slate-800 outline-none focus:border-[#03357A] focus:ring-4 focus:ring-[#03357A]/10";
 
 export default async function DepartmentReportsPage({ searchParams }: Props) {
@@ -16,6 +16,10 @@ export default async function DepartmentReportsPage({ searchParams }: Props) {
   const context = await getCurrentSecurityContext();
   if (!context.churchId) return null;
   const admin = createAdminClient();
+  if (sp.received === "1") {
+    const { data: currentProfile } = await admin.from("profiles").select("id").eq("user_id", context.userId).eq("church_id", context.churchId).maybeSingle();
+    if (currentProfile) await admin.from("department_report_recipients").update({ read_at: new Date().toISOString() }).eq("church_id", context.churchId).eq("profile_id", currentProfile.id).is("read_at", null);
+  }
   const month = /^\d{4}-\d{2}$/.test(sp.month || "") ? sp.month! : new Date().toISOString().slice(0, 7);
   const from = `${month}-01`;
   const untilDate = new Date(`${from}T00:00:00Z`); untilDate.setUTCMonth(untilDate.getUTCMonth() + 1);
@@ -33,11 +37,14 @@ export default async function DepartmentReportsPage({ searchParams }: Props) {
   const departmentId = departments?.some((d: any) => d.id === sp.department) ? sp.department! : departments?.[0]?.id;
   if (!departmentId) return <AppShell><p className="rounded-3xl bg-white p-6">Créez d’abord un département actif.</p></AppShell>;
 
-  const [{ data: assignments }, { data: events }, { data: report }] = await Promise.all([
+  const [{ data: assignments }, { data: events }, { data: selectedReport }, { data: reports }, { data: recipients }] = await Promise.all([
     admin.from("member_departments").select("member_id,role,status,members(status)").eq("church_id", context.churchId).eq("department_id", departmentId),
     admin.from("events").select("id,event_date").eq("church_id", context.churchId).gte("event_date", from).lt("event_date", until),
-    admin.from("department_monthly_reports").select("*").eq("church_id", context.churchId).eq("department_id", departmentId).eq("report_month", from).maybeSingle(),
+    sp.report ? admin.from("department_monthly_reports").select("*").eq("church_id", context.churchId).eq("id", sp.report).maybeSingle() : admin.from("department_monthly_reports").select("*").eq("church_id", context.churchId).eq("department_id", departmentId).eq("report_month", from).maybeSingle(),
+    admin.from("department_monthly_reports").select("id,department_id,report_month,period_start,period_end,status,edit_until,sent_at,departments(name)").eq("church_id", context.churchId).order("report_month", { ascending: false }).limit(36),
+    admin.from("profiles").select("id,full_name,role").eq("church_id", context.churchId).eq("status", "active").in("role", ["church_admin", "admin", "pasteur_t", "pastor", "pastor_titulaire"]).order("full_name"),
   ]);
+  const report = selectedReport;
   const memberIds = (assignments || []).map((a: any) => a.member_id).filter(Boolean);
   const eventIds = (events || []).map((e: any) => e.id);
   const { data: attendances } = memberIds.length && eventIds.length
@@ -47,6 +54,8 @@ export default async function DepartmentReportsPage({ searchParams }: Props) {
   const leaders = (assignments || []).filter((a: any) => ["leader", "responsable", "manager", "responsable_d", "department_leader"].includes(String(a.role || "").toLowerCase())).length;
   const representedActivities = new Set((attendances || []).map((a: any) => a.event_id)).size;
   const averageAttendance = representedActivities ? Math.round((attendances?.length || 0) / representedActivities) : 0;
+  const reportedMonths = new Set((reports || []).filter((r: any) => r.department_id === departmentId).map((r: any) => String(r.report_month).slice(0, 7)));
+  const missingMonths = Array.from({ length: 12 }, (_, index) => { const d = new Date(); d.setMonth(d.getMonth() - index); return d.toISOString().slice(0, 7); }).filter((m) => !reportedMonths.has(m));
 
   return <AppShell><div className="space-y-6 pb-24 md:pb-0">
     <Link href="/reports" className="inline-flex items-center gap-2 text-sm font-bold text-[#2563EB]"><ArrowLeft className="h-4 w-4"/>Retour aux rapports</Link>
@@ -57,6 +66,7 @@ export default async function DepartmentReportsPage({ searchParams }: Props) {
       <button className="rounded-2xl bg-[#03357A] px-5 py-3 font-bold text-white">Afficher</button>
     </form>
     {sp.saved && <p className="rounded-2xl bg-emerald-50 p-4 font-bold text-emerald-700">Rapport enregistré.</p>}{sp.error && <p className="rounded-2xl bg-red-50 p-4 font-bold text-red-700">Impossible d’enregistrer le rapport. Vérifiez que la migration Supabase a été exécutée.</p>}
+    {missingMonths.length > 0 && <section className="rounded-3xl border border-amber-200 bg-amber-50 p-5"><h2 className="font-black text-amber-900">Mois sans rapport</h2><div className="mt-3 flex flex-wrap gap-2">{missingMonths.map((item)=><Link key={item} href={`/reports/departments?department=${departmentId}&month=${item}`} className="rounded-full bg-white px-3 py-2 text-xs font-bold text-amber-800">{new Intl.DateTimeFormat("fr-FR", { month: "long", year: "numeric" }).format(new Date(`${item}-01`))}</Link>)}</div></section>}
     <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
       <MetricCard title="Activités réalisées" value={representedActivities} description="Activités avec présence du département" icon={Activity} accent="blue" />
       <MetricCard title="Présence moyenne" value={averageAttendance} description="Membres présents par activité" icon={CalendarCheck} accent="green" />
@@ -65,6 +75,7 @@ export default async function DepartmentReportsPage({ searchParams }: Props) {
     </section>
     <form action={saveDepartmentReportAction} className="rounded-3xl border border-[#DCEAF5] bg-white p-5 shadow-sm">
       <input type="hidden" name="department_id" value={departmentId}/><input type="hidden" name="report_month" value={from}/>
+      <div className="mb-5 grid gap-4 sm:grid-cols-2"><label className="font-bold text-[#03357A]">Début de période<input type="date" name="period_start" defaultValue={report?.period_start || from} className="filter-input mt-2 w-full"/></label><label className="font-bold text-[#03357A]">Fin de période<input type="date" name="period_end" defaultValue={report?.period_end || new Date(untilDate.getTime()-86400000).toISOString().slice(0,10)} className="filter-input mt-2 w-full"/></label></div>
       <div className="grid gap-5 lg:grid-cols-2">
         <label className="font-bold text-[#03357A]">Forces / points positifs<textarea name="strengths" defaultValue={report?.strengths || ""} className={`mt-2 ${field}`} placeholder="Réussites, ressources, bonnes pratiques…"/></label>
         <label className="font-bold text-[#03357A]">Faiblesses / difficultés<textarea name="weaknesses" defaultValue={report?.weaknesses || ""} className={`mt-2 ${field}`} placeholder="Difficultés rencontrées, besoins…"/></label>
@@ -72,7 +83,9 @@ export default async function DepartmentReportsPage({ searchParams }: Props) {
         <label className="font-bold text-[#03357A]">Menaces / risques<textarea name="threats" defaultValue={report?.threats || ""} className={`mt-2 ${field}`} placeholder="Risques et obstacles à anticiper…"/></label>
         <label className="font-bold text-[#03357A] lg:col-span-2">Actions prévues le mois prochain<textarea name="next_actions" defaultValue={report?.next_actions || ""} className={`mt-2 ${field}`} placeholder="Priorités, responsables et échéances…"/></label>
       </div>
-      <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:justify-end"><button name="intent" value="draft" className="rounded-2xl bg-[#EAF3FA] px-5 py-3 font-bold text-[#03357A]">Enregistrer le brouillon</button><button name="intent" value="submit" className="rounded-2xl bg-[#03357A] px-5 py-3 font-bold text-white">Soumettre le rapport</button></div>
+      <fieldset className="mt-5 rounded-2xl bg-[#F8FBFD] p-4"><legend className="px-2 font-black text-[#03357A]">Destinataires internes</legend><p className="mb-3 text-sm text-slate-500">Seuls les pasteurs titulaires et administrateurs de cette église sont proposés.</p><div className="grid gap-2 sm:grid-cols-2">{(recipients || []).map((recipient:any)=><label key={recipient.id} className="flex items-center gap-3 rounded-xl bg-white p-3 text-sm font-bold text-slate-700"><input type="checkbox" name="recipient_ids" value={recipient.id}/><span>{recipient.full_name || recipient.role} <small className="text-slate-400">({recipient.role})</small></span></label>)}</div></fieldset>
+      <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:justify-end"><button name="intent" value="draft" className="rounded-2xl bg-[#EAF3FA] px-5 py-3 font-bold text-[#03357A]">Enregistrer le brouillon</button><button name="intent" value="submit" className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#03357A] px-5 py-3 font-bold text-white"><Send className="h-4 w-4"/>Envoyer le rapport</button></div>
     </form>
+    <section className="rounded-3xl border border-[#DCEAF5] bg-white p-5"><h2 className="text-xl font-black text-[#03357A]">Rapports enregistrés</h2><form method="get" className="mt-4 grid gap-3 sm:grid-cols-[1fr_180px_auto]"><input type="hidden" name="department" value={departmentId}/><select name="status" defaultValue={sp.status || ""} className="filter-input"><option value="">Tous les statuts</option><option value="draft">Brouillons</option><option value="submitted">Envoyés</option></select><input type="month" name="filterMonth" defaultValue={sp.filterMonth || ""} className="filter-input"/><button className="rounded-2xl bg-[#03357A] px-4 text-sm font-bold text-white">Filtrer</button></form><div className="mt-4 space-y-3">{(reports || []).filter((r:any)=>(!sp.status || r.status===sp.status)&&(!sp.filterMonth || String(r.report_month).slice(0,7)===sp.filterMonth)).map((item:any)=>{const editable=item.edit_until && new Date(item.edit_until)>new Date();return <article key={item.id} className="flex flex-col gap-3 rounded-2xl border border-[#DCEAF5] p-4 sm:flex-row sm:items-center sm:justify-between"><div><p className="font-black text-[#03357A]">{item.departments?.name || "Département"} — {String(item.report_month).slice(0,7)}</p><p className="text-sm text-slate-500">{item.status === "submitted" ? "Envoyé" : "Brouillon"} · modification {editable ? "encore autorisée" : "clôturée"}</p></div><div className="flex gap-2"><Link href={`/reports/departments?department=${item.department_id}&month=${String(item.report_month).slice(0,7)}&report=${item.id}`} className="rounded-xl bg-[#EAF3FA] p-3 text-[#03357A]" title={editable?"Voir/modifier":"Voir"}>{editable?<Pencil className="h-4 w-4"/>:<Eye className="h-4 w-4"/>}</Link>{editable&&<form action={deleteDepartmentReportAction}><input type="hidden" name="report_id" value={item.id}/><button className="rounded-xl bg-red-50 p-3 text-red-600" title="Supprimer"><Trash2 className="h-4 w-4"/></button></form>}</div></article>})}</div></section>
   </div></AppShell>;
 }

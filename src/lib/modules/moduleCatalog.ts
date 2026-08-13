@@ -83,6 +83,7 @@ const MODULE_CATEGORY: Record<string, ModuleCategoryCode> = {
   role_dashboard: "essentials",
   dashboard: "essentials",
   my_work: "essentials",
+  ai_assistant: "essentials",
 
   members: "community",
   attendance: "community",

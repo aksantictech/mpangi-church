@@ -17,22 +17,25 @@ export async function GET() {
   }
 
   const admin = createAdminClient();
-  const [{ count: pendingMembers }, { count: roleTasks }, { count: adminTasks }] = await Promise.all([
+  const [{ count: pendingMembers }, { count: roleTasks }, { count: adminTasks }, { count: unreadReports }] = await Promise.all([
     admin.from("members").select("id", { count: "exact", head: true })
       .eq("church_id", profile.church_id).eq("status", "en_attente"),
     admin.from("church_user_role_tasks").select("id", { count: "exact", head: true })
       .eq("church_id", profile.church_id).eq("assigned_to", user.id).not("status", "in", "(done,cancelled)"),
     admin.from("admin_tasks").select("id", { count: "exact", head: true })
       .eq("church_id", profile.church_id).eq("assigned_to", profile.id).not("status", "in", "(completed,cancelled,archived)"),
+    admin.from("department_report_recipients").select("report_id", { count: "exact", head: true })
+      .eq("church_id", profile.church_id).eq("profile_id", profile.id).is("read_at", null),
   ]);
 
   const alerts = [
     ...(pendingMembers ? [{ id: "pending-members", title: `${pendingMembers} inscription(s) à valider`, href: "/members?status=en_attente", type: "validation" }] : []),
     ...((roleTasks || 0) + (adminTasks || 0) > 0 ? [{ id: "open-tasks", title: `${(roleTasks || 0) + (adminTasks || 0)} tâche(s) non terminée(s)`, href: "/my-work", type: "task" }] : []),
+    ...(unreadReports ? [{ id: "department-reports", title: `${unreadReports} nouveau(x) rapport(s) de département`, href: "/reports/departments?received=1", type: "report" }] : []),
   ];
 
   return NextResponse.json({
     alerts,
-    count: (pendingMembers || 0) + (roleTasks || 0) + (adminTasks || 0),
+    count: (pendingMembers || 0) + (roleTasks || 0) + (adminTasks || 0) + (unreadReports || 0),
   });
 }
