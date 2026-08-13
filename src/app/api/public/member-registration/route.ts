@@ -65,10 +65,15 @@ function getSafeFileExtension(fileType: string, fileName: string) {
   if (fileType === "image/png") return "png";
   if (fileType === "image/webp") return "webp";
   if (fileType === "image/jpeg") return "jpg";
+  if (fileType === "image/gif") return "gif";
+  if (fileType === "image/avif") return "avif";
+  if (fileType === "image/heic" || fileType === "image/heif") return "heic";
+  if (fileType === "image/bmp") return "bmp";
+  if (fileType === "image/tiff") return "tiff";
 
   const extension = fileName.split(".").pop()?.toLowerCase();
 
-  if (extension && ["jpg", "jpeg", "png", "webp"].includes(extension)) {
+  if (extension && /^[a-z0-9]{2,10}$/.test(extension)) {
     return extension === "jpeg" ? "jpg" : extension;
   }
 
@@ -238,7 +243,7 @@ export async function POST(request: Request) {
       const payload = getBase64Payload(photoBase64);
 
       if (payload) {
-        if (!["image/jpeg", "image/png", "image/webp"].includes(photoType)) {
+        if (!photoType.startsWith("image/") || photoType === "image/svg+xml") {
           return NextResponse.json({ error: "Format photo non accepté." }, { status: 400 });
         }
         const extension = getSafeFileExtension(photoType, photoName);
