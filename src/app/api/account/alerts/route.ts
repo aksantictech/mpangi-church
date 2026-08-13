@@ -1,0 +1,38 @@
+import { NextResponse } from "next/server";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { createClient } from "@/lib/supabase/server";
+
+export async function GET() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return NextResponse.json({ alerts: [], count: 0 }, { status: 401 });
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("id, church_id, role, status")
+    .eq("user_id", user.id)
+    .maybeSingle();
+  if (!profile?.church_id || (profile.status && profile.status !== "active")) {
+    return NextResponse.json({ alerts: [], count: 0 });
+  }
+
+  const admin = createAdminClient();
+  const [{ count: pendingMembers }, { count: roleTasks }, { count: adminTasks }] = await Promise.all([
+    admin.from("members").select("id", { count: "exact", head: true })
+      .eq("church_id", profile.church_id).eq("status", "en_attente"),
+    admin.from("church_user_role_tasks").select("id", { count: "exact", head: true })
+      .eq("church_id", profile.church_id).eq("assigned_to", user.id).not("status", "in", "(done,cancelled)"),
+    admin.from("admin_tasks").select("id", { count: "exact", head: true })
+      .eq("church_id", profile.church_id).eq("assigned_to", profile.id).not("status", "in", "(completed,cancelled,archived)"),
+  ]);
+
+  const alerts = [
+    ...(pendingMembers ? [{ id: "pending-members", title: `${pendingMembers} inscription(s) à valider`, href: "/members?status=en_attente", type: "validation" }] : []),
+    ...((roleTasks || 0) + (adminTasks || 0) > 0 ? [{ id: "open-tasks", title: `${(roleTasks || 0) + (adminTasks || 0)} tâche(s) non terminée(s)`, href: "/my-work", type: "task" }] : []),
+  ];
+
+  return NextResponse.json({
+    alerts,
+    count: (pendingMembers || 0) + (roleTasks || 0) + (adminTasks || 0),
+  });
+}

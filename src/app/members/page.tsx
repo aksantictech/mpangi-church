@@ -41,7 +41,10 @@ function getMemberName(member: any) {
     .join(" ");
 }
 
-export default async function MembersPage() {
+type MembersPageProps = { searchParams?: Promise<{ status?: string }> };
+
+export default async function MembersPage({ searchParams }: MembersPageProps) {
+  const requestedStatus = (await searchParams)?.status || "";
   const supabase = await createClient();
 
   const {
@@ -106,10 +109,8 @@ export default async function MembersPage() {
       .eq("church_id", churchId)
       .eq("status", "en_attente"),
 
-    supabase
-      .from("members")
-      .select(
-        `
+    (() => {
+      let query = supabase.from("members").select(`
         id,
         first_name,
         middle_name,
@@ -120,11 +121,10 @@ export default async function MembersPage() {
         member_type,
         status,
         created_at
-      `
-      )
-      .eq("church_id", churchId)
-        .is("archived_at", null)
-      .order("created_at", { ascending: false }),
+      `).eq("church_id", churchId).is("archived_at", null);
+      if (["actif", "inactif", "en_attente", "refuse"].includes(requestedStatus)) query = query.eq("status", requestedStatus);
+      return query.order("created_at", { ascending: false });
+    })(),
   ]);
 
   return (
@@ -177,6 +177,7 @@ export default async function MembersPage() {
             description="Dans cette église"
             icon={Users}
             accent="blue"
+            href="/members"
           />
 
           <MetricCard
@@ -185,6 +186,7 @@ export default async function MembersPage() {
             description="Statut actif"
             icon={ShieldCheck}
             accent="green"
+            href="/members?status=actif"
           />
 
           <MetricCard
@@ -193,6 +195,7 @@ export default async function MembersPage() {
             description="À suivre"
             icon={CalendarDays}
             accent="purple"
+            href="/members?status=inactif"
           />
 
           <MetricCard
@@ -201,6 +204,7 @@ export default async function MembersPage() {
             description="Inscriptions publiques"
             icon={CalendarDays}
             accent="purple"
+            href="/members?status=en_attente"
           />
         </section>
 

@@ -10,7 +10,6 @@ import {
   FileSpreadsheet,
   HandCoins,
   Landmark,
-  ShieldCheck,
 } from "lucide-react";
 import { redirect } from "next/navigation";
 
@@ -56,7 +55,6 @@ export default async function ReportsPage() {
     canViewFinance,
     canViewExtensions,
     canViewDonations,
-    canViewSecurity,
   ] = await Promise.all([
     canAccessAnyModule(
       ["attendance"],
@@ -88,16 +86,18 @@ export default async function ReportsPage() {
       "view"
     ),
 
-    canAccessAnyModule(
-      [
-        "security",
-        "settings",
-      ],
-      "view"
-    ),
   ]);
 
   const cards: ReportCard[] = [
+    {
+      title: "Rapports des départements",
+      description: "Suivez automatiquement activités, présences et membres actifs, puis complétez l’analyse FFOM mensuelle.",
+      href: "/reports/departments",
+      icon: Building2,
+      tone: "cyan",
+      available: true,
+      label: "Départements",
+    },
     {
       title:
         "Rapports de présence",

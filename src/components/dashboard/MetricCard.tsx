@@ -1,4 +1,5 @@
 import type { LucideIcon } from "lucide-react";
+import Link from "next/link";
 
 type MetricCardProps = {
   title: string;
@@ -6,6 +7,7 @@ type MetricCardProps = {
   description?: string;
   icon?: LucideIcon;
   accent?: "blue" | "purple" | "green" | "orange";
+  href?: string;
 };
 
 const accentClasses = {
@@ -21,9 +23,10 @@ export default function MetricCard({
   description,
   icon: Icon,
   accent = "blue",
+  href,
 }: MetricCardProps) {
-  return (
-    <div className="rounded-3xl border border-[#DCEAF5] bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+  const content = (
+    <div className="h-full rounded-3xl border border-[#DCEAF5] bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
       <div className="flex items-start gap-4">
         {Icon && (
           <div className={`flex h-14 w-14 items-center justify-center rounded-2xl ${accentClasses[accent]}`}>
@@ -47,4 +50,6 @@ export default function MetricCard({
       </div>
     </div>
   );
+
+  return href ? <Link href={href} className="block h-full" aria-label={`${title} : ${value}`}>{content}</Link> : content;
 }

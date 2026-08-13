@@ -11,7 +11,6 @@ import {
   useState,
 } from "react";
 import {
-  Bell,
   Camera,
   ChevronDown,
   KeyRound,
@@ -21,6 +20,7 @@ import {
   UsersRound,
 } from "lucide-react";
 import type { ChurchBranding } from "@/lib/tenant/churchBranding";
+import InternalNotificationBell from "@/components/notifications/InternalNotificationBell";
 
 type Profile = {
   id: string;
@@ -283,13 +283,7 @@ export default function ChurchDesktopTopBar({
         </Link>
 
         <div className="flex items-center justify-end gap-3">
-          <Link
-            href="/notifications"
-            className="flex h-12 w-12 items-center justify-center rounded-2xl border border-[#DCEAF5] bg-white text-[var(--church-primary)] shadow-sm"
-            aria-label="Notifications"
-          >
-            <Bell className="h-5 w-5" />
-          </Link>
+          <InternalNotificationBell />
 
           <div
             className="relative"

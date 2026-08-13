@@ -2,18 +2,36 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { ArrowLeft, KeyRound, Save } from "lucide-react";
+import { ArrowLeft, KeyRound, Mail, Save } from "lucide-react";
 import AppShell from "@/components/layout/AppShell";
 import { createClient } from "@/lib/supabase/client";
 
 export default function ChurchPasswordPage() {
-  const supabase = createClient();
-
   const [password, setPassword] = useState("");
   const [confirmation, setConfirmation] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [emailLoading, setEmailLoading] = useState(false);
+
+  async function sendResetEmail() {
+    const supabase = createClient();
+    setMessage("");
+    setErrorMessage("");
+    setEmailLoading(true);
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user?.email) {
+      setEmailLoading(false);
+      setErrorMessage("Aucune adresse email n’est associée à ce compte.");
+      return;
+    }
+    const { error } = await supabase.auth.resetPasswordForEmail(user.email, {
+      redirectTo: `${window.location.origin}/profile/password`,
+    });
+    setEmailLoading(false);
+    if (error) setErrorMessage(error.message);
+    else setMessage(`Un lien de réinitialisation a été envoyé à ${user.email}.`);
+  }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -32,6 +50,8 @@ export default function ChurchPasswordPage() {
     }
 
     setLoading(true);
+
+    const supabase = createClient();
 
     const { error } = await supabase.auth.updateUser({
       password,
@@ -121,6 +141,14 @@ export default function ChurchPasswordPage() {
             {loading ? "Modification..." : "Modifier le mot de passe"}
           </button>
         </form>
+
+        <section className="rounded-3xl border border-[#DCEAF5] bg-white p-5 shadow-sm sm:p-6">
+          <h2 className="font-black text-[#03357A]">Réinitialiser par email</h2>
+          <p className="mt-2 text-sm text-slate-500">Recevez un lien sécurisé sur l’adresse email associée à votre compte.</p>
+          <button type="button" onClick={sendResetEmail} disabled={emailLoading} className="mt-4 inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-[#EAF3FA] px-5 py-3 text-sm font-black text-[#03357A] disabled:opacity-60">
+            <Mail className="h-4 w-4" /> {emailLoading ? "Envoi…" : "Envoyer le lien de réinitialisation"}
+          </button>
+        </section>
       </div>
     </AppShell>
   );

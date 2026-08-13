@@ -173,7 +173,30 @@ export default async function DepartmentsPage() {
             </div>
           </div>
 
-          <div className="mt-6 overflow-x-auto rounded-2xl border border-[#DCEAF5]">
+          <div className="mt-6 grid gap-3 md:hidden">
+            {error && <p className="rounded-2xl bg-red-50 p-4 text-sm font-bold text-red-700">Erreur : {error.message}</p>}
+            {!error && departments?.length === 0 && <p className="rounded-2xl bg-slate-50 p-5 text-center text-sm text-slate-500">Aucun département trouvé.</p>}
+            {departments?.map((department: any) => (
+              <Link key={department.id} href={`/departments/${department.id}`} className="rounded-2xl border border-[#DCEAF5] bg-[#F8FBFD] p-4 transition active:scale-[0.99]">
+                <div className="flex items-start gap-3">
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#EAF3FA] text-[#03357A]"><Building2 className="h-6 w-6" /></div>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-start justify-between gap-2">
+                      <p className="break-words font-extrabold text-[#03357A]">{department.name || "Département sans nom"}</p>
+                      <span className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-bold ${getStatusClass(department.status)}`}>{department.status || "active"}</span>
+                    </div>
+                    <p className="mt-2 line-clamp-2 text-sm leading-6 text-slate-600">{department.description || "Aucune description"}</p>
+                    <div className="mt-3 flex items-center justify-between gap-3 text-xs font-semibold text-slate-400">
+                      <span>Créé le {formatDate(department.created_at)}</span>
+                      <span className="inline-flex items-center gap-1 text-[#03357A]"><Eye className="h-4 w-4" /> Voir</span>
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+
+          <div className="mt-6 hidden overflow-x-auto rounded-2xl border border-[#DCEAF5] md:block">
             <table className="w-full min-w-[850px] text-left text-sm">
               <thead className="bg-[#EAF3FA] text-[#03357A]">
                 <tr>
