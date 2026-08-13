@@ -30,7 +30,13 @@ function getStatusClass(status?: string | null) {
   return "bg-slate-100 text-slate-600";
 }
 
-export default async function DepartmentsPage() {
+export default async function DepartmentsPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ q?: string }>;
+}) {
+  const resolvedSearchParams = searchParams ? await searchParams : {};
+  const search = String(resolvedSearchParams.q || "").trim().slice(0, 80);
   const supabase = await createClient();
 
   const {
@@ -87,11 +93,18 @@ export default async function DepartmentsPage() {
       .select("*", { count: "exact", head: true })
       .eq("church_id", churchId),
 
-    supabase
+    (() => {
+      let query = supabase
       .from("departments")
       .select("id, name, description, status, created_at")
       .eq("church_id", churchId)
-      .order("created_at", { ascending: false }),
+      .order("created_at", { ascending: false });
+      if (search) {
+        const safeSearch = search.replace(/[%_,]/g, " ");
+        query = query.or(`name.ilike.%${safeSearch}%,description.ilike.%${safeSearch}%`);
+      }
+      return query;
+    })(),
   ]);
 
   return (
@@ -162,22 +175,24 @@ export default async function DepartmentsPage() {
               </p>
             </div>
 
-            <div className="relative w-full md:max-w-sm">
+            <form className="relative w-full md:max-w-sm">
               <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
 
               <input
+                name="q"
+                defaultValue={search}
                 type="search"
                 placeholder="Rechercher un département..."
                 className="h-12 w-full rounded-2xl border border-[#DCEAF5] bg-white pl-12 pr-4 text-sm outline-none transition placeholder:text-slate-400 focus:border-[#03357A] focus:ring-4 focus:ring-[#03357A]/10"
               />
-            </div>
+            </form>
           </div>
 
-          <div className="mt-6 grid gap-3 md:hidden">
+          <div className="mt-6 grid gap-4 lg:grid-cols-2">
             {error && <p className="rounded-2xl bg-red-50 p-4 text-sm font-bold text-red-700">Erreur : {error.message}</p>}
             {!error && departments?.length === 0 && <p className="rounded-2xl bg-slate-50 p-5 text-center text-sm text-slate-500">Aucun département trouvé.</p>}
             {departments?.map((department: any) => (
-              <Link key={department.id} href={`/departments/${department.id}`} className="rounded-2xl border border-[#DCEAF5] bg-[#F8FBFD] p-4 transition active:scale-[0.99]">
+              <Link key={department.id} href={`/departments/${department.id}`} className="group rounded-2xl border border-[#DCEAF5] bg-[#F8FBFD] p-4 transition hover:border-blue-200 hover:bg-white hover:shadow-md active:scale-[0.99] sm:p-5">
                 <div className="flex items-start gap-3">
                   <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#EAF3FA] text-[#03357A]"><Building2 className="h-6 w-6" /></div>
                   <div className="min-w-0 flex-1">
@@ -185,10 +200,10 @@ export default async function DepartmentsPage() {
                       <p className="break-words font-extrabold text-[#03357A]">{department.name || "Département sans nom"}</p>
                       <span className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-bold ${getStatusClass(department.status)}`}>{department.status || "active"}</span>
                     </div>
-                    <p className="mt-2 line-clamp-2 text-sm leading-6 text-slate-600">{department.description || "Aucune description"}</p>
-                    <div className="mt-3 flex items-center justify-between gap-3 text-xs font-semibold text-slate-400">
+                    <p className="mt-2 line-clamp-3 break-words text-sm leading-6 text-slate-600">{department.description || "Aucune description"}</p>
+                    <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-[#DCEAF5] pt-3 text-xs font-semibold text-slate-400">
                       <span>Créé le {formatDate(department.created_at)}</span>
-                      <span className="inline-flex items-center gap-1 text-[#03357A]"><Eye className="h-4 w-4" /> Voir</span>
+                      <span className="inline-flex items-center gap-1 rounded-xl bg-[#EAF3FA] px-3 py-2 text-[#03357A] group-hover:bg-[#03357A] group-hover:text-white"><Eye className="h-4 w-4" /> Voir la fiche</span>
                     </div>
                   </div>
                 </div>
@@ -196,92 +211,6 @@ export default async function DepartmentsPage() {
             ))}
           </div>
 
-          <div className="mt-6 hidden overflow-x-auto rounded-2xl border border-[#DCEAF5] md:block">
-            <table className="w-full min-w-[850px] text-left text-sm">
-              <thead className="bg-[#EAF3FA] text-[#03357A]">
-                <tr>
-                  <th className="px-4 py-3">Département</th>
-                  <th className="px-4 py-3">Description</th>
-                  <th className="px-4 py-3">Statut</th>
-                  <th className="px-4 py-3">Créé le</th>
-                  <th className="px-4 py-3">Action</th>
-                </tr>
-              </thead>
-
-              <tbody className="divide-y divide-[#DCEAF5] bg-white">
-                {error && (
-                  <tr>
-                    <td colSpan={5} className="px-4 py-6 text-red-600">
-                      Erreur : {error.message}
-                    </td>
-                  </tr>
-                )}
-
-                {!error && departments?.length === 0 && (
-                  <tr>
-                    <td
-                      colSpan={5}
-                      className="px-4 py-10 text-center text-slate-500"
-                    >
-                      Aucun département trouvé.
-                    </td>
-                  </tr>
-                )}
-
-                {departments?.map((department: any) => (
-                  <tr key={department.id} className="hover:bg-[#F8FBFD]">
-                    <td className="px-4 py-4">
-                      <div className="flex items-center gap-3">
-                        <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#EAF3FA] text-[#03357A]">
-                          <Building2 className="h-6 w-6" />
-                        </div>
-
-                        <div>
-                          <p className="font-extrabold text-[#03357A]">
-                            {department.name || "Département sans nom"}
-                          </p>
-
-                          <p className="text-xs text-slate-400">
-                            ID : {department.id.slice(0, 8)}
-                          </p>
-                        </div>
-                      </div>
-                    </td>
-
-                    <td className="px-4 py-4 text-slate-600">
-                      <p className="line-clamp-2">
-                        {department.description || "Aucune description"}
-                      </p>
-                    </td>
-
-                    <td className="px-4 py-4">
-                      <span
-                        className={`rounded-full px-3 py-1 text-xs font-bold ${getStatusClass(
-                          department.status
-                        )}`}
-                      >
-                        {department.status || "active"}
-                      </span>
-                    </td>
-
-                    <td className="px-4 py-4 text-slate-500">
-                      {formatDate(department.created_at)}
-                    </td>
-
-                    <td className="px-4 py-4">
-                      <Link
-                        href={`/departments/${department.id}`}
-                        className="inline-flex items-center gap-2 rounded-2xl bg-[#EAF3FA] px-4 py-2 text-sm font-bold text-[#03357A] hover:bg-[#DCEAF5]"
-                      >
-                        <Eye className="h-4 w-4" />
-                        Voir
-                      </Link>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
         </section>
       </div>
     </AppShell>

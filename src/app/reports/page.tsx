@@ -10,6 +10,7 @@ import {
   FileSpreadsheet,
   HandCoins,
   Landmark,
+  PackageSearch,
 } from "lucide-react";
 import { redirect } from "next/navigation";
 
@@ -55,6 +56,7 @@ export default async function ReportsPage() {
     canViewFinance,
     canViewExtensions,
     canViewDonations,
+    canViewPatrimony,
   ] = await Promise.all([
     canAccessAnyModule(
       ["attendance"],
@@ -86,9 +88,23 @@ export default async function ReportsPage() {
       "view"
     ),
 
+    canAccessAnyModule(
+      ["patrimony", "patrimony_dashboard", "assets", "maintenance"],
+      "view"
+    ),
+
   ]);
 
   const cards: ReportCard[] = [
+    {
+      title: "Rapport patrimoine",
+      description: "Analysez l’inventaire, la valeur estimée, l’état des biens, les maintenances et les mouvements sur la période choisie.",
+      href: "/reports/patrimony",
+      icon: PackageSearch,
+      tone: "violet",
+      available: canViewPatrimony,
+      label: "Patrimoine",
+    },
     {
       title: "Rapports des départements",
       description: "Suivez automatiquement activités, présences et membres actifs, puis complétez l’analyse FFOM mensuelle.",
