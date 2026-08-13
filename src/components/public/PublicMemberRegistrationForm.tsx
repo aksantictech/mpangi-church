@@ -1,7 +1,8 @@
 "use client";
 
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useState } from "react";
 import PublicMemberQrSuccess from "@/components/public/PublicMemberQrSuccess";
+import PublicMemberPhotoField from "@/components/public/PublicMemberPhotoField";
 import {
   Camera,
   CheckCircle2,
@@ -89,42 +90,11 @@ export default function PublicMemberRegistrationForm({
   const [registrationSuccess, setRegistrationSuccess] =
     useState<RegistrationSuccess | null>(null);
 
-  const [photoPreview, setPhotoPreview] = useState("");
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [startedAt] = useState(() => Date.now());
 
   const hasDepartments = departments.length > 0;
   const hasTrainingPrograms = trainingPrograms.length > 0;
-
-  const maxPhotoSizeMb = useMemo(() => 5 * 1024 * 1024, []);
-
-  function handlePhotoChange(event: React.ChangeEvent<HTMLInputElement>) {
-    const file = event.target.files?.[0];
-
-    setErrorMessage("");
-
-    if (!file) {
-      setPhotoFile(null);
-      setPhotoPreview("");
-      return;
-    }
-
-    if (!getPhotoType(file).startsWith("image/") || getPhotoType(file) === "image/svg+xml") {
-      setErrorMessage("Le fichier sélectionné n’est pas une photo valide.");
-      event.target.value = "";
-      return;
-    }
-
-    if (file.size > maxPhotoSizeMb) {
-      setErrorMessage("La photo ne doit pas dépasser 5 MB.");
-      event.target.value = "";
-      return;
-    }
-
-    if (photoPreview) URL.revokeObjectURL(photoPreview);
-    setPhotoFile(file);
-    setPhotoPreview(URL.createObjectURL(file));
-  }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -218,7 +188,6 @@ export default function PublicMemberRegistrationForm({
         setRegistrationSuccess({ memberName, qrValue });
         formElement.reset();
         setPhotoFile(null);
-        setPhotoPreview("");
         return;
       }
 
@@ -250,7 +219,6 @@ export default function PublicMemberRegistrationForm({
 
       formElement.reset();
       setPhotoFile(null);
-      setPhotoPreview("");
     } catch (error) {
       setIsLoading(false);
 
@@ -334,53 +302,7 @@ export default function PublicMemberRegistrationForm({
       </Section>
 
       <Section title="Photo du membre" icon={<Camera className="h-6 w-6" />}>
-        <div className="grid gap-5 md:grid-cols-[0.35fr_0.65fr] md:items-center">
-          <div className="flex h-44 items-center justify-center overflow-hidden rounded-3xl border border-[#DCEAF5] bg-white">
-            {photoPreview ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={photoPreview}
-                alt="Aperçu photo"
-                className="h-full w-full object-cover"
-              />
-            ) : (
-              <div className="text-center text-slate-400">
-                <Camera className="mx-auto h-10 w-10" />
-                <p className="mt-2 text-sm">Aucune photo</p>
-              </div>
-            )}
-          </div>
-
-          <div className="space-y-3">
-            <label className="flex cursor-pointer items-center justify-center gap-2 rounded-2xl bg-[#03357A] px-5 py-4 text-sm font-extrabold text-white shadow-lg shadow-blue-900/20 hover:bg-[#022B63]">
-              <Camera className="h-5 w-5" />
-              Prendre une photo
-              <input
-                type="file"
-                accept="image/*"
-                capture="user"
-                onChange={handlePhotoChange}
-                className="sr-only"
-              />
-            </label>
-
-            <label className="flex cursor-pointer items-center justify-center gap-2 rounded-2xl border border-[#DCEAF5] bg-white px-5 py-4 text-sm font-extrabold text-[#03357A] hover:bg-[#F8FBFD]">
-              <UserCircle className="h-5 w-5" />
-              Choisir une photo existante
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handlePhotoChange}
-                className="sr-only"
-              />
-            </label>
-
-            <p className="mt-3 text-sm leading-6 text-slate-500">
-              Tous les formats photo courants sont acceptés. Taille maximale : 5 MB.
-              La photo est facultative et ne bloquera plus l’envoi du formulaire.
-            </p>
-          </div>
-        </div>
+        <PublicMemberPhotoField onPhoto={(file) => setPhotoFile(file)} />
       </Section>
 
       <Section title="Contact et localisation" icon={<Users className="h-6 w-6" />}>

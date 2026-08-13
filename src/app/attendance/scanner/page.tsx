@@ -9,6 +9,7 @@ import {
 import AppShell from "@/components/layout/AppShell";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
+import { isEventClosed } from "@/lib/events/eventLifecycle";
 
 function getEventTitle(event: any) {
   return event.title || event.name || event.event_name || "Événement";
@@ -123,31 +124,25 @@ export default async function AttendanceScannerEventsPage() {
                 </Link>
               </div>
             ) : (
-              (events ?? []).map((event: any) => (
-                <Link
-                  key={event.id}
-                  href={`/attendance/scanner/${event.id}`}
-                  className="flex items-center justify-between gap-4 rounded-3xl border border-[#DCEAF5] bg-[#F8FBFD] p-5 transition hover:bg-[#EAF3FA]"
-                >
+              (events ?? []).map((event: any) => {
+                const closed = isEventClosed(event);
+                const content = (
+                  <>
                   <div className="flex items-center gap-4">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-[#03357A]">
-                      <QrCode className="h-6 w-6" />
-                    </div>
-
-                    <div>
-                      <h3 className="font-extrabold text-[#03357A]">
-                        {getEventTitle(event)}
-                      </h3>
-
-                      <p className="mt-1 text-sm text-slate-500">
-                        {getEventDate(event)}
-                      </p>
-                    </div>
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-[#03357A]"><QrCode className="h-6 w-6" /></div>
+                    <div><h3 className="font-extrabold text-[#03357A]">{getEventTitle(event)}</h3><p className="mt-1 text-sm text-slate-500">{getEventDate(event)}</p>{closed && <span className="mt-2 inline-flex rounded-full bg-slate-200 px-3 py-1 text-xs font-black text-slate-600">Activité clôturée</span>}</div>
                   </div>
-
-                  <ChevronRight className="h-5 w-5 text-slate-400" />
-                </Link>
-              ))
+                  {closed ? <Link href={`/attendance/reports/${event.id}`} className="rounded-xl bg-white px-3 py-2 text-xs font-black text-[#03357A]">Voir le rapport</Link> : <ChevronRight className="h-5 w-5 text-slate-400" />}
+                  </>
+                );
+                return closed ? (
+                <div
+                  key={event.id}
+                  className="flex items-center justify-between gap-4 rounded-3xl border border-[#DCEAF5] bg-slate-50 p-5 opacity-80"
+                >{content}</div>) : (
+                <Link key={event.id} href={`/attendance/scanner/${event.id}`} className="flex items-center justify-between gap-4 rounded-3xl border border-[#DCEAF5] bg-[#F8FBFD] p-5 transition hover:bg-[#EAF3FA]">{content}</Link>
+                );
+              })
             )}
           </div>
         </section>

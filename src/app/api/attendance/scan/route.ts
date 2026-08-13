@@ -3,6 +3,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
 import { requireAnyActionPermission } from "@/lib/security/secureAction";
+import { isEventClosed } from "@/lib/events/eventLifecycle";
 type ScanBody = {
   eventId?: string;
   qrValue?: string;
@@ -231,6 +232,13 @@ export async function POST(request: Request) {
       return NextResponse.json(
         { error: "Événement introuvable dans votre église." },
         { status: 404 }
+      );
+    }
+
+    if (isEventClosed(event)) {
+      return NextResponse.json(
+        { error: "Cette activité est déjà déroulée ou clôturée. Le scanner est fermé." },
+        { status: 409 }
       );
     }
 

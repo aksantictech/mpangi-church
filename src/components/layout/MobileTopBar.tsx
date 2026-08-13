@@ -6,7 +6,6 @@ import {
 } from "@/lib/tenant/domain";
 import { useEffect, useMemo, useState } from "react";
 import {
-  Bell,
   ChevronDown,
   Home,
   LogOut,
@@ -24,6 +23,7 @@ import {
 } from "@/lib/modules/moduleRegistry";
 
 import type { ChurchBranding } from "@/lib/tenant/churchBranding";
+import InternalNotificationBell from "@/components/notifications/InternalNotificationBell";
 
 type MobileTopBarProps = {
   branding?: ChurchBranding;
@@ -215,13 +215,7 @@ function closeForNavigation() {
             </p>
           </Link>
 
-          <Link
-            href="/notifications"
-            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-[#DCEAF5] bg-white text-[#03357A]"
-            aria-label="Notifications"
-          >
-            <Bell className="h-5 w-5" />
-          </Link>
+          <InternalNotificationBell mobile />
         </div>
       </header>
 

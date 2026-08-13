@@ -11,6 +11,7 @@ import AppShell from "@/components/layout/AppShell";
 import EventQrScannerClient from "@/components/attendance/EventQrScannerClient";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
+import { isEventClosed } from "@/lib/events/eventLifecycle";
 
 type EventScannerPageProps = {
   params: Promise<{
@@ -123,6 +124,7 @@ export default async function EventScannerPage({
 
   const checkedCount = attendanceCount ?? 0;
   const eventDate = formatDate(getEventDateValue(event));
+  const closed = isEventClosed(event);
 
   return (
     <AppShell>
@@ -177,7 +179,13 @@ export default async function EventScannerPage({
           </div>
         </section>
 
-        <EventQrScannerClient eventId={eventId} />
+        {closed ? (
+          <section className="rounded-3xl border border-amber-200 bg-amber-50 p-6 text-center text-amber-900">
+            <CheckCircle2 className="mx-auto h-12 w-12" />
+            <h2 className="mt-3 text-xl font-black">Activité déjà déroulée ou clôturée</h2>
+            <p className="mt-2 text-sm">Le scanner de présence n’est plus disponible. Le rapport reste consultable.</p>
+          </section>
+        ) : <EventQrScannerClient eventId={eventId} />}
 
         <section className="rounded-3xl border border-[#DCEAF5] bg-white p-5 shadow-sm">
           <div className="flex flex-col justify-between gap-3 md:flex-row md:items-center">
