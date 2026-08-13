@@ -16,6 +16,10 @@ export async function saveDepartmentReportAction(formData: FormData) {
   const reportMonth = value(formData, "report_month");
   if (!departmentId || !/^\d{4}-\d{2}-01$/.test(reportMonth || "")) redirect("/reports/departments?error=invalid");
   const validReportMonth = reportMonth as string;
+  const periodStart = value(formData, "period_start") || validReportMonth;
+  const periodEnd = value(formData, "period_end") || validReportMonth;
+  const recipientIds = formData.getAll("recipient_ids").map(String).filter(Boolean);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(periodStart) || !/^\d{4}-\d{2}-\d{2}$/.test(periodEnd) || periodStart > periodEnd) redirect("/reports/departments?error=period");
 
   const admin = createAdminClient();
   const [{ data: department }, { data: profile }] = await Promise.all([
@@ -31,10 +35,15 @@ export async function saveDepartmentReportAction(formData: FormData) {
   }
 
   const status = value(formData, "intent") === "submit" ? "submitted" : "draft";
-  const { error } = await admin.from("department_monthly_reports").upsert({
+  if (status === "submitted" && recipientIds.length === 0) redirect(`/reports/departments?department=${departmentId}&month=${validReportMonth.slice(0, 7)}&error=recipient`);
+  const deadline = new Date(`${periodEnd}T23:59:59.000Z`);
+  deadline.setUTCDate(deadline.getUTCDate() + 7);
+  const payload = {
     church_id: context.churchId,
     department_id: departmentId,
     report_month: validReportMonth,
+    period_start: periodStart,
+    period_end: periodEnd,
     strengths: value(formData, "strengths"),
     weaknesses: value(formData, "weaknesses"),
     opportunities: value(formData, "opportunities"),
@@ -43,10 +52,36 @@ export async function saveDepartmentReportAction(formData: FormData) {
     status,
     created_by: profile.id,
     submitted_at: status === "submitted" ? new Date().toISOString() : null,
+    sent_at: status === "submitted" ? new Date().toISOString() : null,
+    edit_until: deadline.toISOString(),
     updated_at: new Date().toISOString(),
-  }, { onConflict: "department_id,report_month" });
+  };
+  const { data: savedReport, error } = await admin.from("department_monthly_reports").upsert(payload, { onConflict: "department_id,report_month" }).select("id").single();
+
+  if (!error && savedReport && status === "submitted") {
+    const { data: validRecipients } = await admin.from("profiles").select("id").eq("church_id", context.churchId).eq("status", "active").in("id", recipientIds.length ? recipientIds : ["00000000-0000-0000-0000-000000000000"]).in("role", ["church_admin", "admin", "pasteur_t", "pastor", "pastor_titulaire"]);
+    await admin.from("department_report_recipients").delete().eq("report_id", savedReport.id);
+    if (validRecipients?.length) await admin.from("department_report_recipients").insert(validRecipients.map((r: any) => ({ report_id: savedReport.id, church_id: context.churchId, profile_id: r.id })));
+  }
 
   if (error) redirect(`/reports/departments?department=${departmentId}&month=${validReportMonth.slice(0, 7)}&error=save`);
   revalidatePath("/reports/departments");
   redirect(`/reports/departments?department=${departmentId}&month=${validReportMonth.slice(0, 7)}&saved=1`);
+}
+
+export async function deleteDepartmentReportAction(formData: FormData) {
+  const context = await getCurrentSecurityContext();
+  const reportId = value(formData, "report_id");
+  if (!context.churchId || !reportId || !editableRoles.has(context.role)) redirect("/reports/departments?error=invalid");
+  const admin = createAdminClient();
+  const { data: report } = await admin.from("department_monthly_reports").select("id,department_id,edit_until").eq("id", reportId).eq("church_id", context.churchId).maybeSingle();
+  if (!report || !report.edit_until || new Date(report.edit_until) < new Date()) redirect("/reports/departments?error=deadline");
+  if (context.role === "responsable_d") {
+    const { data: member } = context.email ? await admin.from("members").select("id").eq("church_id", context.churchId).ilike("email", context.email).maybeSingle() : { data: null };
+    const { data: assignment } = member ? await admin.from("member_departments").select("role").eq("church_id", context.churchId).eq("department_id", report.department_id).eq("member_id", member.id).maybeSingle() : { data: null };
+    if (!assignment || !["leader", "responsable", "manager", "responsable_d", "department_leader"].includes(String(assignment.role || "").toLowerCase())) redirect("/unauthorized?reason=department_report_scope");
+  }
+  await admin.from("department_monthly_reports").delete().eq("id", report.id).eq("church_id", context.churchId);
+  revalidatePath("/reports/departments");
+  redirect("/reports/departments?deleted=1");
 }

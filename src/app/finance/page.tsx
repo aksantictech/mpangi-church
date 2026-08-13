@@ -5,6 +5,7 @@ import {
   BarChart3,
   Plus,
   ReceiptText,
+  Search,
   Wallet,
 } from "lucide-react";
 import AppShell from "@/components/layout/AppShell";
@@ -14,6 +15,8 @@ type FinanceDashboardPageProps = {
   searchParams?: Promise<{
     dateFrom?: string;
     dateTo?: string;
+    q?: string;
+    type?: string;
   }>;
 };
 
@@ -53,10 +56,12 @@ export default async function FinanceDashboardPage({
   const params = searchParams ? await searchParams : {};
   const dateFrom = params.dateFrom || monthStart();
   const dateTo = params.dateTo || today();
+  const q = (params.q || "").trim();
+  const type = params.type || "";
 
   const { admin, profile } = await requireChurchModuleAccess("finance_dashboard");
 
-  const { data: transactions } = await admin
+  let transactionsQuery = admin
     .from("finance_transactions")
     .select(
       `
@@ -77,6 +82,9 @@ export default async function FinanceDashboardPage({
     .neq("status", "archived")
     .order("transaction_date", { ascending: false })
     .limit(300);
+  if (type === "income" || type === "expense") transactionsQuery = transactionsQuery.eq("transaction_type", type);
+  if (q) transactionsQuery = transactionsQuery.or(`title.ilike.%${q}%,reference.ilike.%${q}%,description.ilike.%${q}%`);
+  const { data: transactions } = await transactionsQuery;
 
   const rows = transactions ?? [];
 
@@ -91,6 +99,8 @@ export default async function FinanceDashboardPage({
   const balance = incomeCdf - expenseCdf;
   const pendingCount = rows.filter((row: any) => row.status === "pending_approval").length;
   const recentRows = rows.slice(0, 8);
+  const categoryTotals = Array.from(rows.reduce((map: Map<string, number>, row: any) => { const name=row.category?.name || "Sans catégorie"; map.set(name,(map.get(name)||0)+Number(row.amount_cdf??row.amount??0)); return map; }, new Map())).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  const largestCategory = Math.max(...categoryTotals.map((item)=>item[1]), 1);
 
   return (
     <AppShell>
@@ -123,7 +133,9 @@ export default async function FinanceDashboardPage({
         </section>
 
         <section className="rounded-3xl border border-[#DCEAF5] bg-white p-5 shadow-sm">
-          <form className="grid gap-3 md:grid-cols-[220px_220px_auto]">
+          <form className="grid gap-3 xl:grid-cols-[1fr_180px_180px_180px_auto]">
+            <div className="relative"><Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"/><input name="q" defaultValue={q} placeholder="Titre, référence, description…" className="filter-input w-full pl-11"/></div>
+            <select name="type" defaultValue={type} className="filter-input"><option value="">Tous mouvements</option><option value="income">Entrées</option><option value="expense">Dépenses</option></select>
             <input type="date" name="dateFrom" defaultValue={dateFrom} className="filter-input" />
             <input type="date" name="dateTo" defaultValue={dateTo} className="filter-input" />
             <div className="flex gap-3">
@@ -131,6 +143,11 @@ export default async function FinanceDashboardPage({
               <Link href="/finance" className="inline-flex items-center justify-center rounded-2xl bg-[#EAF3FA] px-5 py-3 text-sm font-extrabold text-[#03357A]">Mois actuel</Link>
             </div>
           </form>
+        </section>
+
+        <section className="grid gap-5 xl:grid-cols-[1fr_0.8fr]">
+          <div className="rounded-3xl border border-[#DCEAF5] bg-white p-6 shadow-sm"><h2 className="text-xl font-extrabold text-[#03357A]">Répartition par catégorie</h2><div className="mt-5 space-y-4">{categoryTotals.length===0?<p className="text-sm text-slate-500">Aucune donnée sur la période.</p>:categoryTotals.map(([name,total])=><div key={name}><div className="mb-1 flex justify-between gap-3 text-sm"><span className="font-bold text-slate-700">{name}</span><span className="font-black text-[#03357A]">{money(total)}</span></div><div className="h-2 overflow-hidden rounded-full bg-slate-100"><div className="h-full rounded-full bg-gradient-to-r from-blue-600 to-violet-500" style={{width:`${Math.max(4,(total/largestCategory)*100)}%`}}/></div></div>)}</div></div>
+          <div className="rounded-3xl border border-[#DCEAF5] bg-white p-6 shadow-sm"><h2 className="text-xl font-extrabold text-[#03357A]">Lecture rapide</h2><div className="mt-5 space-y-3 text-sm leading-6 text-slate-600"><p>Les entrées représentent <strong>{rows.length ? Math.round((rows.filter((r:any)=>r.transaction_type==="income").length/rows.length)*100) : 0}%</strong> des mouvements filtrés.</p><p>Le solde de la période est <strong className={balance>=0?"text-emerald-700":"text-red-700"}>{balance>=0?"positif":"négatif"}</strong>.</p><p><strong>{pendingCount}</strong> opération(s) attendent encore une validation.</p></div></div>
         </section>
 
         <section className="grid gap-4 md:grid-cols-4">

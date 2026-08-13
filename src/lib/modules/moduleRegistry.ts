@@ -21,6 +21,7 @@ import {
   QrCode,
   ReceiptText,
   Settings,
+  Sparkles,
   Smartphone,
   UsersRound,
   Wallet,
@@ -129,6 +130,13 @@ export const MODULE_MENU_ITEMS: ModuleMenuItem[] = [
     label: "Notifications",
     href: "/notifications",
     icon: Bell,
+    category: "system",
+  },
+  {
+    code: "ai_assistant",
+    label: "Assistant intelligent",
+    href: "/assistant",
+    icon: Sparkles,
     category: "system",
   },
   {
