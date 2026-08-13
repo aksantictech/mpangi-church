@@ -83,35 +83,24 @@ export default function MemberImportBox({
 
     if (!file) return;
 
+    if (file.size > 5 * 1024 * 1024) {
+      setResult({ inserted: 0, skipped: 0, failed: 1, assigned: 0, messages: ["Le fichier Excel ne doit pas dépasser 5 Mo."] });
+      event.target.value = "";
+      return;
+    }
+
     setIsLoading(true);
     setResult(null);
 
     try {
       const buffer = await file.arrayBuffer();
 
-      const workbook = XLSX.read(buffer, {
-        type: "array",
-        cellDates: true,
-      });
-
-      const worksheetName =
-        workbook.SheetNames.find((name) => name === "Membres") ||
-        workbook.SheetNames.find((name) => name === "Members") ||
-        workbook.SheetNames[0];
-
-      if (!worksheetName) {
-        throw new Error("Le fichier Excel ne contient aucune feuille.");
-      }
-
+      const workbook = XLSX.read(buffer, { type: "array", cellDates: true });
+      const worksheetName = workbook.SheetNames.find((name) => name === "Membres") || workbook.SheetNames.find((name) => name === "Members") || workbook.SheetNames[0];
+      if (!worksheetName) throw new Error("Le fichier Excel ne contient aucune feuille.");
       const worksheet = workbook.Sheets[worksheetName];
-
-      if (!worksheet) {
-        throw new Error("Feuille Excel introuvable.");
-      }
-
-      const rows = XLSX.utils.sheet_to_json<MemberRow>(worksheet, {
-        defval: "",
-      });
+      if (!worksheet) throw new Error("Feuille Excel introuvable.");
+      const rows = XLSX.utils.sheet_to_json<MemberRow>(worksheet, { defval: "" });
 
       if (rows.length === 0) {
         throw new Error("Le fichier Excel ne contient aucune ligne à importer.");

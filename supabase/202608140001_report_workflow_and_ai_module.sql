@@ -28,6 +28,6 @@ for select to authenticated using (
 );
 
 insert into public.app_modules (code, name, category, description, sort_order, is_core, is_active, icon_name, group_key)
-values ('ai_assistant', 'Assistant intelligent', 'essentials', 'Recherche et résumés sécurisés sur les données de l’église.', 35, false, true, 'sparkles', 'system')
+values ('ai_assistant', 'Assistant intelligent', 'system', 'Recherche et résumés sécurisés sur les données de l’église.', 35, false, true, 'sparkles', 'system')
 on conflict (code) do update set
   name = excluded.name, description = excluded.description, is_active = true;

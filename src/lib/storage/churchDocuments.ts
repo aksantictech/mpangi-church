@@ -85,15 +85,14 @@ export async function uploadChurchDocument({
     throw new Error(error.message || "Téléversement du document impossible.");
   }
 
-  const { data } = admin.storage.from(bucket).getPublicUrl(path);
-  const publicUrl = data?.publicUrl || "";
+  const protectedUrl = getDocumentDownloadHref({ path, filename: file.name });
 
   return {
     path,
-    url: publicUrl,
-    publicUrl,
+    url: protectedUrl,
+    publicUrl: protectedUrl,
     document_path: path,
-    document_url: publicUrl,
+    document_url: protectedUrl,
 
     // Compatibilité avec les anciens modules
     filename: file.name,
@@ -129,17 +128,11 @@ export function getDocumentDownloadHref(input: DownloadHrefInput) {
 }
 
 export function getChurchDocumentPublicUrl({
-  admin,
   path,
-  bucket = CHURCH_DOCUMENTS_BUCKET,
 }: {
   admin: any;
   path?: string | null;
   bucket?: string;
 }) {
-  if (!path) return "";
-
-  const { data } = admin.storage.from(bucket).getPublicUrl(path);
-
-  return data?.publicUrl || "";
+  return getDocumentDownloadHref(path);
 }
