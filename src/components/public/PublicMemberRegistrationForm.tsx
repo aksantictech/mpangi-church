@@ -41,8 +41,9 @@ const inputClass =
 const textareaClass =
   "min-h-32 w-full rounded-2xl border border-[#DCEAF5] bg-white p-4 text-[#0F172A] outline-none transition placeholder:text-slate-400 focus:border-[#03357A] focus:ring-4 focus:ring-[#03357A]/10";
 
-function fileToBase64(file: File) {
-  return new Promise<string>((resolve, reject) => {
+async function fileToBase64(file: File) {
+  try {
+    return await new Promise<string>((resolve, reject) => {
     const reader = new FileReader();
 
     reader.onload = () => {
@@ -54,7 +55,24 @@ function fileToBase64(file: File) {
     };
 
     reader.readAsDataURL(file);
-  });
+    });
+  } catch {
+    const bytes = new Uint8Array(await file.arrayBuffer());
+    let binary = "";
+    const chunkSize = 32_768;
+
+    for (let index = 0; index < bytes.length; index += chunkSize) {
+      binary += String.fromCharCode(...bytes.subarray(index, index + chunkSize));
+    }
+
+    return `data:${file.type || "image/jpeg"};base64,${btoa(binary)}`;
+  }
+}
+
+function getPhotoType(file: File) {
+  if (file.type.startsWith("image/")) return file.type;
+  const extension = file.name.split(".").pop()?.toLowerCase() || "jpeg";
+  return `image/${extension === "jpg" ? "jpeg" : extension}`;
 }
 
 export default function PublicMemberRegistrationForm({
@@ -91,8 +109,8 @@ export default function PublicMemberRegistrationForm({
       return;
     }
 
-    if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
-      setErrorMessage("Format photo non accepté. Utilisez JPG, PNG ou WEBP.");
+    if (!getPhotoType(file).startsWith("image/") || getPhotoType(file) === "image/svg+xml") {
+      setErrorMessage("Le fichier sélectionné n’est pas une photo valide.");
       event.target.value = "";
       return;
     }
@@ -103,6 +121,7 @@ export default function PublicMemberRegistrationForm({
       return;
     }
 
+    if (photoPreview) URL.revokeObjectURL(photoPreview);
     setPhotoFile(file);
     setPhotoPreview(URL.createObjectURL(file));
   }
@@ -126,9 +145,15 @@ export default function PublicMemberRegistrationForm({
 
     try {
       if (photoFile) {
-        photoBase64 = await fileToBase64(photoFile);
-        photoName = photoFile.name;
-        photoType = photoFile.type;
+        try {
+          photoBase64 = await fileToBase64(photoFile);
+          photoName = photoFile.name;
+          photoType = getPhotoType(photoFile);
+        } catch {
+          photoBase64 = "";
+          photoName = "";
+          photoType = "";
+        }
       }
 
       const response = await fetch("/api/public/member-registration", {
@@ -326,18 +351,33 @@ export default function PublicMemberRegistrationForm({
             )}
           </div>
 
-          <div>
-            <Field label="Choisir une photo">
+          <div className="space-y-3">
+            <label className="flex cursor-pointer items-center justify-center gap-2 rounded-2xl bg-[#03357A] px-5 py-4 text-sm font-extrabold text-white shadow-lg shadow-blue-900/20 hover:bg-[#022B63]">
+              <Camera className="h-5 w-5" />
+              Prendre une photo
               <input
                 type="file"
-                accept="image/jpeg,image/png,image/webp"
+                accept="image/*"
+                capture="user"
                 onChange={handlePhotoChange}
-                className={inputClass}
+                className="sr-only"
               />
-            </Field>
+            </label>
+
+            <label className="flex cursor-pointer items-center justify-center gap-2 rounded-2xl border border-[#DCEAF5] bg-white px-5 py-4 text-sm font-extrabold text-[#03357A] hover:bg-[#F8FBFD]">
+              <UserCircle className="h-5 w-5" />
+              Choisir une photo existante
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handlePhotoChange}
+                className="sr-only"
+              />
+            </label>
 
             <p className="mt-3 text-sm leading-6 text-slate-500">
-              Formats acceptés : JPG, PNG, WEBP. Taille maximale : 5 MB.
+              Tous les formats photo courants sont acceptés. Taille maximale : 5 MB.
+              La photo est facultative et ne bloquera plus l’envoi du formulaire.
             </p>
           </div>
         </div>
