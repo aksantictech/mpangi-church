@@ -28,8 +28,8 @@ export default async function NewFinanceTransactionPage({
   const params = searchParams ? await searchParams : {};
   const { admin, profile } = await requireChurchModuleAccess(CONFIG.moduleCode);
 
-  const [{ data: categories }, { data: departments }, { data: tasks }] =
-    await Promise.all([
+  const [categoriesResult, departmentsResult, tasksResult] =
+    await Promise.allSettled([
       admin
         .from("finance_categories")
         .select("id, name")
@@ -52,6 +52,15 @@ export default async function NewFinanceTransactionPage({
         .order("created_at", { ascending: false })
         .limit(80),
     ]);
+
+  const categories = categoriesResult.status === "fulfilled" ? categoriesResult.value.data ?? [] : [];
+  const departments = departmentsResult.status === "fulfilled" ? departmentsResult.value.data ?? [] : [];
+  const tasks = tasksResult.status === "fulfilled" ? tasksResult.value.data ?? [] : [];
+  const loadErrors = [categoriesResult, departmentsResult, tasksResult]
+    .flatMap((result) => result.status === "rejected" ? [String(result.reason)] : result.value.error ? [result.value.error.message] : []);
+  if (loadErrors.length) {
+    console.error("Chargement partiel du formulaire de dépense :", loadErrors);
+  }
 
   const errorMessage =
     params.error === "upload"

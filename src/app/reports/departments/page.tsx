@@ -5,6 +5,7 @@ import MetricCard from "@/components/dashboard/MetricCard";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getCurrentSecurityContext } from "@/lib/security/permissionEngine";
 import { deleteDepartmentReportAction, saveDepartmentReportAction } from "./actions";
+import { getProfileDepartmentIds } from "@/lib/security/departmentScope";
 
 export const dynamic = "force-dynamic";
 
@@ -27,9 +28,7 @@ export default async function DepartmentReportsPage({ searchParams }: Props) {
 
   let allowedDepartmentIds: string[] | null = null;
   if (context.role === "responsable_d") {
-    const { data: member } = context.email ? await admin.from("members").select("id").eq("church_id", context.churchId).ilike("email", context.email).maybeSingle() : { data: null };
-    const { data: links } = member ? await admin.from("member_departments").select("department_id,role").eq("church_id", context.churchId).eq("member_id", member.id) : { data: [] as any[] };
-    allowedDepartmentIds = (links || []).filter((link: any) => ["leader", "responsable", "manager", "responsable_d", "department_leader"].includes(String(link.role || "").toLowerCase())).map((link: any) => link.department_id);
+    allowedDepartmentIds = await getProfileDepartmentIds({ userId: context.userId, churchId: context.churchId, email: context.email });
   }
   let departmentsQuery = admin.from("departments").select("id,name").eq("church_id", context.churchId).eq("status", "active").order("name");
   if (allowedDepartmentIds) departmentsQuery = departmentsQuery.in("id", allowedDepartmentIds.length ? allowedDepartmentIds : ["00000000-0000-0000-0000-000000000000"]);
@@ -40,8 +39,8 @@ export default async function DepartmentReportsPage({ searchParams }: Props) {
   const [{ data: assignments }, { data: events }, { data: selectedReport }, { data: reports }, { data: recipients }] = await Promise.all([
     admin.from("member_departments").select("member_id,role,status,members(status)").eq("church_id", context.churchId).eq("department_id", departmentId),
     admin.from("events").select("id,event_date").eq("church_id", context.churchId).gte("event_date", from).lt("event_date", until),
-    sp.report ? admin.from("department_monthly_reports").select("*").eq("church_id", context.churchId).eq("id", sp.report).maybeSingle() : admin.from("department_monthly_reports").select("*").eq("church_id", context.churchId).eq("department_id", departmentId).eq("report_month", from).maybeSingle(),
-    admin.from("department_monthly_reports").select("id,department_id,report_month,period_start,period_end,status,edit_until,sent_at,departments(name)").eq("church_id", context.churchId).order("report_month", { ascending: false }).limit(36),
+    sp.report ? admin.from("department_monthly_reports").select("*").eq("church_id", context.churchId).eq("department_id", departmentId).eq("id", sp.report).maybeSingle() : admin.from("department_monthly_reports").select("*").eq("church_id", context.churchId).eq("department_id", departmentId).eq("report_month", from).maybeSingle(),
+    admin.from("department_monthly_reports").select("id,department_id,report_month,period_start,period_end,status,edit_until,sent_at,departments(name)").eq("church_id", context.churchId).eq("department_id", departmentId).order("report_month", { ascending: false }).limit(36),
     admin.from("profiles").select("id,full_name,role").eq("church_id", context.churchId).eq("status", "active").in("role", ["church_admin", "admin", "pasteur_t", "pastor", "pastor_titulaire"]).order("full_name"),
   ]);
   const report = selectedReport;

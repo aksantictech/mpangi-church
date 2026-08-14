@@ -78,7 +78,7 @@ export default async function SettingsUsersPage({
   const adminProfile = await getCurrentAdminProfile();
   const admin = createAdminClient();
 
-  const [{ data: users }, { data: enabledModules }] = await Promise.all([
+  const [{ data: users }, { data: enabledModules }, { data: departments }] = await Promise.all([
     admin
       .from("profiles")
       .select("id, user_id, full_name, email, role, status")
@@ -96,6 +96,7 @@ export default async function SettingsUsersPage({
       )
       .eq("church_id", adminProfile.church_id)
       .eq("enabled", true),
+    admin.from("departments").select("id,name").eq("church_id", adminProfile.church_id).eq("status", "active").order("name"),
   ]);
 
   const userRows = users ?? [];
@@ -112,6 +113,9 @@ export default async function SettingsUsersPage({
   const selectedUser = userRows.find(
     (user: any) => user.id === selectedProfileId
   );
+  const { data: selectedAssignments } = selectedProfileId
+    ? await admin.from("profile_department_assignments").select("department_id").eq("church_id", adminProfile.church_id).eq("profile_id", selectedProfileId).limit(1)
+    : { data: [] };
 
   const permissionMap = new Map(
     (permissions ?? []).map((permission: any) => [
@@ -294,6 +298,8 @@ export default async function SettingsUsersPage({
                     status: selectedUser.status,
                   }}
                   currentProfileId={adminProfile.id}
+                  departments={(departments || []) as Array<{ id: string; name: string }>}
+                  departmentId={selectedAssignments?.[0]?.department_id || null}
                 />
 
                 <div className="mt-5 space-y-4">
