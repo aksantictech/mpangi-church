@@ -14,6 +14,7 @@ import MobileBottomNav from "@/components/layout/MobileBottomNav";
 import MobileTopBar from "@/components/layout/MobileTopBar";
 import ModuleContextTabs from "@/components/layout/ModuleContextTabs";
 import Sidebar from "@/components/layout/Sidebar";
+import DesktopInactivityLogout from "@/components/security/DesktopInactivityLogout";
 import type { ChurchBranding } from "@/lib/tenant/churchBranding";
 
 type BrandingStyles = CSSProperties & {
@@ -112,6 +113,7 @@ export default function ChurchBrandingShell({
       style={brandingStyles}
       className="min-h-dvh text-[var(--church-text)] lg:flex lg:items-start"
     >
+      <DesktopInactivityLogout />
       <Sidebar
         branding={branding}
       />

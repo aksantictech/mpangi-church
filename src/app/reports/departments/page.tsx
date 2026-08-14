@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Activity, ArrowLeft, CalendarCheck, Eye, Pencil, Send, Star, Trash2, Users } from "lucide-react";
+import { Activity, ArrowLeft, CalendarCheck, Eye, Pencil, Send, Star, Trash2, TrendingUp, Users } from "lucide-react";
 import AppShell from "@/components/layout/AppShell";
 import MetricCard from "@/components/dashboard/MetricCard";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -44,15 +44,25 @@ export default async function DepartmentReportsPage({ searchParams }: Props) {
     admin.from("profiles").select("id,full_name,role").eq("church_id", context.churchId).eq("status", "active").in("role", ["church_admin", "admin", "pasteur_t", "pastor", "pastor_titulaire"]).order("full_name"),
   ]);
   const report = selectedReport;
-  const memberIds = (assignments || []).map((a: any) => a.member_id).filter(Boolean);
+  const activeAssignments = (assignments || []).filter((assignment: any) => {
+    const member = Array.isArray(assignment.members) ? assignment.members[0] : assignment.members;
+    return assignment.status === "active" && (!member?.status || ["active", "actif"].includes(member.status));
+  });
+  const activeMemberIds = [...new Set(activeAssignments.map((assignment: any) => assignment.member_id).filter(Boolean))];
   const eventIds = (events || []).map((e: any) => e.id);
-  const { data: attendances } = memberIds.length && eventIds.length
-    ? await admin.from("event_attendances").select("member_id,event_id").eq("church_id", context.churchId).in("member_id", memberIds).in("event_id", eventIds)
+  const { data: attendances } = activeMemberIds.length && eventIds.length
+    ? await admin.from("event_attendances").select("member_id,event_id").eq("church_id", context.churchId).in("member_id", activeMemberIds).in("event_id", eventIds)
     : { data: [] as any[] };
-  const activeMembers = (assignments || []).filter((a: any) => a.status === "active" && (!a.members?.status || ["active", "actif"].includes(a.members.status))).length;
-  const leaders = (assignments || []).filter((a: any) => ["leader", "responsable", "manager", "responsable_d", "department_leader"].includes(String(a.role || "").toLowerCase())).length;
-  const representedActivities = new Set((attendances || []).map((a: any) => a.event_id)).size;
-  const averageAttendance = representedActivities ? Math.round((attendances?.length || 0) / representedActivities) : 0;
+  const activeMembers = activeMemberIds.length;
+  const leaders = new Set(activeAssignments
+    .filter((assignment: any) => ["star", "leader", "responsable", "manager", "responsable_d", "department_leader"].includes(String(assignment.role || "").toLowerCase()))
+    .map((assignment: any) => assignment.member_id)).size;
+  const uniqueAttendances = new Set((attendances || []).map((attendance: any) => `${attendance.event_id}:${attendance.member_id}`));
+  const representedActivities = new Set((attendances || []).map((attendance: any) => attendance.event_id)).size;
+  const attendanceCount = uniqueAttendances.size;
+  const averageAttendance = representedActivities ? Math.round(attendanceCount / representedActivities) : 0;
+  const expectedAttendances = activeMembers * representedActivities;
+  const attendanceRate = expectedAttendances ? Math.min(100, Math.round((attendanceCount / expectedAttendances) * 100)) : 0;
   const reportedMonths = new Set((reports || []).filter((r: any) => r.department_id === departmentId).map((r: any) => String(r.report_month).slice(0, 7)));
   const missingMonths = Array.from({ length: 12 }, (_, index) => { const d = new Date(); d.setMonth(d.getMonth() - index); return d.toISOString().slice(0, 7); }).filter((m) => !reportedMonths.has(m));
 
@@ -66,11 +76,45 @@ export default async function DepartmentReportsPage({ searchParams }: Props) {
     </form>
     {sp.saved && <p className="rounded-2xl bg-emerald-50 p-4 font-bold text-emerald-700">Rapport enregistré.</p>}{sp.error && <p className="rounded-2xl bg-red-50 p-4 font-bold text-red-700">Impossible d’enregistrer le rapport. Vérifiez que la migration Supabase a été exécutée.</p>}
     {missingMonths.length > 0 && <section className="rounded-3xl border border-amber-200 bg-amber-50 p-5"><h2 className="font-black text-amber-900">Mois sans rapport</h2><div className="mt-3 flex flex-wrap gap-2">{missingMonths.map((item)=><Link key={item} href={`/reports/departments?department=${departmentId}&month=${item}`} className="rounded-full bg-white px-3 py-2 text-xs font-bold text-amber-800">{new Intl.DateTimeFormat("fr-FR", { month: "long", year: "numeric" }).format(new Date(`${item}-01`))}</Link>)}</div></section>}
-    <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-      <MetricCard title="Activités réalisées" value={representedActivities} description="Activités avec présence du département" icon={Activity} accent="blue" />
-      <MetricCard title="Présence moyenne" value={averageAttendance} description="Membres présents par activité" icon={CalendarCheck} accent="green" />
-      <MetricCard title="Membres actifs" value={activeMembers} description="Affectations actives" icon={Users} accent="purple" />
-      <MetricCard title="Responsables" value={leaders} description="Leaders enregistrés dans la base" icon={Star} accent="orange" />
+    <section className="overflow-hidden rounded-3xl border border-[#DCEAF5] bg-white shadow-sm">
+      <div className="flex flex-col gap-3 bg-gradient-to-r from-[#03357A] via-[#2563EB] to-[#8B5CF6] p-5 text-white sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <p className="text-xs font-black uppercase tracking-[.22em] text-blue-100">Données récupérées automatiquement</p>
+          <h2 className="mt-2 text-2xl font-black">Synthèse des activités</h2>
+          <p className="mt-1 text-sm text-blue-50">Période du {new Intl.DateTimeFormat("fr-FR").format(new Date(`${from}T00:00:00`))} au {new Intl.DateTimeFormat("fr-FR").format(new Date(untilDate.getTime() - 86400000))}.</p>
+        </div>
+        <span className="inline-flex w-fit items-center gap-2 rounded-full bg-white/15 px-4 py-2 text-sm font-black ring-1 ring-white/20"><TrendingUp className="h-4 w-4"/>Mise à jour en temps réel</span>
+      </div>
+
+      <div className="grid gap-4 p-5 md:grid-cols-3">
+        <article className="rounded-3xl bg-blue-50 p-5 text-blue-900">
+          <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-blue-700 shadow-sm"><Activity className="h-6 w-6"/></span>
+          <p className="mt-4 text-sm font-bold text-blue-700">Activités réalisées</p>
+          <p className="mt-1 text-4xl font-black">{representedActivities}</p>
+          <p className="mt-2 text-sm leading-6 text-blue-700">Activités de la période ayant au moins une présence enregistrée pour ce département.</p>
+        </article>
+
+        <article className="rounded-3xl bg-amber-50 p-5 text-amber-900">
+          <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-amber-600 shadow-sm"><Star className="h-6 w-6"/></span>
+          <p className="mt-4 text-sm font-bold text-amber-700">Nombre de stars</p>
+          <p className="mt-1 text-4xl font-black">{leaders}</p>
+          <p className="mt-2 text-sm leading-6 text-amber-700">Stars et responsables actifs enregistrés dans le département.</p>
+        </article>
+
+        <article className="rounded-3xl bg-emerald-50 p-5 text-emerald-900">
+          <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-emerald-600 shadow-sm"><CalendarCheck className="h-6 w-6"/></span>
+          <p className="mt-4 text-sm font-bold text-emerald-700">Taux de présence</p>
+          <p className="mt-1 text-4xl font-black">{attendanceRate}%</p>
+          <div className="mt-3 h-2.5 overflow-hidden rounded-full bg-emerald-100"><div className="h-full rounded-full bg-emerald-500" style={{ width: `${attendanceRate}%` }}/></div>
+          <p className="mt-2 text-sm leading-6 text-emerald-700">{attendanceCount} présence(s) sur {expectedAttendances} attendue(s).</p>
+        </article>
+      </div>
+
+      <div className="grid gap-3 border-t border-[#DCEAF5] bg-[#F8FBFD] p-5 sm:grid-cols-3">
+        <MetricCard title="Membres actifs" value={activeMembers} description="Affectations actives" icon={Users} accent="purple" />
+        <MetricCard title="Présences enregistrées" value={attendanceCount} description="Participations uniques" icon={CalendarCheck} accent="green" />
+        <MetricCard title="Moyenne par activité" value={averageAttendance} description="Membres présents" icon={TrendingUp} accent="blue" />
+      </div>
     </section>
     <form action={saveDepartmentReportAction} className="rounded-3xl border border-[#DCEAF5] bg-white p-5 shadow-sm">
       <input type="hidden" name="department_id" value={departmentId}/><input type="hidden" name="report_month" value={from}/>

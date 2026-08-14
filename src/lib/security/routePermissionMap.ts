@@ -237,6 +237,12 @@ export const ROUTE_PERMISSION_RULES: RoutePermissionRule[] = [
     action: "view",
   },
   {
+    id: "settings",
+    pattern: /^\/settings(?:\/|$)/,
+    modules: ["settings"],
+    action: "view",
+  },
+  {
     id: "role-dashboard",
     pattern: /^\/dashboard\/role(?:\/|$)/,
     modules: ["role_dashboard"],

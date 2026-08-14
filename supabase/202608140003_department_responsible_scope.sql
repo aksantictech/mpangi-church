@@ -23,7 +23,7 @@ using (
   or church_id in (
     select p.church_id from public.profiles p
     where p.user_id = auth.uid()
-      and p.role in ('church_admin', 'admin_eglise', 'admin', 'pasteur_t', 'pastor')
+      and p.role::text in ('church_admin', 'admin_eglise', 'admin', 'pasteur_t', 'pastor')
   )
 );
 
