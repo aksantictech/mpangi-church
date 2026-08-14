@@ -1,96 +1,11 @@
 import { redirect } from "next/navigation";
-import { UsersRound } from "lucide-react";
 import AppShell from "@/components/layout/AppShell";
 import MobileModuleAccordion from "@/components/modules/MobileModuleAccordion";
 import {
   getGroupedVisibleMenuItems,
-  type ModuleMenuGroup,
 } from "@/lib/modules/moduleRegistry";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
-
-const ADMIN_ROLES = new Set([
-  "admin",
-  "administrator",
-  "church_admin",
-  "owner",
-  "pasteur",
-  "pastor",
-]);
-
-const FULL_ACCESS_ROLES = new Set([
-  "admin",
-  "administrator",
-  "church_admin",
-  "owner",
-  "pasteur",
-  "pastor",
-]);
-
-function addAdminUserPermissionItem(groups: ModuleMenuGroup[], role: string) {
-  if (!ADMIN_ROLES.has(role)) return groups;
-
-  return groups.map((group) => {
-    if (group.key !== "system") return group;
-
-    const exists = group.items.some((item) => item.href === "/settings/users");
-    if (exists) return group;
-
-    return {
-      ...group,
-      items: [
-        ...group.items,
-        {
-          code: "user_permissions",
-          label: "Utilisateurs & rôles",
-          href: "/settings/users",
-          icon: UsersRound,
-          category: "system" as const,
-        },
-      ],
-    };
-  });
-}
-
-function fallbackCanView(role: string, moduleCode: string) {
-  if (FULL_ACCESS_ROLES.has(role)) return true;
-
-  if (role === "administration_manager") {
-    return [
-      "dashboard",
-      "notifications",
-      "correspondence",
-      "document_transmissions",
-      "administrative_tasks",
-      "meetings_minutes",
-    ].includes(moduleCode);
-  }
-
-  if (role === "finance_manager") {
-    return [
-      "dashboard",
-      "notifications",
-      "finance_dashboard",
-      "offerings",
-      "expenses",
-      "budgets",
-      "financial_reports",
-    ].includes(moduleCode);
-  }
-
-  if (role === "patrimony_manager") {
-    return [
-      "dashboard",
-      "notifications",
-      "patrimony_dashboard",
-      "assets",
-      "asset_maintenance",
-      "asset_movements",
-    ].includes(moduleCode);
-  }
-
-  return ["dashboard", "members", "attendance", "souls", "events"].includes(moduleCode);
-}
 
 export default async function MobileMenuPage() {
   const supabase = await createClient();
@@ -113,7 +28,6 @@ export default async function MobileMenuPage() {
 
   if (profile.role === "super_admin") redirect("/super-admin/dashboard");
 
-  const role = String(profile.role || "").toLowerCase();
   const admin = createAdminClient();
 
   let moduleCodes = ["dashboard"];
@@ -133,26 +47,37 @@ export default async function MobileMenuPage() {
       .eq("church_id", profile.church_id)
       .eq("profile_id", profile.id);
 
-    if ((explicitPermissions ?? []).length > 0) {
-      moduleCodes = [
-        "dashboard",
-        ...((explicitPermissions ?? [])
-          .filter((permission: any) => permission.can_view)
-          .map((permission: any) => permission.module_code)
-          .filter((code: string) => enabledCodes.has(code))),
-      ];
-    } else {
-      moduleCodes = [
-        "dashboard",
-        ...Array.from(enabledCodes).filter((code) => fallbackCanView(role, code)),
-      ];
+    let permissions = explicitPermissions ?? [];
+    if (permissions.length === 0) {
+      const { data: rolePermissions } = await admin
+        .from("church_role_module_permissions")
+        .select("module_code, can_view")
+        .eq("church_id", profile.church_id)
+        .eq("role_code", profile.role);
+      permissions = rolePermissions ?? [];
     }
+
+    const systemCodes = new Set([
+      "dashboard",
+      "reports",
+      "notifications",
+      "ai_assistant",
+      "pwa_install",
+      "settings",
+      "users",
+      "security",
+      "live_stream",
+    ]);
+    moduleCodes = [
+      "dashboard",
+      ...permissions
+        .filter((permission: any) => permission.can_view)
+        .map((permission: any) => permission.module_code)
+        .filter((code: string) => systemCodes.has(code) || enabledCodes.has(code)),
+    ];
   }
 
-  const groups = addAdminUserPermissionItem(
-    getGroupedVisibleMenuItems(Array.from(new Set(moduleCodes))),
-    role
-  );
+  const groups = getGroupedVisibleMenuItems(Array.from(new Set(moduleCodes)));
 
   return (
     <AppShell>

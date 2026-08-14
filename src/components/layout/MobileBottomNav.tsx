@@ -9,28 +9,37 @@ import {
   QrCode,
   UsersRound,
 } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+
+type MyModulesResponse = {
+  moduleCodes?: string[];
+};
 
 const ITEMS = [
   {
     label: "Accueil",
     href: "/dashboard",
     icon: Home,
+    moduleCode: "dashboard",
   },
   {
     label: "Membres",
     href: "/members",
     icon: UsersRound,
+    moduleCode: "members",
   },
   {
     label: "Scanner",
     href: "/attendance/scanner",
     icon: QrCode,
+    moduleCode: "attendance",
     featured: true,
   },
   {
     label: "Notifs",
     href: "/notifications",
     icon: Bell,
+    moduleCode: "notifications",
   },
 ];
 
@@ -48,6 +57,33 @@ function isActive(pathname: string, href: string) {
 export default function MobileBottomNav() {
   const pathname =
     usePathname() || "/dashboard";
+  const [moduleCodes, setModuleCodes] = useState<string[]>(["dashboard"]);
+
+  useEffect(() => {
+    let mounted = true;
+    fetch("/api/modules/my-modules", {
+      cache: "no-store",
+      credentials: "include",
+    })
+      .then(async (response) => {
+        if (!response.ok) throw new Error("Modules indisponibles.");
+        return response.json() as Promise<MyModulesResponse>;
+      })
+      .then((payload) => {
+        if (mounted) setModuleCodes(payload.moduleCodes || ["dashboard"]);
+      })
+      .catch(() => {
+        if (mounted) setModuleCodes(["dashboard"]);
+      });
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const visibleItems = useMemo(() => {
+    const allowed = new Set(moduleCodes);
+    return ITEMS.filter((item) => allowed.has(item.moduleCode));
+  }, [moduleCodes]);
 
   function openMobileMenu() {
     window.dispatchEvent(
@@ -64,7 +100,7 @@ export default function MobileBottomNav() {
     >
       <div className="mx-auto flex max-w-md items-end gap-1.5 rounded-[1.75rem] border border-slate-200/80 bg-white/95 p-2 shadow-[0_-8px_35px_rgba(15,23,42,0.16)] backdrop-blur-xl">
 
-        {ITEMS.map((item) => {
+        {visibleItems.map((item) => {
           const Icon = item.icon;
           const active = isActive(
             pathname,

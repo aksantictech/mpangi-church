@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 
 import AppShell from "@/components/layout/AppShell";
+import { requireAnyModulePermission } from "@/lib/security/routeGuard";
 
 type SettingsTone =
   | "blue"
@@ -109,7 +110,8 @@ const toneClasses: Record<SettingsTone, string> = {
     "bg-red-50 text-red-700 group-hover:bg-red-700",
 };
 
-export default function SettingsPage() {
+export default async function SettingsPage() {
+  await requireAnyModulePermission(["settings"], "view");
   return (
     <AppShell>
       <div className="space-y-6">

@@ -115,6 +115,7 @@ export const MODULE_MENU_ITEMS: ModuleMenuItem[] = [
     icon: BarChart3,
     category: "system",
     permissionCodes: [
+      "departments",
       "attendance",
       "finance_reports",
       "financial_reports",
@@ -145,7 +146,6 @@ export const MODULE_MENU_ITEMS: ModuleMenuItem[] = [
     href: "/install",
     icon: Smartphone,
     category: "system",
-    alwaysVisible: true,
   },
   {
     code: "settings",
@@ -153,7 +153,6 @@ export const MODULE_MENU_ITEMS: ModuleMenuItem[] = [
     href: "/settings",
     icon: Settings,
     category: "system",
-    alwaysVisible: true,
   },
 
   {

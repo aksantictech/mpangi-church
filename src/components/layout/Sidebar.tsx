@@ -400,7 +400,7 @@ export default function Sidebar({
           )}
         </div>
 
-        <Link
+        {(myModules.moduleCodes || []).includes("live_stream") && <Link
           href="/live"
           className={[
             "mt-3 flex min-h-12 items-center rounded-2xl bg-red-600 text-white shadow-lg shadow-red-900/20 transition hover:bg-red-700",
@@ -424,7 +424,7 @@ export default function Sidebar({
               </span>
             </span>
           )}
-        </Link>
+        </Link>}
 
         {!collapsed && (
           <Link
