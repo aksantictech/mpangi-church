@@ -25,6 +25,8 @@ type UserProfile = {
 type Props = {
   profile: UserProfile;
   currentProfileId: string;
+  departments: Array<{ id: string; name: string }>;
+  departmentId?: string | null;
 };
 
 const ROLE_OPTIONS = [
@@ -51,6 +53,8 @@ function normalizeStatus(value: string | null) {
 export default function ChurchUserProfileActions({
   profile,
   currentProfileId,
+  departments,
+  departmentId: initialDepartmentId,
 }: Props) {
   const router = useRouter();
 
@@ -58,6 +62,7 @@ export default function ChurchUserProfileActions({
   const [email, setEmail] = useState(profile.email || "");
   const [role, setRole] = useState(profile.role || "worker");
   const [status, setStatus] = useState(normalizeStatus(profile.status));
+  const [departmentId, setDepartmentId] = useState(initialDepartmentId || "");
 
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -140,12 +145,18 @@ export default function ChurchUserProfileActions({
       return;
     }
 
+    if (["responsable_d", "department_leader"].includes(role) && !departmentId) {
+      setError("Sélectionnez le département confié à ce responsable.");
+      return;
+    }
+
     await callAction(
       {
         action: "update_profile",
         fullName,
         email,
         role,
+        departmentId: ["responsable_d", "department_leader"].includes(role) ? departmentId : null,
       },
       "Informations mises à jour."
     );
@@ -325,6 +336,26 @@ export default function ChurchUserProfileActions({
               </span>
             )}
           </label>
+
+          {["responsable_d", "department_leader"].includes(role) && (
+            <label className="space-y-2 md:col-span-2">
+              <span className="text-sm font-black text-[#03357A]">Département confié</span>
+              <select
+                value={departmentId}
+                onChange={(event) => setDepartmentId(event.target.value)}
+                className="mpangi-form-control"
+                required
+              >
+                <option value="">Sélectionner un département</option>
+                {departments.map((department) => (
+                  <option key={department.id} value={department.id}>{department.name}</option>
+                ))}
+              </select>
+              <span className="block text-xs font-semibold text-slate-500">
+                Ce responsable ne verra que les membres et rapports de ce département.
+              </span>
+            </label>
+          )}
 
           <button
             type="button"

@@ -14,6 +14,8 @@ import AppShell from "@/components/layout/AppShell";
 import MemberImportBox from "@/components/members/MemberImportBox";
 import MetricCard from "@/components/dashboard/MetricCard";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { getProfileDepartmentIds } from "@/lib/security/departmentScope";
 
 function formatDate(value?: string | null) {
   if (!value) return "-";
@@ -78,6 +80,20 @@ export default async function MembersPage({ searchParams }: MembersPageProps) {
   }
 
   const churchId = profile.church_id;
+  const isDepartmentResponsible = ["responsable_d", "department_leader"].includes(String(profile.role || "").toLowerCase());
+  let scopedMemberIds: string[] | null = null;
+  if (isDepartmentResponsible) {
+    const departmentIds = await getProfileDepartmentIds({ profileId: profile.id, churchId, email: user.email });
+    const admin = createAdminClient();
+    const { data: assignments } = departmentIds.length
+      ? await admin.from("member_departments").select("member_id").eq("church_id", churchId).eq("status", "active").in("department_id", departmentIds)
+      : { data: [] as Array<{ member_id: string }> };
+    scopedMemberIds = [...new Set((assignments || []).map((item) => item.member_id).filter(Boolean))];
+  }
+  const scopeMembers = <T,>(query: T): T => {
+    if (!scopedMemberIds) return query;
+    return (query as any).in("id", scopedMemberIds.length ? scopedMemberIds : ["00000000-0000-0000-0000-000000000000"]);
+  };
 
   const [
     { count: totalMembersCount },
@@ -86,28 +102,28 @@ export default async function MembersPage({ searchParams }: MembersPageProps) {
     { count: pendingMembersCount },
     { data: members, error },
   ] = await Promise.all([
-    supabase
+    scopeMembers(supabase
       .from("members")
       .select("*", { count: "exact", head: true })
-      .eq("church_id", churchId),
+      .eq("church_id", churchId)),
 
-    supabase
+    scopeMembers(supabase
       .from("members")
       .select("*", { count: "exact", head: true })
       .eq("church_id", churchId)
-      .eq("status", "actif"),
+      .eq("status", "actif")),
 
-    supabase
+    scopeMembers(supabase
       .from("members")
       .select("*", { count: "exact", head: true })
       .eq("church_id", churchId)
-      .eq("status", "inactif"),
+      .eq("status", "inactif")),
 
-    supabase
+    scopeMembers(supabase
       .from("members")
       .select("*", { count: "exact", head: true })
       .eq("church_id", churchId)
-      .eq("status", "en_attente"),
+      .eq("status", "en_attente")),
 
     (() => {
       let query = supabase.from("members").select(`
@@ -122,6 +138,7 @@ export default async function MembersPage({ searchParams }: MembersPageProps) {
         status,
         created_at
       `).eq("church_id", churchId).is("archived_at", null);
+      query = scopeMembers(query);
       if (["actif", "inactif", "en_attente", "refuse"].includes(requestedStatus)) query = query.eq("status", requestedStatus);
       return query.order("created_at", { ascending: false });
     })(),
@@ -142,24 +159,25 @@ export default async function MembersPage({ searchParams }: MembersPageProps) {
               </h1>
 
               <p className="mt-2 max-w-2xl text-sm leading-7 text-blue-50">
-                Consultez, ajoutez et gérez les membres de votre communauté.
-                Cette liste est automatiquement filtrée selon votre église.
+                {isDepartmentResponsible
+                  ? "Consultez les membres affectés au département qui vous est confié."
+                  : "Consultez, ajoutez et gérez les membres de votre communauté. Cette liste est automatiquement filtrée selon votre église."}
               </p>
             </div>
 
-            <Link
+            {!isDepartmentResponsible && <Link
               href="/members/new"
               className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-4 py-3 sm:px-5 text-sm font-bold text-[#03357A] shadow-sm hover:bg-[#EAF3FA]"
             >
               <Plus className="h-5 w-5" />
               Nouveau membre
-            </Link>
+            </Link>}
           </div>
         </section>
 
-        <MemberImportBox churchId={churchId} profileId={profile.id} />
+        {!isDepartmentResponsible && <MemberImportBox churchId={churchId} profileId={profile.id} />}
 
-        {(pendingMembersCount ?? 0) > 0 && (
+        {!isDepartmentResponsible && (pendingMembersCount ?? 0) > 0 && (
           <section className="rounded-3xl border border-amber-200 bg-amber-50 p-5 text-amber-900 shadow-sm">
             <p className="font-extrabold">
               {pendingMembersCount} inscription(s) publique(s) à vérifier
@@ -216,7 +234,9 @@ export default async function MembersPage({ searchParams }: MembersPageProps) {
               </h2>
 
               <p className="mt-1 text-sm text-slate-500">
-                Les membres affichés appartiennent uniquement à votre église.
+                {isDepartmentResponsible
+                  ? "Les membres affichés appartiennent uniquement à votre département."
+                  : "Les membres affichés appartiennent uniquement à votre église."}
               </p>
             </div>
 
@@ -327,12 +347,14 @@ export default async function MembersPage({ searchParams }: MembersPageProps) {
                       </td>
 
                       <td className="px-4 py-4">
-                        <MemberRowActions
+                        {isDepartmentResponsible ? (
+                          <Link href={`/members/${member.id}`} className="rounded-xl bg-[#EAF3FA] px-4 py-2 font-bold text-[#03357A]">Voir</Link>
+                        ) : <MemberRowActions
   memberId={member.id}
   memberName={[member.first_name, member.last_name].filter(Boolean).join(" ")}
   status={member.status}
   archivedAt={member.archived_at}
-/>
+/>}
                       </td>
                     </tr>
                   );

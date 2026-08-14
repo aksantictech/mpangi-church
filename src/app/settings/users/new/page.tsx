@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowLeft, UserPlus } from "lucide-react";
 import AppShell from "@/components/layout/AppShell";
+import { requireChurchAdmin } from "@/lib/security/access";
 import { USER_ROLE_OPTIONS } from "@/lib/users/userRoles";
 import { createChurchUserAction } from "./actions";
 
@@ -19,6 +20,13 @@ function readParam(
 export default async function NewChurchUserPage({ searchParams }: PageProps) {
   const params = (await searchParams) ?? {};
   const error = readParam(params, "error");
+  const { admin, churchId } = await requireChurchAdmin();
+  const { data: departments } = await admin
+    .from("departments")
+    .select("id, name")
+    .eq("church_id", churchId)
+    .eq("status", "active")
+    .order("name", { ascending: true });
 
   return (
     <AppShell>
@@ -125,6 +133,27 @@ export default async function NewChurchUserPage({ searchParams }: PageProps) {
                   </option>
                 ))}
               </select>
+            </label>
+
+            <label className="space-y-2 md:col-span-2">
+              <span className="text-sm font-black text-[#03357A]">
+                Département du Responsable D
+              </span>
+              <select
+                name="department_id"
+                defaultValue=""
+                className="min-h-12 w-full rounded-2xl border border-[#DCEAF5] bg-[#F8FBFD] px-4 text-sm font-bold outline-none focus:border-[#03357A]"
+              >
+                <option value="">Aucun — obligatoire pour Responsable D</option>
+                {(departments || []).map((department) => (
+                  <option key={department.id} value={department.id}>
+                    {department.name}
+                  </option>
+                ))}
+              </select>
+              <span className="block text-xs font-semibold text-slate-500">
+                Ce rattachement limite les membres et rapports visibles à ce département.
+              </span>
             </label>
           </div>
 

@@ -19,6 +19,7 @@ type UpdatePayload = {
   role?: string;
   status?: "active" | "inactive";
   password?: string;
+  departmentId?: string | null;
 };
 
 const ADMIN_ROLES = new Set([
@@ -223,6 +224,7 @@ export async function PATCH(
       const fullName = cleanText(payload.fullName, 160);
       const email = cleanText(payload.email, 254).toLowerCase();
       const role = cleanText(payload.role || target.role, 80);
+      const departmentId = cleanText(payload.departmentId, 80) || null;
 
       if (!fullName) {
         return NextResponse.json(
@@ -243,6 +245,29 @@ export async function PATCH(
           { message: "Le rôle sélectionné n’est pas autorisé." },
           { status: 400 }
         );
+      }
+
+      const isDepartmentResponsible = ["responsable_d", "department_leader"].includes(role);
+      if (isDepartmentResponsible && !departmentId) {
+        return NextResponse.json(
+          { message: "Sélectionnez le département confié à ce responsable." },
+          { status: 400 }
+        );
+      }
+
+      if (departmentId) {
+        const { data: department } = await context.admin
+          .from("departments")
+          .select("id")
+          .eq("id", departmentId)
+          .eq("church_id", target.church_id)
+          .maybeSingle();
+        if (!department) {
+          return NextResponse.json(
+            { message: "Département invalide pour cette église." },
+            { status: 400 }
+          );
+        }
       }
 
       if (isSelf && role !== String(target.role)) {
@@ -305,6 +330,29 @@ export async function PATCH(
           { message: error.message },
           { status: 400 }
         );
+      }
+
+      const { error: assignmentDeleteError } = await context.admin
+        .from("profile_department_assignments")
+        .delete()
+        .eq("profile_id", target.id)
+        .eq("church_id", target.church_id);
+      if (assignmentDeleteError) {
+        return NextResponse.json({ message: assignmentDeleteError.message }, { status: 400 });
+      }
+
+      if (isDepartmentResponsible && departmentId) {
+        const { error: assignmentError } = await context.admin
+          .from("profile_department_assignments")
+          .insert({
+            profile_id: target.id,
+            church_id: target.church_id,
+            department_id: departmentId,
+            created_by: context.profile.id,
+          });
+        if (assignmentError) {
+          return NextResponse.json({ message: assignmentError.message }, { status: 400 });
+        }
       }
 
       return NextResponse.json({

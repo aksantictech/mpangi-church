@@ -20,6 +20,8 @@ import {
 } from "lucide-react";
 import AppShell from "@/components/layout/AppShell";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { getProfileDepartmentIds } from "@/lib/security/departmentScope";
 
 type MemberDetailsPageProps = {
   params: Promise<{
@@ -124,6 +126,16 @@ export default async function MemberDetailsPage({
     notFound();
   }
 
+  const isDepartmentResponsible = ["responsable_d", "department_leader"].includes(String(profile.role || "").toLowerCase());
+  if (isDepartmentResponsible) {
+    const departmentIds = await getProfileDepartmentIds({ profileId: profile.id, churchId: profile.church_id, email: user.email });
+    const admin = createAdminClient();
+    const { data: assignment } = departmentIds.length
+      ? await admin.from("member_departments").select("member_id").eq("church_id", profile.church_id).eq("member_id", id).eq("status", "active").in("department_id", departmentIds).limit(1).maybeSingle()
+      : { data: null };
+    if (!assignment) notFound();
+  }
+
   const church = firstItem<any>(member.churches);
   const memberName = getMemberName(member) || "Nom non renseigné";
 
@@ -172,6 +184,7 @@ export default async function MemberDetailsPage({
               </div>
 
               <div className="flex flex-wrap gap-2">
+                {!isDepartmentResponsible && <>
                 <Link
                   href={`/members/${member.id}/edit`}
                   className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-5 py-3 text-sm font-bold text-[#03357A] shadow-sm hover:bg-[#EAF3FA]"
@@ -203,6 +216,7 @@ export default async function MemberDetailsPage({
   <BookOpenCheck className="h-4 w-4" />
   Formations
 </Link>
+                </>}
 
                 <Link
                   href={`/members/${member.id}/qr`}

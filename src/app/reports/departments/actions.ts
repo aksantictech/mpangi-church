@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getCurrentSecurityContext } from "@/lib/security/permissionEngine";
+import { profileCanAccessDepartment } from "@/lib/security/departmentScope";
 
 const editableRoles = new Set(["church_admin", "pasteur_t", "pastor", "responsable_d"]);
 const value = (formData: FormData, key: string) => String(formData.get(key) || "").trim() || null;
@@ -29,9 +30,8 @@ export async function saveDepartmentReportAction(formData: FormData) {
   if (!department || !profile) redirect("/unauthorized?reason=department_report_scope");
 
   if (context.role === "responsable_d") {
-    const { data: member } = context.email ? await admin.from("members").select("id").eq("church_id", context.churchId).ilike("email", context.email).maybeSingle() : { data: null };
-    const { data: assignment } = member ? await admin.from("member_departments").select("role").eq("church_id", context.churchId).eq("department_id", departmentId).eq("member_id", member.id).maybeSingle() : { data: null };
-    if (!assignment || !["leader", "responsable", "manager", "responsable_d", "department_leader"].includes(String(assignment.role || "").toLowerCase())) redirect("/unauthorized?reason=department_report_scope");
+    const allowed = await profileCanAccessDepartment({ profileId: profile.id, churchId: context.churchId, departmentId, email: context.email });
+    if (!allowed) redirect("/unauthorized?reason=department_report_scope");
   }
 
   const status = value(formData, "intent") === "submit" ? "submitted" : "draft";
@@ -77,9 +77,9 @@ export async function deleteDepartmentReportAction(formData: FormData) {
   const { data: report } = await admin.from("department_monthly_reports").select("id,department_id,edit_until").eq("id", reportId).eq("church_id", context.churchId).maybeSingle();
   if (!report || !report.edit_until || new Date(report.edit_until) < new Date()) redirect("/reports/departments?error=deadline");
   if (context.role === "responsable_d") {
-    const { data: member } = context.email ? await admin.from("members").select("id").eq("church_id", context.churchId).ilike("email", context.email).maybeSingle() : { data: null };
-    const { data: assignment } = member ? await admin.from("member_departments").select("role").eq("church_id", context.churchId).eq("department_id", report.department_id).eq("member_id", member.id).maybeSingle() : { data: null };
-    if (!assignment || !["leader", "responsable", "manager", "responsable_d", "department_leader"].includes(String(assignment.role || "").toLowerCase())) redirect("/unauthorized?reason=department_report_scope");
+    const { data: profile } = await admin.from("profiles").select("id").eq("user_id", context.userId).eq("church_id", context.churchId).maybeSingle();
+    const allowed = profile && await profileCanAccessDepartment({ profileId: profile.id, churchId: context.churchId, departmentId: report.department_id, email: context.email });
+    if (!allowed) redirect("/unauthorized?reason=department_report_scope");
   }
   await admin.from("department_monthly_reports").delete().eq("id", report.id).eq("church_id", context.churchId);
   revalidatePath("/reports/departments");
