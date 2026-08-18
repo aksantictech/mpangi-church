@@ -3,6 +3,10 @@
 import { FormEvent, useMemo, useState } from "react";
 import { Save } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import {
+  MIN_PASSWORD_LENGTH,
+  getPasswordPolicyError,
+} from "@/lib/security/passwordPolicy";
 
 const inputClass =
   "mt-2 w-full rounded-2xl border border-[#C9DBEA] bg-white px-4 py-4 text-[#0F172A] outline-none transition placeholder:text-slate-400 focus:border-[#03357A] focus:ring-4 focus:ring-[#03357A]/10";
@@ -24,8 +28,9 @@ export default function PasswordSettingsForm() {
     setSuccessMessage("");
     setIsLoading(true);
 
-    if (password.length < 6) {
-      setErrorMessage("Le mot de passe doit contenir au moins 6 caractères.");
+    const passwordError = getPasswordPolicyError(password);
+    if (passwordError) {
+      setErrorMessage(passwordError);
       setIsLoading(false);
       return;
     }
@@ -82,6 +87,8 @@ export default function PasswordSettingsForm() {
               className={inputClass}
               value={password}
               onChange={(event) => setPassword(event.target.value)}
+              minLength={MIN_PASSWORD_LENGTH}
+              autoComplete="new-password"
               required
             />
           </div>
@@ -96,6 +103,8 @@ export default function PasswordSettingsForm() {
               className={inputClass}
               value={confirmPassword}
               onChange={(event) => setConfirmPassword(event.target.value)}
+              minLength={MIN_PASSWORD_LENGTH}
+              autoComplete="new-password"
               required
             />
           </div>

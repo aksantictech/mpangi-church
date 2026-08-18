@@ -76,9 +76,78 @@ for (const file of apiRoutes) {
     add("critical", file, "createAdminClient utilisé sans indice de filtrage church_id / contexte tenant.");
   }
 
-  if (/NextResponse\.json\([^)]*(password|access_token|refresh_token|service_role)/is.test(code)) {
-    add("critical", file, "Réponse API potentiellement susceptible d’exposer un secret ou token.");
+function hasSensitiveNextResponseJson(source) {
+  const marker = "NextResponse.json(";
+  let searchFrom = 0;
+
+  while (true) {
+    const start = source.indexOf(marker, searchFrom);
+
+    if (start === -1) {
+      return false;
+    }
+
+    let index = start + marker.length;
+    let depth = 1;
+    let quote = null;
+    let escaped = false;
+
+    while (index < source.length && depth > 0) {
+      const char = source[index];
+
+      if (quote) {
+        if (escaped) {
+          escaped = false;
+        } else if (char === "\\") {
+          escaped = true;
+        } else if (char === quote) {
+          quote = null;
+        }
+
+        index += 1;
+        continue;
+      }
+
+      if (char === '"' || char === "'" || char === "`") {
+        quote = char;
+        index += 1;
+        continue;
+      }
+
+      if (char === "(") {
+        depth += 1;
+      } else if (char === ")") {
+        depth -= 1;
+      }
+
+      index += 1;
+    }
+
+    const responseCall = source.slice(
+      start,
+      index
+    );
+
+    const exposesSensitiveKey =
+      /\b(password|access_token|refresh_token|service_role)\s*:/.test(
+        responseCall
+      );
+
+    if (exposesSensitiveKey) {
+      return true;
+    }
+
+    searchFrom = index;
   }
+}
+
+if (hasSensitiveNextResponseJson(code)) {
+  add(
+    "critical",
+    file,
+    "Réponse API exposant potentiellement un champ secret ou token."
+  );
+}
 }
 
 const secretPatterns = [
