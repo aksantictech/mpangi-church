@@ -23,6 +23,7 @@ import {
   Settings,
   Sparkles,
   Smartphone,
+  UserPlus,
   UsersRound,
   Wallet,
   Warehouse,
@@ -64,7 +65,7 @@ export const MODULE_CATEGORY_META: Record<
   system: {
     title: "Général",
     shortTitle: "Général",
-    description: "Accueil et paramètres",
+    description: "Accueil, rapports et services",
     icon: Settings,
   },
   spiritual: {
@@ -168,6 +169,14 @@ export const MODULE_MENU_ITEMS: ModuleMenuItem[] = [
     href: "/attendance",
     icon: QrCode,
     category: "spiritual",
+  },
+  {
+    code: "soul_intake",
+    label: "Accueil âmes",
+    href: "/souls/intake",
+    icon: UserPlus,
+    category: "spiritual",
+    permissionCodes: ["souls"],
   },
   {
     code: "souls",
@@ -458,7 +467,9 @@ export function isActiveMenuItem(
   const normalizedPathname =
     pathname || "/";
 
-  if (href === "/dashboard") {
+  if (
+    ["/dashboard", "/patrimony", "/finance", "/extensions"].includes(href)
+  ) {
     return normalizedPathname === href;
   }
 

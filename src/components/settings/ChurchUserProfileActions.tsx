@@ -1,7 +1,11 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import {
+  USER_ROLE_OPTIONS,
+  normalizeUserRole,
+} from "@/lib/users/userRoles";
 import {
   Archive,
   Ban,
@@ -29,20 +33,7 @@ type Props = {
   departmentId?: string | null;
 };
 
-const ROLE_OPTIONS = [
-  { value: "church_admin", label: "Administrateur église" },
-  { value: "pasteur_t", label: "Pasteur titulaire" },
-  { value: "pastor", label: "Pasteur" },
-  { value: "pasteur_a", label: "Pasteur assistant" },
-  { value: "charge_afp", label: "Chargé AFP" },
-  { value: "department_leader", label: "Responsable département" },
-  { value: "responsable_d", label: "Responsable département" },
-  { value: "logisticien", label: "Logisticien" },
-  { value: "secretaire", label: "Secrétaire" },
-  { value: "worker", label: "Ouvrier" },
-  { value: "readonly", label: "Lecture seule" },
-  { value: "member", label: "Membre" },
-];
+
 
 function normalizeStatus(value: string | null) {
   if (value === "actif") return "active";
@@ -60,7 +51,7 @@ export default function ChurchUserProfileActions({
 
   const [fullName, setFullName] = useState(profile.fullName || "");
   const [email, setEmail] = useState(profile.email || "");
-  const [role, setRole] = useState(profile.role || "worker");
+  const [role, setRole] = useState(normalizeUserRole(profile.role));
   const [status, setStatus] = useState(normalizeStatus(profile.status));
   const [departmentId, setDepartmentId] = useState(initialDepartmentId || "");
 
@@ -69,23 +60,32 @@ export default function ChurchUserProfileActions({
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
+  useEffect(() => {
+    setFullName(profile.fullName || "");
+    setEmail(profile.email || "");
+    setRole(normalizeUserRole(profile.role));
+    setStatus(normalizeStatus(profile.status));
+    setDepartmentId(initialDepartmentId || "");
+    setIsEditing(false);
+    setMessage("");
+    setError("");
+  }, [
+    profile.id,
+    profile.fullName,
+    profile.email,
+    profile.role,
+    profile.status,
+    initialDepartmentId,
+  ]);
+
   const isSelf = profile.id === currentProfileId;
   const isArchived = status === "archived";
   const isInactive = status === "inactive";
 
-  const roleOptions = useMemo(() => {
-    if (
-      role &&
-      !ROLE_OPTIONS.some((item) => item.value === role)
-    ) {
-      return [
-        { value: role, label: role },
-        ...ROLE_OPTIONS,
-      ];
-    }
-
-    return ROLE_OPTIONS;
-  }, [role]);
+  const roleOptions = useMemo(
+    () => [...USER_ROLE_OPTIONS],
+    []
+  );
 
   async function callAction(
     payload: Record<string, unknown>,
@@ -145,7 +145,7 @@ export default function ChurchUserProfileActions({
       return;
     }
 
-    if (["responsable_d", "department_leader"].includes(role) && !departmentId) {
+    if (role === "responsable_d" && !departmentId) {
       setError("Sélectionnez le département confié à ce responsable.");
       return;
     }
@@ -156,7 +156,7 @@ export default function ChurchUserProfileActions({
         fullName,
         email,
         role,
-        departmentId: ["responsable_d", "department_leader"].includes(role) ? departmentId : null,
+        departmentId: role === "responsable_d" ? departmentId : null,
       },
       "Informations mises à jour."
     );
@@ -210,14 +210,14 @@ export default function ChurchUserProfileActions({
 
   async function resetPassword() {
     const password = window.prompt(
-      "Saisissez un mot de passe temporaire d’au moins 8 caractères :"
+      "Saisissez un mot de passe temporaire d’au moins 15 caractères :"
     );
 
     if (!password) return;
 
-    if (password.length < 8) {
+    if (password.length < 15) {
       setError(
-        "Le mot de passe temporaire doit contenir au moins 8 caractères."
+        "Le mot de passe temporaire doit contenir au moins 15 caractères."
       );
       return;
     }
@@ -319,7 +319,7 @@ export default function ChurchUserProfileActions({
             </span>
             <select
               value={role}
-              onChange={(event) => setRole(event.target.value)}
+              onChange={(event) => setRole(normalizeUserRole(event.target.value))}
               disabled={isSelf}
               className="mpangi-form-control"
             >
@@ -337,7 +337,7 @@ export default function ChurchUserProfileActions({
             )}
           </label>
 
-          {["responsable_d", "department_leader"].includes(role) && (
+          {role === "responsable_d" && (
             <label className="space-y-2 md:col-span-2">
               <span className="text-sm font-black text-[#03357A]">Département confié</span>
               <select

@@ -6,6 +6,7 @@ import {
 import {
   getModuleDefinition,
   getRoleLabel,
+  normalizeRoleCode,
 } from "@/lib/security/roleCatalog";
 
 type WidgetDefinition = {
@@ -84,14 +85,14 @@ const WIDGETS: Record<string, WidgetDefinition> = {
     code: "patrimony",
     title: "Patrimoine",
     description: "Suivez les biens, mouvements et maintenances.",
-    moduleCode: "patrimony",
+    moduleCode: "patrimony_dashboard",
     href: "/patrimony",
   },
   maintenance: {
     code: "maintenance",
     title: "Maintenance",
     description: "Traitez les opérations de maintenance.",
-    moduleCode: "maintenance",
+    moduleCode: "asset_maintenance",
     href: "/patrimony/maintenance",
   },
   correspondence: {
@@ -105,14 +106,14 @@ const WIDGETS: Record<string, WidgetDefinition> = {
     code: "minutes",
     title: "Procès-verbaux",
     description: "Préparez et suivez les PV.",
-    moduleCode: "minutes",
+    moduleCode: "meetings_minutes",
     href: "/administration/minutes",
   },
   transmissions: {
     code: "transmissions",
     title: "Transmissions",
     description: "Suivez les documents transmis.",
-    moduleCode: "transmissions",
+    moduleCode: "document_transmissions",
     href: "/administration/transmissions",
   },
   security: {
@@ -175,13 +176,14 @@ export async function getRoleDashboardData() {
   }
 
   const admin = createAdminClient();
+  const normalizedRole = normalizeRoleCode(context.role);
 
   const [{ data: widgetRows }, permissions] = await Promise.all([
     admin
       .from("church_role_dashboard_widgets")
       .select("widget_code, position, is_enabled")
       .eq("church_id", context.churchId)
-      .eq("role_code", context.role)
+      .eq("role_code", normalizedRole)
       .eq("is_enabled", true)
       .order("position", { ascending: true }),
     getCurrentRolePermissions(),
@@ -196,7 +198,7 @@ export async function getRoleDashboardData() {
       .map((permission) => permission.module_code)
   );
 
-  if (context.role === "super_admin") {
+  if (normalizedRole === "super_admin") {
     Object.values(WIDGETS).forEach((widget) =>
       allowedModules.add(widget.moduleCode)
     );
@@ -291,88 +293,192 @@ function readLegacyRoleCode(roleInput?: unknown) {
     )
       .trim()
       .toLowerCase()
-      .replace(/[\\s-]+/g, "_");
+      .replace(/[\s-]+/g, "_");
   }
 
   return String(roleInput || "readonly")
     .trim()
     .toLowerCase()
-    .replace(/[\\s-]+/g, "_");
+    .replace(/[\s-]+/g, "_");
 }
 
-function humanizeLegacyCode(code: string) {
-  const labels: Record<string, string> = {
-    churches: "Églises",
-    users: "Utilisateurs",
-    security: "Sécurité",
-    activity: "Activité",
-    members: "Membres",
-    attendance: "Présences",
-    public_requests: "Demandes publiques",
-    tasks: "Tâches",
-    souls: "Suivi des âmes",
-    offerings: "Offrandes",
-    expenses: "Dépenses",
-    donations: "Dons",
-    events: "Événements",
-    assets: "Biens",
-    maintenance: "Maintenance",
-    movements: "Mouvements",
-    correspondence: "Courriers",
-    transmissions: "Transmissions",
-    minutes: "Procès-verbaux",
-  };
+const LEGACY_CARD_META: Record<
+  string,
+  { title: string; description: string; href: string; tone: string }
+> = {
+  churches: {
+    title: "Églises",
+    description: "Églises enregistrées sur la plateforme.",
+    href: "/super-admin/churches",
+    tone: "blue",
+  },
+  users: {
+    title: "Utilisateurs",
+    description: "Comptes utilisateurs gérés.",
+    href: "/settings/users",
+    tone: "blue",
+  },
+  security: {
+    title: "Sécurité",
+    description: "Rôles et autorisations.",
+    href: "/settings/roles",
+    tone: "violet",
+  },
+  activity: {
+    title: "Activité",
+    description: "Activité générale de la plateforme.",
+    href: "/dashboard/role",
+    tone: "blue",
+  },
+  members: {
+    title: "Membres",
+    description: "Membres accessibles pour votre rôle.",
+    href: "/members",
+    tone: "blue",
+  },
+  attendance: {
+    title: "Présences",
+    description: "Présences enregistrées ce mois.",
+    href: "/attendance",
+    tone: "green",
+  },
+  public_requests: {
+    title: "Demandes publiques",
+    description: "Demandes publiques en attente de traitement.",
+    href: "/public-requests",
+    tone: "violet",
+  },
+  tasks: {
+    title: "Tâches ouvertes",
+    description: "Missions qui vous sont actuellement attribuées.",
+    href: "/my-work",
+    tone: "orange",
+  },
+  souls: {
+    title: "Âmes suivies",
+    description: "Suivis pastoraux enregistrés.",
+    href: "/souls",
+    tone: "violet",
+  },
+  offerings: {
+    title: "Offrandes",
+    description: "Opérations d'offrandes de la période.",
+    href: "/finance/offerings",
+    tone: "green",
+  },
+  expenses: {
+    title: "Dépenses",
+    description: "Dépenses du mois en cours.",
+    href: "/finance/expenses",
+    tone: "orange",
+  },
+  donations: {
+    title: "Dons",
+    description: "Dons à contrôler ou confirmer.",
+    href: "/finance/donations",
+    tone: "green",
+  },
+  events: {
+    title: "Activités",
+    description: "Activités et événements enregistrés.",
+    href: "/events",
+    tone: "blue",
+  },
+  assets: {
+    title: "Biens",
+    description: "Biens suivis dans le patrimoine.",
+    href: "/patrimony/assets",
+    tone: "blue",
+  },
+  maintenance: {
+    title: "Maintenances",
+    description: "Opérations de maintenance à suivre.",
+    href: "/patrimony/maintenance",
+    tone: "orange",
+  },
+  movements: {
+    title: "Mouvements",
+    description: "Mouvements de biens enregistrés.",
+    href: "/patrimony/movements",
+    tone: "blue",
+  },
+  correspondence: {
+    title: "Courriers",
+    description: "Courriers administratifs à traiter.",
+    href: "/administration/correspondence",
+    tone: "blue",
+  },
+  transmissions: {
+    title: "Transmissions",
+    description: "Documents transmis et reçus.",
+    href: "/administration/transmissions",
+    tone: "blue",
+  },
+  minutes: {
+    title: "Procès-verbaux",
+    description: "Procès-verbaux et réunions à suivre.",
+    href: "/administration/minutes",
+    tone: "blue",
+  },
+  department_members: {
+    title: "Membres du département",
+    description: "Membres actifs rattachés à votre département.",
+    href: "/departments",
+    tone: "blue",
+  },
+  department_attendance: {
+    title: "Présences du département",
+    description: "Présences enregistrées ce mois pour votre département.",
+    href: "/attendance",
+    tone: "green",
+  },
+  department_activities: {
+    title: "Activités du département",
+    description: "Activités représentées par les présences du département ce mois.",
+    href: "/reports/departments",
+    tone: "violet",
+  },
+  department_reports: {
+    title: "Rapports transmis",
+    description: "Rapports du département déjà envoyés.",
+    href: "/reports/departments",
+    tone: "green",
+  },
+};
 
-  return (
-    labels[code] ||
-    code
-      .split("_")
-      .filter(Boolean)
-      .map(
-        (part) =>
-          part.charAt(0).toUpperCase() + part.slice(1)
-      )
-      .join(" ")
-  );
+function humanizeLegacyCode(code: string) {
+  const metadata = LEGACY_CARD_META[code];
+  if (metadata) return metadata.title;
+
+  return code
+    .split("_")
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
 }
 
 function legacyHrefForCode(code: string) {
-  const hrefs: Record<string, string> = {
-    churches: "/super-admin/churches",
-    users: "/settings/users",
-    security: "/settings/roles",
-    members: "/members",
-    attendance: "/attendance",
-    public_requests: "/public-requests",
-    tasks: "/my-work",
-    souls: "/souls",
-    offerings: "/finance/offerings",
-    expenses: "/finance/expenses",
-    donations: "/finance/donations",
-    events: "/events",
-    assets: "/patrimony/assets",
-    maintenance: "/patrimony/maintenance",
-    movements: "/patrimony/movements",
-    correspondence: "/administration/correspondence",
-    transmissions: "/administration/transmissions",
-    minutes: "/administration/minutes",
-  };
-
-  return hrefs[code] || "/dashboard/role";
+  return LEGACY_CARD_META[code]?.href || "/dashboard/role";
 }
 
 function createLegacyCards(
   metrics: string[]
 ): LegacyRoleDashboardCard[] {
-  return metrics.map((code) => ({
-    code,
-    title: humanizeLegacyCode(code),
-    description: `Indicateur ${humanizeLegacyCode(code).toLowerCase()}.`,
-    href: legacyHrefForCode(code),
-    metricKey: code,
-    moduleCode: code,
-    tone: "blue",
-  }));
+  return metrics.map((code) => {
+    const metadata = LEGACY_CARD_META[code];
+
+    return {
+      code,
+      title: metadata?.title || humanizeLegacyCode(code),
+      description:
+        metadata?.description ||
+        `Indicateur ${humanizeLegacyCode(code).toLowerCase()}.`,
+      href: metadata?.href || legacyHrefForCode(code),
+      metricKey: code,
+      moduleCode: code,
+      tone: metadata?.tone || "blue",
+    };
+  });
 }
 
 /**
@@ -395,7 +501,7 @@ export function getRoleDashboardConfig(
     pasteur_titulaire: "pasteur_t",
     pastor_titulaire: "pasteur_t",
     pasteur_t: "pasteur_t",
-    pastor: "pastor",
+    pastor: "pasteur_t",
     pasteur_assistant: "pasteur_a",
     pastor_assistant: "pasteur_a",
     assistant_pastor: "pasteur_a",
@@ -504,7 +610,6 @@ export function getRoleDashboardConfig(
       metrics: ["souls", "attendance", "tasks"],
       widgets: [
         "souls",
-        "public_requests",
         "attendance",
         "tasks",
       ],
@@ -533,23 +638,28 @@ export function getRoleDashboardConfig(
     },
 
     responsable_d: {
-      title: "Gestion du département",
+      title: "Situation de mon département",
       subtitle:
-        "Suivez les membres, présences et activités du département.",
+        "Suivez uniquement les membres, présences, activités, rapports et tâches de votre département.",
       focus: "Coordination du département",
-      metrics: ["members", "attendance", "events", "tasks"],
+      metrics: [
+        "department_members",
+        "department_attendance",
+        "department_activities",
+        "department_reports",
+        "tasks",
+      ],
       widgets: [
         "departments",
-        "members",
         "attendance",
         "tasks",
       ],
       quickActions: [
-        "/departments",
+        "/reports/departments",
         "/attendance",
         "/my-work",
       ],
-      sections: ["department", "members", "activities"],
+      sections: ["department", "attendance", "reports", "tasks"],
     },
 
     logisticien: {

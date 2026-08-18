@@ -71,3 +71,5 @@ backups/
 
 .phase35v-backup/
 templates/
+
+security-audit-report.json

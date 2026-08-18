@@ -491,11 +491,11 @@ export async function PATCH(
         );
       }
 
-      if (password.length < 8) {
+      if (password.length < 15) {
         return NextResponse.json(
           {
             message:
-              "Le mot de passe doit contenir au moins 8 caractères.",
+              "Le mot de passe doit contenir au moins 15 caractères.",
           },
           { status: 400 }
         );

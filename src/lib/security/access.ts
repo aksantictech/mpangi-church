@@ -10,8 +10,11 @@ import {
   SECRETARY_ROLES,
   VIEWER_ROLES,
   WORKER_ROLES,
-  normalizeRole,
 } from "@/lib/roles";
+import {
+  normalizeModuleCode,
+  normalizeRoleCode,
+} from "@/lib/security/roleCatalog";
 
 export type PermissionAction =
   | "can_view"
@@ -44,7 +47,10 @@ export type SecurityContext = {
   churchId: string | null;
 };
 
-export type ChurchSecurityContext = Omit<SecurityContext, "profile" | "churchId"> & {
+export type ChurchSecurityContext = Omit<
+  SecurityContext,
+  "profile" | "churchId"
+> & {
   profile: ChurchSecurityProfile;
   churchId: string;
 };
@@ -85,10 +91,26 @@ const FULL_PERMISSIONS: ModulePermission = {
 
 const SYSTEM_MODULES = new Set([
   "dashboard",
-  "settings",
+  "reports",
   "notifications",
   "pwa_install",
+  "role_dashboard",
+  "my_work",
+  "settings",
+  "users",
+  "security",
 ]);
+
+const SECRETARY_CORE_MODULES = new Set([
+  "correspondence",
+  "document_transmissions",
+  "administrative_tasks",
+  "meetings_minutes",
+]);
+
+function isSecretaryCoreModule(role: string, moduleCode: string) {
+  return role === "secretaire" && SECRETARY_CORE_MODULES.has(moduleCode);
+}
 
 function withChurchProfile(
   context: SecurityContext | ModuleAccessResult,
@@ -105,40 +127,81 @@ function withChurchProfile(
 }
 
 function buildPermission(row: any): ModulePermission {
+  if (!row || row.is_enabled === false) {
+    return { ...EMPTY_PERMISSIONS };
+  }
+
   return {
-    can_view: Boolean(row?.can_view),
-    can_create: Boolean(row?.can_create),
-    can_update: Boolean(row?.can_update),
-    can_delete: Boolean(row?.can_delete),
-    can_export: Boolean(row?.can_export),
-    can_approve: Boolean(row?.can_approve),
+    can_view: Boolean(row.can_view),
+    can_create: Boolean(row.can_create),
+    can_update: Boolean(row.can_update),
+    can_delete: Boolean(row.can_delete),
+    can_export: Boolean(row.can_export),
+    can_approve: Boolean(row.can_approve),
   };
 }
 
-function fallbackPermissions(role: string, moduleCode: string): ModulePermission {
-  if (CHURCH_ADMIN_ROLES.has(role)) return FULL_PERMISSIONS;
+function fallbackPermissions(
+  role: string,
+  moduleCodeInput: string
+): ModulePermission {
+  const moduleCode = normalizeModuleCode(moduleCodeInput);
 
-  if (SYSTEM_MODULES.has(moduleCode)) {
+  if (CHURCH_ADMIN_ROLES.has(role) || role === "church_admin") {
+    return FULL_PERMISSIONS;
+  }
+
+  if (moduleCode === "settings" || moduleCode === "users" || moduleCode === "security") {
+    return role === "pasteur_t"
+      ? {
+          ...FULL_PERMISSIONS,
+          can_delete: false,
+        }
+      : EMPTY_PERMISSIONS;
+  }
+
+  if (
+    ["dashboard", "reports", "notifications", "pwa_install", "role_dashboard", "my_work"].includes(
+      moduleCode
+    )
+  ) {
     return {
       ...EMPTY_PERMISSIONS,
       can_view: true,
-      can_update: moduleCode === "settings",
     };
   }
 
-  if (PASTOR_ROLES.has(role)) {
-    const allowed = [
-      "members",
-      "attendance",
-      "souls",
-      "departments",
-      "events",
-      "publications",
-      "teachings",
-      "appointments",
-      "testimonies",
-      "public_requests",
-    ].includes(moduleCode);
+  if (PASTOR_ROLES.has(role) || role === "pasteur_t" || role === "pasteur_a") {
+    const titular = role === "pasteur_t";
+
+    const allowed = (
+      titular
+        ? [
+            "members",
+            "attendance",
+            "souls",
+            "departments",
+            "events",
+            "publications",
+            "teachings",
+            "appointments",
+            "testimonies",
+            "public_requests",
+            "correspondence",
+            "document_transmissions",
+            "administrative_tasks",
+            "meetings_minutes",
+          ]
+        : [
+            "members",
+            "attendance",
+            "souls",
+            "events",
+            "teachings",
+            "correspondence",
+            "document_transmissions",
+          ]
+    ).includes(moduleCode);
 
     if (!allowed) return EMPTY_PERMISSIONS;
 
@@ -148,12 +211,11 @@ function fallbackPermissions(role: string, moduleCode: string): ModulePermission
       can_update: true,
       can_delete: false,
       can_export: true,
-      can_approve:
-        role === "pastor_titulaire" || role === "pastor" || role === "pasteur",
+      can_approve: titular,
     };
   }
 
-  if (AFP_ROLES.has(role)) {
+  if (AFP_ROLES.has(role) || role === "charge_afp") {
     const allowed = [
       "correspondence",
       "document_transmissions",
@@ -168,43 +230,41 @@ function fallbackPermissions(role: string, moduleCode: string): ModulePermission
       "assets",
       "asset_maintenance",
       "asset_movements",
-      "teachings",
     ].includes(moduleCode);
 
-    if (!allowed) return EMPTY_PERMISSIONS;
-
-    return {
-      can_view: true,
-      can_create: true,
-      can_update: true,
-      can_delete: false,
-      can_export: true,
-      can_approve: true,
-    };
+    return allowed
+      ? {
+          can_view: true,
+          can_create: true,
+          can_update: true,
+          can_delete: false,
+          can_export: true,
+          can_approve: true,
+        }
+      : EMPTY_PERMISSIONS;
   }
 
-  if (SECRETARY_ROLES.has(role)) {
+  if (SECRETARY_ROLES.has(role) || role === "secretaire") {
     const allowed = [
       "correspondence",
       "document_transmissions",
       "administrative_tasks",
       "meetings_minutes",
-      "teachings",
     ].includes(moduleCode);
 
-    if (!allowed) return EMPTY_PERMISSIONS;
-
-    return {
-      can_view: true,
-      can_create: true,
-      can_update: true,
-      can_delete: false,
-      can_export: true,
-      can_approve: false,
-    };
+    return allowed
+      ? {
+          can_view: true,
+          can_create: true,
+          can_update: true,
+          can_delete: false,
+          can_export: true,
+          can_approve: false,
+        }
+      : EMPTY_PERMISSIONS;
   }
 
-  if (LOGISTIC_ROLES.has(role)) {
+  if (LOGISTIC_ROLES.has(role) || role === "logisticien") {
     const allowed = [
       "patrimony_dashboard",
       "assets",
@@ -213,46 +273,41 @@ function fallbackPermissions(role: string, moduleCode: string): ModulePermission
       "administrative_tasks",
     ].includes(moduleCode);
 
-    if (!allowed) return EMPTY_PERMISSIONS;
-
-    return {
-      can_view: true,
-      can_create: true,
-      can_update: true,
-      can_delete: false,
-      can_export: true,
-      can_approve: false,
-    };
+    return allowed
+      ? {
+          can_view: true,
+          can_create: true,
+          can_update: true,
+          can_delete: false,
+          can_export: true,
+          can_approve: false,
+        }
+      : EMPTY_PERMISSIONS;
   }
 
-  if (DEPARTMENT_ROLES.has(role)) {
+  if (DEPARTMENT_ROLES.has(role) || role === "responsable_d") {
     const allowed = [
       "members",
       "attendance",
-      "souls",
       "departments",
       "events",
       "administrative_tasks",
     ].includes(moduleCode);
 
-    if (!allowed) return EMPTY_PERMISSIONS;
-
-    return {
-      can_view: true,
-      can_create: true,
-      can_update: true,
-      can_delete: false,
-      can_export: false,
-      can_approve: false,
-    };
+    return allowed
+      ? {
+          can_view: true,
+          can_create: true,
+          can_update: true,
+          can_delete: false,
+          can_export: false,
+          can_approve: false,
+        }
+      : EMPTY_PERMISSIONS;
   }
 
-  if (WORKER_ROLES.has(role)) {
-    const allowed = ["members", "attendance", "souls", "events"].includes(
-      moduleCode
-    );
-
-    return allowed
+  if (WORKER_ROLES.has(role) || role === "worker") {
+    return ["members", "attendance", "events"].includes(moduleCode)
       ? {
           ...EMPTY_PERMISSIONS,
           can_view: true,
@@ -260,21 +315,21 @@ function fallbackPermissions(role: string, moduleCode: string): ModulePermission
       : EMPTY_PERMISSIONS;
   }
 
-  if (VIEWER_ROLES.has(role)) {
+  if (VIEWER_ROLES.has(role) || role === "readonly") {
     return {
       ...EMPTY_PERMISSIONS,
-      can_view: ["members", "attendance", "souls", "events"].includes(
-        moduleCode
-      ),
+      can_view: ["members", "attendance"].includes(moduleCode),
     };
   }
 
   return EMPTY_PERMISSIONS;
 }
 
-function hasPermission(permissions: ModulePermission, action: PermissionAction) {
+function hasPermission(
+  permissions: ModulePermission,
+  action: PermissionAction
+) {
   if (action === "can_view") return permissions.can_view;
-
   return permissions.can_view && permissions[action];
 }
 
@@ -296,12 +351,10 @@ export async function getSecurityContext(): Promise<SecurityContext | null> {
 
   if (!profile) return null;
 
-  const role = normalizeRole(profile.role);
-
   return {
     admin,
     profile,
-    role,
+    role: normalizeRoleCode(profile.role),
     churchId: profile.church_id ?? null,
   };
 }
@@ -311,7 +364,10 @@ export async function requireActiveProfile() {
 
   if (!context) redirect("/login");
 
-  if (context.profile.status && context.profile.status !== "active") {
+  if (
+    context.profile.status &&
+    !["active", "actif"].includes(String(context.profile.status))
+  ) {
     redirect("/unauthorized?reason=inactive");
   }
 
@@ -335,22 +391,33 @@ export async function requireChurchAdmin(): Promise<ChurchSecurityContext> {
     redirect("/unauthorized?reason=church_required");
   }
 
-  if (!CHURCH_ADMIN_ROLES.has(context.role) && !PASTOR_ROLES.has(context.role)) {
+  if (
+    !CHURCH_ADMIN_ROLES.has(context.role) &&
+    !["pasteur_t"].includes(context.role)
+  ) {
     redirect("/unauthorized?reason=church_admin_required");
   }
 
-  return withChurchProfile(context, context.churchId) as ChurchSecurityContext;
+  return withChurchProfile(
+    context,
+    context.churchId
+  ) as ChurchSecurityContext;
 }
 
 export async function getChurchModuleAccess(
-  moduleCode: string,
+  moduleCodeInput: string,
   action: PermissionAction = "can_view"
 ): Promise<ModuleAccessResult | null> {
   const context = await getSecurityContext();
 
   if (!context) return null;
 
-  if (context.profile.status && context.profile.status !== "active") {
+  const moduleCode = normalizeModuleCode(moduleCodeInput);
+
+  if (
+    context.profile.status &&
+    !["active", "actif"].includes(String(context.profile.status))
+  ) {
     return {
       ...context,
       moduleCode,
@@ -383,14 +450,18 @@ export async function getChurchModuleAccess(
   }
 
   if (!SYSTEM_MODULES.has(moduleCode)) {
-    const { data: churchModule } = await context.admin
+    const { data: churchModules } = await context.admin
       .from("church_modules")
-      .select("enabled")
+      .select("module_code, is_enabled")
       .eq("church_id", context.churchId)
-      .eq("module_code", moduleCode)
-      .maybeSingle();
+      .eq("is_enabled", true);
 
-    if (!churchModule?.enabled) {
+    const enabled = (churchModules ?? []).some(
+      (row: any) =>
+        normalizeModuleCode(row.module_code) === moduleCode
+    );
+
+    if (!enabled) {
       return {
         ...context,
         moduleCode,
@@ -402,19 +473,51 @@ export async function getChurchModuleAccess(
     }
   }
 
+  // L'Admin Église a accès complet aux modules effectivement activés par
+  // le Super Admin. Une ancienne permission de profil ne peut plus masquer
+  // Courriers, Transmissions, Tâches ou un autre module actif.
+  if (context.role === "church_admin") {
+    return {
+      ...context,
+      moduleCode,
+      source: "fallback",
+      permissions: FULL_PERMISSIONS,
+      granted: true,
+    };
+  }
+
+  // Les modules cœur du Secrétaire constituent un socle fonctionnel.
+  // Tant qu'ils sont activés pour l'église, une ancienne permission
+  // individuelle ne doit pas les rendre inaccessibles.
+  if (isSecretaryCoreModule(context.role, moduleCode)) {
+    const permissions = fallbackPermissions(context.role, moduleCode);
+
+    return {
+      ...context,
+      moduleCode,
+      source: "fallback",
+      permissions,
+      granted: hasPermission(permissions, action),
+      reason: hasPermission(permissions, action)
+        ? undefined
+        : "secretary_core_permission_denied",
+    };
+  }
+
+  // Une permission individuelle ne transforme plus toute la fiche
+  // utilisateur en liste blanche : elle ne surcharge que le module concerné.
   const { data: explicitPermissions } = await context.admin
     .from("profile_module_permissions")
     .select("*")
     .eq("church_id", context.churchId)
     .eq("profile_id", context.profile.id);
 
-  const hasExplicitProfilePermissions = (explicitPermissions ?? []).length > 0;
+  const profilePermission = (explicitPermissions ?? []).find(
+    (permission: any) =>
+      normalizeModuleCode(permission.module_code) === moduleCode
+  );
 
-  if (hasExplicitProfilePermissions) {
-    const profilePermission = (explicitPermissions ?? []).find(
-      (permission: any) => permission.module_code === moduleCode
-    );
-
+  if (profilePermission) {
     const permissions = buildPermission(profilePermission);
 
     return {
@@ -429,13 +532,19 @@ export async function getChurchModuleAccess(
     };
   }
 
-  const { data: rolePermission } = await context.admin
+  // Compatibilité avec les anciennes valeurs de role/module_code.
+  // On filtre en TypeScript pour ne plus dépendre de la colonne historique `role`.
+  const { data: rolePermissions } = await context.admin
     .from("church_role_module_permissions")
     .select("*")
-    .eq("church_id", context.churchId)
-    .eq("role", context.role)
-    .eq("module_code", moduleCode)
-    .maybeSingle();
+    .eq("church_id", context.churchId);
+
+  const rolePermission = (rolePermissions ?? []).find(
+    (permission: any) =>
+      normalizeRoleCode(permission.role_code ?? permission.role) ===
+        context.role &&
+      normalizeModuleCode(permission.module_code) === moduleCode
+  );
 
   if (rolePermission) {
     const permissions = buildPermission(rolePermission);
@@ -476,15 +585,24 @@ export async function requireChurchModuleAccess(
 
   if (!access.granted) {
     redirect(
-      `/unauthorized?reason=${access.reason || "denied"}&module=${moduleCode}`
+      `/unauthorized?reason=${access.reason || "denied"}&module=${normalizeModuleCode(
+        moduleCode
+      )}`
     );
   }
 
   if (!access.churchId) {
-    redirect(`/unauthorized?reason=church_required&module=${moduleCode}`);
+    redirect(
+      `/unauthorized?reason=church_required&module=${normalizeModuleCode(
+        moduleCode
+      )}`
+    );
   }
 
-  return withChurchProfile(access, access.churchId) as RequiredModuleAccessResult;
+  return withChurchProfile(
+    access,
+    access.churchId
+  ) as RequiredModuleAccessResult;
 }
 
 export async function requireSameChurchProfile(profileId: string) {

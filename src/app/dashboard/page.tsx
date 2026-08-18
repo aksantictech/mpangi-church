@@ -14,9 +14,14 @@ import {
 } from "lucide-react";
 
 import MetricCard from "@/components/dashboard/MetricCard";
+import AdminPastorAnalytics from "@/components/dashboard/AdminPastorAnalytics";
 import RoleDashboardPanel from "@/components/dashboard/RoleDashboardPanel";
 import AppShell from "@/components/layout/AppShell";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { normalizeRoleCode } from "@/lib/security/roleCatalog";
+
+export const dynamic = "force-dynamic";
 
 type DashboardChurch = {
   id: string;
@@ -254,6 +259,23 @@ export default async function DashboardPage() {
   const churchId =
     profile.church_id;
 
+  const normalizedRole = normalizeRoleCode(profile.role);
+  const isSecretary = normalizedRole === "secretaire";
+  const isDepartmentResponsible = normalizedRole === "responsable_d";
+  const showChurchOverview = [
+    "church_admin",
+    "admin_eglise",
+    "pasteur_t",
+    "pastor",
+    "pasteur_a",
+  ].includes(normalizedRole);
+
+  const showPastoralCorrespondenceAlert = [
+    "pasteur_t",
+    "pastor",
+    "pasteur_a",
+  ].includes(normalizedRole);
+
   const startOfMonth =
     getStartOfMonthDate();
 
@@ -291,10 +313,10 @@ export default async function DashboardPage() {
         "church_id",
         churchId
       )
-      .eq("status", "active"),
+      .eq("status", "actif"),
 
     supabase
-      .from("attendances")
+      .from("event_attendances")
       .select("*", {
         count: "exact",
         head: true,
@@ -304,8 +326,8 @@ export default async function DashboardPage() {
         churchId
       )
       .gte(
-        "attendance_date",
-        startOfMonth
+        "created_at",
+        `${startOfMonth}T00:00:00`
       ),
 
     supabase
@@ -516,6 +538,33 @@ export default async function DashboardPage() {
     (pendingJoinCount ?? 0) +
     (pendingTestimonyCount ?? 0);
 
+  let pendingCorrespondenceCount = 0;
+  let urgentCorrespondenceCount = 0;
+
+  if (showPastoralCorrespondenceAlert) {
+    const admin = createAdminClient();
+
+    const [pendingCorrespondenceResult, urgentCorrespondenceResult] =
+      await Promise.all([
+        admin
+          .from("admin_correspondences")
+          .select("id", { count: "exact", head: true })
+          .eq("church_id", churchId)
+          .eq("assigned_to", profile.id)
+          .in("status", ["received", "transmitted", "in_review"]),
+        admin
+          .from("admin_correspondences")
+          .select("id", { count: "exact", head: true })
+          .eq("church_id", churchId)
+          .eq("assigned_to", profile.id)
+          .eq("priority", "urgent")
+          .in("status", ["received", "transmitted", "in_review"]),
+      ]);
+
+    pendingCorrespondenceCount = pendingCorrespondenceResult.count ?? 0;
+    urgentCorrespondenceCount = urgentCorrespondenceResult.count ?? 0;
+  }
+
   const churchName =
     church?.public_name?.trim() ||
     church?.name?.trim() ||
@@ -525,9 +574,12 @@ export default async function DashboardPage() {
     profile.full_name
   );
 
-  const welcomeMessage =
-    church?.dashboard_welcome_message?.trim() ||
-    "Suivez les membres, les présences, les demandes publiques et le suivi pastoral de votre communauté.";
+  const welcomeMessage = isSecretary
+    ? "Suivez le traitement administratif, la réception des rapports et la promptitude des transmissions de votre église."
+    : isDepartmentResponsible
+      ? "Suivez les membres, activités, présences, tâches et rapports de votre département."
+      : church?.dashboard_welcome_message?.trim() ||
+        "Suivez les membres, les présences, les demandes publiques et le suivi pastoral de votre communauté.";
 
   return (
     <AppShell>
@@ -584,202 +636,235 @@ export default async function DashboardPage() {
                 </Link>
               )}
 
-              <Link
-                href="/public-requests"
-                className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white/15 px-5 py-3 text-sm font-bold text-white ring-1 ring-white/25 transition hover:bg-white/20"
-              >
-                Demandes publiques
-                <ArrowRight className="h-4 w-4" />
-              </Link>
+              {showChurchOverview && (
+                <Link
+                  href="/public-requests"
+                  className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white/15 px-5 py-3 text-sm font-bold text-white ring-1 ring-white/25 transition hover:bg-white/20"
+                >
+                  Demandes publiques
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              )}
             </div>
           </div>
         </section>
 
+        {showChurchOverview && (
         <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
-          <MetricCard
-            title="Membres actifs"
-            value={
-              activeMembersCount ??
-              0
-            }
-            description="Dans cette église"
-            icon={Users}
-            accent="blue"
-          />
+            <MetricCard
+              title="Membres actifs"
+              value={
+                activeMembersCount ??
+                0
+              }
+              description="Dans cette église"
+              icon={Users}
+              accent="blue"
+              href="/members?status=actif"
+            />
 
-          <MetricCard
-            title="Présences ce mois"
-            value={
-              attendanceMonthCount ??
-              0
-            }
-            description="Pointages enregistrés"
-            icon={CalendarCheck}
-            accent="green"
-          />
+            <MetricCard
+              title="Présences ce mois"
+              value={
+                attendanceMonthCount ??
+                0
+              }
+              description="Pointages enregistrés"
+              icon={CalendarCheck}
+              accent="green"
+              href={`/reports/attendance?month=${startOfMonth.slice(0, 7)}`}
+            />
 
-          <MetricCard
-            title="Âmes suivies"
-            value={
-              soulFollowupsCount ??
-              0
-            }
-            description="Suivi pastoral"
-            icon={
-              HeartHandshake
-            }
-            accent="purple"
-          />
+            <MetricCard
+              title="Âmes suivies"
+              value={
+                soulFollowupsCount ??
+                0
+              }
+              description="Suivi pastoral"
+              icon={
+                HeartHandshake
+              }
+              accent="purple"
+              href="/souls"
+            />
 
-          <MetricCard
-            title="Départements"
-            value={
-              departmentsCount ?? 0
-            }
-            description="Actifs"
-            icon={Building2}
-            accent="blue"
-          />
+            <MetricCard
+              title="Départements"
+              value={
+                departmentsCount ?? 0
+              }
+              description="Actifs"
+              icon={Building2}
+              accent="blue"
+              href="/departments"
+            />
 
-          <MetricCard
-            title="Rendez-vous"
-            value={
-              appointmentsWeekCount ??
-              0
-            }
-            description="Cette semaine"
-            icon={CalendarDays}
-            accent="blue"
-          />
-        </section>
+            <MetricCard
+              title="Rendez-vous"
+              value={
+                appointmentsWeekCount ??
+                0
+              }
+              description="Cette semaine"
+              icon={CalendarDays}
+              accent="blue"
+              href="/appointments"
+            />
+          </section>
+        )}
 
-        <RoleDashboardPanel />
+        {!showChurchOverview && <RoleDashboardPanel />}
 
+        {showChurchOverview && <AdminPastorAnalytics churchId={churchId} />}
+
+        {showChurchOverview && (
         <section className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
-          <div className="rounded-3xl border border-[#DCEAF5] bg-white p-6 shadow-sm">
-            <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
-              <div>
-                <h2 className="text-xl font-extrabold text-[var(--church-primary)]">
-                  Demandes publiques récentes
-                </h2>
+            <div className="rounded-3xl border border-[#DCEAF5] bg-white p-6 shadow-sm">
+              <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
+                <div>
+                  <h2 className="text-xl font-extrabold text-[var(--church-primary)]">
+                    Demandes publiques récentes
+                  </h2>
 
-                <p className="mt-1 text-sm text-slate-500">
-                  Demandes envoyées depuis la page publique de cette église.
-                </p>
-              </div>
-
-              <Link
-                href="/public-requests"
-                className="inline-flex items-center gap-2 text-sm font-bold text-[var(--church-secondary)]"
-              >
-                Voir tout
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-            </div>
-
-            <div className="mt-6 space-y-3">
-              {recentRequests.length ===
-                0 && (
-                <div className="rounded-2xl border border-[#DCEAF5] bg-[#F8FBFD] p-8 text-center">
-                  <MessageSquare className="mx-auto h-10 w-10 text-[var(--church-secondary)]" />
-
-                  <p className="mt-4 text-sm font-semibold text-slate-500">
-                    Aucune demande publique pour le moment.
+                  <p className="mt-1 text-sm text-slate-500">
+                    Demandes envoyées depuis la page publique de cette église.
                   </p>
                 </div>
-              )}
 
-              {recentRequests.map(
-                (request) => {
-                  const Icon =
-                    getRequestIcon(
-                      request.type
-                    );
+                <Link
+                  href="/public-requests"
+                  className="inline-flex items-center gap-2 text-sm font-bold text-[var(--church-secondary)]"
+                >
+                  Voir tout
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </div>
 
-                  return (
-                    <div
-                      key={`${request.type}-${request.id}`}
-                      className="flex flex-col gap-3 rounded-2xl border border-[#DCEAF5] bg-[#F8FBFD] p-4 md:flex-row md:items-center md:justify-between"
-                    >
-                      <div className="flex min-w-0 items-center gap-3">
-                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#EAF3FA] text-[var(--church-primary)]">
-                          <Icon className="h-6 w-6" />
-                        </div>
+              <div className="mt-6 space-y-3">
+                {recentRequests.length ===
+                  0 && (
+                  <div className="rounded-2xl border border-[#DCEAF5] bg-[#F8FBFD] p-8 text-center">
+                    <MessageSquare className="mx-auto h-10 w-10 text-[var(--church-secondary)]" />
 
-                        <div className="min-w-0">
-                          <p className="truncate font-extrabold text-[var(--church-primary)]">
-                            {request.name ||
-                              "Visiteur"}
-                          </p>
+                    <p className="mt-4 text-sm font-semibold text-slate-500">
+                      Aucune demande publique pour le moment.
+                    </p>
+                  </div>
+                )}
 
-                          <p className="text-sm text-slate-500">
-                            {getRequestLabel(
-                              request.type
-                            )}{" "}
-                            —{" "}
-                            {formatDate(
-                              request.created_at
-                            )}
-                          </p>
-                        </div>
-                      </div>
+                {recentRequests.map(
+                  (request) => {
+                    const Icon =
+                      getRequestIcon(
+                        request.type
+                      );
 
-                      <span
-                        className={[
-                          "w-fit rounded-full px-3 py-1 text-xs font-bold",
-                          getStatusClass(
-                            request.status
-                          ),
-                        ].join(" ")}
+                    return (
+                      <div
+                        key={`${request.type}-${request.id}`}
+                        className="flex flex-col gap-3 rounded-2xl border border-[#DCEAF5] bg-[#F8FBFD] p-4 md:flex-row md:items-center md:justify-between"
                       >
-                        {request.status ||
-                          "nouvelle"}
-                      </span>
-                    </div>
-                  );
-                }
-              )}
-            </div>
-          </div>
+                        <div className="flex min-w-0 items-center gap-3">
+                          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#EAF3FA] text-[var(--church-primary)]">
+                            <Icon className="h-6 w-6" />
+                          </div>
 
-          <div className="rounded-3xl border border-[#DCEAF5] bg-white p-6 shadow-sm">
-            <div className="flex items-center gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#EAF3FA] text-[var(--church-primary)]">
-                <Bell className="h-6 w-6" />
+                          <div className="min-w-0">
+                            <p className="truncate font-extrabold text-[var(--church-primary)]">
+                              {request.name ||
+                                "Visiteur"}
+                            </p>
+
+                            <p className="text-sm text-slate-500">
+                              {getRequestLabel(
+                                request.type
+                              )}{" "}
+                              —{" "}
+                              {formatDate(
+                                request.created_at
+                              )}
+                            </p>
+                          </div>
+                        </div>
+
+                        <span
+                          className={[
+                            "w-fit rounded-full px-3 py-1 text-xs font-bold",
+                            getStatusClass(
+                              request.status
+                            ),
+                          ].join(" ")}
+                        >
+                          {request.status ||
+                            "nouvelle"}
+                        </span>
+                      </div>
+                    );
+                  }
+                )}
+              </div>
+            </div>
+
+            <div className="rounded-3xl border border-[#DCEAF5] bg-white p-6 shadow-sm">
+              <div className="flex items-center gap-3">
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#EAF3FA] text-[var(--church-primary)]">
+                  <Bell className="h-6 w-6" />
+                </div>
+
+                <div>
+                  <h2 className="text-xl font-extrabold text-[var(--church-primary)]">
+                    Alertes pastorales
+                  </h2>
+
+                  <p className="text-sm text-slate-500">
+                    Points à suivre aujourd’hui.
+                  </p>
+                </div>
               </div>
 
-              <div>
-                <h2 className="text-xl font-extrabold text-[var(--church-primary)]">
-                  Alertes pastorales
-                </h2>
+              <div className="mt-6 space-y-3">
+                {showPastoralCorrespondenceAlert && pendingCorrespondenceCount > 0 && (
+                  <AlertCard
+                    title={
+                      urgentCorrespondenceCount > 0
+                        ? `${urgentCorrespondenceCount} courrier(s) urgent(s) à traiter`
+                        : `${pendingCorrespondenceCount} nouveau(x) courrier(s) à traiter`
+                    }
+                    description={
+                      urgentCorrespondenceCount > 0
+                        ? "Un ou plusieurs documents urgents vous ont été assignés."
+                        : "Courriers et documents reçus nécessitant votre réaction."
+                    }
+                    variant={urgentCorrespondenceCount > 0 ? "red" : "blue"}
+                    href="/administration/correspondence"
+                  />
+                )}
 
-                <p className="text-sm text-slate-500">
-                  Points à suivre aujourd’hui.
-                </p>
+                <AlertCard
+                  title={`${pendingRequestsCount} demande(s) en attente`}
+                  description="Demandes publiques à traiter par l’équipe de l’église."
+                  variant="purple"
+                  href="/public-requests"
+                />
+
+                <AlertCard
+                  title={`${soulFollowupsCount ?? 0} âme(s) suivie(s)`}
+                  description="Suivis pastoraux enregistrés dans cette église."
+                  variant="blue"
+                  href="/souls"
+                />
+
+                <AlertCard
+                  title={`${appointmentsWeekCount ?? 0} rendez-vous cette semaine`}
+                  description="Rendez-vous pastoraux créés cette semaine."
+                  variant="orange"
+                  href="/appointments"
+                />
               </div>
             </div>
-
-            <div className="mt-6 space-y-3">
-              <AlertCard
-                title={`${pendingRequestsCount} demande(s) en attente`}
-                description="Demandes publiques à traiter par l’équipe de l’église."
-                variant="purple"
-              />
-
-              <AlertCard
-                title={`${soulFollowupsCount ?? 0} âme(s) suivie(s)`}
-                description="Suivis pastoraux enregistrés dans cette église."
-                variant="blue"
-              />
-
-              <AlertCard
-                title={`${appointmentsWeekCount ?? 0} rendez-vous cette semaine`}
-                description="Rendez-vous pastoraux créés cette semaine."
-                variant="orange"
-              />
-            </div>
-          </div>
-        </section>
+          </section>
+        )}
       </div>
     </AppShell>
   );
@@ -789,13 +874,16 @@ function AlertCard({
   title,
   description,
   variant,
+  href,
 }: {
   title: string;
   description: string;
+  href: string;
   variant:
     | "purple"
     | "blue"
-    | "orange";
+    | "orange"
+    | "red";
 }) {
   const className = {
     purple:
@@ -804,19 +892,20 @@ function AlertCard({
       "bg-blue-50 text-blue-700",
     orange:
       "bg-orange-50 text-orange-700",
+    red:
+      "bg-red-50 text-red-700 ring-1 ring-red-200",
   }[variant];
 
   return (
-    <div
-      className={`rounded-2xl p-5 ${className}`}
+    <Link
+      href={href}
+      className={`block rounded-2xl p-5 transition hover:-translate-y-0.5 hover:shadow-md ${className}`}
     >
-      <p className="font-extrabold">
-        {title}
-      </p>
-
-      <p className="mt-1 text-sm opacity-80">
-        {description}
-      </p>
-    </div>
+      <div className="flex items-center justify-between gap-3">
+        <p className="font-extrabold">{title}</p>
+        <ArrowRight className="h-4 w-4 shrink-0" />
+      </div>
+      <p className="mt-1 text-sm opacity-80">{description}</p>
+    </Link>
   );
 }
