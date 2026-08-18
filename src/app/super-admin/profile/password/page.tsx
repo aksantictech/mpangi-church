@@ -5,6 +5,10 @@ import { useState } from "react";
 import { ArrowLeft, KeyRound, Save } from "lucide-react";
 import SuperAdminShell from "@/components/layout/SuperAdminShell";
 import { createClient } from "@/lib/supabase/client";
+import {
+  MIN_PASSWORD_LENGTH,
+  getPasswordPolicyError,
+} from "@/lib/security/passwordPolicy";
 
 export default function SuperAdminPasswordPage() {
   const supabase = createClient();
@@ -21,8 +25,9 @@ export default function SuperAdminPasswordPage() {
     setMessage("");
     setErrorMessage("");
 
-    if (password.length < 8) {
-      setErrorMessage("Le mot de passe doit contenir au moins 8 caractères.");
+    const passwordError = getPasswordPolicyError(password);
+    if (passwordError) {
+      setErrorMessage(passwordError);
       return;
     }
 
@@ -83,6 +88,8 @@ export default function SuperAdminPasswordPage() {
               value={password}
               onChange={(event) => setPassword(event.target.value)}
               className="min-h-12 w-full rounded-2xl border border-[#DCEAF5] px-4 text-sm font-bold outline-none focus:border-[#03357A]"
+              minLength={MIN_PASSWORD_LENGTH}
+              autoComplete="new-password"
               required
             />
           </label>
@@ -96,6 +103,8 @@ export default function SuperAdminPasswordPage() {
               value={confirmation}
               onChange={(event) => setConfirmation(event.target.value)}
               className="min-h-12 w-full rounded-2xl border border-[#DCEAF5] px-4 text-sm font-bold outline-none focus:border-[#03357A]"
+              minLength={MIN_PASSWORD_LENGTH}
+              autoComplete="new-password"
               required
             />
           </label>

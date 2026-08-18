@@ -5,6 +5,10 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { USER_ROLE_OPTIONS } from "@/lib/users/userRoles";
 import {
+  MIN_PASSWORD_LENGTH,
+  getPasswordPolicyError,
+} from "@/lib/security/passwordPolicy";
+import {
   Ban,
   Eye,
   KeyRound,
@@ -141,16 +145,14 @@ export default function SuperAdminUserActions({
 
   async function handleResetPassword() {
     const password = window.prompt(
-      "Nouveau mot de passe temporaire :",
-      "12345678"
+      `Nouveau mot de passe temporaire (au moins ${MIN_PASSWORD_LENGTH} caractères) :`
     );
 
     if (!password) return;
 
-    if (password.length < 6) {
-      window.alert(
-        "Le mot de passe doit contenir au moins 6 caractères."
-      );
+    const passwordError = getPasswordPolicyError(password);
+    if (passwordError) {
+      window.alert(passwordError);
       return;
     }
 
@@ -166,9 +168,7 @@ export default function SuperAdminUserActions({
     });
 
     if (success) {
-      window.alert(
-        `Mot de passe réinitialisé : ${password}`
-      );
+      window.alert("Mot de passe réinitialisé avec succès.");
     }
   }
 

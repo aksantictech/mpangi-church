@@ -7,6 +7,10 @@ import {
   normalizeUserRole,
 } from "@/lib/users/userRoles";
 import {
+  MIN_PASSWORD_LENGTH,
+  getPasswordPolicyError,
+} from "@/lib/security/passwordPolicy";
+import {
   Archive,
   Ban,
   KeyRound,
@@ -210,15 +214,14 @@ export default function ChurchUserProfileActions({
 
   async function resetPassword() {
     const password = window.prompt(
-      "Saisissez un mot de passe temporaire d’au moins 15 caractères :"
+      `Saisissez un mot de passe temporaire d’au moins ${MIN_PASSWORD_LENGTH} caractères :`
     );
 
     if (!password) return;
 
-    if (password.length < 15) {
-      setError(
-        "Le mot de passe temporaire doit contenir au moins 15 caractères."
-      );
+    const passwordError = getPasswordPolicyError(password);
+    if (passwordError) {
+      setError(passwordError);
       return;
     }
 

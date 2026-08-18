@@ -1,5 +1,6 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { normalizeUserRole } from "@/lib/users/userRoles";
+import { getPasswordPolicyError } from "@/lib/security/passwordPolicy";
 
 type CreateUserAccountInput = {
   email: string;
@@ -139,7 +140,7 @@ export async function createOrUpdateUserAccount(
 
   const email = cleanEmail(input.email);
   const fullName = input.fullName.trim();
-  const password = input.password.trim();
+  const password = input.password;
   const role = normalizeUserRole(input.role);
   const churchId = input.churchId || null;
   const status = input.status || "active";
@@ -153,8 +154,9 @@ export async function createOrUpdateUserAccount(
     throw new Error("L’adresse email est obligatoire.");
   }
 
-  if (password.length < 6) {
-    throw new Error("Le mot de passe doit contenir au moins 6 caractères.");
+  const passwordError = getPasswordPolicyError(password);
+  if (passwordError) {
+    throw new Error(passwordError);
   }
 
   let authUser = await findAuthUserByEmail(admin, email);

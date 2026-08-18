@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
+import { getPasswordPolicyError } from "@/lib/security/passwordPolicy";
 
 type RouteProps = {
   params: Promise<{
@@ -491,11 +492,11 @@ export async function PATCH(
         );
       }
 
-      if (password.length < 15) {
+      const passwordError = getPasswordPolicyError(password);
+      if (passwordError) {
         return NextResponse.json(
           {
-            message:
-              "Le mot de passe doit contenir au moins 15 caractères.",
+            message: passwordError,
           },
           { status: 400 }
         );

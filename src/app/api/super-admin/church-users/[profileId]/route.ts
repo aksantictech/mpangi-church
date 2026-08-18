@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
+import { getPasswordPolicyError } from "@/lib/security/passwordPolicy";
 import { requireSuperAdminAccess } from "@/lib/security/sensitiveGuards";
 type AllowedRole =
   | "church_admin"
@@ -167,9 +168,10 @@ export async function PATCH(request: Request, { params }: RouteProps) {
     }
 
     if (payload.action === "reset_password") {
-      if (!payload.password || payload.password.length < 6) {
+      const passwordError = getPasswordPolicyError(payload.password);
+      if (passwordError) {
         return NextResponse.json(
-          { message: "Le mot de passe doit contenir au moins 6 caractères." },
+          { message: passwordError },
           { status: 400 }
         );
       }
