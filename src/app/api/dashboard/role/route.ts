@@ -3,6 +3,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import { getRoleDashboardConfig } from "@/lib/dashboard/roleDashboard";
 import { normalizeRoleCode } from "@/lib/security/roleCatalog";
+import { getProfileDepartmentIds } from "@/lib/security/departmentScope";
 
 export const dynamic = "force-dynamic";
 
@@ -267,6 +268,118 @@ async function getSecretaryKpis({
   };
 }
 
+async function getDepartmentResponsibleKpis({
+  churchId,
+  userId,
+  profileId,
+  email,
+}: {
+  churchId: string;
+  userId: string;
+  profileId: string;
+  email?: string | null;
+}) {
+  const admin = createAdminClient();
+  const departmentIds = await getProfileDepartmentIds({
+    userId,
+    churchId,
+    email: email || undefined,
+  });
+
+  if (!departmentIds.length) {
+    return {
+      department_members: 0,
+      department_attendance: 0,
+      department_activities: 0,
+      department_reports: 0,
+      tasks: 0,
+    };
+  }
+
+  const month = normalizeMonth(null);
+  const range = monthRange(month);
+
+  const [
+    { data: assignments },
+    { data: events },
+    { count: reportsCount },
+    { count: roleTasksCount },
+    { count: adminTasksCount },
+  ] = await Promise.all([
+    admin
+      .from("member_departments")
+      .select("member_id,status,members(status)")
+      .eq("church_id", churchId)
+      .in("department_id", departmentIds),
+    admin
+      .from("events")
+      .select("id,event_date")
+      .eq("church_id", churchId)
+      .gte("event_date", range.start)
+      .lt("event_date", range.next),
+    admin
+      .from("department_monthly_reports")
+      .select("id", { count: "exact", head: true })
+      .eq("church_id", churchId)
+      .in("department_id", departmentIds)
+      .eq("status", "submitted"),
+    admin
+      .from("church_user_role_tasks")
+      .select("id", { count: "exact", head: true })
+      .eq("church_id", churchId)
+      .eq("assigned_to", userId)
+      .not("status", "in", "(done,cancelled)"),
+    admin
+      .from("admin_tasks")
+      .select("id", { count: "exact", head: true })
+      .eq("church_id", churchId)
+      .eq("assigned_to", profileId)
+      .not("status", "in", "(completed,cancelled,archived)"),
+  ]);
+
+  const activeAssignments = (assignments || []).filter((assignment: any) => {
+    const member = Array.isArray(assignment.members)
+      ? assignment.members[0]
+      : assignment.members;
+    return (
+      assignment.status === "active" &&
+      (!member?.status || ["active", "actif"].includes(member.status))
+    );
+  });
+
+  const memberIds = [
+    ...new Set(activeAssignments.map((item: any) => item.member_id).filter(Boolean)),
+  ];
+  const eventIds = (events || []).map((item: any) => item.id).filter(Boolean);
+
+  const { data: attendances } =
+    memberIds.length && eventIds.length
+      ? await admin
+          .from("event_attendances")
+          .select("member_id,event_id")
+          .eq("church_id", churchId)
+          .in("member_id", memberIds)
+          .in("event_id", eventIds)
+      : { data: [] as any[] };
+
+  const uniqueAttendances = new Set(
+    (attendances || []).map(
+      (item: any) => `${item.event_id}:${item.member_id}`
+    )
+  );
+  const representedActivities = new Set(
+    (attendances || []).map((item: any) => item.event_id)
+  );
+
+  return {
+    department_members: memberIds.length,
+    department_attendance: uniqueAttendances.size,
+    department_activities: representedActivities.size,
+    department_reports: reportsCount ?? 0,
+    tasks: Number(roleTasksCount || 0) + Number(adminTasksCount || 0),
+  };
+}
+
 export async function GET(request: NextRequest) {
   const session = await getProfile();
 
@@ -345,6 +458,16 @@ export async function GET(request: NextRequest) {
         departments: Array<{ id: string; name: string }>;
       }
     | undefined;
+
+  if (role === "responsable_d" && churchId) {
+    const departmentStats = await getDepartmentResponsibleKpis({
+      churchId,
+      userId: session.user.id,
+      profileId: session.profile.id,
+      email: session.profile.email,
+    });
+    Object.assign(stats, departmentStats);
+  }
 
   if (role === "secretaire" && churchId) {
     const month = normalizeMonth(request.nextUrl.searchParams.get("month"));

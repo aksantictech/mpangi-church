@@ -20,6 +20,15 @@ export type AuditEventInput = {
 
 const SENSITIVE_KEYS = /password|token|secret|cookie|authorization|key/i;
 
+function decodeGeoHeader(value: string | null) {
+  if (!value) return null;
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return value;
+  }
+}
+
 function sanitize(value: Record<string, unknown> | null | undefined) {
   if (!value) return value ?? null;
 
@@ -35,6 +44,13 @@ export async function logAuditEvent(input: AuditEventInput) {
     const requestHeaders = await headers();
     const forwardedFor = requestHeaders.get("x-forwarded-for");
     const ipAddress = forwardedFor?.split(",")[0]?.trim() || requestHeaders.get("x-real-ip");
+    const safeMetadata = sanitize(input.metadata) ?? {};
+    const geo = {
+      country: requestHeaders.get("x-vercel-ip-country"),
+      region: decodeGeoHeader(requestHeaders.get("x-vercel-ip-country-region")),
+      city: decodeGeoHeader(requestHeaders.get("x-vercel-ip-city")),
+      timezone: requestHeaders.get("x-vercel-ip-timezone"),
+    };
 
     await createAdminClient().from("security_audit_logs").insert({
       church_id: input.churchId ?? null,
@@ -50,7 +66,7 @@ export async function logAuditEvent(input: AuditEventInput) {
       route: input.route ?? null,
       ip_address: ipAddress,
       user_agent: requestHeaders.get("user-agent"),
-      metadata: sanitize(input.metadata) ?? {},
+      metadata: { ...safeMetadata, geo },
       old_values: sanitize(input.oldValues),
       new_values: sanitize(input.newValues),
     });

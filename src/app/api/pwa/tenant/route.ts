@@ -25,6 +25,11 @@ export async function GET() {
       backgroundColor: tenant.backgroundColor,
       churchId: tenant.church?.id || null,
       churchName: tenant.church?.name || null,
+      liveEnabled: Boolean(
+        tenant.church?.live_stream_enabled &&
+          String(tenant.church?.live_stream_url || "").trim()
+      ),
+      liveTitle: tenant.church?.live_stream_title || null,
     },
     {
       headers: {

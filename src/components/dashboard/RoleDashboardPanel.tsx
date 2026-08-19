@@ -61,6 +61,10 @@ const ICONS: Record<string, any> = {
   public_requests: Bell,
   events: CalendarDays,
   departments: Building2,
+  department_members: UsersRound,
+  department_attendance: CalendarCheck,
+  department_activities: Activity,
+  department_reports: FileCheck2,
   administration: FileText,
   appointments: ClipboardList,
   finance: Wallet,
@@ -83,6 +87,10 @@ const statByCard: Record<string, (stats: Record<string, number>) => string> = {
     String(stats.pendingPublicRequests ?? stats.publicRequests ?? 0),
   events: (stats) => String(stats.events ?? 0),
   departments: (stats) => String(stats.departments ?? 0),
+  department_members: (stats) => String(stats.department_members ?? 0),
+  department_attendance: (stats) => String(stats.department_attendance ?? 0),
+  department_activities: (stats) => String(stats.department_activities ?? 0),
+  department_reports: (stats) => String(stats.department_reports ?? 0),
   administration: (stats) =>
     String((stats.correspondence ?? 0) + (stats.tasks ?? 0)),
   appointments: () => "Suivi",
@@ -305,7 +313,7 @@ export default function RoleDashboardPanel() {
           />
         </div>
 
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        <div className={`grid gap-4 md:grid-cols-2 ${payload.config.role === "secretaire" ? "xl:grid-cols-5" : "xl:grid-cols-3"}`}>
           {visibleCards.map((card) => {
             const Icon = ICONS[card.code] || ShieldCheck;
             const value = statByCard[card.code]?.(payload.stats) ?? "—";
@@ -362,7 +370,7 @@ export default function RoleDashboardPanel() {
         </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+      <div className={`grid gap-4 md:grid-cols-2 ${payload.config.role === "responsable_d" ? "xl:grid-cols-5" : "xl:grid-cols-3"}`}>
         {visibleCards.map((card) => {
           const Icon = ICONS[card.code] || ShieldCheck;
           const value = statByCard[card.code]?.(payload.stats) ?? "—";

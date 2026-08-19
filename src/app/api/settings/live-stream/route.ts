@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import * as webpush from "web-push";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { sendChurchNotification } from "@/lib/notifications/push";
 import { createClient } from "@/lib/supabase/server";
 
 import { requireAnyActionPermission } from "@/lib/security/secureAction";
@@ -16,19 +16,6 @@ type RequestBody = {
 function getString(value: unknown) {
   if (value === null || value === undefined) return "";
   return String(value).trim();
-}
-
-function configureWebPush() {
-  const publicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
-  const privateKey = process.env.VAPID_PRIVATE_KEY;
-  const subject = process.env.VAPID_SUBJECT || "mailto:contact@aksantictech.com";
-
-  if (!publicKey || !privateKey) {
-    return false;
-  }
-
-  webpush.setVapidDetails(subject, publicKey, privateKey);
-  return true;
 }
 
 export async function POST(request: Request) {
@@ -91,6 +78,12 @@ export async function POST(request: Request) {
       );
     }
 
+    const { data: previousChurch } = await admin
+      .from("churches")
+      .select("id, live_stream_enabled, live_stream_url, live_stream_title")
+      .eq("id", profile.church_id)
+      .maybeSingle();
+
     const { data: church, error: churchError } = await admin
       .from("churches")
       .update({
@@ -114,75 +107,63 @@ export async function POST(request: Request) {
       );
     }
 
+    let recipientsCount = 0;
     let sentCount = 0;
     let failedCount = 0;
+    let warning: string | null = null;
+    let notified = false;
 
-    if (body.notify && liveStreamEnabled && liveStreamUrl) {
-      const configured = configureWebPush();
+    const justStarted =
+      liveStreamEnabled &&
+      Boolean(liveStreamUrl) &&
+      (!previousChurch?.live_stream_enabled ||
+        String(previousChurch?.live_stream_url || "").trim() !== liveStreamUrl);
 
-      if (!configured) {
-        return NextResponse.json(
-          {
-            error:
-              "Notifications non configurées. Vérifie les clés VAPID dans .env.local et Vercel.",
-          },
-          { status: 400 }
-        );
-      }
+    const shouldNotify =
+      liveStreamEnabled &&
+      Boolean(liveStreamUrl) &&
+      (Boolean(body.notify) || justStarted);
 
-      const { data: subscriptions } = await admin
-        .from("push_subscriptions")
-        .select("id, endpoint, p256dh, auth")
-        .eq("church_id", profile.church_id);
-
-      const payload = JSON.stringify({
+    if (shouldNotify) {
+      const notification = await sendChurchNotification({
+        churchId: profile.church_id,
         title: `🔴 ${liveStreamTitle || "Culte en direct"}`,
         body:
           liveStreamDescription ||
           "Le culte en direct vient de commencer. Cliquez pour suivre.",
-        url: `/church/${church.slug}`,
-        icon: "/images/mpangi-logo.png",
-        badge: "/images/mpangi-logo.png",
+        url: "/live",
+        type: "live_stream",
+        createdBy: profile.id,
+        data: {
+          platform: liveStreamPlatform || null,
+          liveTitle: liveStreamTitle || null,
+        },
       });
 
-      for (const subscription of subscriptions ?? []) {
-        try {
-          await webpush.sendNotification(
-            {
-              endpoint: subscription.endpoint,
-              keys: {
-                p256dh: subscription.p256dh,
-                auth: subscription.auth,
-              },
-            },
-            payload
-          );
+      recipientsCount = notification.recipientsCount;
+      sentCount = notification.successCount;
+      failedCount = notification.failureCount;
+      warning = notification.warning;
+      notified = sentCount > 0;
 
-          sentCount += 1;
-        } catch (error: any) {
-          failedCount += 1;
-
-          if (error?.statusCode === 404 || error?.statusCode === 410) {
-            await admin
-              .from("push_subscriptions")
-              .delete()
-              .eq("id", subscription.id);
-          }
-        }
+      if (notified) {
+        await admin
+          .from("churches")
+          .update({
+            live_stream_notified_at: new Date().toISOString(),
+          })
+          .eq("id", profile.church_id);
       }
-
-      await admin
-        .from("churches")
-        .update({
-          live_stream_notified_at: new Date().toISOString(),
-        })
-        .eq("id", profile.church_id);
     }
 
     return NextResponse.json({
       success: true,
+      recipientsCount,
       sentCount,
       failedCount,
+      warning,
+      notified,
+      automaticNotification: justStarted && !body.notify,
     });
   } catch {
     return NextResponse.json(

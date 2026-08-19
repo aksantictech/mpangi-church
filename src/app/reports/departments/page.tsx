@@ -20,6 +20,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { getCurrentSecurityContext } from "@/lib/security/permissionEngine";
 import { getProfileDepartmentIds } from "@/lib/security/departmentScope";
 import { normalizeRoleCode } from "@/lib/security/roleCatalog";
+import { getDepartmentActivitySummaryForReport } from "@/lib/reports/departmentActivitySummary";
 import {
   deleteDepartmentReportAction,
   saveDepartmentReportAction,
@@ -39,6 +40,7 @@ type Props = {
     saved?: string;
     deleted?: string;
     validated?: string;
+    validation_received?: string;
     error?: string;
   }>;
 };
@@ -152,6 +154,7 @@ function reportErrorMessage(code?: string) {
     deadline: "Le délai de modification de ce rapport est dépassé.",
     validation: "Impossible de valider ce rapport.",
     validation_forbidden: "Votre rôle ne peut pas valider ce rapport.",
+    validated_locked: "Ce rapport est validé et verrouillé. Il ne peut plus être modifié, renvoyé ou supprimé.",
   };
 
   return (
@@ -177,7 +180,7 @@ function formatDateTime(value?: string | null) {
   }).format(new Date(value));
 }
 
-function ReadOnlyReport({ report }: { report: any }) {
+function ReadOnlyReport({ report, activitySummary }: { report: any; activitySummary?: any }) {
   return (
     <section className="rounded-3xl border border-[#DCEAF5] bg-white p-5 shadow-sm">
       <div className="flex flex-col gap-3 border-b border-[#DCEAF5] pb-5 sm:flex-row sm:items-start sm:justify-between">
@@ -211,6 +214,25 @@ function ReadOnlyReport({ report }: { report: any }) {
           {report.validated_at ? "Validé" : "En attente de validation"}
         </span>
       </div>
+
+      {activitySummary && (
+        <section className="mt-5 rounded-3xl border border-[#DCEAF5] bg-[#F8FBFD] p-5">
+          <p className="text-xs font-black uppercase tracking-[.2em] text-slate-400">
+            Données récupérées automatiquement
+          </p>
+          <h3 className="mt-2 text-xl font-black text-[#03357A]">Synthèse des activités</h3>
+          <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+            <MetricCard title="Activités réalisées" value={activitySummary.activities} description="Activités avec au moins une présence" icon={Activity} accent="blue" />
+            <MetricCard title="Nombre de stars" value={activitySummary.leaders} description="Stars et responsables actifs" icon={Star} accent="orange" />
+            <MetricCard title="Taux de présence" value={`${activitySummary.attendanceRate}%`} description={`${activitySummary.attendanceCount} présence(s) sur ${activitySummary.expectedAttendances} attendue(s)`} icon={CalendarCheck} accent="green" />
+            <MetricCard title="Membres actifs" value={activitySummary.activeMembers} description="Affectations actives" icon={Users} accent="purple" />
+            <MetricCard title="Présences enregistrées" value={activitySummary.attendanceCount} description="Participations uniques" icon={CalendarCheck} accent="green" />
+            <MetricCard title="Moyenne par activité" value={activitySummary.averageAttendance} description="Membres présents" icon={TrendingUp} accent="blue" />
+          </div>
+        </section>
+      )}
+
+      <h3 className="mt-6 text-lg font-black text-[#03357A]">Analyse FFOM et actions</h3>
 
       <div className="mt-5 grid gap-5 lg:grid-cols-2">
         <ReadOnlyField label="Forces / points positifs" value={report.strengths} />
@@ -276,6 +298,16 @@ export default async function DepartmentReportsPage({
     .eq("user_id", context.userId)
     .eq("church_id", context.churchId)
     .maybeSingle();
+
+  if (sp.validation_received === "1" && currentProfile) {
+    await admin
+      .from("department_monthly_reports")
+      .update({ author_validation_read_at: new Date().toISOString() })
+      .eq("church_id", context.churchId)
+      .eq("created_by", currentProfile.id)
+      .not("validated_at", "is", null)
+      .is("author_validation_read_at", null);
+  }
 
   if (sp.received === "1" && currentProfile) {
     await admin
@@ -455,6 +487,14 @@ export default async function DepartmentReportsPage({
     const reviewReports = scopeReports;
     const selectedReport = sp.report
       ? enrichedMonthReports.find((item: any) => item.id === sp.report) || null
+      : null;
+
+    const selectedReportActivitySummary = selectedReport
+      ? await getDepartmentActivitySummaryForReport({
+          admin,
+          churchId: context.churchId,
+          report: selectedReport,
+        })
       : null;
 
     return (
@@ -696,7 +736,7 @@ export default async function DepartmentReportsPage({
 
           {selectedReport && (
             <>
-              <ReadOnlyReport report={selectedReport} />
+              <ReadOnlyReport report={selectedReport} activitySummary={selectedReportActivitySummary} />
 
               <div className="flex justify-end">
                 <a
@@ -897,6 +937,7 @@ export default async function DepartmentReportsPage({
     isAutomaticRecipientRole(recipient.role)
   );
   const report = selectedReport;
+  const reportLocked = Boolean(report?.validated_at);
   const activeAssignments = (assignments || []).filter((assignment: any) => {
     const member = Array.isArray(assignment.members)
       ? assignment.members[0]
@@ -1146,6 +1187,14 @@ export default async function DepartmentReportsPage({
           <input type="hidden" name="department_id" value={departmentId} />
           <input type="hidden" name="report_month" value={from} />
 
+          {reportLocked && (
+            <div className="mb-5 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-sm font-black text-emerald-700">
+              <CheckCircle2 className="mr-2 inline h-4 w-4" />
+              Rapport validé : lecture seule. Toute modification, suppression ou nouvel envoi est désactivé.
+            </div>
+          )}
+
+          <fieldset disabled={reportLocked} className="contents">
           <div className="mb-5 grid gap-4 sm:grid-cols-2">
             <label className="font-bold text-[#03357A]">
               Début de période
@@ -1267,6 +1316,7 @@ export default async function DepartmentReportsPage({
               Envoyer le rapport
             </button>
           </div>
+          </fieldset>
         </form>
 
         <section className="rounded-3xl border border-[#DCEAF5] bg-white p-5">
@@ -1309,7 +1359,9 @@ export default async function DepartmentReportsPage({
               )
               .map((item: any) => {
                 const editable =
-                  item.edit_until && new Date(item.edit_until) > new Date();
+                  !item.validated_at &&
+                  item.edit_until &&
+                  new Date(item.edit_until) > new Date();
 
                 return (
                   <article
@@ -1331,7 +1383,13 @@ export default async function DepartmentReportsPage({
                       </p>
                     </div>
 
-                    <div className="flex gap-2">
+                    <div className="flex items-center gap-2">
+                      {item.validated_at && (
+                        <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-3 py-2 text-xs font-black text-emerald-700">
+                          <CheckCircle2 className="h-4 w-4" />
+                          Validé
+                        </span>
+                      )}
                       <Link
                         href={`/reports/departments?department=${item.department_id}&month=${String(
                           item.report_month

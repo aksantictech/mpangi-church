@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
+  BarChart3,
   ChevronDown,
   ChevronsLeft,
   ChevronsRight,
@@ -39,6 +40,11 @@ const SUPER_ADMIN_ITEMS = [
     label: "Dashboard",
     href: "/super-admin/dashboard",
     icon: Shield,
+  },
+  {
+    label: "Visites du site",
+    href: "/super-admin/analytics",
+    icon: BarChart3,
   },
   {
     label: "Églises",

@@ -37,6 +37,7 @@ const guardPatterns = [
   /requireAuthenticatedAccess\s*\(/,
   /requireChurchAdmin\s*\(/,
   /requireSuperAdmin\s*\(/,
+  /requireSuperAdminAccess\s*\(/,
   /getSecurityContext\s*\(/,
   /getCurrentSecurityContext\s*\(/,
   /getAllowedNavigationItems\s*\(/,
@@ -49,8 +50,9 @@ const publicRoutePatterns = [
   /\/api\/member-forms\//,
   /\/api\/push\/public-key/,
 
-  // Explicitly public-by-design routes. They must expose only non-sensitive data.
+  // Explicitly public-by-design routes.
   /\/api\/account\/branding$/,
+  /\/api\/analytics\/page-view$/,
   /\/api\/bible\/(books|chapter|passage|search|versions)$/,
   /\/api\/push\/subscribe$/,
   /\/api\/pwa\/icon(?:\/.*)?$/,
