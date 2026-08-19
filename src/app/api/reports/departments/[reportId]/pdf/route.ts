@@ -3,6 +3,7 @@ import { jsPDF } from "jspdf";
 import { requireActiveProfile } from "@/lib/security/access";
 import { normalizeRoleCode } from "@/lib/security/roleCatalog";
 import { profileCanAccessDepartment } from "@/lib/security/departmentScope";
+import { getDepartmentActivitySummaryForReport } from "@/lib/reports/departmentActivitySummary";
 
 const REVIEW_ROLES = new Set([
   "church_admin",
@@ -71,6 +72,12 @@ export async function GET(_request: NextRequest, { params }: RouteProps) {
     ? report.creator[0]?.full_name
     : (report.creator as any)?.full_name;
 
+  const activitySummary = await getDepartmentActivitySummaryForReport({
+    admin: context.admin,
+    churchId: context.churchId,
+    report,
+  });
+
   const doc = new jsPDF({ unit: "mm", format: "a4" });
   doc.setFontSize(18);
   doc.text("Rapport mensuel de département", 15, 18);
@@ -80,7 +87,17 @@ export async function GET(_request: NextRequest, { params }: RouteProps) {
   doc.text(`Envoyé par : ${sender || "-"}`, 15, 42);
   doc.text(`Statut : ${report.validated_at ? "Validé" : report.status === "submitted" ? "Envoyé" : "Brouillon"}`, 15, 49);
 
-  let y = 62;
+  doc.setFont("helvetica", "bold");
+  doc.text("Synthèse des activités", 15, 62);
+  doc.setFont("helvetica", "normal");
+  doc.text(`Activités réalisées : ${activitySummary.activities}`, 15, 69);
+  doc.text(`Membres actifs : ${activitySummary.activeMembers}`, 15, 75);
+  doc.text(`Stars / responsables : ${activitySummary.leaders}`, 15, 81);
+  doc.text(`Présences enregistrées : ${activitySummary.attendanceCount}`, 105, 69);
+  doc.text(`Taux de présence : ${activitySummary.attendanceRate}%`, 105, 75);
+  doc.text(`Moyenne par activité : ${activitySummary.averageAttendance}`, 105, 81);
+
+  let y = 92;
   for (const [label, value] of [
     ["Forces / points positifs", report.strengths],
     ["Faiblesses / difficultés", report.weaknesses],

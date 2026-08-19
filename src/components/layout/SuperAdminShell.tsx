@@ -6,6 +6,7 @@ import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
 import {
   AppWindow,
+  BarChart3,
   Boxes,
   Building2,
   LayoutDashboard,
@@ -25,6 +26,11 @@ const desktopItems = [
     label: "Dashboard",
     href: "/super-admin/dashboard",
     icon: LayoutDashboard,
+  },
+  {
+    label: "Visites du site",
+    href: "/super-admin/analytics",
+    icon: BarChart3,
   },
   {
     label: "Églises",

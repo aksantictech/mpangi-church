@@ -130,6 +130,25 @@ export async function saveDepartmentReportAction(formData: FormData) {
     redirect("/unauthorized?reason=department_report_scope");
   }
 
+  const { data: existingReport } = await admin
+    .from("department_monthly_reports")
+    .select("id,validated_at,edit_until")
+    .eq("church_id", context.churchId)
+    .eq("department_id", departmentId)
+    .eq("report_month", validReportMonth)
+    .maybeSingle();
+
+  if (existingReport?.validated_at) {
+    redirect(reportUrl(departmentId, validReportMonth, "validated_locked"));
+  }
+
+  if (
+    existingReport?.edit_until &&
+    new Date(existingReport.edit_until).getTime() < Date.now()
+  ) {
+    redirect(reportUrl(departmentId, validReportMonth, "deadline"));
+  }
+
   const status =
     value(formData, "intent") === "submit" ? "submitted" : "draft";
 
@@ -184,6 +203,7 @@ export async function saveDepartmentReportAction(formData: FormData) {
     edit_until: deadline.toISOString(),
     validated_at: null,
     validated_by: null,
+    author_validation_read_at: null,
     updated_at: now,
   };
 
@@ -294,6 +314,7 @@ export async function validateDepartmentReportAction(formData: FormData) {
       .update({
         validated_at: now,
         validated_by: profile.id,
+        author_validation_read_at: null,
         updated_at: now,
       })
       .eq("id", report.id)
@@ -353,7 +374,7 @@ export async function deleteDepartmentReportAction(formData: FormData) {
       .maybeSingle(),
     admin
       .from("department_monthly_reports")
-      .select("id,department_id,edit_until")
+      .select("id,department_id,edit_until,validated_at")
       .eq("id", reportId)
       .eq("church_id", context.churchId)
       .maybeSingle(),
@@ -362,6 +383,7 @@ export async function deleteDepartmentReportAction(formData: FormData) {
   if (
     !profile ||
     !report ||
+    report.validated_at ||
     !report.edit_until ||
     new Date(report.edit_until) < new Date()
   ) {

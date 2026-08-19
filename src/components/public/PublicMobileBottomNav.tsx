@@ -7,10 +7,13 @@ import {
   HeartHandshake,
   Home,
   Menu,
+  Radio,
   Users,
 } from "lucide-react";
 import {
+  useEffect,
   useMemo,
+  useState,
   useSyncExternalStore,
 } from "react";
 
@@ -21,6 +24,7 @@ import {
 
 type PublicMobileBottomNavProps = {
   slug: string;
+  liveActive?: boolean;
 };
 
 function subscribeTenantMode() {
@@ -45,14 +49,61 @@ function getTenantModeServerSnapshot() {
 
 export default function PublicMobileBottomNav({
   slug,
+  liveActive = false,
 }: PublicMobileBottomNavProps) {
   const pathname = usePathname() || "/";
+  const [hasLive, setHasLive] = useState(liveActive);
 
   const tenantMode = useSyncExternalStore(
     subscribeTenantMode,
     getTenantModeSnapshot,
     getTenantModeServerSnapshot
   );
+
+  useEffect(() => {
+    let active = true;
+
+    async function refreshLiveStatus() {
+      try {
+        const response = await fetch("/api/pwa/tenant", {
+          cache: "no-store",
+          credentials: "include",
+        });
+
+        if (!response.ok) return;
+        const payload = await response.json();
+
+        if (
+          active &&
+          payload?.churchId &&
+          typeof payload.liveEnabled === "boolean"
+        ) {
+          setHasLive(payload.liveEnabled);
+        }
+      } catch {
+        // La valeur SSR reste utilisée si l'API PWA est indisponible.
+      }
+    }
+
+    void refreshLiveStatus();
+    const timer = window.setInterval(refreshLiveStatus, 30_000);
+
+    function onVisible() {
+      if (document.visibilityState === "visible") {
+        void refreshLiveStatus();
+      }
+    }
+
+    document.addEventListener("visibilitychange", onVisible);
+    window.addEventListener("focus", refreshLiveStatus);
+
+    return () => {
+      active = false;
+      window.clearInterval(timer);
+      document.removeEventListener("visibilitychange", onVisible);
+      window.removeEventListener("focus", refreshLiveStatus);
+    };
+  }, []);
 
   const href = useMemo(
     () => (path: string) =>
@@ -192,31 +243,43 @@ export default function PublicMobileBottomNav({
           )}
         />
 
-        <button
-          type="button"
-          aria-label="Ouvrir le menu"
-          onClick={() =>
-            window.dispatchEvent(
-              new CustomEvent(
-                "mpangi:open-public-mobile-menu"
+        {hasLive ? (
+          <Link
+            href={href("/live")}
+            aria-current={isActive(href("/live")) ? "page" : undefined}
+            aria-label="Regarder le direct"
+            className="flex min-h-14 min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-2xl bg-red-600 px-1 text-center text-[10px] font-black text-white shadow-lg shadow-red-900/20 transition hover:bg-red-700"
+          >
+            <Radio className="h-5 w-5 animate-pulse" />
+            <span className="truncate">Direct</span>
+          </Link>
+        ) : (
+          <button
+            type="button"
+            aria-label="Ouvrir le menu"
+            onClick={() =>
+              window.dispatchEvent(
+                new CustomEvent(
+                  "mpangi:open-public-mobile-menu"
+                )
               )
-            )
-          }
-          className="
-            flex min-h-14 min-w-0 flex-1
-            flex-col items-center justify-center
-            gap-1 rounded-2xl px-1
-            text-center text-[10px]
-            font-black text-slate-500
-            transition-all
-            hover:bg-slate-50
-          "
-        >
-          <Menu className="h-5 w-5" />
-          <span className="truncate">
-            Menu
-          </span>
-        </button>
+            }
+            className="
+              flex min-h-14 min-w-0 flex-1
+              flex-col items-center justify-center
+              gap-1 rounded-2xl px-1
+              text-center text-[10px]
+              font-black text-slate-500
+              transition-all
+              hover:bg-slate-50
+            "
+          >
+            <Menu className="h-5 w-5" />
+            <span className="truncate">
+              Menu
+            </span>
+          </button>
+        )}
       </div>
     </nav>
   );

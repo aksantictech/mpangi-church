@@ -67,11 +67,24 @@ export default function LiveStreamSettingsForm({
       return;
     }
 
-    setMessage(
-      notify
-        ? `Direct publié. Notifications envoyées : ${payload.sentCount || 0}.`
-        : "Direct enregistré."
-    );
+    const recipientsCount = Number(payload.recipientsCount || 0);
+    const sentCount = Number(payload.sentCount || 0);
+    const failedCount = Number(payload.failedCount || 0);
+
+    if (!enabled) {
+      setMessage("Direct désactivé.");
+    } else if (payload.notified || notify || payload.automaticNotification) {
+      const delivery =
+        recipientsCount > 0
+          ? `Notifications : ${sentCount}/${recipientsCount} appareil(s) atteint(s)${failedCount ? ` · ${failedCount} échec(s)` : ""}.`
+          : "Aucun appareil abonné n’a été trouvé.";
+
+      setMessage(
+        `Direct publié. ${delivery}${payload.warning ? ` ${payload.warning}` : ""}`
+      );
+    } else {
+      setMessage("Direct enregistré.");
+    }
 
     router.refresh();
   }

@@ -31,6 +31,7 @@ export async function GET() {
     { count: roleTasks },
     { count: adminTasks },
     { count: unreadReports },
+    { count: validatedOwnReports },
     correspondenceNotificationsResult,
   ] = await Promise.all([
     admin
@@ -59,6 +60,14 @@ export async function GET() {
       .eq("church_id", profile.church_id)
       .eq("profile_id", profile.id)
       .is("read_at", null),
+
+    admin
+      .from("department_monthly_reports")
+      .select("id", { count: "exact", head: true })
+      .eq("church_id", profile.church_id)
+      .eq("created_by", profile.id)
+      .not("validated_at", "is", null)
+      .is("author_validation_read_at", null),
 
     admin
       .from("admin_correspondence_notifications")
@@ -109,6 +118,18 @@ export async function GET() {
         ]
       : []),
 
+    ...(validatedOwnReports
+      ? [
+          {
+            id: "validated-department-reports",
+            title: `${validatedOwnReports} rapport(s) de département validé(s)`,
+            href: "/reports/departments?validation_received=1",
+            type: "report_validation",
+            priority: "normal",
+          },
+        ]
+      : []),
+
     ...(unreadReports
       ? [
           {
@@ -129,6 +150,7 @@ export async function GET() {
       Number(roleTasks || 0) +
       Number(adminTasks || 0) +
       Number(unreadReports || 0) +
+      Number(validatedOwnReports || 0) +
       correspondenceCount,
   });
 }
