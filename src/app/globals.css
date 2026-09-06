@@ -106,3 +106,23 @@ textarea.mpangi-form-control {
   background: #e8f1fb;
   color: #15558f;
 }
+
+/* La grille RH garde des cartes assez larges et échappe aux règles génériques
+   des anciennes listes mobiles qui réduisent les colonnes à 220px. */
+.member-directory-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+}
+
+@media (min-width: 760px) {
+  .member-directory-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1280px) {
+  .member-directory-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}

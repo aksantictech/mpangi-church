@@ -23,6 +23,7 @@ type MemberRowActionsProps = {
   canUpdate?: boolean;
   canDelete?: boolean;
   canApprove?: boolean;
+  variant?: "compact" | "card";
 };
 
 export default function MemberRowActions({
@@ -33,6 +34,7 @@ export default function MemberRowActions({
   canUpdate = true,
   canDelete = true,
   canApprove = true,
+  variant = "compact",
 }: MemberRowActionsProps) {
   const router = useRouter();
 
@@ -102,13 +104,13 @@ export default function MemberRowActions({
   }
 
   return (
-    <div className="relative flex items-center gap-2">
+    <div className={`relative flex items-center gap-2 ${variant === "card" ? "w-full" : ""}`}>
       <Link
         href={`/members/${memberId}`}
-        className="inline-flex items-center gap-2 rounded-2xl bg-[#EAF3FA] px-4 py-3 text-sm font-extrabold text-[#03357A] hover:bg-[#DCEAF5]"
+        className={`inline-flex min-h-11 items-center justify-center gap-2 rounded-2xl bg-[#0A3B73] px-4 py-3 text-sm font-extrabold text-white transition hover:bg-[#15558F] ${variant === "card" ? "flex-1" : ""}`}
       >
         <Eye className="h-4 w-4" />
-        Voir
+        {variant === "card" ? "Ouvrir la fiche" : "Voir"}
       </Link>
 
       {canOpenMenu && <button

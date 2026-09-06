@@ -14,10 +14,9 @@ import {
   Search,
   SlidersHorizontal,
   UserCircle,
-  UsersRound,
 } from "lucide-react";
 import MemberRowActions from "@/components/members/MemberRowActions";
-import { getMemberStatusLabel, getMemberTypeLabel } from "@/lib/members/memberLabels";
+import { getDiscipleshipStageLabel, getFamilyRoleLabel, getMemberStatusLabel, getMemberTypeLabel } from "@/lib/members/memberLabels";
 
 export type MemberDirectoryItem = {
   id: string;
@@ -156,66 +155,68 @@ export default function MemberDirectory({ members, initialStatus, canUpdate, can
           <p className="mt-1 text-sm text-slate-500">Modifiez la recherche ou retirez un filtre.</p>
         </div>
       ) : (
-        <div className="grid gap-4 p-3 sm:p-5 md:grid-cols-2 2xl:grid-cols-3">
+        <div className="member-directory-grid p-3 sm:p-5">
           {filteredMembers.map((member) => {
             const memberName = getName(member) || "Nom non renseigné";
-            const displayName = member.preferredName ? `${member.preferredName} · ${member.lastName}` : memberName;
+            const hasContact = Boolean(member.phone || member.email || member.city);
             return (
-              <article key={member.id} className="group flex min-w-0 flex-col rounded-[1.6rem] border border-slate-200 bg-white shadow-[0_12px_35px_rgba(15,23,42,0.06)] transition hover:-translate-y-0.5 hover:border-blue-200 hover:shadow-[0_18px_45px_rgba(15,23,42,0.1)]">
-                <div className="relative h-20 overflow-hidden rounded-t-[1.5rem] bg-gradient-to-br from-[#082F57] via-[#15558F] to-[#3F79B3]">
-                  <div className="absolute inset-0 opacity-20 [background-image:radial-gradient(circle_at_20%_30%,white_0,transparent_36%),radial-gradient(circle_at_85%_15%,white_0,transparent_28%)]" />
-                  <span className={`absolute right-4 top-4 rounded-full px-3 py-1 text-xs font-black ring-1 ring-inset ${getStatusClass(member.status)}`}>{getMemberStatusLabel(member.status)}</span>
+              <article key={member.id} className="group relative flex min-w-0 flex-col overflow-visible rounded-[1.5rem] border border-slate-200 bg-white p-4 shadow-[0_8px_28px_rgba(15,23,42,0.055)] transition duration-200 hover:-translate-y-0.5 hover:border-blue-200 hover:shadow-[0_16px_38px_rgba(15,23,42,0.09)] sm:p-5">
+                <div className="absolute inset-x-6 top-0 h-1 rounded-b-full bg-gradient-to-r from-[#0A3B73] via-[#2F6FA9] to-[#55A6C8]" />
+                <header className="flex min-w-0 items-start gap-3 pt-1 sm:gap-4">
+                  <div className="flex h-[72px] w-[72px] shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-[#EAF3FA] text-[#0A3B73] ring-1 ring-slate-200 sm:h-20 sm:w-20">
+                    {member.photoUrl ? <img src={member.photoUrl} alt={memberName} className="h-full w-full object-cover" /> : <UserCircle className="h-10 w-10" />}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-start justify-between gap-2">
+                      <div className="min-w-0 flex-1">
+                        <Link href={`/members/${member.id}`} className="line-clamp-2 text-lg font-black leading-tight text-slate-950 transition hover:text-[#15558F]" title={memberName}>{memberName}</Link>
+                        {member.preferredName && <p className="mt-1 text-xs font-bold text-slate-400">Appelé(e) {member.preferredName}</p>}
+                      </div>
+                      <span className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-black ring-1 ring-inset ${getStatusClass(member.status)}`}>{getMemberStatusLabel(member.status)}</span>
+                    </div>
+                    <p className="mt-2 text-sm font-black text-[#2F6FA9]">{getMemberTypeLabel(member.memberType)}</p>
+                  </div>
+                </header>
+
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {member.familyName ? <span className="inline-flex items-center gap-1.5 rounded-full bg-violet-50 px-3 py-1.5 text-xs font-black text-violet-700"><HeartHandshake className="h-3.5 w-3.5" />{member.familyName}{member.familyRole ? ` · ${getFamilyRoleLabel(member.familyRole)}` : ""}</span> : <span className="rounded-full bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-500">Famille à renseigner</span>}
+                  {member.smallGroup && <span className="rounded-full bg-cyan-50 px-3 py-1.5 text-xs font-black text-cyan-700">Groupe · {member.smallGroup}</span>}
                 </div>
 
-                <div className="relative flex flex-1 flex-col px-4 pb-4 sm:px-5 sm:pb-5">
-                  <div className="-mt-9 flex items-end gap-3">
-                    <div className="flex h-[76px] w-[76px] shrink-0 items-center justify-center overflow-hidden rounded-[1.35rem] border-4 border-white bg-[#E8F1FB] text-[#0A3B73] shadow-md">
-                      {member.photoUrl ? <img src={member.photoUrl} alt={memberName} className="h-full w-full object-cover" /> : <UserCircle className="h-10 w-10" />}
-                    </div>
-                    <div className="min-w-0 pb-1">
-                      <h3 className="truncate text-lg font-black text-slate-950" title={memberName}>{displayName}</h3>
-                      <p className="truncate text-sm font-bold text-[#2F6FA9]">{getMemberTypeLabel(member.memberType)}</p>
-                    </div>
+                <div className="mt-5 grid min-h-[52px] gap-2 text-sm text-slate-600 sm:grid-cols-2">
+                  {member.phone && <ContactLine icon={Phone} value={member.phone} href={`tel:${member.phone}`} />}
+                  {member.email && <ContactLine icon={Mail} value={member.email} href={`mailto:${member.email}`} />}
+                  {member.city && <ContactLine icon={MapPin} value={member.city} />}
+                  {!hasContact && <p className="flex items-center gap-2 text-sm font-semibold text-slate-400"><Phone className="h-4 w-4" /> Coordonnées à compléter</p>}
+                </div>
+
+                <div className="mt-4 border-t border-slate-100 pt-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="text-[11px] font-black uppercase tracking-[0.12em] text-slate-400">Parcours dans l’église</p>
+                    <span className="text-right text-xs font-black text-[#15558F]">{getDiscipleshipStageLabel(member.discipleshipStage)}</span>
                   </div>
-
-                  <div className="mt-4 flex min-h-7 flex-wrap gap-1.5">
-                    {member.familyName && <span className="inline-flex items-center gap-1 rounded-lg bg-violet-50 px-2.5 py-1 text-xs font-black text-violet-700"><HeartHandshake className="h-3.5 w-3.5" /> Famille {member.familyName}</span>}
-                    {member.smallGroup && <span className="rounded-lg bg-cyan-50 px-2.5 py-1 text-xs font-black text-cyan-700">{member.smallGroup}</span>}
-                    {!member.familyName && !member.smallGroup && <span className="rounded-lg bg-slate-100 px-2.5 py-1 text-xs font-bold text-slate-500">Foyer à compléter</span>}
+                  <div className="mt-3 flex min-h-7 flex-wrap gap-1.5">
+                    {member.departmentNames.length ? member.departmentNames.slice(0, 3).map((name) => <span key={name} className="rounded-lg border border-blue-100 bg-blue-50 px-2.5 py-1 text-xs font-bold text-[#15558F]">{name}</span>) : <span className="text-xs font-semibold text-slate-400">Aucun département de service</span>}
                   </div>
+                </div>
 
-                  <div className="mt-4 space-y-2 text-sm text-slate-600">
-                    <p className="flex min-w-0 items-center gap-2"><Phone className="h-4 w-4 shrink-0 text-slate-400" /><span className="truncate font-semibold">{member.phone || "Téléphone non renseigné"}</span></p>
-                    <p className="flex min-w-0 items-center gap-2"><Mail className="h-4 w-4 shrink-0 text-slate-400" /><span className="truncate">{member.email || "Email non renseigné"}</span></p>
-                    <p className="flex min-w-0 items-center gap-2"><MapPin className="h-4 w-4 shrink-0 text-slate-400" /><span className="truncate">{member.city || "Localisation non renseignée"}</span></p>
-                  </div>
+                <div className="mt-4 grid grid-cols-2 gap-2">
+                  <CardMetric icon={CalendarCheck2} value={String(member.attendanceCount90Days)} label="Présences · 90 jours" detail={formatDate(member.lastAttendanceAt)} />
+                  <CardMetric icon={BookOpenCheck} value={`${member.completedTrainingCount}/${member.trainingCount}`} label="Formations terminées" detail={member.trainingCount ? "Parcours suivi" : "Aucune inscription"} />
+                </div>
 
-                  <div className="mt-4 rounded-2xl bg-slate-50 p-3">
-                    <div className="flex items-center justify-between gap-3">
-                      <p className="text-xs font-black uppercase tracking-wide text-slate-400">Vie de l’église</p>
-                      <span className="truncate text-xs font-black text-[#15558F]">{member.discipleshipStage || "Parcours à définir"}</span>
-                    </div>
-                    <div className="mt-3 flex flex-wrap gap-1.5">
-                      {member.departmentNames.length ? member.departmentNames.slice(0, 3).map((name) => <span key={name} className="rounded-lg bg-white px-2 py-1 text-xs font-bold text-slate-600 ring-1 ring-slate-200">{name}</span>) : <span className="text-xs font-semibold text-slate-400">Aucun service actif</span>}
-                    </div>
-                  </div>
+                <div className="mt-4">
+                  <div className="flex items-center justify-between text-xs"><span className="font-bold text-slate-500">Complétude du dossier</span><span className="font-black text-slate-800">{member.profileCompleteness}%</span></div>
+                  <div className="mt-2 h-2 overflow-hidden rounded-full bg-slate-100"><div className="h-full rounded-full bg-gradient-to-r from-[#2F6FA9] to-[#55A6C8]" style={{ width: `${member.profileCompleteness}%` }} /></div>
+                </div>
 
-                  <div className="mt-3 grid grid-cols-3 divide-x divide-slate-100 rounded-2xl border border-slate-100 bg-white py-3 text-center">
-                    <CardMetric icon={CalendarCheck2} value={String(member.attendanceCount90Days)} label="Présences" />
-                    <CardMetric icon={BookOpenCheck} value={`${member.completedTrainingCount}/${member.trainingCount}`} label="Formations" />
-                    <CardMetric icon={UsersRound} value={`${member.profileCompleteness}%`} label="Dossier" />
-                  </div>
-
-                  <p className="mt-3 text-xs font-semibold text-slate-400">Dernière présence : {formatDate(member.lastAttendanceAt)}</p>
-
-                  <div className="mt-auto flex items-center justify-between gap-2 border-t border-slate-100 pt-4">
+                  <div className="mt-auto flex items-center justify-between gap-2 pt-5">
                     {canUpdate || canDelete || canApprove ? (
-                      <MemberRowActions memberId={member.id} memberName={memberName} status={member.status} archivedAt={member.archivedAt} canUpdate={canUpdate} canDelete={canDelete} canApprove={canApprove} />
+                      <MemberRowActions memberId={member.id} memberName={memberName} status={member.status} archivedAt={member.archivedAt} canUpdate={canUpdate} canDelete={canDelete} canApprove={canApprove} variant="card" />
                     ) : (
                       <Link href={`/members/${member.id}`} className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-2xl bg-[#0A3B73] px-4 text-sm font-black text-white">Ouvrir le dossier <ChevronRight className="h-4 w-4" /></Link>
                     )}
                   </div>
-                </div>
               </article>
             );
           })}
@@ -225,6 +226,11 @@ export default function MemberDirectory({ members, initialStatus, canUpdate, can
   );
 }
 
-function CardMetric({ icon: Icon, value, label }: { icon: React.ElementType; value: string; label: string }) {
-  return <div className="min-w-0 px-1.5"><Icon className="mx-auto h-4 w-4 text-[#2F6FA9]" /><p className="mt-1 text-sm font-black text-slate-800">{value}</p><p className="truncate text-[10px] font-bold uppercase tracking-wide text-slate-400">{label}</p></div>;
+function CardMetric({ icon: Icon, value, label, detail }: { icon: React.ElementType; value: string; label: string; detail: string }) {
+  return <div className="min-w-0 rounded-2xl bg-slate-50 p-3"><div className="flex items-center gap-2"><div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-white text-[#2F6FA9] shadow-sm"><Icon className="h-4 w-4" /></div><div className="min-w-0"><p className="text-base font-black text-slate-900">{value}</p><p className="truncate text-[10px] font-black uppercase tracking-wide text-slate-400">{label}</p></div></div><p className="mt-2 truncate text-xs font-semibold text-slate-500">{detail}</p></div>;
+}
+
+function ContactLine({ icon: Icon, value, href }: { icon: React.ElementType; value: string; href?: string }) {
+  const content = <><Icon className="h-4 w-4 shrink-0 text-slate-400" /><span className="min-w-0 break-words font-semibold">{value}</span></>;
+  return href ? <a href={href} className="flex min-w-0 items-start gap-2 transition hover:text-[#15558F]">{content}</a> : <p className="flex min-w-0 items-start gap-2">{content}</p>;
 }
