@@ -1,0 +1,26 @@
+name: Apply member HR migration
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  migrate:
+    name: Apply Supabase schema
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate database secret
+        shell: bash
+        run: test -n "$SUPABASE_DB_URL"
+
+      - name: Apply member HR migration
+        shell: bash
+        run: psql "$SUPABASE_DB_URL" -v ON_ERROR_STOP=1 -f supabase/202609060001_member_hr_profile.sql
