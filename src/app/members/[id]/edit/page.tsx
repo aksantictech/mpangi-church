@@ -4,6 +4,7 @@ import { ArrowLeft, Edit } from "lucide-react";
 import AppShell from "@/components/layout/AppShell";
 import MemberEditForm from "@/components/members/MemberEditForm";
 import { createClient } from "@/lib/supabase/server";
+import { requireAnyModulePermission } from "@/lib/security/routeGuard";
 
 type MemberEditPageProps = {
   params: Promise<{
@@ -12,6 +13,7 @@ type MemberEditPageProps = {
 };
 
 export default async function MemberEditPage({ params }: MemberEditPageProps) {
+  await requireAnyModulePermission(["members"], "update");
   const { id } = await params;
 
   const supabase = await createClient();
@@ -56,13 +58,20 @@ export default async function MemberEditPage({ params }: MemberEditPageProps) {
       middle_name,
       last_name,
       phone,
+      whatsapp,
       email,
       gender,
       birth_date,
       address,
       city,
+      commune,
+      quarter,
       profession,
       marital_status,
+      integration_year,
+      spiritual_status,
+      training_notes,
+      notes,
       member_type,
       status
     `

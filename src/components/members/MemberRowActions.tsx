@@ -20,6 +20,9 @@ type MemberRowActionsProps = {
   memberName: string;
   status?: string | null;
   archivedAt?: string | null;
+  canUpdate?: boolean;
+  canDelete?: boolean;
+  canApprove?: boolean;
 };
 
 export default function MemberRowActions({
@@ -27,6 +30,9 @@ export default function MemberRowActions({
   memberName,
   status,
   archivedAt,
+  canUpdate = true,
+  canDelete = true,
+  canApprove = true,
 }: MemberRowActionsProps) {
   const router = useRouter();
 
@@ -36,6 +42,7 @@ export default function MemberRowActions({
   const isInactive = status === "inactif";
   const isPending = status === "en_attente";
   const isArchived = Boolean(archivedAt);
+  const canOpenMenu = canUpdate || canDelete || canApprove;
 
   async function runAction(
     action: "activate" | "deactivate" | "approve" | "reject" | "archive" | "delete"
@@ -104,7 +111,7 @@ export default function MemberRowActions({
         Voir
       </Link>
 
-      <button
+      {canOpenMenu && <button
         type="button"
         onClick={() => setIsOpen((value) => !value)}
         className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-white text-[#03357A] ring-1 ring-[#DCEAF5] hover:bg-[#F8FBFD]"
@@ -114,11 +121,11 @@ export default function MemberRowActions({
         ) : (
           <MoreVertical className="h-5 w-5" />
         )}
-      </button>
+      </button>}
 
       {isOpen && (
         <div className="absolute right-0 top-12 z-40 w-64 overflow-hidden rounded-3xl border border-[#DCEAF5] bg-white p-2 shadow-xl">
-          {isPending && (
+          {isPending && canApprove && (
             <>
               <button type="button" onClick={() => runAction("approve")} disabled={isLoading} className="flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm font-bold text-green-700 hover:bg-green-50 disabled:opacity-60">
                 <CheckCircle2 className="h-5 w-5" />
@@ -131,7 +138,7 @@ export default function MemberRowActions({
             </>
           )}
 
-          {!isPending && (isInactive || isArchived ? (
+          {!isPending && canUpdate && (isInactive || isArchived ? (
             <button
               type="button"
               onClick={() => runAction("activate")}
@@ -153,7 +160,7 @@ export default function MemberRowActions({
             </button>
           ))}
 
-          {!isArchived && (
+          {!isArchived && canDelete && (
             <button
               type="button"
               onClick={() => runAction("archive")}
@@ -165,7 +172,7 @@ export default function MemberRowActions({
             </button>
           )}
 
-          <button
+          {canDelete && <button
             type="button"
             onClick={() => runAction("delete")}
             disabled={isLoading}
@@ -173,7 +180,7 @@ export default function MemberRowActions({
           >
             <Trash2 className="h-5 w-5" />
             Supprimer définitivement
-          </button>
+          </button>}
         </div>
       )}
     </div>

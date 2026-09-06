@@ -4,8 +4,10 @@ import { ArrowLeft, UserPlus } from "lucide-react";
 import AppShell from "@/components/layout/AppShell";
 import MemberForm from "@/components/members/MemberForm";
 import { createClient } from "@/lib/supabase/server";
+import { requireAnyModulePermission } from "@/lib/security/routeGuard";
 
 export default async function NewMemberPage() {
+  await requireAnyModulePermission(["members"], "create");
   const supabase = await createClient();
 
   const {

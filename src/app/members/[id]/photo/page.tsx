@@ -4,6 +4,7 @@ import { ArrowLeft, Camera } from "lucide-react";
 import AppShell from "@/components/layout/AppShell";
 import MemberPhotoUploadForm from "@/components/members/MemberPhotoUploadForm";
 import { createClient } from "@/lib/supabase/server";
+import { requireAnyModulePermission } from "@/lib/security/routeGuard";
 
 type MemberPhotoPageProps = {
   params: Promise<{
@@ -18,6 +19,7 @@ function getMemberName(member: any) {
 }
 
 export default async function MemberPhotoPage({ params }: MemberPhotoPageProps) {
+  await requireAnyModulePermission(["members"], "update");
   const { id } = await params;
 
   const supabase = await createClient();

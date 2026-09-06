@@ -4,6 +4,7 @@ import { ArrowLeft, BookOpenCheck } from "lucide-react";
 import AppShell from "@/components/layout/AppShell";
 import MemberTrainingsManager from "@/components/members/MemberTrainingsManager";
 import { createClient } from "@/lib/supabase/server";
+import { requireAnyModulePermission } from "@/lib/security/routeGuard";
 
 type MemberTrainingsPageProps = {
   params: Promise<{
@@ -20,6 +21,7 @@ function getMemberName(member: any) {
 export default async function MemberTrainingsPage({
   params,
 }: MemberTrainingsPageProps) {
+  await requireAnyModulePermission(["members"], "update");
   const { id } = await params;
 
   const supabase = await createClient();

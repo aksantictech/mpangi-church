@@ -4,6 +4,7 @@ import { ArrowLeft, Building2 } from "lucide-react";
 import AppShell from "@/components/layout/AppShell";
 import MemberDepartmentsManager from "@/components/members/MemberDepartmentsManager";
 import { createClient } from "@/lib/supabase/server";
+import { requireAnyModulePermission } from "@/lib/security/routeGuard";
 
 type MemberDepartmentsPageProps = {
   params: Promise<{
@@ -20,6 +21,7 @@ function getMemberName(member: any) {
 export default async function MemberDepartmentsPage({
   params,
 }: MemberDepartmentsPageProps) {
+  await requireAnyModulePermission(["members"], "update");
   const { id } = await params;
 
   const supabase = await createClient();

@@ -223,13 +223,14 @@ if (photoFile) {
 
     if (selectedDepartmentId) {
       const { error: departmentError } = await supabase
-        .from("department_members")
+        .from("member_departments")
         .insert({
           church_id: churchId,
           department_id: selectedDepartmentId,
           member_id: member.id,
-          role_in_department: "membre",
-          status: "actif",
+          role: "member",
+          status: "active",
+          assigned_at: new Date().toISOString().slice(0, 10),
         });
 
       if (departmentError) {

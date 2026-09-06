@@ -102,6 +102,13 @@ export async function POST(request: Request) {
       return NextResponse.json({ error }, { status });
     }
 
+    if (["responsable_d", "department_leader"].includes(String(profile.role || "").toLowerCase())) {
+      return NextResponse.json(
+        { error: "Votre rôle permet la consultation des membres du département, pas la modification de leur dossier." },
+        { status: 403 }
+      );
+    }
+
     const allowed =
       action === "delete" || action === "archive"
         ? await canAccessAnyModule(["members"], "delete")

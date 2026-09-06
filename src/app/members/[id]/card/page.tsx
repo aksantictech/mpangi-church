@@ -5,6 +5,7 @@ import AppShell from "@/components/layout/AppShell";
 import MemberCardPrint from "@/components/members/MemberCardPrint";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
+import { getProfileDepartmentIds } from "@/lib/security/departmentScope";
 
 type MemberCardPageProps = {
   params: Promise<{
@@ -105,6 +106,29 @@ export default async function MemberCardPage({ params }: MemberCardPageProps) {
 
   if (!member) {
     redirect("/members");
+  }
+
+  const isDepartmentResponsible = ["responsable_d", "department_leader"].includes(
+    String(profile.role || "").toLowerCase()
+  );
+  if (isDepartmentResponsible) {
+    const departmentIds = await getProfileDepartmentIds({
+      profileId: profile.id,
+      churchId: profile.church_id,
+      email: user.email,
+    });
+    const { data: scopedAssignment } = departmentIds.length
+      ? await admin
+          .from("member_departments")
+          .select("member_id")
+          .eq("church_id", profile.church_id)
+          .eq("member_id", member.id)
+          .eq("status", "active")
+          .in("department_id", departmentIds)
+          .limit(1)
+          .maybeSingle()
+      : { data: null };
+    if (!scopedAssignment) redirect("/members");
   }
 
   const { data: memberDepartments } = await admin

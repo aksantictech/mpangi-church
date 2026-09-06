@@ -11,7 +11,9 @@ import {
 } from "lucide-react";
 import AppShell from "@/components/layout/AppShell";
 import MemberQrCodeCard from "@/components/members/MemberQrCodeCard";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
+import { getProfileDepartmentIds } from "@/lib/security/departmentScope";
 
 type MemberQrPageProps = {
   params: Promise<{
@@ -111,6 +113,30 @@ export default async function MemberQrPage({ params }: MemberQrPageProps) {
 
   if (member.church_id !== profile.church_id) {
     notFound();
+  }
+
+  const isDepartmentResponsible = ["responsable_d", "department_leader"].includes(
+    String(profile.role || "").toLowerCase()
+  );
+  if (isDepartmentResponsible) {
+    const departmentIds = await getProfileDepartmentIds({
+      profileId: profile.id,
+      churchId: profile.church_id,
+      email: user.email,
+    });
+    const admin = createAdminClient();
+    const { data: scopedAssignment } = departmentIds.length
+      ? await admin
+          .from("member_departments")
+          .select("member_id")
+          .eq("church_id", profile.church_id)
+          .eq("member_id", member.id)
+          .eq("status", "active")
+          .in("department_id", departmentIds)
+          .limit(1)
+          .maybeSingle()
+      : { data: null };
+    if (!scopedAssignment) notFound();
   }
 
   const church = firstItem<any>(member.churches);

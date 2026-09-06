@@ -1,26 +1,29 @@
 # Mpangi-church — Audit tables mobiles
 
-Date: 2026-07-12T11:05:05.738Z
+Date: 2026-09-06T10:51:14.833Z
 
 ## Résumé
 
-- Pages avec tableaux : 13
-- Pages couvertes par cartes automatiques globales : 10
+- Pages avec tableaux : 16
+- Pages couvertes par cartes automatiques globales : 13
 - Pages ayant déjà une logique mobile manuelle : 3
 
 ## Pages couvertes par les cartes automatiques
 
 | Route | Tables | Fichier |
 |---|---:|---|
-| `/departments` | 1 | `src/app/departments/page.tsx` |
 | `/events` | 1 | `src/app/events/page.tsx` |
 | `/finance/reports` | 1 | `src/app/finance/reports/page.tsx` |
-| `/members` | 1 | `src/app/members/page.tsx` |
+| `/reports/attendance` | 1 | `src/app/reports/attendance/page.tsx` |
+| `/reports/patrimony` | 1 | `src/app/reports/patrimony/page.tsx` |
 | `/settings/trainings` | 1 | `src/app/settings/trainings/page.tsx` |
 | `/souls` | 1 | `src/app/souls/page.tsx` |
+| `/souls/intake` | 1 | `src/app/souls/intake/page.tsx` |
+| `/super-admin/analytics` | 1 | `src/app/super-admin/analytics/page.tsx` |
 | `/super-admin/churches/[id]` | 1 | `src/app/super-admin/churches/[id]/page.tsx` |
 | `/super-admin/dashboard` | 1 | `src/app/super-admin/dashboard/page.tsx` |
 | `/super-admin/security` | 1 | `src/app/super-admin/security/page.tsx` |
+| `/super-admin/settings/audit-logs` | 1 | `src/app/super-admin/settings/audit-logs/page.tsx` |
 | `/super-admin/users` | 1 | `src/app/super-admin/users/page.tsx` |
 
 ## Pages avec mobile manuel déjà détecté

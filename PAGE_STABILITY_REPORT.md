@@ -1,12 +1,12 @@
 # Mpangi-church — Rapport stabilité pages/layouts
 
-Date: 2026-07-12T11:05:05.602Z
+Date: 2026-09-06T10:51:14.712Z
 
 ## Résumé
 
-- Pages analysées : 127
+- Pages analysées : 168
 - Pages critiques : 0
-- Pages avec avertissements : 12
+- Pages avec avertissements : 0
 
 ## Couverture globale
 
@@ -19,38 +19,13 @@ Aucune page critique détectée.
 
 ## Avertissements
 
-| Route | Fichier | Avertissements |
-|---|---|---|
-| `/church/[slug]/teachings/[id]` | `src/app/church/[slug]/teachings/[id]/page.tsx` | no_visible_empty_state |
-| `/extensions/activities/new` | `src/app/extensions/activities/new/page.tsx` | no_visible_empty_state |
-| `/login` | `src/app/login/page.tsx` | no_visible_empty_state |
-| `/members/[id]/card` | `src/app/members/[id]/card/page.tsx` | no_visible_empty_state |
-| `/mobile-menu` | `src/app/mobile-menu/page.tsx` | no_visible_empty_state |
-| `/patrimony/maintenance/new` | `src/app/patrimony/maintenance/new/page.tsx` | no_visible_empty_state |
-| `/settings` | `src/app/settings/page.tsx` | no_visible_empty_state |
-| `/settings/users/new` | `src/app/settings/users/new/page.tsx` | no_visible_empty_state |
-| `/super-admin/maintenance/predeploy` | `src/app/super-admin/maintenance/predeploy/page.tsx` | no_visible_empty_state |
-| `/super-admin/mobile-checklist` | `src/app/super-admin/mobile-checklist/page.tsx` | no_visible_empty_state |
-| `/super-admin/modules` | `src/app/super-admin/modules/page.tsx` | no_visible_empty_state |
-| `/super-admin/settings` | `src/app/super-admin/settings/page.tsx` | no_visible_empty_state |
+Aucun avertissement.
 
 ## Détail complet
 
 | Route | Type | Shell | Error | Loading | NotFound | Score | Issues | Warnings |
 |---|---|---:|---:|---:|---:|---:|---|---|
-| `/church/[slug]/teachings/[id]` | public | non | oui | oui | oui | 1 | - | no_visible_empty_state |
-| `/extensions/activities/new` | church-app | oui | oui | oui | oui | 1 | - | no_visible_empty_state |
-| `/login` | public | non | oui | oui | oui | 1 | - | no_visible_empty_state |
-| `/members/[id]/card` | church-app | oui | oui | oui | oui | 1 | - | no_visible_empty_state |
-| `/mobile-menu` | church-app | oui | oui | oui | oui | 1 | - | no_visible_empty_state |
-| `/patrimony/maintenance/new` | church-app | oui | oui | oui | oui | 1 | - | no_visible_empty_state |
-| `/settings` | church-app | oui | oui | oui | oui | 1 | - | no_visible_empty_state |
-| `/settings/users/new` | church-app | oui | oui | oui | oui | 1 | - | no_visible_empty_state |
-| `/super-admin/maintenance/predeploy` | super-admin | oui | oui | oui | oui | 1 | - | no_visible_empty_state |
-| `/super-admin/mobile-checklist` | super-admin | oui | oui | oui | oui | 1 | - | no_visible_empty_state |
-| `/super-admin/modules` | super-admin | oui | oui | oui | oui | 1 | - | no_visible_empty_state |
-| `/super-admin/settings` | super-admin | oui | oui | oui | oui | 1 | - | no_visible_empty_state |
-| `/` | redirect | non | oui | oui | oui | 0 | - | - |
+| `/` | public | non | oui | oui | oui | 0 | - | - |
 | `/account/profile` | redirect | non | oui | oui | oui | 0 | - | - |
 | `/account/security` | redirect | non | oui | oui | oui | 0 | - | - |
 | `/administration/correspondence` | church-app | oui | oui | oui | oui | 0 | - | - |
@@ -69,25 +44,36 @@ Aucune page critique détectée.
 | `/administration/transmissions/[id]` | church-app | oui | oui | oui | oui | 0 | - | - |
 | `/administration/transmissions/[id]/edit` | church-app | oui | oui | oui | oui | 0 | - | - |
 | `/administration/transmissions/new` | church-app | oui | oui | oui | oui | 0 | - | - |
+| `/alerts` | redirect | non | oui | oui | oui | 0 | - | - |
 | `/appointments` | church-app | oui | oui | oui | oui | 0 | - | - |
+| `/assistant` | church-app | oui | oui | oui | oui | 0 | - | - |
 | `/attendance` | church-app | oui | oui | oui | oui | 0 | - | - |
 | `/attendance/reports/[eventId]` | church-app | oui | oui | oui | oui | 0 | - | - |
 | `/attendance/scanner` | church-app | oui | oui | oui | oui | 0 | - | - |
 | `/attendance/scanner/[eventId]` | church-app | oui | oui | oui | oui | 0 | - | - |
+| `/bible` | church-app | oui | oui | oui | oui | 0 | - | - |
 | `/church/[slug]` | public | non | oui | oui | oui | 0 | - | - |
+| `/church/[slug]/account-request` | public | non | oui | oui | oui | 0 | - | - |
 | `/church/[slug]/appointment` | public | non | oui | oui | oui | 0 | - | - |
 | `/church/[slug]/bible` | public | non | oui | oui | oui | 0 | - | - |
+| `/church/[slug]/don` | public | non | oui | oui | oui | 0 | - | - |
+| `/church/[slug]/don/success` | public | non | oui | oui | oui | 0 | - | - |
 | `/church/[slug]/install` | public | non | oui | oui | oui | 0 | - | - |
 | `/church/[slug]/join` | public | non | oui | oui | oui | 0 | - | - |
+| `/church/[slug]/live` | public | non | oui | oui | oui | 0 | - | - |
 | `/church/[slug]/member-registration` | public | non | oui | oui | oui | 0 | - | - |
+| `/church/[slug]/notifications` | public | non | oui | oui | oui | 0 | - | - |
 | `/church/[slug]/prayer` | public | non | oui | oui | oui | 0 | - | - |
 | `/church/[slug]/teachings` | public | non | oui | oui | oui | 0 | - | - |
+| `/church/[slug]/teachings/[id]` | public | non | oui | oui | oui | 0 | - | - |
 | `/church/[slug]/testimony` | public | non | oui | oui | oui | 0 | - | - |
 | `/dashboard` | church-app | oui | oui | oui | oui | 0 | - | - |
+| `/dashboard/role` | redirect | non | oui | oui | oui | 0 | - | - |
 | `/departments` | church-app | oui | oui | oui | oui | 0 | - | - |
 | `/departments/[id]` | church-app | oui | oui | oui | oui | 0 | - | - |
 | `/departments/[id]/edit` | church-app | oui | oui | oui | oui | 0 | - | - |
 | `/departments/new` | church-app | oui | oui | oui | oui | 0 | - | - |
+| `/dev/clear-cache` | technical | non | oui | oui | oui | 0 | - | - |
 | `/events` | church-app | oui | oui | oui | oui | 0 | - | - |
 | `/events/[id]` | church-app | oui | oui | oui | oui | 0 | - | - |
 | `/events/[id]/edit` | church-app | oui | oui | oui | oui | 0 | - | - |
@@ -95,6 +81,7 @@ Aucune page critique détectée.
 | `/extensions` | church-app | oui | oui | oui | oui | 0 | - | - |
 | `/extensions/[id]/edit` | church-app | oui | oui | oui | oui | 0 | - | - |
 | `/extensions/activities` | church-app | oui | oui | oui | oui | 0 | - | - |
+| `/extensions/activities/new` | church-app | oui | oui | oui | oui | 0 | - | - |
 | `/extensions/new` | church-app | oui | oui | oui | oui | 0 | - | - |
 | `/extensions/reports` | church-app | oui | oui | oui | oui | 0 | - | - |
 | `/finance` | church-app | oui | oui | oui | oui | 0 | - | - |
@@ -102,6 +89,7 @@ Aucune page critique détectée.
 | `/finance/budgets/[id]` | church-app | oui | oui | oui | oui | 0 | - | - |
 | `/finance/budgets/[id]/edit` | church-app | oui | oui | oui | oui | 0 | - | - |
 | `/finance/budgets/new` | church-app | oui | oui | oui | oui | 0 | - | - |
+| `/finance/donations` | church-app | oui | oui | oui | oui | 0 | - | - |
 | `/finance/expenses` | church-app | oui | oui | oui | oui | 0 | - | - |
 | `/finance/expenses/[id]` | church-app | oui | oui | oui | oui | 0 | - | - |
 | `/finance/expenses/new` | church-app | oui | oui | oui | oui | 0 | - | - |
@@ -111,14 +99,22 @@ Aucune page critique détectée.
 | `/finance/reports` | church-app | oui | oui | oui | oui | 0 | - | - |
 | `/inbox` | church-app | oui | oui | oui | oui | 0 | - | - |
 | `/install` | public | non | oui | oui | oui | 0 | - | - |
+| `/live` | redirect | non | oui | oui | oui | 0 | - | - |
+| `/login` | public | non | oui | oui | oui | 0 | - | - |
+| `/main-domain-required` | public | non | oui | oui | oui | 0 | - | - |
 | `/members` | church-app | oui | oui | oui | oui | 0 | - | - |
 | `/members/[id]` | church-app | oui | oui | oui | oui | 0 | - | - |
+| `/members/[id]/card` | church-app | oui | oui | oui | oui | 0 | - | - |
 | `/members/[id]/departments` | church-app | oui | oui | oui | oui | 0 | - | - |
 | `/members/[id]/edit` | church-app | oui | oui | oui | oui | 0 | - | - |
 | `/members/[id]/photo` | church-app | oui | oui | oui | oui | 0 | - | - |
 | `/members/[id]/qr` | church-app | oui | oui | oui | oui | 0 | - | - |
 | `/members/[id]/trainings` | church-app | oui | oui | oui | oui | 0 | - | - |
 | `/members/new` | church-app | oui | oui | oui | oui | 0 | - | - |
+| `/mobile-maintenance` | church-app | oui | oui | oui | oui | 0 | - | - |
+| `/mobile-menu` | church-app | oui | oui | oui | oui | 0 | - | - |
+| `/modules` | public | non | oui | oui | oui | 0 | - | - |
+| `/my-work` | church-app | oui | oui | oui | oui | 0 | - | - |
 | `/notifications` | church-app | oui | oui | oui | oui | 0 | - | - |
 | `/offline` | public | non | oui | oui | oui | 0 | - | - |
 | `/patrimony` | church-app | oui | oui | oui | oui | 0 | - | - |
@@ -127,38 +123,70 @@ Aucune page critique détectée.
 | `/patrimony/assets/[id]/edit` | church-app | oui | oui | oui | oui | 0 | - | - |
 | `/patrimony/assets/new` | church-app | oui | oui | oui | oui | 0 | - | - |
 | `/patrimony/maintenance` | church-app | oui | oui | oui | oui | 0 | - | - |
+| `/patrimony/maintenance/new` | church-app | oui | oui | oui | oui | 0 | - | - |
 | `/patrimony/movements` | church-app | oui | oui | oui | oui | 0 | - | - |
 | `/patrimony/movements/new` | church-app | oui | oui | oui | oui | 0 | - | - |
+| `/pricing` | public | non | oui | oui | oui | 0 | - | - |
 | `/profile` | church-app | oui | oui | oui | oui | 0 | - | - |
 | `/profile/password` | church-app | oui | oui | oui | oui | 0 | - | - |
 | `/public-requests` | church-app | oui | oui | oui | oui | 0 | - | - |
 | `/publications` | church-app | oui | oui | oui | oui | 0 | - | - |
+| `/publications/[id]/edit` | church-app | oui | oui | oui | oui | 0 | - | - |
+| `/reports` | church-app | oui | oui | oui | oui | 0 | - | - |
+| `/reports/attendance` | church-app | oui | oui | oui | oui | 0 | - | - |
+| `/reports/departments` | church-app | oui | oui | oui | oui | 0 | - | - |
+| `/reports/patrimony` | church-app | oui | oui | oui | oui | 0 | - | - |
+| `/settings` | church-app | oui | oui | oui | oui | 0 | - | - |
+| `/settings/donations` | church-app | oui | oui | oui | oui | 0 | - | - |
 | `/settings/live-stream` | church-app | oui | oui | oui | oui | 0 | - | - |
+| `/settings/member-account-requests` | church-app | oui | oui | oui | oui | 0 | - | - |
 | `/settings/member-registration` | church-app | oui | oui | oui | oui | 0 | - | - |
 | `/settings/public-page` | church-app | oui | oui | oui | oui | 0 | - | - |
+| `/settings/roles` | church-app | oui | oui | oui | oui | 0 | - | - |
+| `/settings/security` | redirect | non | oui | oui | oui | 0 | - | - |
+| `/settings/security-audit` | church-app | oui | oui | oui | oui | 0 | - | - |
+| `/settings/security-validation` | church-app | oui | oui | oui | oui | 0 | - | - |
 | `/settings/system-check` | church-app | oui | oui | oui | oui | 0 | - | - |
 | `/settings/trainings` | church-app | oui | oui | oui | oui | 0 | - | - |
 | `/settings/trainings/[id]` | church-app | oui | oui | oui | oui | 0 | - | - |
 | `/settings/trainings/[id]/edit` | church-app | oui | oui | oui | oui | 0 | - | - |
 | `/settings/users` | church-app | oui | oui | oui | oui | 0 | - | - |
+| `/settings/users/new` | church-app | oui | oui | oui | oui | 0 | - | - |
+| `/settings/users/new/news` | redirect | non | oui | oui | oui | 0 | - | - |
 | `/souls` | church-app | oui | oui | oui | oui | 0 | - | - |
 | `/souls/[id]` | church-app | oui | oui | oui | oui | 0 | - | - |
 | `/souls/[id]/edit` | church-app | oui | oui | oui | oui | 0 | - | - |
+| `/souls/intake` | church-app | oui | oui | oui | oui | 0 | - | - |
+| `/souls/intake/new` | church-app | oui | oui | oui | oui | 0 | - | - |
 | `/souls/new` | church-app | oui | oui | oui | oui | 0 | - | - |
 | `/super-admin` | redirect | non | oui | oui | oui | 0 | - | - |
+| `/super-admin/analytics` | super-admin | oui | oui | oui | oui | 0 | - | - |
+| `/super-admin/apps` | super-admin | oui | oui | oui | oui | 0 | - | - |
 | `/super-admin/churches` | super-admin | oui | oui | oui | oui | 0 | - | - |
 | `/super-admin/churches/[id]` | super-admin | oui | oui | oui | oui | 0 | - | - |
 | `/super-admin/churches/[id]/edit` | super-admin | oui | oui | oui | oui | 0 | - | - |
 | `/super-admin/churches/[id]/modules` | super-admin | oui | oui | oui | oui | 0 | - | - |
+| `/super-admin/churches/[id]/onboarding` | super-admin | oui | oui | oui | oui | 0 | - | - |
 | `/super-admin/churches/[id]/users/new` | super-admin | oui | oui | oui | oui | 0 | - | - |
 | `/super-admin/churches/new` | super-admin | oui | oui | oui | oui | 0 | - | - |
 | `/super-admin/dashboard` | super-admin | oui | oui | oui | oui | 0 | - | - |
 | `/super-admin/maintenance` | super-admin | oui | oui | oui | oui | 0 | - | - |
+| `/super-admin/maintenance/predeploy` | super-admin | oui | oui | oui | oui | 0 | - | - |
+| `/super-admin/mobile-checklist` | super-admin | oui | oui | oui | oui | 0 | - | - |
+| `/super-admin/modules` | super-admin | oui | oui | oui | oui | 0 | - | - |
+| `/super-admin/onboarding` | super-admin | oui | oui | oui | oui | 0 | - | - |
 | `/super-admin/profile` | super-admin | oui | oui | oui | oui | 0 | - | - |
 | `/super-admin/profile/password` | super-admin | oui | oui | oui | oui | 0 | - | - |
 | `/super-admin/security` | super-admin | oui | oui | oui | oui | 0 | - | - |
+| `/super-admin/settings` | super-admin | oui | oui | oui | oui | 0 | - | - |
+| `/super-admin/settings/audit-logs` | super-admin | oui | oui | oui | oui | 0 | - | - |
+| `/super-admin/settings/users/new` | redirect | non | oui | oui | oui | 0 | - | - |
+| `/super-admin/settings/users/news` | redirect | non | oui | oui | oui | 0 | - | - |
 | `/super-admin/users` | super-admin | oui | oui | oui | oui | 0 | - | - |
-| `/super-admin/users/new` | redirect | non | oui | oui | oui | 0 | - | - |
+| `/super-admin/users/[profileId]` | super-admin | oui | oui | oui | oui | 0 | - | - |
+| `/super-admin/users/[profileId]/edit` | super-admin | oui | oui | oui | oui | 0 | - | - |
+| `/super-admin/users/new` | super-admin | oui | oui | oui | oui | 0 | - | - |
+| `/super-admin/users/news` | redirect | non | oui | oui | oui | 0 | - | - |
 | `/teachings` | church-app | oui | oui | oui | oui | 0 | - | - |
 | `/teachings/[id]` | church-app | oui | oui | oui | oui | 0 | - | - |
 | `/teachings/[id]/edit` | church-app | oui | oui | oui | oui | 0 | - | - |

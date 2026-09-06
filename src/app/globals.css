@@ -86,3 +86,23 @@ textarea.mpangi-form-control {
   color: #64748b;
   opacity: 1;
 }
+
+.member-action-link {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 0.875rem;
+  background: #f1f5f9;
+  padding: 0.65rem 0.9rem;
+  color: #334155;
+  font-size: 0.875rem;
+  font-weight: 800;
+  transition: background-color 160ms ease, color 160ms ease;
+}
+
+.member-action-link:hover {
+  background: #e8f1fb;
+  color: #15558f;
+}
