@@ -91,7 +91,9 @@ export default async function MembersPage({ searchParams }: MembersPageProps) {
   const { data: membersRaw, error: membersError } = await membersQuery;
   const members = (membersRaw || []) as Array<Record<string, any>>;
   const memberIds = members.map((member) => member.id);
-  const ninetyDaysAgo = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString();
+  const attendanceWindowStart = new Date();
+  attendanceWindowStart.setDate(attendanceWindowStart.getDate() - 90);
+  const ninetyDaysAgo = attendanceWindowStart.toISOString();
 
   const [{ data: departmentAssignments }, { data: attendances }] = memberIds.length
     ? await Promise.all([

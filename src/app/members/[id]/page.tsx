@@ -96,7 +96,9 @@ export default async function MemberDetailsPage({ params }: MemberDetailsPagePro
   }
 
   const canUpdate = !isDepartmentResponsible && (await canAccessAnyModule(["members"], "update"));
-  const ninetyDaysAgo = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString();
+  const attendanceWindowStart = new Date();
+  attendanceWindowStart.setDate(attendanceWindowStart.getDate() - 90);
+  const ninetyDaysAgo = attendanceWindowStart.toISOString();
 
   const [departmentResult, trainingResult, attendanceResult, pastoralResult] = await Promise.all([
     admin.from("member_departments").select("department_id, role, status, assigned_at, departments(name)").eq("church_id", profile.church_id).eq("member_id", id).eq("status", "active").order("assigned_at", { ascending: false }),
