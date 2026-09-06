@@ -35,3 +35,28 @@ export function getMemberStatusLabel(value?: string | null) {
   };
   return labels[value || ""] || value?.replaceAll("_", " ") || "Non défini";
 }
+
+export function getDiscipleshipStageLabel(value?: string | null) {
+  const labels: Record<string, string> = {
+    accueil: "Accueil / découverte",
+    nouvelle_naissance: "Nouvelle naissance",
+    fondements: "Fondements de la foi",
+    bapteme: "Préparation au baptême",
+    integration: "Intégration",
+    service: "Service actif",
+    leadership: "Leadership",
+    maturite: "Maturité / mentorat",
+  };
+  return labels[value || ""] || value?.replaceAll("_", " ") || "À définir";
+}
+
+export function getFamilyRoleLabel(value?: string | null) {
+  const labels: Record<string, string> = {
+    responsable: "Responsable du foyer",
+    conjoint: "Conjoint(e)",
+    enfant: "Enfant",
+    parent: "Parent",
+    autre: "Autre proche",
+  };
+  return labels[value || ""] || value?.replaceAll("_", " ") || "Non renseigné";
+}

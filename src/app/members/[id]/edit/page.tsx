@@ -73,7 +73,28 @@ export default async function MemberEditPage({ params }: MemberEditPageProps) {
       training_notes,
       notes,
       member_type,
-      status
+      status,
+      preferred_name,
+      family_name,
+      family_role,
+      spouse_name,
+      children_names,
+      anniversary_date,
+      emergency_contact_name,
+      emergency_contact_phone,
+      emergency_contact_relationship,
+      conversion_date,
+      baptism_date,
+      membership_date,
+      previous_church,
+      discipleship_stage,
+      mentor_name,
+      training_goal,
+      last_training_review_date,
+      small_group,
+      ministry_interests,
+      spiritual_gifts,
+      volunteer_availability
     `
     )
     .eq("id", id)
@@ -88,6 +109,11 @@ export default async function MemberEditPage({ params }: MemberEditPageProps) {
   if (member.church_id !== profile.church_id) {
     notFound();
   }
+
+  const [{ data: trainingPrograms }, { data: trainingAssignments }] = await Promise.all([
+    supabase.from("training_programs").select("id, name").eq("church_id", profile.church_id).eq("status", "active").order("sort_order", { ascending: true }).order("name", { ascending: true }),
+    supabase.from("member_trainings").select("id, training_program_id").eq("church_id", profile.church_id).eq("member_id", member.id).not("training_program_id", "is", null),
+  ]);
 
   return (
     <AppShell>
@@ -123,7 +149,7 @@ export default async function MemberEditPage({ params }: MemberEditPageProps) {
           </div>
         </section>
 
-        <MemberEditForm member={member} />
+        <MemberEditForm member={member} trainingPrograms={trainingPrograms ?? []} trainingAssignments={trainingAssignments ?? []} />
       </div>
     </AppShell>
   );

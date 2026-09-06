@@ -4,6 +4,7 @@ import {
   AlertTriangle,
   CalendarHeart,
   CheckCircle2,
+  HeartHandshake,
   Plus,
   UserRoundCheck,
   UsersRound,
@@ -23,6 +24,8 @@ function profileCompleteness(member: Record<string, unknown>) {
   const fields = [
     "first_name", "last_name", "gender", "birth_date", "phone", "email",
     "address", "city", "profession", "marital_status", "member_type", "spiritual_status",
+    "family_name", "emergency_contact_name", "baptism_date", "discipleship_stage",
+    "small_group", "ministry_interests",
   ];
   const completed = fields.filter((field) => Boolean(member[field])).length;
   return Math.round((completed / fields.length) * 100);
@@ -76,8 +79,11 @@ export default async function MembersPage({ searchParams }: MembersPageProps) {
     .from("members")
     .select(`
       id, first_name, middle_name, last_name, gender, birth_date,
+      preferred_name,
       phone, whatsapp, email, address, city, commune, quarter,
       profession, marital_status, member_type, spiritual_status,
+      family_name, family_role, discipleship_stage, small_group,
+      emergency_contact_name, baptism_date, ministry_interests,
       status, photo_url, created_at, archived_at
     `)
     .eq("church_id", churchId)
@@ -95,12 +101,13 @@ export default async function MembersPage({ searchParams }: MembersPageProps) {
   attendanceWindowStart.setDate(attendanceWindowStart.getDate() - 90);
   const ninetyDaysAgo = attendanceWindowStart.toISOString();
 
-  const [{ data: departmentAssignments }, { data: attendances }] = memberIds.length
+  const [{ data: departmentAssignments }, { data: attendances }, { data: trainingAssignments }] = memberIds.length
     ? await Promise.all([
         admin.from("member_departments").select("member_id, department_id, departments(name)").eq("church_id", churchId).eq("status", "active").in("member_id", memberIds),
         admin.from("event_attendances").select("member_id, check_in_at").eq("church_id", churchId).gte("check_in_at", ninetyDaysAgo).in("member_id", memberIds).order("check_in_at", { ascending: false }),
+        admin.from("member_trainings").select("member_id, status, completed").eq("church_id", churchId).in("member_id", memberIds),
       ])
-    : [{ data: [] }, { data: [] }];
+    : [{ data: [] }, { data: [] }, { data: [] }];
 
   const departmentNamesByMember = new Map<string, string[]>();
   for (const assignment of departmentAssignments || []) {
@@ -116,21 +123,36 @@ export default async function MembersPage({ searchParams }: MembersPageProps) {
     attendanceByMember.set(attendance.member_id, { count: current.count + 1, latest: current.latest || attendance.check_in_at });
   }
 
+  const trainingByMember = new Map<string, { total: number; completed: number }>();
+  for (const training of trainingAssignments || []) {
+    const current = trainingByMember.get(training.member_id) || { total: 0, completed: 0 };
+    const completed = Boolean(training.completed) || ["terminee", "completed"].includes(training.status || "");
+    trainingByMember.set(training.member_id, { total: current.total + 1, completed: current.completed + (completed ? 1 : 0) });
+  }
+
   const directoryMembers: MemberDirectoryItem[] = members.map((member) => ({
     id: member.id,
     firstName: member.first_name || "",
+    preferredName: member.preferred_name,
     middleName: member.middle_name,
     lastName: member.last_name || "",
     phone: member.phone,
     email: member.email,
+    city: member.city,
     photoUrl: member.photo_url,
     memberType: member.member_type,
     status: member.status,
     createdAt: member.created_at,
     archivedAt: member.archived_at,
+    familyName: member.family_name,
+    familyRole: member.family_role,
+    discipleshipStage: member.discipleship_stage,
+    smallGroup: member.small_group,
     departmentNames: departmentNamesByMember.get(member.id) || [],
     lastAttendanceAt: attendanceByMember.get(member.id)?.latest || null,
     attendanceCount90Days: attendanceByMember.get(member.id)?.count || 0,
+    trainingCount: trainingByMember.get(member.id)?.total || 0,
+    completedTrainingCount: trainingByMember.get(member.id)?.completed || 0,
     profileCompleteness: profileCompleteness(member),
   }));
 
@@ -138,6 +160,7 @@ export default async function MembersPage({ searchParams }: MembersPageProps) {
   const followUpCount = members.filter((member) => ["a_suivre", "en_suivi", "irregulier", "inactif"].includes(member.status)).length;
   const pendingCount = members.filter((member) => member.status === "en_attente").length;
   const birthdaysCount = members.filter((member) => hasBirthdayWithinDays(member.birth_date, 30)).length;
+  const familyCount = new Set(members.map((member) => String(member.family_name || "").trim().toLowerCase()).filter(Boolean)).size;
 
   return (
     <AppShell>
@@ -166,8 +189,9 @@ export default async function MembersPage({ searchParams }: MembersPageProps) {
           </section>
         )}
 
-        <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-5">
           <MetricCard title="Dossiers actifs" value={activeCount} description={`${members.length} membres au total`} icon={UserRoundCheck} accent="green" href="/members?status=actif" />
+          <MetricCard title="Foyers suivis" value={familyCount} description="Familles renseignées" icon={HeartHandshake} accent="blue" href="/members" />
           <MetricCard title="Suivis prioritaires" value={followUpCount} description="À suivre ou irréguliers" icon={AlertTriangle} accent="purple" href="/members?status=a_suivre" />
           <MetricCard title="Anniversaires" value={birthdaysCount} description="Dans les 30 prochains jours" icon={CalendarHeart} accent="purple" href="/members" />
           <MetricCard title="À valider" value={pendingCount} description="Inscriptions publiques" icon={CheckCircle2} accent="blue" href="/members?status=en_attente" />

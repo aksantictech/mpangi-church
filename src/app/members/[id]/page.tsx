@@ -28,7 +28,7 @@ import {
 } from "lucide-react";
 import AppShell from "@/components/layout/AppShell";
 import MemberProfileDownload from "@/components/members/MemberProfileDownload";
-import { getMemberStatusLabel, getMemberTypeLabel } from "@/lib/members/memberLabels";
+import { getDiscipleshipStageLabel, getFamilyRoleLabel, getMemberStatusLabel, getMemberTypeLabel } from "@/lib/members/memberLabels";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getProfileDepartmentIds } from "@/lib/security/departmentScope";
@@ -60,7 +60,7 @@ function getStatusClass(status?: string | null) {
 }
 
 function getProfileCompleteness(member: Record<string, any>) {
-  const fields = ["first_name", "last_name", "gender", "birth_date", "phone", "email", "address", "city", "profession", "marital_status", "member_type", "spiritual_status"];
+  const fields = ["first_name", "last_name", "gender", "birth_date", "phone", "email", "address", "city", "profession", "marital_status", "member_type", "spiritual_status", "family_name", "emergency_contact_name", "baptism_date", "discipleship_stage", "small_group", "ministry_interests"];
   return Math.round((fields.filter((field) => Boolean(member[field])).length / fields.length) * 100);
 }
 
@@ -176,8 +176,23 @@ export default async function MemberDetailsPage({ params }: MemberDetailsPagePro
                   gender: member.gender || "Non renseigné",
                   maritalStatus: member.marital_status || "Non renseigné",
                   profession: member.profession || "Non renseignée",
+                  familyName: member.family_name || "Non renseignée",
+                  familyRole: getFamilyRoleLabel(member.family_role),
+                  spouseName: member.spouse_name || "Non renseigné",
+                  childrenNames: member.children_names || "Non renseignés",
+                  emergencyContact: [member.emergency_contact_name, member.emergency_contact_relationship, member.emergency_contact_phone].filter(Boolean).join(" · ") || "Non renseigné",
                   integration: integrationLabel,
                   spiritualStatus: member.spiritual_status || "Non renseigné",
+                  discipleshipStage: getDiscipleshipStageLabel(member.discipleship_stage),
+                  conversionDate: formatDate(member.conversion_date),
+                  baptismDate: formatDate(member.baptism_date),
+                  membershipDate: formatDate(member.membership_date),
+                  mentorName: member.mentor_name || "Non renseigné",
+                  smallGroup: member.small_group || "Non renseigné",
+                  ministryInterests: member.ministry_interests || "Non renseignés",
+                  spiritualGifts: member.spiritual_gifts || "Non renseignés",
+                  volunteerAvailability: member.volunteer_availability || "Non renseignée",
+                  trainingGoal: member.training_goal || "Non renseigné",
                   departments: departmentNames,
                   trainings: trainingRows.map((item) => item.name),
                   attendanceCount90Days,
@@ -230,6 +245,38 @@ export default async function MemberDetailsPage({ params }: MemberDetailsPagePro
               </div>
             </SectionCard>
 
+            <SectionCard title="Famille et proches" icon={HeartHandshake}>
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                <CompactInfo label="Foyer / famille" value={member.family_name || "Non renseigné"} />
+                <CompactInfo label="Rôle familial" value={getFamilyRoleLabel(member.family_role)} />
+                <CompactInfo label="Conjoint(e)" value={member.spouse_name || "Non renseigné"} />
+                <CompactInfo label="Anniversaire de mariage" value={formatDate(member.anniversary_date)} />
+                <div className="sm:col-span-2"><CompactInfo label="Enfants / personnes du foyer" value={member.children_names || "Non renseignés"} /></div>
+              </div>
+              <div className="mt-3 rounded-2xl border border-violet-100 bg-violet-50 p-4">
+                <p className="text-xs font-black uppercase tracking-wide text-violet-500">Contact d’urgence</p>
+                <p className="mt-1 font-black text-violet-950">{member.emergency_contact_name || "Non renseigné"}</p>
+                <p className="mt-1 text-sm font-semibold text-violet-700">{[member.emergency_contact_relationship, member.emergency_contact_phone].filter(Boolean).join(" · ") || "Coordonnées à compléter"}</p>
+              </div>
+            </SectionCard>
+
+            <SectionCard title="Vie de l’église" icon={Church}>
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                <CompactInfo label="Étape du parcours" value={getDiscipleshipStageLabel(member.discipleship_stage)} />
+                <CompactInfo label="Date de conversion" value={formatDate(member.conversion_date)} />
+                <CompactInfo label="Date de baptême" value={formatDate(member.baptism_date)} />
+                <CompactInfo label="Date d’adhésion" value={formatDate(member.membership_date)} />
+                <CompactInfo label="Mentor / accompagnateur" value={member.mentor_name || "Non renseigné"} />
+                <CompactInfo label="Cellule / groupe" value={member.small_group || "Non renseigné"} />
+              </div>
+              <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                <CompactInfo label="Dons et compétences" value={member.spiritual_gifts || "Non renseignés"} />
+                <CompactInfo label="Intérêts de service" value={member.ministry_interests || "Non renseignés"} />
+                <CompactInfo label="Disponibilités" value={member.volunteer_availability || "Non renseignée"} />
+                <CompactInfo label="Église précédente" value={member.previous_church || "Non renseignée"} />
+              </div>
+            </SectionCard>
+
             <SectionCard title="Service et développement" icon={UsersRound}>
               <div className="grid gap-4 lg:grid-cols-2">
                 <div className="rounded-2xl bg-slate-50 p-4">
@@ -249,6 +296,10 @@ export default async function MemberDetailsPage({ params }: MemberDetailsPagePro
                 </div>
               </div>
               {member.training_notes && <p className="mt-4 rounded-2xl border border-blue-100 bg-blue-50 p-4 text-sm leading-6 text-slate-700">{member.training_notes}</p>}
+              <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                <CompactInfo label="Prochaine étape de formation" value={member.training_goal || "Non renseignée"} />
+                <CompactInfo label="Dernière revue du parcours" value={formatDate(member.last_training_review_date)} />
+              </div>
             </SectionCard>
           </div>
 

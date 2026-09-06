@@ -17,8 +17,23 @@ export type DownloadableMemberProfile = {
   gender: string;
   maritalStatus: string;
   profession: string;
+  familyName: string;
+  familyRole: string;
+  spouseName: string;
+  childrenNames: string;
+  emergencyContact: string;
   integration: string;
   spiritualStatus: string;
+  discipleshipStage: string;
+  conversionDate: string;
+  baptismDate: string;
+  membershipDate: string;
+  mentorName: string;
+  smallGroup: string;
+  ministryInterests: string;
+  spiritualGifts: string;
+  volunteerAvailability: string;
+  trainingGoal: string;
   departments: string[];
   trainings: string[];
   attendanceCount90Days: number;
@@ -109,11 +124,30 @@ export default function MemberProfileDownload({ profile }: { profile: Downloadab
       line("État civil", profile.maritalStatus);
       line("Profession", profile.profession);
 
+      section("Famille et proches");
+      line("Foyer / famille", profile.familyName);
+      line("Rôle familial", profile.familyRole);
+      line("Conjoint(e)", profile.spouseName);
+      line("Enfants / foyer", profile.childrenNames);
+      line("Contact d'urgence", profile.emergencyContact);
+
       section("Parcours dans l’église");
       line("Intégration", profile.integration);
       line("Statut spirituel", profile.spiritualStatus);
+      line("Étape du parcours", profile.discipleshipStage);
+      line("Conversion", profile.conversionDate);
+      line("Baptême", profile.baptismDate);
+      line("Adhésion", profile.membershipDate);
+      line("Mentor", profile.mentorName);
+      line("Cellule / groupe", profile.smallGroup);
       line("Départements", profile.departments.join(", ") || "Aucune affectation");
       line("Formations", profile.trainings.join(", ") || "Aucune formation enregistrée");
+      line("Objectif formation", profile.trainingGoal);
+
+      section("Service et engagement");
+      line("Dons / compétences", profile.spiritualGifts);
+      line("Intérêts de service", profile.ministryInterests);
+      line("Disponibilités", profile.volunteerAvailability);
 
       section("Engagement et accompagnement");
       line("Présences / 90 j", String(profile.attendanceCount90Days));
