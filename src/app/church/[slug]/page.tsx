@@ -29,6 +29,7 @@ import PublicLiveStreamSection from "@/components/public/PublicLiveStreamSection
 import PublicMobileBottomNav from "@/components/public/PublicMobileBottomNav";
 import PublicTestimoniesSection from "@/components/public/PublicTestimoniesSection";
 import { createClient } from "@/lib/supabase/server";
+import { serializeJsonLd } from "@/lib/seo";
 import { buildChurchPublicUrl } from "@/lib/tenant/domain";
 
 export const dynamic = "force-dynamic";
@@ -223,7 +224,9 @@ export async function generateMetadata({
         public_name,
         public_message,
         public_slogan,
-        logo_url
+        logo_url,
+        slug,
+        subdomain
       `
       )
       .eq("slug", slug)
@@ -240,14 +243,35 @@ export async function generateMetadata({
 
   const churchPublicName =
     getPublicChurchName(church);
+  const canonicalUrl = buildChurchPublicUrl(
+    {
+      slug: church.slug || slug,
+      subdomain: church.subdomain,
+    },
+    "/"
+  );
+  const description =
+    church.public_slogan ||
+    church.public_message ||
+    `Page officielle de ${churchPublicName} sur Mpangi-church.`;
 
   return {
     title:
       `${churchPublicName} | Mpangi-church`,
-    description:
-      church.public_slogan ||
-      church.public_message ||
-      `Page officielle de ${churchPublicName} sur Mpangi-church.`,
+    description,
+    alternates: {
+      canonical: canonicalUrl,
+    },
+    openGraph: {
+      type: "website",
+      locale: "fr_CD",
+      url: canonicalUrl,
+      title: churchPublicName,
+      description,
+      images: church.logo_url
+        ? [{ url: church.logo_url, alt: churchPublicName }]
+        : undefined,
+    },
     manifest:
       `/church/${slug}/manifest.webmanifest`,
     icons: {
@@ -469,6 +493,35 @@ export default async function PublicChurchPage({
       textColor,
   } as CSSProperties;
 
+  const canonicalUrl = buildChurchPublicUrl(church, "/");
+  const churchJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Church",
+    "@id": `${canonicalUrl}#church`,
+    name: churchPublicName,
+    url: canonicalUrl,
+    description:
+      church.public_message ||
+      church.public_slogan ||
+      `Page officielle de ${churchPublicName}.`,
+    image: [church.logo_url, church.cover_image_url].filter(Boolean),
+    logo: church.logo_url || undefined,
+    telephone: church.phone || church.whatsapp || undefined,
+    email: church.email || undefined,
+    address:
+      church.address || church.city || church.country
+        ? {
+            "@type": "PostalAddress",
+            streetAddress: church.address || undefined,
+            addressLocality: church.city || undefined,
+            addressCountry: church.country || undefined,
+          }
+        : undefined,
+    sameAs: church.youtube_channel_url
+      ? [church.youtube_channel_url]
+      : undefined,
+  };
+
   return (
     <main
       data-mpangi-public-page
@@ -478,6 +531,12 @@ export default async function PublicChurchPage({
       className="min-h-screen overflow-x-hidden pb-24 lg:pb-0"
       style={tenantStyle}
     >
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: serializeJsonLd(churchJsonLd),
+        }}
+      />
       <style>
         {`
           @keyframes mmFloat {

@@ -1,4 +1,7 @@
+import Image from "next/image";
 import Link from "next/link";
+import { unstable_cache } from "next/cache";
+import type { Metadata } from "next";
 import {
   ArrowRight,
   Bell,
@@ -25,8 +28,15 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { buildChurchPublicUrl } from "@/lib/tenant/domain";
 import CommercialContactForm from "@/components/public/CommercialContactForm";
 import PublicCommercialBottomNav from "@/components/public/PublicCommercialBottomNav";
+import { absoluteUrl, serializeJsonLd } from "@/lib/seo";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
+
+export const metadata: Metadata = {
+  alternates: {
+    canonical: "/",
+  },
+};
 
 const MPANGI_LOGO_SRC = "/icons/icon-192.png";
 const AKSANTIC_URL = "https://aksantictech.com";
@@ -44,24 +54,28 @@ type PublicChurch = {
   status: string | null;
 };
 
-async function getPublicChurches(): Promise<PublicChurch[]> {
-  try {
-    const admin = createAdminClient();
+const getPublicChurches = unstable_cache(
+  async (): Promise<PublicChurch[]> => {
+    try {
+      const admin = createAdminClient();
 
-    const { data, error } = await admin
-      .from("churches")
-      .select("id, name, slug, subdomain, logo_url, city, country, status")
-      .neq("status", "archived")
-      .order("name", { ascending: true })
-      .limit(12);
+      const { data, error } = await admin
+        .from("churches")
+        .select("id, name, slug, subdomain, logo_url, city, country, status")
+        .neq("status", "archived")
+        .order("name", { ascending: true })
+        .limit(12);
 
-    if (error) return [];
+      if (error) return [];
 
-    return (data ?? []) as PublicChurch[];
-  } catch {
-    return [];
-  }
-}
+      return (data ?? []) as PublicChurch[];
+    } catch {
+      return [];
+    }
+  },
+  ["public-church-directory"],
+  { revalidate: 300, tags: ["public-churches"] }
+);
 
 const features = [
   {
@@ -115,9 +129,13 @@ const stats = [
 function ChurchLogo({ church }: { church: PublicChurch }) {
   if (church.logo_url) {
     return (
-      <img
+      <Image
         src={church.logo_url}
         alt={church.name}
+        width={56}
+        height={56}
+        sizes="56px"
+        quality={75}
         className="h-14 w-14 rounded-2xl object-cover"
       />
     );
@@ -136,8 +154,59 @@ export default async function PublicHomePage() {
     (church) => church.status === "active" || !church.status
   );
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": `${absoluteUrl("/")}#organization`,
+        name: "AKSANTIC Technology",
+        url: AKSANTIC_URL,
+        email: AKSANTIC_EMAIL,
+        telephone: "+243801655726",
+        logo: absoluteUrl("/images/mpangi-logo.png"),
+      },
+      {
+        "@type": "SoftwareApplication",
+        "@id": `${absoluteUrl("/")}#software`,
+        name: "Mpangi-Church",
+        url: absoluteUrl("/"),
+        applicationCategory: "BusinessApplication",
+        applicationSubCategory: "Church Management Software",
+        operatingSystem: "Web browser, PWA",
+        inLanguage: "fr",
+        description:
+          "Logiciel web et mobile de gestion d’église : membres, présences QR, dons, finances, départements, suivi pastoral et communication.",
+        image: absoluteUrl("/images/mpangi-logo.png"),
+        provider: {
+          "@id": `${absoluteUrl("/")}#organization`,
+        },
+        offers: {
+          "@type": "Offer",
+          url: absoluteUrl("/pricing"),
+          price: "150",
+          priceCurrency: "USD",
+          category: "Abonnement mensuel à partir de",
+          availability: "https://schema.org/InStock",
+        },
+        featureList: [
+          "Gestion des membres",
+          "Présences par QR code",
+          "Suivi pastoral",
+          "Dons et finances",
+          "Départements et événements",
+          "Application PWA installable",
+        ],
+      },
+    ],
+  };
+
   return (
     <main id="top" data-mpangi-global-home className="min-h-screen overflow-hidden bg-[#F5F9FC] pb-24 text-[#0F172A] lg:pb-0">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
+      />
       <style
         dangerouslySetInnerHTML={{
           __html: `
@@ -176,9 +245,12 @@ export default async function PublicHomePage() {
             title="Visiter AKSANTIC Technology"
           >
             <span className="relative flex h-14 w-14 items-center justify-center rounded-[1.35rem] bg-white shadow-lg shadow-blue-900/20 ring-1 ring-[#DCEAF5]">
-              <img
+              <Image
                 src={MPANGI_LOGO_SRC}
                 alt="Logo Mpangi-church"
+                width={48}
+                height={48}
+                sizes="48px"
                 className="h-12 w-12 rounded-2xl object-contain"
               />
               <span className="absolute -right-1 -top-1 h-4 w-4 rounded-full bg-[#8B5CF6] ring-4 ring-white" />

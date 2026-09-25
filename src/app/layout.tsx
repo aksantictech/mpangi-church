@@ -25,6 +25,7 @@ import MobileRouteExperienceEnhancer from "@/components/mobile/MobileRouteExperi
 import PwaInstallCoordinator from "@/components/pwa/PwaInstallCoordinator";
 import MobilePerformanceCoordinator from "@/components/mobile/MobilePerformanceCoordinator";
 import SiteAnalyticsTracker from "@/components/analytics/SiteAnalyticsTracker";
+import { SITE_URL } from "@/lib/seo";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -36,12 +37,57 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: {
-    default: "Mpangi-church",
+    default: "Mpangi-Church — logiciel de gestion d’église",
     template: "%s | Mpangi-church",
   },
   description:
-    "Application de gestion des églises : membres, présences, départements, événements, suivi pastoral et communication.",
+    "Logiciel web et mobile de gestion d’église en français : membres, présences QR, dons, finances, départements, suivi pastoral et communication.",
+  keywords: [
+    "logiciel gestion église",
+    "application gestion église",
+    "gestion membres église",
+    "présence QR église",
+    "suivi pastoral",
+    "église RDC",
+    "PWA église",
+  ],
+  openGraph: {
+    type: "website",
+    locale: "fr_CD",
+    url: "/",
+    siteName: "Mpangi-Church",
+    title: "Mpangi-Church — logiciel de gestion d’église",
+    description:
+      "Centralisez membres, présences, dons, finances, suivi pastoral et communication dans une application web et mobile.",
+    images: [
+      {
+        url: "/images/mpangi-logo.png",
+        width: 512,
+        height: 512,
+        alt: "Logo Mpangi-Church",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Mpangi-Church — logiciel de gestion d’église",
+    description:
+      "Une plateforme web et mobile pour gérer votre église avec ordre, vision et excellence.",
+    images: ["/images/mpangi-logo.png"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
   manifest: "/manifest.webmanifest",
   icons: {
     icon: "/images/mpangi-logo.png",

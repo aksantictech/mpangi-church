@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
 import {
+  Activity,
   AppWindow,
   BarChart3,
   Boxes,
@@ -26,6 +27,11 @@ const desktopItems = [
     label: "Dashboard",
     href: "/super-admin/dashboard",
     icon: LayoutDashboard,
+  },
+  {
+    label: "Santé",
+    href: "/super-admin/dashboard#application-health",
+    icon: Activity,
   },
   {
     label: "Visites du site",

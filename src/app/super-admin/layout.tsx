@@ -1,5 +1,14 @@
 import { redirect } from "next/navigation";
+import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
+
+export const metadata: Metadata = {
+  title: "Super Admin",
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
 
 export default async function SuperAdminLayout({
   children,

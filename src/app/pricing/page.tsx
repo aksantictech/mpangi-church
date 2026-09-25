@@ -1,4 +1,6 @@
+import Image from "next/image";
 import Link from "next/link";
+import type { Metadata } from "next";
 import type { LucideIcon } from "lucide-react";
 import {
   ArrowRight,
@@ -14,6 +16,16 @@ import {
   Sparkles,
   Wallet,
 } from "lucide-react";
+import { absoluteUrl, serializeJsonLd } from "@/lib/seo";
+
+export const metadata: Metadata = {
+  title: "Tarifs du logiciel de gestion d’église",
+  description:
+    "Comparez les formules Mpangi-Church pour gérer membres, présences, dons, finances, départements et suivi pastoral.",
+  alternates: {
+    canonical: "/pricing",
+  },
+};
 
 const AKSANTIC_URL = "https://aksantictech.com";
 const AKSANTIC_EMAIL = "aksantictech@gmail.com";
@@ -118,13 +130,57 @@ const faq = [
 ];
 
 export default function PricingPage() {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "SoftwareApplication",
+        name: "Mpangi-Church",
+        url: absoluteUrl("/"),
+        applicationCategory: "BusinessApplication",
+        operatingSystem: "Web browser, PWA",
+        offers: plans.map((plan) => ({
+          "@type": "Offer",
+          name: plan.name,
+          url: absoluteUrl("/pricing"),
+          price: plan.monthly.replace(/[^\d]/g, ""),
+          priceCurrency: "USD",
+          description: `${plan.modules}. Installation : ${plan.installation}.`,
+          availability: "https://schema.org/InStock",
+        })),
+      },
+      {
+        "@type": "FAQPage",
+        mainEntity: faq.map((item) => ({
+          "@type": "Question",
+          name: item.question,
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: item.answer,
+          },
+        })),
+      },
+    ],
+  };
+
   return (
     <main className="min-h-screen bg-[#F5F9FC] pb-20 text-[#0F172A] lg:pb-0">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
+      />
       <header className="sticky top-0 z-50 border-b border-[#DCEAF5] bg-white/95 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-4 sm:px-6 lg:px-8">
           <Link href="/" className="flex min-w-0 items-center gap-3">
             <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white shadow-md ring-1 ring-[#DCEAF5]">
-              <img src="/icons/icon-192.png" alt="Mpangi-Church" className="h-10 w-10 rounded-xl object-contain" />
+              <Image
+                src="/icons/icon-192.png"
+                alt="Mpangi-Church"
+                width={40}
+                height={40}
+                sizes="40px"
+                className="h-10 w-10 rounded-xl object-contain"
+              />
             </span>
             <span className="min-w-0">
               <span className="block truncate text-lg font-black text-[#03357A]">Mpangi-Church</span>
