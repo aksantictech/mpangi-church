@@ -16,20 +16,11 @@ import ApplicationHealthPanel, {
 } from "@/components/super-admin/ApplicationHealthPanel";
 import { createClient } from "@/lib/supabase/server";
 
-export default async function SuperAdminDashboardPage() {
-  const supabase = await createClient();
-  const measurementStartedAt = performance.now();
+type SupabaseServerClient = Awaited<ReturnType<typeof createClient>>;
 
-  const [
-    churchesResult,
-    activeChurchesResult,
-    profilesResult,
-    membersResult,
-    superAdminsResult,
-    inactiveProfilesResult,
-    publicChurchesResult,
-    recentChurchesResult,
-  ] = await Promise.all([
+async function loadDashboardData(supabase: SupabaseServerClient) {
+  const measurementStartedAt = performance.now();
+  const results = await Promise.all([
     supabase.from("churches").select("*", { count: "exact", head: true }),
     supabase
       .from("churches")
@@ -59,7 +50,26 @@ export default async function SuperAdminDashboardPage() {
       .limit(5),
   ]);
 
-  const databaseLatencyMs = Math.round(performance.now() - measurementStartedAt);
+  return {
+    results,
+    databaseLatencyMs: Math.round(performance.now() - measurementStartedAt),
+  };
+}
+
+export default async function SuperAdminDashboardPage() {
+  const supabase = await createClient();
+  const { results, databaseLatencyMs } = await loadDashboardData(supabase);
+
+  const [
+    churchesResult,
+    activeChurchesResult,
+    profilesResult,
+    membersResult,
+    superAdminsResult,
+    inactiveProfilesResult,
+    publicChurchesResult,
+    recentChurchesResult,
+  ] = results;
   const churchesCount = churchesResult.count ?? 0;
   const activeChurchesCount = activeChurchesResult.count ?? 0;
   const profilesCount = profilesResult.count ?? 0;

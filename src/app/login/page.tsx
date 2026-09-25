@@ -32,6 +32,33 @@ type ChurchContext = {
   logo_url: string | null;
 };
 
+const LOGIN_REQUEST_TIMEOUT_MS = 15_000;
+
+class LoginRequestTimeoutError extends Error {
+  constructor() {
+    super("login_request_timeout");
+    this.name = "LoginRequestTimeoutError";
+  }
+}
+
+async function withLoginTimeout<T>(request: PromiseLike<T>): Promise<T> {
+  let timeoutId: ReturnType<typeof setTimeout> | undefined;
+
+  try {
+    return await Promise.race([
+      Promise.resolve(request),
+      new Promise<never>((_, reject) => {
+        timeoutId = setTimeout(
+          () => reject(new LoginRequestTimeoutError()),
+          LOGIN_REQUEST_TIMEOUT_MS
+        );
+      }),
+    ]);
+  } finally {
+    if (timeoutId) clearTimeout(timeoutId);
+  }
+}
+
 function getPublicChurchName(church: {
   name?: string | null;
   public_name?: string | null;
@@ -138,152 +165,176 @@ export default function LoginPage() {
     setErrorMessage("");
     setIsLoading(true);
 
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: email.trim(),
-      password,
-    });
+    try {
+      const { data, error } = await withLoginTimeout(
+        supabase.auth.signInWithPassword({
+          email: email.trim(),
+          password,
+        })
+      );
 
-    if (error || !data.user) {
+      if (error || !data.user) {
+        await fetch("/api/audit/auth", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            event: "login.failed",
+            email: email.trim(),
+            churchId: churchInfo?.id || null,
+            reason: error?.message || "invalid_credentials",
+          }),
+        }).catch(() => undefined);
+        setErrorMessage(error?.message || "Identifiants incorrects.");
+        return;
+      }
+
+      const { data: profile, error: profileError } = await withLoginTimeout(
+        supabase
+          .from("profiles")
+          .select("role, church_id, status")
+          .eq("user_id", data.user.id)
+          .maybeSingle()
+      );
+
+      if (profileError || !profile) {
+        await fetch("/api/audit/auth", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            event: "login.failed",
+            email: email.trim(),
+            churchId: churchInfo?.id || null,
+            reason: "profile_missing",
+          }),
+        }).catch(() => undefined);
+        await supabase.auth.signOut();
+
+        setErrorMessage("Profil utilisateur introuvable.");
+        return;
+      }
+
+      if (profile.status && profile.status !== "active") {
+        await fetch("/api/audit/auth", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            event: "login.failed",
+            email: email.trim(),
+            churchId: profile.church_id,
+            reason: "inactive_profile",
+          }),
+        }).catch(() => undefined);
+        await supabase.auth.signOut();
+
+        setErrorMessage("Ce compte est désactivé. Contactez l’administrateur.");
+        return;
+      }
+
+      if (
+        churchInfo?.id &&
+        profile.role !== "super_admin" &&
+        profile.church_id !== churchInfo.id
+      ) {
+        await fetch("/api/audit/auth", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            event: "login.failed",
+            email: email.trim(),
+            churchId: churchInfo.id,
+            reason: "wrong_church",
+          }),
+        }).catch(() => undefined);
+        await supabase.auth.signOut();
+
+        setErrorMessage(
+          "Ce compte n’est pas rattaché à cette église. Veuillez utiliser le bon compte administrateur."
+        );
+        return;
+      }
+
+      // Un utilisateur rattaché à une église ne doit pas utiliser le login global.
+      if (
+        profile.role !== "super_admin" &&
+        profile.church_id &&
+        !churchInfo
+      ) {
+        const { data: profileChurch } = await withLoginTimeout(
+          supabase
+            .from("churches")
+            .select(
+              "id, name, public_name, pwa_name, slug, subdomain, logo_url"
+            )
+            .eq("id", profile.church_id)
+            .maybeSingle()
+        );
+
+        await supabase.auth.signOut();
+
+        if (profileChurch?.slug) {
+          window.location.replace(
+            buildChurchPublicUrl(profileChurch, "/login?redirected=church")
+          );
+          return;
+        }
+
+        setErrorMessage(
+          "Ce compte est rattaché à une église. Veuillez utiliser l’espace de connexion de votre église."
+        );
+        return;
+      }
+
+      const dashboardPath = getDashboardPathByRole(profile.role);
+
       await fetch("/api/audit/auth", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          event: "login.failed",
-          email: email.trim(),
-          churchId: churchInfo?.id || null,
-          reason: error?.message || "invalid_credentials",
+          event: "login.success",
+          churchId: profile.church_id,
         }),
       }).catch(() => undefined);
-      setErrorMessage(error?.message || "Identifiants incorrects.");
-      setIsLoading(false);
-      return;
-    }
 
-    const { data: profile, error: profileError } = await supabase
-      .from("profiles")
-      .select("role, church_id, status")
-      .eq("user_id", data.user.id)
-      .maybeSingle();
+      if (profile.role === "super_admin") {
+        window.location.assign(buildMainAppUrl("/super-admin/dashboard"));
+        return;
+      }
 
-    if (profileError || !profile) {
-      await fetch("/api/audit/auth", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ event: "login.failed", email: email.trim(), churchId: churchInfo?.id || null, reason: "profile_missing" }),
-      }).catch(() => undefined);
-      await supabase.auth.signOut();
+      let targetChurch = churchInfo;
 
-      setErrorMessage("Profil utilisateur introuvable.");
-      setIsLoading(false);
-      return;
-    }
+      if (!targetChurch && profile.church_id) {
+        const { data: profileChurch } = await withLoginTimeout(
+          supabase
+            .from("churches")
+            .select(
+              "id, name, public_name, pwa_name, slug, subdomain, logo_url"
+            )
+            .eq("id", profile.church_id)
+            .maybeSingle()
+        );
 
-    if (profile.status && profile.status !== "active") {
-      await fetch("/api/audit/auth", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ event: "login.failed", email: email.trim(), churchId: profile.church_id, reason: "inactive_profile" }),
-      }).catch(() => undefined);
-      await supabase.auth.signOut();
+        targetChurch = (profileChurch as ChurchContext | null) || null;
+      }
 
-      setErrorMessage("Ce compte est désactivé. Contactez l’administrateur.");
-      setIsLoading(false);
-      return;
-    }
+      if (targetChurch?.slug) {
+        window.location.assign(
+          buildChurchPublicUrl(targetChurch, dashboardPath)
+        );
+        return;
+      }
 
-    if (
-      churchInfo?.id &&
-      profile.role !== "super_admin" &&
-      profile.church_id !== churchInfo.id
-    ) {
-      await fetch("/api/audit/auth", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ event: "login.failed", email: email.trim(), churchId: churchInfo.id, reason: "wrong_church" }),
-      }).catch(() => undefined);
-      await supabase.auth.signOut();
-
+      router.replace(dashboardPath);
+      router.refresh();
+    } catch (error) {
+      console.error("Unexpected login failure", error);
       setErrorMessage(
-        "Ce compte n’est pas rattaché à cette église. Veuillez utiliser le bon compte administrateur."
+        error instanceof LoginRequestTimeoutError
+          ? "Le service de connexion met trop de temps à répondre. Vérifiez votre connexion Internet, ainsi que la date et l’heure de cet appareil, puis réessayez."
+          : "Connexion impossible. Vérifiez votre réseau, VPN ou antivirus, puis réessayez."
       );
+    } finally {
       setIsLoading(false);
-      return;
     }
-// Un utilisateur rattaché à une église
-// ne doit pas utiliser le login global.
-if (
-  profile.role !== "super_admin" &&
-  profile.church_id &&
-  !churchInfo
-) {
-  const { data: profileChurch } =
-    await supabase
-      .from("churches")
-      .select(
-        "id, name, public_name, pwa_name, slug, subdomain, logo_url"
-      )
-      .eq("id", profile.church_id)
-      .maybeSingle();
-
-  await supabase.auth.signOut();
-
-  if (profileChurch?.slug) {
-    window.location.replace(
-      buildChurchPublicUrl(
-        profileChurch,
-        "/login?redirected=church"
-      )
-    );
-
-    return;
-  }
-
-  setErrorMessage(
-    "Ce compte est rattaché à une église. Veuillez utiliser l’espace de connexion de votre église."
-  );
-
-  setIsLoading(false);
-  return;
-}
-    const dashboardPath = getDashboardPathByRole(profile.role);
-
-    await fetch("/api/audit/auth", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ event: "login.success", churchId: profile.church_id }),
-    }).catch(() => undefined);
-
-    if (profile.role === "super_admin") {
-      window.location.assign(
-        buildMainAppUrl("/super-admin/dashboard")
-      );
-      return;
-    }
-
-    let targetChurch = churchInfo;
-
-    if (!targetChurch && profile.church_id) {
-      const { data: profileChurch } = await supabase
-        .from("churches")
-        .select(
-          "id, name, public_name, pwa_name, slug, subdomain, logo_url"
-        )
-        .eq("id", profile.church_id)
-        .maybeSingle();
-
-      targetChurch =
-        (profileChurch as ChurchContext | null) || null;
-    }
-
-    if (targetChurch?.slug) {
-      window.location.assign(
-        buildChurchPublicUrl(targetChurch, dashboardPath)
-      );
-      return;
-    }
-
-    router.replace(dashboardPath);
-    router.refresh();
   }
 
   return (
