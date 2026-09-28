@@ -88,10 +88,13 @@ const MODULE_CATEGORY: Record<string, ModuleCategoryCode> = {
   members: "community",
   attendance: "community",
   souls: "community",
+  people_flows: "community",
+  groups: "community",
   public_requests: "community",
 
   departments: "ministry",
   events: "ministry",
+  services: "ministry",
   teachings: "ministry",
   appointments: "ministry",
   testimonies: "ministry",

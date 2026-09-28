@@ -180,6 +180,9 @@ function fallbackPermissions(
             "members",
             "attendance",
             "souls",
+            "people_flows",
+            "groups",
+            "services",
             "departments",
             "events",
             "publications",
@@ -196,6 +199,9 @@ function fallbackPermissions(
             "members",
             "attendance",
             "souls",
+            "people_flows",
+            "groups",
+            "services",
             "events",
             "teachings",
             "correspondence",
@@ -290,6 +296,8 @@ function fallbackPermissions(
       "members",
       "attendance",
       "departments",
+      "groups",
+      "services",
       "events",
       "administrative_tasks",
     ].includes(moduleCode);
@@ -307,7 +315,7 @@ function fallbackPermissions(
   }
 
   if (WORKER_ROLES.has(role) || role === "worker") {
-    return ["members", "attendance", "events"].includes(moduleCode)
+    return ["members", "attendance", "events", "groups", "services"].includes(moduleCode)
       ? {
           ...EMPTY_PERMISSIONS,
           can_view: true,
@@ -318,7 +326,7 @@ function fallbackPermissions(
   if (VIEWER_ROLES.has(role) || role === "readonly") {
     return {
       ...EMPTY_PERMISSIONS,
-      can_view: ["members", "attendance"].includes(moduleCode),
+      can_view: ["members", "attendance", "groups", "services"].includes(moduleCode),
     };
   }
 

@@ -59,7 +59,7 @@ export async function GET() {
         .from("church_modules")
         .select("module_code")
         .eq("church_id", profile.church_id)
-        .eq("enabled", true),
+        .eq("is_enabled", true),
 
       admin
         .from("profile_module_permissions")

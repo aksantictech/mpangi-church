@@ -38,6 +38,8 @@ const RESPONSABLE_D_ALLOWED_MODULES = new Set([
   "members",
   "attendance",
   "departments",
+  "groups",
+  "services",
   "events",
   "administrative_tasks",
 ]);
@@ -109,6 +111,9 @@ function fallbackCanView(role: string, moduleCodeInput: string) {
       "members",
       "attendance",
       "souls",
+      "people_flows",
+      "groups",
+      "services",
       "departments",
       "events",
       "publications",
@@ -128,6 +133,9 @@ function fallbackCanView(role: string, moduleCodeInput: string) {
       "members",
       "attendance",
       "souls",
+      "people_flows",
+      "groups",
+      "services",
       "events",
       "teachings",
       "correspondence",
@@ -177,17 +185,19 @@ function fallbackCanView(role: string, moduleCodeInput: string) {
       "members",
       "attendance",
       "departments",
+      "groups",
+      "services",
       "events",
       "administrative_tasks",
     ].includes(moduleCode);
   }
 
   if (role === "worker" || WORKER_ROLES.has(role)) {
-    return ["members", "attendance", "events"].includes(moduleCode);
+    return ["members", "attendance", "events", "groups", "services"].includes(moduleCode);
   }
 
   if (role === "readonly" || VIEWER_ROLES.has(role)) {
-    return ["members", "attendance"].includes(moduleCode);
+    return ["members", "attendance", "groups", "services"].includes(moduleCode);
   }
 
   return false;

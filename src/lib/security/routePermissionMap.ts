@@ -34,6 +34,24 @@ export const ROUTE_PERMISSION_RULES: RoutePermissionRule[] = [
     action: "view",
   },
   {
+    id: "people-flows",
+    pattern: /^\/people-flows(?:\/|$)/,
+    modules: ["people_flows"],
+    action: "view",
+  },
+  {
+    id: "groups",
+    pattern: /^\/groups(?:\/|$)/,
+    modules: ["groups"],
+    action: "view",
+  },
+  {
+    id: "services",
+    pattern: /^\/services(?:\/|$)/,
+    modules: ["services"],
+    action: "view",
+  },
+  {
     id: "departments",
     pattern: /^\/departments(?:\/|$)/,
     modules: ["departments"],

@@ -49,6 +49,24 @@ const NAVIGATION_ITEMS: PermissionNavigationItem[] = [
     category: "spirituel",
   },
   {
+    code: "people_flows",
+    label: "Parcours des personnes",
+    href: "/people-flows",
+    category: "spirituel",
+  },
+  {
+    code: "groups",
+    label: "Cellules et groupes",
+    href: "/groups",
+    category: "spirituel",
+  },
+  {
+    code: "services",
+    label: "Cultes et équipes",
+    href: "/services",
+    category: "spirituel",
+  },
+  {
     code: "departments",
     label: "Départements",
     href: "/departments",

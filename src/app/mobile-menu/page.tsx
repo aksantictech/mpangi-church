@@ -15,6 +15,8 @@ const RESPONSABLE_D_ALLOWED_MODULES = new Set([
   "members",
   "attendance",
   "departments",
+  "groups",
+  "services",
   "events",
   "administrative_tasks",
 ]);
@@ -57,7 +59,7 @@ export default async function MobileMenuPage() {
       .from("church_modules")
       .select("module_code")
       .eq("church_id", profile.church_id)
-      .eq("enabled", true);
+      .eq("is_enabled", true);
 
     const enabledCodes = new Set(
       (enabledRows ?? []).map((row: any) => row.module_code)
