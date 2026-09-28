@@ -17,6 +17,8 @@ const RESPONSABLE_D_ALLOWED_MODULES = new Set([
   "departments",
   "groups",
   "services",
+  "families",
+  "child_checkin",
   "events",
   "administrative_tasks",
 ]);

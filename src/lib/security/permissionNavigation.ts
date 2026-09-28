@@ -67,6 +67,24 @@ const NAVIGATION_ITEMS: PermissionNavigationItem[] = [
     category: "spirituel",
   },
   {
+    code: "families",
+    label: "Foyers et familles",
+    href: "/families",
+    category: "spirituel",
+  },
+  {
+    code: "child_checkin",
+    label: "Accueil des enfants",
+    href: "/child-checkin",
+    category: "spirituel",
+  },
+  {
+    code: "member_portal",
+    label: "Mon espace membre",
+    href: "/my-space",
+    category: "spirituel",
+  },
+  {
     code: "departments",
     label: "Départements",
     href: "/departments",

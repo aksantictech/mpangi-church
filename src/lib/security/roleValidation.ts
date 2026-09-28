@@ -48,6 +48,9 @@ const EXPECTED_VIEW_BASELINE: Record<string, string[]> = {
     "people_flows",
     "groups",
     "services",
+    "families",
+    "child_checkin",
+    "member_portal",
     "public_requests",
     "attendance",
   ],
@@ -58,6 +61,9 @@ const EXPECTED_VIEW_BASELINE: Record<string, string[]> = {
     "people_flows",
     "groups",
     "services",
+    "families",
+    "child_checkin",
+    "member_portal",
     "public_requests",
   ],
   pasteur_a: [
@@ -67,6 +73,9 @@ const EXPECTED_VIEW_BASELINE: Record<string, string[]> = {
     "people_flows",
     "groups",
     "services",
+    "families",
+    "child_checkin",
+    "member_portal",
     "attendance",
   ],
   charge_afp: [
@@ -86,6 +95,8 @@ const EXPECTED_VIEW_BASELINE: Record<string, string[]> = {
     "departments",
     "groups",
     "services",
+    "families",
+    "child_checkin",
     "events",
   ],
   logisticien: [

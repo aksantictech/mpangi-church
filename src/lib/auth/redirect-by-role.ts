@@ -3,5 +3,9 @@ export function getDashboardPathByRole(role?: string | null) {
     return "/super-admin/dashboard";
   }
 
+  if (role === "member") {
+    return "/my-space";
+  }
+
   return "/dashboard";
 }

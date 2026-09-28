@@ -183,6 +183,9 @@ function fallbackPermissions(
             "people_flows",
             "groups",
             "services",
+            "families",
+            "child_checkin",
+            "member_portal",
             "departments",
             "events",
             "publications",
@@ -202,6 +205,9 @@ function fallbackPermissions(
             "people_flows",
             "groups",
             "services",
+            "families",
+            "child_checkin",
+            "member_portal",
             "events",
             "teachings",
             "correspondence",
@@ -298,6 +304,8 @@ function fallbackPermissions(
       "departments",
       "groups",
       "services",
+      "families",
+      "child_checkin",
       "events",
       "administrative_tasks",
     ].includes(moduleCode);
@@ -315,7 +323,7 @@ function fallbackPermissions(
   }
 
   if (WORKER_ROLES.has(role) || role === "worker") {
-    return ["members", "attendance", "events", "groups", "services"].includes(moduleCode)
+    return ["members", "attendance", "events", "groups", "services", "child_checkin"].includes(moduleCode)
       ? {
           ...EMPTY_PERMISSIONS,
           can_view: true,
@@ -327,6 +335,13 @@ function fallbackPermissions(
     return {
       ...EMPTY_PERMISSIONS,
       can_view: ["members", "attendance", "groups", "services"].includes(moduleCode),
+    };
+  }
+
+  if (role === "member") {
+    return {
+      ...EMPTY_PERMISSIONS,
+      can_view: moduleCode === "member_portal",
     };
   }
 

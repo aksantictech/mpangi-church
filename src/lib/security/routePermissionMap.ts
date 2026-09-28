@@ -52,6 +52,24 @@ export const ROUTE_PERMISSION_RULES: RoutePermissionRule[] = [
     action: "view",
   },
   {
+    id: "families",
+    pattern: /^\/families(?:\/|$)/,
+    modules: ["families"],
+    action: "view",
+  },
+  {
+    id: "child-checkin",
+    pattern: /^\/child-checkin(?:\/|$)/,
+    modules: ["child_checkin"],
+    action: "view",
+  },
+  {
+    id: "member-portal",
+    pattern: /^\/my-space(?:\/|$)/,
+    modules: ["member_portal"],
+    action: "view",
+  },
+  {
     id: "departments",
     pattern: /^\/departments(?:\/|$)/,
     modules: ["departments"],
