@@ -186,6 +186,9 @@ function fallbackPermissions(
             "families",
             "child_checkin",
             "member_portal",
+            "custom_forms",
+            "engagement_insights",
+            "giving_campaigns",
             "departments",
             "events",
             "publications",
@@ -208,6 +211,8 @@ function fallbackPermissions(
             "families",
             "child_checkin",
             "member_portal",
+            "custom_forms",
+            "engagement_insights",
             "events",
             "teachings",
             "correspondence",
@@ -238,6 +243,8 @@ function fallbackPermissions(
       "expenses",
       "budgets",
       "financial_reports",
+      "giving_campaigns",
+      "engagement_insights",
       "patrimony_dashboard",
       "assets",
       "asset_maintenance",
@@ -262,6 +269,7 @@ function fallbackPermissions(
       "document_transmissions",
       "administrative_tasks",
       "meetings_minutes",
+      "custom_forms",
     ].includes(moduleCode);
 
     return allowed
@@ -308,6 +316,8 @@ function fallbackPermissions(
       "child_checkin",
       "events",
       "administrative_tasks",
+      "custom_forms",
+      "engagement_insights",
     ].includes(moduleCode);
 
     return allowed
@@ -334,7 +344,7 @@ function fallbackPermissions(
   if (VIEWER_ROLES.has(role) || role === "readonly") {
     return {
       ...EMPTY_PERMISSIONS,
-      can_view: ["members", "attendance", "groups", "services"].includes(moduleCode),
+      can_view: ["members", "attendance", "groups", "services", "engagement_insights"].includes(moduleCode),
     };
   }
 

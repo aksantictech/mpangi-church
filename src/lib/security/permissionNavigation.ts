@@ -85,6 +85,18 @@ const NAVIGATION_ITEMS: PermissionNavigationItem[] = [
     category: "spirituel",
   },
   {
+    code: "custom_forms",
+    label: "Formulaires et inscriptions",
+    href: "/forms",
+    category: "spirituel",
+  },
+  {
+    code: "engagement_insights",
+    label: "Pilotage de l’engagement",
+    href: "/insights/engagement",
+    category: "spirituel",
+  },
+  {
     code: "departments",
     label: "Départements",
     href: "/departments",
@@ -183,6 +195,12 @@ const NAVIGATION_ITEMS: PermissionNavigationItem[] = [
     code: "donations",
     label: "Dons reçus",
     href: "/finance/donations",
+    category: "finance",
+  },
+  {
+    code: "giving_campaigns",
+    label: "Campagnes et promesses",
+    href: "/finance/campaigns",
     category: "finance",
   },
   {

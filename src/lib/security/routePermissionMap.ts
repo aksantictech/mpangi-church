@@ -70,6 +70,18 @@ export const ROUTE_PERMISSION_RULES: RoutePermissionRule[] = [
     action: "view",
   },
   {
+    id: "custom-forms",
+    pattern: /^\/forms(?:\/|$)/,
+    modules: ["custom_forms"],
+    action: "view",
+  },
+  {
+    id: "engagement-insights",
+    pattern: /^\/insights\/engagement(?:\/|$)/,
+    modules: ["engagement_insights"],
+    action: "view",
+  },
+  {
     id: "departments",
     pattern: /^\/departments(?:\/|$)/,
     modules: ["departments"],
@@ -103,6 +115,12 @@ export const ROUTE_PERMISSION_RULES: RoutePermissionRule[] = [
     id: "finance-donations",
     pattern: /^\/finance\/donations(?:\/|$)/,
     modules: ["donations"],
+    action: "view",
+  },
+  {
+    id: "finance-campaigns",
+    pattern: /^\/finance\/campaigns(?:\/|$)/,
+    modules: ["giving_campaigns"],
     action: "view",
   },
   {
@@ -141,6 +159,7 @@ export const ROUTE_PERMISSION_RULES: RoutePermissionRule[] = [
       "finance_reports",
       "financial_reports",
       "donations",
+      "giving_campaigns",
     ],
     action: "view",
     mode: "any",

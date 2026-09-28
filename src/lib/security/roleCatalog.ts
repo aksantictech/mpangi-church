@@ -68,6 +68,8 @@ export const MODULE_CATALOG = [
   ["families", "Foyers et familles", "/families"],
   ["child_checkin", "Accueil des enfants", "/child-checkin"],
   ["member_portal", "Mon espace membre", "/my-space"],
+  ["custom_forms", "Formulaires et inscriptions", "/forms"],
+  ["engagement_insights", "Pilotage de l’engagement", "/insights/engagement"],
   ["departments", "Départements", "/departments"],
   ["events", "Événements", "/events"],
   ["public_requests", "Demandes publiques", "/public-requests"],
@@ -86,6 +88,7 @@ export const MODULE_CATALOG = [
   ["budgets", "Budgets", "/finance/budgets"],
   ["financial_reports", "Rapports financiers", "/finance/reports"],
   ["donations", "Dons reçus", "/finance/donations"],
+  ["giving_campaigns", "Campagnes et promesses", "/finance/campaigns"],
 
   ["patrimony_dashboard", "Dashboard patrimoine", "/patrimony"],
   ["assets", "Biens", "/patrimony/assets"],

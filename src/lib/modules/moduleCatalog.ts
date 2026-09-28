@@ -93,6 +93,8 @@ const MODULE_CATEGORY: Record<string, ModuleCategoryCode> = {
   families: "community",
   child_checkin: "community",
   member_portal: "community",
+  custom_forms: "communication",
+  engagement_insights: "essentials",
   public_requests: "community",
 
   departments: "ministry",
@@ -118,6 +120,7 @@ const MODULE_CATEGORY: Record<string, ModuleCategoryCode> = {
   budgets: "finance",
   finance_reports: "finance",
   donations: "finance",
+  giving_campaigns: "finance",
 
   patrimony: "resources",
   assets: "resources",

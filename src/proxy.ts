@@ -34,6 +34,8 @@ const PRIVATE_CHURCH_PREFIXES = [
   "/families",
   "/child-checkin",
   "/my-space",
+  "/forms",
+  "/insights",
   "/departments",
   "/events",
   "/publications",
@@ -65,6 +67,7 @@ const TENANT_PUBLIC_PATHS = new Set([
   "/public-teachings",
   "/live",
   "/member-registration",
+  "/registration",
 ]);
 
 const PUBLIC_FILE_REGEX =

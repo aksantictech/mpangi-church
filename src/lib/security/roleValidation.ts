@@ -51,6 +51,9 @@ const EXPECTED_VIEW_BASELINE: Record<string, string[]> = {
     "families",
     "child_checkin",
     "member_portal",
+    "custom_forms",
+    "engagement_insights",
+    "giving_campaigns",
     "public_requests",
     "attendance",
   ],
@@ -64,6 +67,8 @@ const EXPECTED_VIEW_BASELINE: Record<string, string[]> = {
     "families",
     "child_checkin",
     "member_portal",
+    "custom_forms",
+    "engagement_insights",
     "public_requests",
   ],
   pasteur_a: [
@@ -76,6 +81,8 @@ const EXPECTED_VIEW_BASELINE: Record<string, string[]> = {
     "families",
     "child_checkin",
     "member_portal",
+    "custom_forms",
+    "engagement_insights",
     "attendance",
   ],
   charge_afp: [
@@ -86,6 +93,8 @@ const EXPECTED_VIEW_BASELINE: Record<string, string[]> = {
     "expenses",
     "budgets",
     "donations",
+    "giving_campaigns",
+    "engagement_insights",
   ],
   responsable_d: [
     "role_dashboard",
@@ -98,6 +107,8 @@ const EXPECTED_VIEW_BASELINE: Record<string, string[]> = {
     "families",
     "child_checkin",
     "events",
+    "custom_forms",
+    "engagement_insights",
   ],
   logisticien: [
     "role_dashboard",
@@ -114,6 +125,7 @@ const EXPECTED_VIEW_BASELINE: Record<string, string[]> = {
     "transmissions",
     "tasks",
     "minutes",
+    "custom_forms",
   ],
   worker: [
     "role_dashboard",
@@ -122,6 +134,7 @@ const EXPECTED_VIEW_BASELINE: Record<string, string[]> = {
   ],
   readonly: [
     "role_dashboard",
+    "engagement_insights",
   ],
   member: [
     "role_dashboard",

@@ -5,6 +5,7 @@ import {
   Baby,
   CalendarDays,
   ClipboardList,
+  ClipboardPenLine,
   FileText,
   HeartHandshake,
   HandCoins,
@@ -31,6 +32,7 @@ import {
   UsersRound,
   UserRoundCog,
   Wallet,
+  Target,
   Warehouse,
   Wrench,
 } from "lucide-react";
@@ -233,6 +235,20 @@ export const MODULE_MENU_ITEMS: ModuleMenuItem[] = [
     category: "spiritual",
   },
   {
+    code: "custom_forms",
+    label: "Formulaires",
+    href: "/forms",
+    icon: ClipboardPenLine,
+    category: "spiritual",
+  },
+  {
+    code: "engagement_insights",
+    label: "Engagement",
+    href: "/insights/engagement",
+    icon: BarChart3,
+    category: "spiritual",
+  },
+  {
     code: "departments",
     label: "Départements",
     href: "/departments",
@@ -352,6 +368,13 @@ export const MODULE_MENU_ITEMS: ModuleMenuItem[] = [
     label: "Dons reçus",
     href: "/finance/donations",
     icon: HandCoins,
+    category: "finance",
+  },
+  {
+    code: "giving_campaigns",
+    label: "Campagnes & promesses",
+    href: "/finance/campaigns",
+    icon: Target,
     category: "finance",
   },
 

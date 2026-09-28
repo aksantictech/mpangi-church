@@ -21,6 +21,8 @@ const RESPONSABLE_D_ALLOWED_MODULES = new Set([
   "child_checkin",
   "events",
   "administrative_tasks",
+  "custom_forms",
+  "engagement_insights",
 ]);
 
 export default async function MobileMenuPage() {

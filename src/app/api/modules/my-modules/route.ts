@@ -44,6 +44,8 @@ const RESPONSABLE_D_ALLOWED_MODULES = new Set([
   "child_checkin",
   "events",
   "administrative_tasks",
+  "custom_forms",
+  "engagement_insights",
 ]);
 
 const SECRETARY_ALLOWED_MODULES = new Set([
@@ -56,6 +58,7 @@ const SECRETARY_ALLOWED_MODULES = new Set([
   "document_transmissions",
   "administrative_tasks",
   "meetings_minutes",
+  "custom_forms",
 ]);
 
 const SECRETARY_CORE_MODULES = [
@@ -119,6 +122,9 @@ function fallbackCanView(role: string, moduleCodeInput: string) {
       "families",
       "child_checkin",
       "member_portal",
+      "custom_forms",
+      "engagement_insights",
+      "giving_campaigns",
       "departments",
       "events",
       "publications",
@@ -144,6 +150,8 @@ function fallbackCanView(role: string, moduleCodeInput: string) {
       "families",
       "child_checkin",
       "member_portal",
+      "custom_forms",
+      "engagement_insights",
       "events",
       "teachings",
       "correspondence",
@@ -162,6 +170,8 @@ function fallbackCanView(role: string, moduleCodeInput: string) {
       "expenses",
       "budgets",
       "financial_reports",
+      "giving_campaigns",
+      "engagement_insights",
       "patrimony_dashboard",
       "assets",
       "asset_maintenance",
@@ -175,6 +185,7 @@ function fallbackCanView(role: string, moduleCodeInput: string) {
       "document_transmissions",
       "administrative_tasks",
       "meetings_minutes",
+      "custom_forms",
     ].includes(moduleCode);
   }
 
@@ -199,6 +210,8 @@ function fallbackCanView(role: string, moduleCodeInput: string) {
       "child_checkin",
       "events",
       "administrative_tasks",
+      "custom_forms",
+      "engagement_insights",
     ].includes(moduleCode);
   }
 
@@ -207,7 +220,7 @@ function fallbackCanView(role: string, moduleCodeInput: string) {
   }
 
   if (role === "readonly" || VIEWER_ROLES.has(role)) {
-    return ["members", "attendance", "groups", "services"].includes(moduleCode);
+    return ["members", "attendance", "groups", "services", "engagement_insights"].includes(moduleCode);
   }
 
   if (role === "member") {
